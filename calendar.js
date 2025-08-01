@@ -1,6 +1,6 @@
 /**
  * calendar.js
- * * This file contains all logic for the interactive events calendar.
+ * This file contains all logic for the interactive events calendar.
  * It's designed to be modular and can be initialized on any page
  * that has the required HTML structure.
  */
@@ -98,8 +98,10 @@ class Calendar {
     }
 
     renderWeekView(date) {
-        const startOfWeek = new Date(date.setDate(date.getDate() - date.getDay()));
-        const endOfWeek = new Date(new Date(startOfWeek).setDate(startOfWeek.getDate() + 6));
+        const startOfWeek = new Date(date);
+        startOfWeek.setDate(date.getDate() - date.getDay());
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
 
         this.titleElement.textContent = `${startOfWeek.toLocaleDateString()} - ${endOfWeek.toLocaleDateString()}`;
         this.container.innerHTML = '';
@@ -238,6 +240,11 @@ class Calendar {
     }
 
     // --- Public Methods ---
+
+    addEvent(event) {
+        this.events.push(event);
+        this.render(); // Re-render the calendar to show the new event
+    }
 
     next() {
         if (this.currentView === 'year') this.currentDate.setFullYear(this.currentDate.getFullYear() + 1);
