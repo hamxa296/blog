@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - GIKI Chronicles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 1. Link to your stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+        <h2 class="text-2xl font-bold text-center mb-2">Create an Account</h2>
+        <p class="text-center text-gray-500 mb-6">Join the community!</p>
+
+        <!-- Google Sign-In Button -->
+        <button id="google-signin-button"
+            class="w-full flex items-center justify-center bg-white border border-gray-300 text-gray-700 font-bold py-2 px-4 rounded-full hover:bg-gray-50 mb-4">
+            <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
+                alt="Google logo" class="w-5 h-5 mr-2">
+            Sign up with Google
+        </button>
+
+        <div class="flex items-center my-4">
+            <hr class="flex-grow border-t border-gray-300">
+            <span class="px-2 text-gray-500 text-sm">OR</span>
+            <hr class="flex-grow border-t border-gray-300">
+        </div>
+
+        <form id="signup-form">
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                <input type="email" id="email" name="email"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+            </div>
+            <div class="mb-6">
+                <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                <input type="password" id="password" name="password"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+            </div>
+            <div id="error-message" class="text-red-500 text-sm mb-4 text-center h-4"></div>
+            <button type="submit"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+                Sign Up
+            </button>
+        </form>
+        <p class="text-center text-gray-600 text-sm mt-6">
+            Already have an account? <a href="login.html" class="text-blue-600 hover:underline">Log in</a>
+        </p>
+    </div>
+
+    <!-- 2. Add Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- 3. Add your custom scripts in the correct order -->
+    <script src="firebase-init.js"></script>
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

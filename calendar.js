@@ -1,8 +1,8 @@
 /**
  * calendar.js
  * This file contains all logic for the interactive events calendar.
- * It's designed to be modular and can be initialized on any page
- * that has the required HTML structure.
+ * It defines a `Calendar` class that encapsulates all functionality for
+ * rendering views, handling navigation, and managing event data.
  */
 
 class Calendar {
@@ -19,84 +19,84 @@ class Calendar {
         this.onEventClick = config.onEventClick;
 
         this.currentDate = new Date('2025-08-02T02:37:00');
-        this.currentView = 'month'; // 'month', 'week', 'day', 'year'
+        this.currentView = 'month'; // Default view
 
-        // This data would typically be fetched from a server
+        // This is mock data. In a real application, this would be fetched from a database like Firestore.
+        // A unique ID is assigned to each event to make editing and deleting possible.
         this.events = [
-            { title: 'NASTP Guest Speaker Session', date: '2025-08-15T14:00:00', description: 'A talk on the future of aerospace technology.' },
-            { title: 'All-Pakistan Programming Contest', date: '2025-09-05T09:00:00', description: 'The annual flagship programming competition.' },
-            { title: 'GIKI Convocation 2025', date: '2025-10-20T11:00:00', description: 'The formal ceremony to confer degrees.' },
-            { title: 'International Culture Night', date: '2025-11-12T18:00:00', description: 'A celebration of diversity at GIKI.' },
-            { title: 'Mid-term Exams Begin', date: '2025-10-13T09:00:00', description: 'The start of mid-term examinations for the fall semester.' },
-            { title: 'Same Day Event', date: '2025-08-15T18:00:00', description: 'Another event on the same day.' }
+            { id: Date.now() + 1, title: 'NASTP Guest Speaker Session', date: '2025-08-15T14:00:00', description: 'A talk on the future of aerospace technology.' },
+            { id: Date.now() + 2, title: 'All-Pakistan Programming Contest', date: '2025-09-05T09:00:00', description: 'The annual flagship programming competition.' },
+            { id: Date.now() + 3, title: 'GIKI Convocation 2025', date: '2025-10-20T11:00:00', description: 'The formal ceremony to confer degrees.' },
+            { id: Date.now() + 4, title: 'International Culture Night', date: '2025-11-12T18:00:00', description: 'A celebration of diversity at GIKI.' },
+            { id: Date.now() + 5, title: 'Mid-term Exams Begin', date: '2025-10-13T09:00:00', description: 'The start of mid-term examinations for the fall semester.' },
+            { id: Date.now() + 6, title: 'Same Day Event', date: '2025-08-15T18:00:00', description: 'Another event on the same day.' }
         ];
     }
 
     /**
-     * Main render function that delegates to the appropriate view renderer.
+     * The main render function. It acts as a router, calling the appropriate
+     * rendering method based on the `currentView` state.
      */
     render() {
         switch (this.currentView) {
-            case 'year':
-                this.renderYearView(this.currentDate.getFullYear());
-                break;
-            case 'month':
-                this.renderMonthView(this.currentDate);
-                break;
-            case 'week':
-                this.renderWeekView(this.currentDate);
-                break;
-            case 'day':
-                this.renderDayView(this.currentDate);
-                break;
+            case 'year': this.renderYearView(this.currentDate.getFullYear()); break;
+            case 'month': this.renderMonthView(this.currentDate); break;
+            case 'week': this.renderWeekView(this.currentDate); break;
+            case 'day': this.renderDayView(this.currentDate); break;
         }
     }
 
     // --- View Renderers ---
 
+    /**
+     * Renders the high-level Year view, showing a grid of 12 mini-months.
+     * @param {number} year - The full year to display.
+     */
     renderYearView(year) {
         this.titleElement.textContent = year;
         this.container.innerHTML = '';
         const yearGrid = document.createElement('div');
         yearGrid.className = 'year-view-grid';
-
         for (let i = 0; i < 12; i++) {
-            const monthDate = new Date(year, i, 1);
-            const monthGrid = this._createMiniMonthGrid(monthDate);
-            yearGrid.appendChild(monthGrid);
+            yearGrid.appendChild(this._createMiniMonthGrid(new Date(year, i, 1)));
         }
         this.container.appendChild(yearGrid);
     }
 
+    /**
+     * Renders the detailed Month view grid, showing all days in a month.
+     * @param {Date} date - A date within the month to be rendered.
+     */
     renderMonthView(date) {
-        const year = date.getFullYear();
-        const month = date.getMonth();
+        const year = date.getFullYear(), month = date.getMonth();
         this.titleElement.textContent = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
         this.container.innerHTML = '';
-
         const grid = document.createElement('div');
         grid.className = 'grid grid-cols-7';
 
-        const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        // Use abbreviated day names for better mobile responsiveness
+        const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         weekdays.forEach(day => grid.appendChild(this._createHeaderCell(day)));
 
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const prevMonthDays = new Date(year, month, 0).getDate();
 
-        for (let i = firstDay; i > 0; i--) {
-            grid.appendChild(this._createDayCell(prevMonthDays - i + 1, new Date(year, month - 1, prevMonthDays - i + 1), true));
-        }
-        for (let i = 1; i <= daysInMonth; i++) {
-            grid.appendChild(this._createDayCell(i, new Date(year, month, i), false));
-        }
+        // Add days from the previous month to fill the grid
+        for (let i = firstDay; i > 0; i--) grid.appendChild(this._createDayCell(prevMonthDays - i + 1, new Date(year, month - 1, prevMonthDays - i + 1), true));
+        // Add days for the current month
+        for (let i = 1; i <= daysInMonth; i++) grid.appendChild(this._createDayCell(i, new Date(year, month, i), false));
+        // Add days from the next month to fill the grid
         const lastDayIndex = new Date(year, month, daysInMonth).getDay();
-        for (let i = 1; i < 7 - lastDayIndex; i++) {
-            grid.appendChild(this._createDayCell(i, new Date(year, month + 1, i), true));
-        }
+        for (let i = 1; i < 7 - lastDayIndex; i++) grid.appendChild(this._createDayCell(i, new Date(year, month + 1, i), true));
+
         this.container.appendChild(grid);
     }
 
+    /**
+     * Renders the Week view, showing a 7-day layout.
+     * @param {Date} date - A date within the week to be displayed.
+     */
     renderWeekView(date) {
         const startOfWeek = new Date(date);
         startOfWeek.setDate(date.getDate() - date.getDay());
@@ -113,7 +113,6 @@ class Calendar {
             currentDay.setDate(startOfWeek.getDate() + i);
             const dayContainer = document.createElement('div');
             dayContainer.className = 'border p-2 min-h-[200px]';
-
             const header = document.createElement('div');
             header.className = 'font-bold text-center mb-2';
             header.textContent = `${currentDay.toLocaleString('default', { weekday: 'short' })} ${currentDay.getDate()}`;
@@ -130,6 +129,10 @@ class Calendar {
         this.container.appendChild(weekGrid);
     }
 
+    /**
+     * Renders the Day view, showing a list of events for a single day.
+     * @param {Date} date - The specific date to display.
+     */
     renderDayView(date) {
         this.titleElement.textContent = date.toLocaleDateString('default', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         this.container.innerHTML = '';
@@ -145,38 +148,20 @@ class Calendar {
         }
     }
 
+    // --- Element Creators (Private Helper Methods) ---
 
-    // --- Element Creators (Private Helpers) ---
-
-    _createHeaderCell(text) {
-        const headerEl = document.createElement('div');
-        headerEl.className = 'font-bold text-center text-gray-600 py-2 text-sm';
-        headerEl.textContent = text;
-        return headerEl;
-    }
+    _createHeaderCell(text) { const el = document.createElement('div'); el.className = 'font-bold text-center text-gray-600 py-2 text-sm'; el.textContent = text; return el; }
 
     _createMiniMonthGrid(date) {
-        const year = date.getFullYear();
-        const month = date.getMonth();
+        const year = date.getFullYear(), month = date.getMonth();
         const monthContainer = document.createElement('div');
         monthContainer.className = 'month-grid-year-view';
-
-        const monthName = date.toLocaleString('default', { month: 'long' });
-        monthContainer.innerHTML = `<h4 class="font-semibold text-center text-sm mb-2 cursor-pointer hover:text-blue-600">${monthName}</h4>`;
-        monthContainer.querySelector('h4').addEventListener('click', () => {
-            this.currentDate = new Date(year, month, 1);
-            this.setView('month');
-        });
+        monthContainer.innerHTML = `<h4 class="font-semibold text-center text-sm mb-2 cursor-pointer hover:text-blue-600">${date.toLocaleString('default', { month: 'long' })}</h4>`;
+        monthContainer.querySelector('h4').addEventListener('click', () => { this.currentDate = new Date(year, month, 1); this.setView('month'); });
 
         const grid = document.createElement('div');
         grid.className = 'grid grid-cols-7 gap-1';
-
-        ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(day => {
-            const dayEl = document.createElement('div');
-            dayEl.className = 'text-center font-bold text-xs text-gray-500';
-            dayEl.textContent = day;
-            grid.appendChild(dayEl);
-        });
+        ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(day => { const el = document.createElement('div'); el.className = 'text-center font-bold text-xs text-gray-500'; el.textContent = day; grid.appendChild(el); });
 
         const firstDay = new Date(year, month, 1).getDay();
         for (let i = 0; i < firstDay; i++) grid.appendChild(document.createElement('div'));
@@ -204,20 +189,27 @@ class Calendar {
         if (this._isSameDay(date, new Date())) dayCell.classList.add('today');
 
         const dayNumber = document.createElement('div');
-        dayNumber.className = 'day-number font-semibold text-sm';
+        dayNumber.className = 'day-number font-semibold text-sm mb-1';
         dayNumber.textContent = day;
         dayCell.appendChild(dayNumber);
+
+        // **FIX:** Create a wrapper for events to prevent overflow.
+        // This container will grow to fill available space but hide any content that doesn't fit.
+        const eventsWrapper = document.createElement('div');
+        eventsWrapper.className = 'flex-grow overflow-hidden';
 
         this._getEventsForDay(date).forEach(event => {
             const eventEl = document.createElement('div');
             eventEl.className = 'event-in-cell';
             eventEl.textContent = event.title;
             eventEl.addEventListener('click', (e) => {
-                e.stopPropagation();
+                e.stopPropagation(); // Prevent the day cell's click event from firing
                 this.onEventClick(event);
             });
-            dayCell.appendChild(eventEl);
+            eventsWrapper.appendChild(eventEl);
         });
+
+        dayCell.appendChild(eventsWrapper);
 
         dayCell.addEventListener('click', () => {
             this.currentDate = date;
@@ -239,11 +231,25 @@ class Calendar {
         return eventEl;
     }
 
-    // --- Public Methods ---
+    // --- Public Methods (API for interacting with the calendar) ---
 
     addEvent(event) {
-        this.events.push(event);
-        this.render(); // Re-render the calendar to show the new event
+        const newEventWithId = { ...event, id: Date.now() };
+        this.events.push(newEventWithId);
+        this.render();
+    }
+
+    editEvent(updatedEvent) {
+        const eventIndex = this.events.findIndex(e => e.id === updatedEvent.id);
+        if (eventIndex > -1) {
+            this.events[eventIndex] = updatedEvent;
+            this.render();
+        }
+    }
+
+    deleteEvent(eventId) {
+        this.events = this.events.filter(e => e.id !== eventId);
+        this.render();
     }
 
     next() {
@@ -253,7 +259,6 @@ class Calendar {
         else if (this.currentView === 'day') this.currentDate.setDate(this.currentDate.getDate() + 1);
         this.render();
     }
-
     previous() {
         if (this.currentView === 'year') this.currentDate.setFullYear(this.currentDate.getFullYear() - 1);
         else if (this.currentView === 'month') this.currentDate.setMonth(this.currentDate.getMonth() - 1);
@@ -261,7 +266,6 @@ class Calendar {
         else if (this.currentView === 'day') this.currentDate.setDate(this.currentDate.getDate() - 1);
         this.render();
     }
-
     setView(view) {
         this.currentView = view;
         this.render();
