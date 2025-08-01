@@ -1,0 +1,22 @@
+/* Custom Styles for GIKI Chronicles Blog
+    This file complements the Tailwind CSS framework.
+*/
+
+/* Sets the default font for the entire site to 'Inter' 
+   and a fallback to generic sans-serif. Also sets a
+   light gray background color for a clean, open feel.
+*/
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* This class is not used in the current HTML but is available 
+   for hero sections or other prominent UI elements. It applies 
+   a gradient using GIKI's brand colors for a strong visual identity.
+*/
+.hero-bg {
+    background-color: #002347;
+    /* GIKI Blue */
+    background-image: linear-gradient(45deg, #002347 0%, #003366 100%);
+}
