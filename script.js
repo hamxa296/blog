@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalDescription = document.getElementById('modal-description');
     const googleCalendarLink = document.getElementById('google-calendar-link');
     const modalClose = document.getElementById('modal-close');
+    const editEventButton = document.getElementById('edit-event-button');
+    const deleteEventButton = document.getElementById('delete-event-button');
 
     // Add Event Modal elements
     const addEventModal = document.getElementById('add-event-modal');
@@ -29,14 +31,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const addEventModalClose = document.getElementById('add-event-modal-close');
     const addEventForm = document.getElementById('add-event-form');
 
+    // Edit Event Modal elements
+    const editEventModal = document.getElementById('edit-event-modal');
+    const editEventModalClose = document.getElementById('edit-event-modal-close');
+    const editEventForm = document.getElementById('edit-event-form');
+
+    // Delete Confirmation Modal elements
+    const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+    const confirmDeleteButton = document.getElementById('confirm-delete-button');
+    const cancelDeleteButton = document.getElementById('cancel-delete-button');
+
+
     let calendarInstance = null;
+    let currentOpenEvent = null;
 
     // --- Modal Functions ---
     function openEventModal(event) {
+        currentOpenEvent = event; // Store the event for potential editing or deletion
         const startDate = new Date(event.date);
-        // Assume event is 2 hours long for Google Calendar
         const endDate = new Date(startDate.getTime() + 2 * 60 * 60 * 1000);
-        // Format dates for Google Calendar URL (YYYYMMDDTHHMMSSZ)
         const formatGoogleDate = (date) => date.toISOString().replace(/-|:|\.\d+/g, '');
         const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${formatGoogleDate(startDate)}/${formatGoogleDate(endDate)}&details=${encodeURIComponent(event.description)}&location=GIK%20Institute,%20Topi,%20Pakistan`;
 
@@ -50,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closeEventModal() {
         if (eventModal) eventModal.classList.add('hidden');
+        currentOpenEvent = null;
     }
 
     function openAddEventModal() {
@@ -60,17 +74,44 @@ document.addEventListener('DOMContentLoaded', () => {
         if (addEventModal) addEventModal.classList.add('hidden');
     }
 
+    function openEditEventModal(event) {
+        if (!event) return;
+        const eventDate = new Date(event.date);
+        // Format date for datetime-local input (YYYY-MM-DDTHH:mm)
+        const localDateTime = new Date(eventDate.getTime() - (eventDate.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+
+        document.getElementById('edit-event-id').value = event.id;
+        document.getElementById('edit-event-title').value = event.title;
+        document.getElementById('edit-event-date').value = localDateTime;
+        document.getElementById('edit-event-description').value = event.description;
+
+        closeEventModal(); // Close the details modal first
+        if (editEventModal) editEventModal.classList.remove('hidden');
+    }
+
+    function closeEditEventModal() {
+        if (editEventModal) editEventModal.classList.add('hidden');
+    }
+
+    function openDeleteConfirmModal() {
+        closeEventModal();
+        if (deleteConfirmModal) deleteConfirmModal.classList.remove('hidden');
+    }
+
+    function closeDeleteConfirmModal() {
+        if (deleteConfirmModal) deleteConfirmModal.classList.add('hidden');
+    }
+
     // --- Calendar Initialization ---
     function initializeCalendar() {
         if (calendarInstance) {
-            calendarInstance.render(); // Re-render if already initialized
+            calendarInstance.render();
             return;
         }
 
         const calendarContainer = document.getElementById('calendar-container');
         const calendarTitle = document.getElementById('calendar-title');
 
-        // Ensure the Calendar class from calendar.js is loaded
         if (calendarContainer && calendarTitle && typeof Calendar !== 'undefined') {
             calendarInstance = new Calendar({
                 container: calendarContainer,
@@ -78,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 onEventClick: openEventModal
             });
 
-            // Set up event listeners for calendar controls
             document.getElementById('prev-button').addEventListener('click', () => calendarInstance.previous());
             document.getElementById('next-button').addEventListener('click', () => calendarInstance.next());
             document.getElementById('year-view-button').addEventListener('click', () => calendarInstance.setView('year'));
@@ -88,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             calendarInstance.render();
         } else {
-            console.error("Calendar dependencies not found. Make sure calendar.js is loaded and HTML elements exist.");
+            console.error("Calendar dependencies not found.");
         }
     }
 
@@ -128,6 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event Details Modal Listeners
     modalClose.addEventListener('click', closeEventModal);
     eventModal.addEventListener('click', (e) => { if (e.target === eventModal) closeEventModal(); });
+    editEventButton.addEventListener('click', () => openEditEventModal(currentOpenEvent));
+    deleteEventButton.addEventListener('click', openDeleteConfirmModal);
+
 
     // Add Event Modal Listeners
     addEventButton.addEventListener('click', openAddEventModal);
@@ -149,6 +192,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
         addEventForm.reset();
         closeAddEventModal();
+    });
+
+    // Edit Event Modal Listeners
+    editEventModalClose.addEventListener('click', closeEditEventModal);
+    editEventModal.addEventListener('click', (e) => { if (e.target === editEventModal) closeEditEventModal(); });
+
+    editEventForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(editEventForm);
+        const updatedEvent = {
+            id: parseInt(formData.get('id')),
+            title: formData.get('title'),
+            date: new Date(formData.get('date')).toISOString(),
+            description: formData.get('description')
+        };
+
+        if (calendarInstance) {
+            calendarInstance.editEvent(updatedEvent);
+        }
+
+        editEventForm.reset();
+        closeEditEventModal();
+    });
+
+    // Delete Confirmation Modal Listeners
+    cancelDeleteButton.addEventListener('click', closeDeleteConfirmModal);
+    deleteConfirmModal.addEventListener('click', (e) => { if (e.target === deleteConfirmModal) closeDeleteConfirmModal(); });
+    confirmDeleteButton.addEventListener('click', () => {
+        if (calendarInstance && currentOpenEvent) {
+            calendarInstance.deleteEvent(currentOpenEvent.id);
+        }
+        closeDeleteConfirmModal();
     });
 
     // --- Initial State ---
