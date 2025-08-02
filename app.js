@@ -11,65 +11,35 @@ document.addEventListener('DOMContentLoaded', () => {
         quill = new Quill('#editor-container', {
             theme: 'snow',
             placeholder: 'Craft your story here...',
-            modules: {
-                toolbar: [
-                    [{ 'header': [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline'],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    ['link', 'image'],
-                    ['clean']
-                ]
-            }
+            modules: { toolbar: [[{ 'header': [1, 2, 3, false] }], ['bold', 'italic', 'underline'], [{ 'list': 'ordered' }, { 'list': 'bullet' }], ['link', 'image'], ['clean']] }
         });
     }
 
-    // --- Shared Elements ---
-    const googleSignInButton = document.getElementById('google-signin-button');
-    const errorMessage = document.getElementById('error-message');
-
-    // --- Login Page Logic ---
+    // --- Authentication Logic (Login, Signup, Google) ---
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = loginForm.email.value;
-            const password = loginForm.password.value;
-            const result = await loginUser(email, password);
-            if (result.success) {
-                window.location.href = 'index.html';
-            } else {
-                errorMessage.textContent = result.error;
-            }
+            const result = await loginUser(loginForm.email.value, loginForm.password.value);
+            if (result.success) window.location.href = 'index.html';
+            else document.getElementById('error-message').textContent = result.error;
         });
     }
-
-    // --- Sign-up Page Logic ---
     const signupForm = document.getElementById('signup-form');
     if (signupForm) {
         signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = signupForm.email.value;
-            const password = signupForm.password.value;
-            const result = await signUpUser(email, password);
-            if (result.success) {
-                window.location.href = 'index.html';
-            } else {
-                errorMessage.textContent = result.error;
-            }
+            const result = await signUpUser(signupForm.email.value, signupForm.password.value);
+            if (result.success) window.location.href = 'index.html';
+            else document.getElementById('error-message').textContent = result.error;
         });
     }
-
-    // --- Google Sign-In Logic ---
+    const googleSignInButton = document.getElementById('google-signin-button');
     if (googleSignInButton) {
         googleSignInButton.addEventListener('click', async () => {
             const result = await signInWithGoogle();
-            if (result.success) {
-                window.location.href = 'index.html';
-            } else {
-                if (errorMessage) {
-                    errorMessage.textContent = result.error;
-                }
-            }
+            if (result.success) window.location.href = 'index.html';
+            else if (document.getElementById('error-message')) document.getElementById('error-message').textContent = result.error;
         });
     }
 
@@ -79,13 +49,17 @@ document.addEventListener('DOMContentLoaded', () => {
         createPostForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formMessage = document.getElementById('form-message');
+            if (!quill || quill.getLength() <= 1) {
+                formMessage.textContent = 'Please write some content for your post.';
+                return;
+            }
             formMessage.textContent = 'Submitting...';
             const postData = {
-                title: createPostForm.title.value,
-                description: createPostForm.description.value,
-                photoUrl: createPostForm.photoUrl.value,
-                genre: createPostForm.genre.value,
-                tags: createPostForm.tags.value,
+                title: document.getElementById('post-title').value,
+                description: document.getElementById('post-description').value,
+                photoUrl: document.getElementById('post-photo').value,
+                genre: document.getElementById('post-genre').value,
+                tags: document.getElementById('post-tags').value,
                 content: quill.root.innerHTML
             };
             const result = await createPost(postData);
@@ -98,14 +72,119 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Profile Page Logic ---
+    const profileForm = document.getElementById('profile-form');
+    if (profileForm) {
+        const displayNameInput = document.getElementById('display-name');
+        const userEmailInput = document.getElementById('user-email');
+        const userBioInput = document.getElementById('user-bio');
+        const profilePicImg = document.getElementById('profile-pic');
+        const photoUploadButton = document.querySelector('#profile-pic + button');
+        const photoUploadInput = document.getElementById('photo-upload');
+        const formMessage = document.getElementById('form-message');
+
+        const loadProfileData = async (user) => {
+            if (!user) return;
+            const result = await getUserProfile(user.uid);
+            if (result.success) {
+                const profile = result.profile;
+                displayNameInput.value = profile.displayName || '';
+                userEmailInput.value = profile.email || '';
+                userBioInput.value = profile.bio || '';
+                if (profile.photoURL) {
+                    profilePicImg.src = profile.photoURL;
+                }
+            }
+        };
+
+        if (photoUploadButton) {
+            photoUploadButton.addEventListener('click', () => photoUploadInput.click());
+        }
+
+        if (photoUploadInput) {
+            photoUploadInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                const user = auth.currentUser;
+                if (file && user) {
+                    formMessage.textContent = 'Uploading...';
+                    const uploadResult = await uploadProfilePicture(user.uid, file);
+                    if (uploadResult.success) {
+                        await updateUserProfile(user.uid, { photoURL: uploadResult.url });
+                        profilePicImg.src = uploadResult.url;
+                        formMessage.textContent = 'Photo updated!';
+                    } else {
+                        formMessage.textContent = uploadResult.error;
+                    }
+                }
+            });
+        }
+
+        profileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = auth.currentUser;
+            if (user) {
+                formMessage.textContent = 'Saving...';
+                const profileData = {
+                    displayName: displayNameInput.value,
+                    bio: userBioInput.value
+                };
+                const result = await updateUserProfile(user.uid, profileData);
+                if (result.success) {
+                    formMessage.textContent = 'Profile saved successfully!';
+                } else {
+                    formMessage.textContent = result.error;
+                }
+            }
+        });
+
+        onAuthStateChange(user => {
+            if (user) {
+                loadProfileData(user);
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+    }
+
     // --- Homepage Logic ---
     const recentPostsGrid = document.getElementById('recent-posts-grid');
     if (recentPostsGrid) {
+        // Function to display the featured post
+        const displayFeaturedPost = async () => {
+            const result = await getFeaturedPost();
+            if (result.success) {
+                const post = result.post;
+                const featuredPostContainer = document.getElementById('featured-post');
+                if (featuredPostContainer) {
+                    featuredPostContainer.innerHTML = `
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden lg:flex">
+                            <div class="lg:w-1/2">
+                                <a href="post.html?id=${post.id}">
+                                    <img class="h-64 lg:h-full w-full object-cover" src="${post.photoUrl || 'https://placehold.co/800x600/002347/FFFFFF?text=Campus+View'}" alt="${post.title}">
+                                </a>
+                            </div>
+                            <div class="p-8 lg:p-12 lg:w-1/2 flex flex-col justify-center">
+                                <p class="text-sm text-blue-500 font-semibold">Featured Article</p>
+                                <a href="post.html?id=${post.id}"><h2 class="text-3xl font-bold mt-2 mb-4 hover:text-blue-600">${post.title}</h2></a>
+                                <p class="text-gray-600 mb-6">${post.description || ''}</p>
+                                <div class="flex items-center">
+                                    <p class="font-semibold">${post.authorName}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        };
+
+        // Function to display regular approved posts
         const displayApprovedPosts = async () => {
             const result = await getApprovedPosts();
+            recentPostsGrid.innerHTML = '';
             if (result.success && result.posts.length > 0) {
-                recentPostsGrid.innerHTML = ''; // Clear placeholders
                 result.posts.forEach(post => {
+                    if (post.isFeatured) return; // Don't show the featured post again in the recent list
+
                     const postCard = document.createElement('div');
                     postCard.className = 'bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300';
                     const postDate = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : 'N/A';
@@ -126,6 +205,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 recentPostsGrid.innerHTML = '<p class="text-gray-500">No posts have been approved yet. Check back soon!</p>';
             }
         };
+
+        // Call both functions to populate the homepage
+        displayFeaturedPost();
         displayApprovedPosts();
     }
 
@@ -134,37 +216,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const displaySinglePost = async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const postId = urlParams.get('id');
-
             if (!postId) {
                 document.getElementById('post-title').textContent = 'Post not found!';
-                document.getElementById('post-content').innerHTML = '<p>No post ID was provided in the URL.</p>';
                 return;
             }
-
             const result = await getPostById(postId);
-
             if (result.success) {
                 const post = result.post;
-                document.title = `${post.title} - GIKI Chronicles`; // Update browser tab title
+                document.title = `${post.title} - GIKI Chronicles`;
                 document.getElementById('post-title').textContent = post.title;
                 const postDate = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : 'N/A';
                 document.getElementById('post-meta').textContent = `Posted by ${post.authorName} on ${postDate}`;
                 if (post.photoUrl) {
                     document.getElementById('post-image').src = post.photoUrl;
-                    document.getElementById('post-image').alt = post.title;
                 } else {
                     document.getElementById('post-image').style.display = 'none';
                 }
                 document.getElementById('post-content').innerHTML = post.content;
             } else {
                 document.getElementById('post-title').textContent = 'Error';
-                document.getElementById('post-content').innerHTML = `<p>${result.error}</p>`;
             }
         };
         displaySinglePost();
     }
 
-    // --- Dynamic Navigation Bar Logic ---
+    // --- Dynamic Navigation Bar & Logout Logic ---
     onAuthStateChange(user => {
         const userNav = document.getElementById('user-nav');
         const guestNav = document.getElementById('guest-nav');
@@ -177,7 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Logout Button Logic ---
     const logoutButton = document.getElementById('logout-button');
     if (logoutButton) {
         logoutButton.addEventListener('click', async () => {

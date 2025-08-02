@@ -56,16 +56,12 @@
             </a>
             <div class="hidden md:flex items-center space-x-6">
                 <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a>
-
-                <!-- GUEST NAVIGATION: Should ideally not be seen here, but good for fallback -->
                 <div id="guest-nav" class="hidden items-center space-x-6">
                     <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
                     <a href="signup.html"
                         class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">Sign
                         Up</a>
                 </div>
-
-                <!-- USER NAVIGATION: Shown when the user is logged in -->
                 <div id="user-nav" class="flex items-center space-x-6">
                     <a href="write.html" class="font-semibold text-blue-600 transition duration-300">Write a Post</a>
                     <a href="profile.html" class="text-gray-600 hover:text-blue-600 transition duration-300">My
@@ -96,7 +92,7 @@
 
                     <div class="bg-white rounded-xl shadow-lg">
                         <div id="editor-container">
-                            <!-- Quill editor will be initialized here -->
+                            <!-- Quill editor will be initialized here by app.js -->
                         </div>
                     </div>
                 </div>
@@ -179,24 +175,10 @@
     <script src="posts.js"></script>
     <script src="app.js"></script>
 
-    <!-- Initialize Quill Editor -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const quill = new Quill('#editor-container', {
-                theme: 'snow',
-                placeholder: 'Craft your story here...',
-                modules: {
-                    toolbar: [
-                        [{ 'header': [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline'],
-                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                        ['link', 'image'],
-                        ['clean']
-                    ]
-                }
-            });
-        });
-    </script>
+    <!-- 
+        REMOVED the redundant Quill initialization script from here.
+        app.js now handles this correctly.
+    -->
 </body>
 
 </html>

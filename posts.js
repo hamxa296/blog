@@ -6,32 +6,21 @@
 
 /*
     FIRESTORE DATABASE STRUCTURE for the 'posts' collection:
-
-    Each document in the 'posts' collection will represent a single blog post
-    and will have the following fields:
-
-    - title (string): The title of the blog post.
-    - content (string): The main body of the post (HTML from the Quill editor).
-    - description (string): A short, catchy description for post previews.
-    - photoUrl (string): The URL for the post's featured image.
-    - authorId (string): The unique ID (uid) of the user who wrote the post.
-    - authorName (string): The display name or email of the author.
-    - createdAt (timestamp): The date and time the post was created.
-    - status (string): The current state of the post ("pending", "approved", "rejected").
-    - genre (string): A category for the post, like "Engineering", "Campus Life", etc.
-    - tags (array): An array of strings, e.g., ["AI", "GIKI", "Projects"].
+    - title (string)
+    - content (string)
+    - description (string)
+    - photoUrl (string)
+    - authorId (string)
+    - authorName (string)
+    - createdAt (timestamp)
+    - status (string): "pending", "approved", "rejected"
+    - genre (string)
+    - tags (array)
+    - isFeatured (boolean, optional): Set to true for the featured post.
 */
 
-/**
- * Creates a new blog post document in Firestore.
- * This function automatically adds the author's ID, name, a creation timestamp,
- * and sets the initial status to "pending".
- * @param {object} postData - An object containing all the post's data from the form.
- * @returns {Promise<object>} A promise that resolves with the new post's ID on success, or an error object on failure.
- */
 async function createPost(postData) {
     const user = auth.currentUser;
-
     if (!user) {
         console.error("No user is logged in.");
         return { success: false, error: "You must be logged in to create a post." };
@@ -39,7 +28,6 @@ async function createPost(postData) {
 
     try {
         // Convert the comma-separated tags string into an array of strings.
-        // This trims whitespace from each tag and removes any empty tags.
         const tagsArray = postData.tags ? postData.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
 
         const newPost = {
@@ -52,7 +40,8 @@ async function createPost(postData) {
             authorId: user.uid,
             authorName: user.displayName || user.email,
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            status: "pending"
+            status: "pending",
+            isFeatured: false // Default to not featured
         };
 
         const docRef = await db.collection("posts").add(newPost);
@@ -67,7 +56,6 @@ async function createPost(postData) {
 
 /**
  * Fetches all blog posts from Firestore that have been approved.
- * @returns {Promise<object>} A promise that resolves with an array of approved post objects, or an error object on failure.
  */
 async function getApprovedPosts() {
     try {
@@ -96,8 +84,6 @@ async function getApprovedPosts() {
 
 /**
  * Fetches a single blog post from Firestore using its document ID.
- * @param {string} postId - The unique ID of the post to fetch.
- * @returns {Promise<object>} A promise that resolves with the post object on success, or an error object if not found.
  */
 async function getPostById(postId) {
     try {
@@ -112,6 +98,31 @@ async function getPostById(postId) {
         }
     } catch (error) {
         console.error("Error fetching post by ID:", error);
+        return { success: false, error: "Failed to fetch post." };
+    }
+}
+
+/**
+ * Fetches the single post marked as featured.
+ * @returns {Promise<object>} A promise that resolves with the featured post object.
+ */
+async function getFeaturedPost() {
+    try {
+        const snapshot = await db.collection("posts")
+            .where("isFeatured", "==", true)
+            .where("status", "==", "approved")
+            .limit(1)
+            .get();
+
+        if (snapshot.empty) {
+            return { success: false, error: "No featured post found." };
+        }
+
+        const post = { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
+        return { success: true, post: post };
+
+    } catch (error) {
+        console.error("Error fetching featured post:", error);
         return { success: false, error: "Failed to fetch post." };
     }
 }
