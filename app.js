@@ -80,32 +80,20 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const formMessage = document.getElementById('form-message');
             formMessage.textContent = 'Submitting...';
-            formMessage.classList.remove('text-red-500');
-            formMessage.classList.add('text-blue-500');
-
-            const formData = new FormData(createPostForm);
             const postData = {
-                title: formData.get('title'),
-                description: formData.get('description'),
-                photoUrl: formData.get('photoUrl'),
-                genre: formData.get('genre'),
-                tags: formData.get('tags'),
+                title: createPostForm.title.value,
+                description: createPostForm.description.value,
+                photoUrl: createPostForm.photoUrl.value,
+                genre: createPostForm.genre.value,
+                tags: createPostForm.tags.value,
                 content: quill.root.innerHTML
             };
-
             const result = await createPost(postData);
-
             if (result.success) {
-                formMessage.textContent = 'Post submitted successfully for review!';
-                formMessage.classList.remove('text-blue-500');
-                formMessage.classList.add('text-green-500');
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 2000);
+                formMessage.textContent = 'Post submitted successfully!';
+                setTimeout(() => { window.location.href = 'index.html'; }, 2000);
             } else {
                 formMessage.textContent = result.error;
-                formMessage.classList.remove('text-blue-500');
-                formMessage.classList.add('text-red-500');
             }
         });
     }
@@ -116,20 +104,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const displayApprovedPosts = async () => {
             const result = await getApprovedPosts();
             if (result.success && result.posts.length > 0) {
-                recentPostsGrid.innerHTML = ''; // Clear the placeholder posts
+                recentPostsGrid.innerHTML = ''; // Clear placeholders
                 result.posts.forEach(post => {
                     const postCard = document.createElement('div');
                     postCard.className = 'bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300';
-
                     const postDate = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : 'N/A';
-
                     postCard.innerHTML = `
-                        <img class="h-48 w-full object-cover" src="${post.photoUrl || 'https://placehold.co/600x400/E2E8F0/4A5568?text=GIKI+Blog'}" alt="${post.title}">
+                        <a href="post.html?id=${post.id}">
+                            <img class="h-48 w-full object-cover" src="${post.photoUrl || 'https://placehold.co/600x400/E2E8F0/4A5568?text=GIKI+Blog'}" alt="${post.title}">
+                        </a>
                         <div class="p-6">
                             <p class="text-sm text-gray-500 mb-2">${postDate}</p>
                             <h4 class="text-xl font-semibold mb-3">${post.title}</h4>
                             <p class="text-gray-600 text-sm mb-4">${post.description || ''}</p>
-                            <a href="#" class="font-semibold text-blue-600 hover:underline">Read More &rarr;</a>
+                            <a href="post.html?id=${post.id}" class="font-semibold text-blue-600 hover:underline">Read More &rarr;</a>
                         </div>
                     `;
                     recentPostsGrid.appendChild(postCard);
@@ -141,17 +129,49 @@ document.addEventListener('DOMContentLoaded', () => {
         displayApprovedPosts();
     }
 
+    // --- Single Post Page Logic ---
+    if (document.getElementById('post-content')) {
+        const displaySinglePost = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('id');
+
+            if (!postId) {
+                document.getElementById('post-title').textContent = 'Post not found!';
+                document.getElementById('post-content').innerHTML = '<p>No post ID was provided in the URL.</p>';
+                return;
+            }
+
+            const result = await getPostById(postId);
+
+            if (result.success) {
+                const post = result.post;
+                document.title = `${post.title} - GIKI Chronicles`; // Update browser tab title
+                document.getElementById('post-title').textContent = post.title;
+                const postDate = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : 'N/A';
+                document.getElementById('post-meta').textContent = `Posted by ${post.authorName} on ${postDate}`;
+                if (post.photoUrl) {
+                    document.getElementById('post-image').src = post.photoUrl;
+                    document.getElementById('post-image').alt = post.title;
+                } else {
+                    document.getElementById('post-image').style.display = 'none';
+                }
+                document.getElementById('post-content').innerHTML = post.content;
+            } else {
+                document.getElementById('post-title').textContent = 'Error';
+                document.getElementById('post-content').innerHTML = `<p>${result.error}</p>`;
+            }
+        };
+        displaySinglePost();
+    }
+
     // --- Dynamic Navigation Bar Logic ---
     onAuthStateChange(user => {
         const userNav = document.getElementById('user-nav');
         const guestNav = document.getElementById('guest-nav');
-
         if (user) {
-            console.log('User is logged in:', user.email);
             if (userNav) userNav.style.display = 'flex';
             if (guestNav) guestNav.style.display = 'none';
         } else {
-            console.log('User is logged out.');
             if (userNav) userNav.style.display = 'none';
             if (guestNav) guestNav.style.display = 'flex';
         }

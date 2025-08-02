@@ -93,3 +93,25 @@ async function getApprovedPosts() {
         return { success: false, error: "Failed to fetch posts." };
     }
 }
+
+/**
+ * Fetches a single blog post from Firestore using its document ID.
+ * @param {string} postId - The unique ID of the post to fetch.
+ * @returns {Promise<object>} A promise that resolves with the post object on success, or an error object if not found.
+ */
+async function getPostById(postId) {
+    try {
+        const docRef = db.collection("posts").doc(postId);
+        const docSnap = await docRef.get();
+
+        if (docSnap.exists) {
+            return { success: true, post: { id: docSnap.id, ...docSnap.data() } };
+        } else {
+            console.error("No such document!");
+            return { success: false, error: "Post not found." };
+        }
+    } catch (error) {
+        console.error("Error fetching post by ID:", error);
+        return { success: false, error: "Failed to fetch post." };
+    }
+}
