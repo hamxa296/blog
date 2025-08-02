@@ -154,10 +154,10 @@ async function getPostsByAuthor(authorId) {
  */
 async function getPostForEditing(postId) {
     console.log("getPostForEditing called with postId:", postId); // DEBUG
-    
+
     const user = auth.currentUser;
     console.log("Current user in getPostForEditing:", user ? user.uid : "Not logged in"); // DEBUG
-    
+
     if (!user) return { success: false, error: "Authentication required." };
 
     try {
@@ -173,7 +173,7 @@ async function getPostForEditing(postId) {
         console.log("Post data retrieved:", post); // DEBUG
         console.log("Post authorId:", post.authorId); // DEBUG
         console.log("Current user UID:", user.uid); // DEBUG
-        
+
         // Security check: ensure the person editing is the original author.
         if (post.authorId !== user.uid) {
             console.log("Authorization failed - user not the author"); // DEBUG
@@ -218,5 +218,39 @@ async function updatePost(postId, postData) {
     } catch (error) {
         console.error("Error updating post:", error);
         return { success: false, error: "Failed to update post." };
+    }
+}
+async function savePostAsDraft(postData, postId = null) {
+    const user = auth.currentUser;
+    if (!user) return { success: false, error: "Authentication required." };
+
+    try {
+        const tagsArray = postData.tags ? postData.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+        const draftData = {
+            title: postData.title,
+            content: postData.content,
+            description: postData.description || "",
+            photoUrl: postData.photoUrl || "",
+            genre: postData.genre || "General",
+            tags: tagsArray,
+            authorId: user.uid,
+            authorName: user.displayName || user.email,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            status: "draft" // Set status to draft
+        };
+
+        if (postId) {
+            // Update the existing draft
+            const docRef = db.collection("posts").doc(postId);
+            await docRef.update(draftData);
+            return { success: true, postId: postId };
+        } else {
+            // Create a new draft
+            const docRef = await db.collection("posts").add(draftData);
+            return { success: true, postId: docRef.id };
+        }
+    } catch (error) {
+        console.error("Error saving draft:", error);
+        return { success: false, error: "Failed to save draft." };
     }
 }

@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modules: { toolbar: [[{ 'header': [1, 2, 3, false] }], ['bold', 'italic', 'underline'], [{ 'list': 'ordered' }, { 'list': 'bullet' }], ['link', 'image'], ['clean']] }
         });
         console.log("Quill editor initialized successfully"); // DEBUG
-        
+
         // Ensure Quill is fully ready
         setTimeout(() => {
             if (quill && quill.root) {
@@ -83,15 +83,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('post-genre').disabled = true;
                 document.getElementById('post-tags').disabled = true;
                 document.getElementById('submit-post-button').disabled = true;
-                
+
                 // Add loading placeholder to title
                 document.getElementById('post-title').value = 'Loading post...';
                 document.getElementById('post-title').classList.add('opacity-50');
-                
+
                 // Add loading placeholder to description
                 document.getElementById('post-description').value = 'Loading post content...';
                 document.getElementById('post-description').classList.add('opacity-50');
-                
+
                 // Show loading message
                 document.getElementById('form-message').textContent = 'Loading your post...';
                 document.getElementById('form-message').className = 'text-center h-5 text-blue-600';
@@ -106,11 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('post-genre').disabled = false;
                 document.getElementById('post-tags').disabled = false;
                 document.getElementById('submit-post-button').disabled = false;
-                
+
                 // Remove loading placeholders and styling
                 document.getElementById('post-title').classList.remove('opacity-50');
                 document.getElementById('post-description').classList.remove('opacity-50');
-                
+
                 // Clear loading message
                 document.getElementById('form-message').textContent = '';
                 document.getElementById('form-message').className = 'text-center h-5';
@@ -119,10 +119,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // Load the existing post data into the form
             const loadPostForEditing = async () => {
                 console.log("Loading post data for editing..."); // DEBUG
-                
+
                 // Show loading state
                 showLoadingState();
-                
+
                 try {
                     const result = await getPostForEditing(postIdToEdit);
                     console.log("Result from getPostForEditing:", result); // DEBUG
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (result.success) {
                         const post = result.post;
                         console.log("Post data to load:", post); // DEBUG
-                        
+
                         // Check if Quill is initialized
                         if (!quill || !quill.root) {
                             console.error("Quill editor is not initialized!"); // DEBUG
@@ -138,21 +138,21 @@ document.addEventListener('DOMContentLoaded', () => {
                             document.getElementById('form-message').textContent = 'Editor not ready. Please refresh the page.';
                             return;
                         }
-                        
+
                         // Populate form fields
                         document.getElementById('post-title').value = post.title;
                         document.getElementById('post-description').value = post.description || '';
                         document.getElementById('post-photo').value = post.photoUrl || '';
                         document.getElementById('post-genre').value = post.genre || 'General';
                         document.getElementById('post-tags').value = post.tags ? post.tags.join(', ') : '';
-                        
+
                         // Set Quill content with a small delay to ensure editor is ready
                         console.log("Setting Quill content:", post.content); // DEBUG
                         setTimeout(() => {
                             if (quill && quill.root) {
                                 quill.root.innerHTML = post.content;
                                 console.log("Quill content set successfully"); // DEBUG
-                                
+
                                 // Hide loading state after everything is loaded
                                 hideLoadingState();
                             } else {
@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 document.getElementById('form-message').textContent = 'Editor not ready. Please refresh the page.';
                             }
                         }, 100); // Small delay to ensure Quill is fully ready
-                        
+
                     } else {
                         console.error("Failed to load post:", result.error); // DEBUG
                         hideLoadingState();
@@ -173,18 +173,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('form-message').textContent = 'Error loading post data.';
                 }
             };
-            
+
             // Wait for authentication state to be established before loading post data
             const waitForAuthAndLoad = () => {
                 const currentUser = auth.currentUser;
                 console.log("Checking auth state - Current user:", currentUser ? currentUser.uid : "Not logged in"); // DEBUG
-                
+
                 if (currentUser) {
                     console.log("User is authenticated, loading post data..."); // DEBUG
-                    
+
                     // Show initial loading state immediately
                     showLoadingState();
-                    
+
                     // Add a small delay before loading to ensure Quill is initialized
                     setTimeout(() => {
                         loadPostForEditing();
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(waitForAuthAndLoad, 100);
                 }
             };
-            
+
             // Start the authentication check process
             waitForAuthAndLoad();
         } else {
@@ -357,6 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         onAuthStateChange(user => {
+
             if (user) {
                 loadProfileData(user);
                 loadUserPosts(user);
@@ -477,4 +478,69 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'index.html';
         });
     }
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formMessage = document.getElementById('form-message');
+            formMessage.textContent = 'Sending...';
+            formMessage.classList.remove('text-red-500', 'text-green-500');
+
+            const submissionData = {
+                name: contactForm.name.value,
+                email: contactForm.email.value,
+                subject: contactForm.subject.value,
+                message: contactForm.message.value
+            };
+
+            const result = await saveContactSubmission(submissionData);
+
+            if (result.success) {
+                formMessage.textContent = 'Message sent successfully! We will get back to you soon.';
+                formMessage.classList.add('text-green-500');
+                contactForm.reset();
+            } else {
+                formMessage.textContent = result.error;
+                formMessage.classList.add('text-red-500');
+            }
+        });
+    }
 });
+onAuthStateChange(user => {
+    const userNav = document.getElementById('user-nav');
+    const guestNav = document.getElementById('guest-nav');
+    const mobileUserNav = document.getElementById('mobile-user-nav');
+    const mobileGuestNav = document.getElementById('mobile-guest-nav');
+
+    if (user) {
+        // User is signed in.
+        if (userNav) userNav.style.display = 'flex';
+        if (guestNav) guestNav.style.display = 'none';
+        if (mobileUserNav) mobileUserNav.style.display = 'block';
+        if (mobileGuestNav) mobileGuestNav.style.display = 'none';
+    } else {
+        // User is signed out.
+        if (userNav) userNav.style.display = 'none';
+        if (guestNav) guestNav.style.display = 'flex';
+        if (mobileUserNav) mobileUserNav.style.display = 'none';
+        if (mobileGuestNav) mobileGuestNav.style.display = 'block';
+    }
+
+});
+
+// --- Logout Button Logic ---
+const logoutButton = document.getElementById('logout-button');
+if (logoutButton) {
+    logoutButton.addEventListener('click', async () => {
+        await logoutUser();
+        window.location.href = 'index.html';
+    });
+}
+
+const mobileLogoutButton = document.getElementById('mobile-logout-button');
+if (mobileLogoutButton) {
+    mobileLogoutButton.addEventListener('click', async () => {
+        await logoutUser();
+        window.location.href = 'index.html';
+    });
+}

@@ -28,6 +28,7 @@
       </a>
       <div class="hidden md:flex items-center space-x-6">
         <a href="index.html" id="home-tab" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a>
+        <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a>
         <a href="#" id="events-tab" class="text-gray-600 hover:text-blue-600 transition duration-300">Events</a>
 
         <!-- GUEST NAVIGATION: Shown when the user is logged out -->
@@ -53,13 +54,26 @@
     </nav>
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-      <a href="#" id="mobile-home-tab" class="block py-2 text-gray-600 hover:text-blue-600">Home</a>
+      <a href="index.html" class="block py-2 text-gray-600 hover:text-blue-600">Home</a>
+      <a href="contact.html" class="block py-2 text-gray-600 hover:text-blue-600">Contact</a>
       <a href="#" id="mobile-events-tab" class="block py-2 text-gray-600 hover:text-blue-600">Events</a>
-      <a href="#" class="block py-2 text-gray-600 hover:text-blue-600">Categories</a>
-      <a href="#" class="block py-2 text-gray-600 hover:text-blue-600">About</a>
-      <a href="#" class="block py-2 text-gray-600 hover:text-blue-600">Contact</a>
-      <a href="#" class="block mt-2 bg-blue-600 text-white px-4 py-2 rounded-full text-center hover:bg-blue-700">Write a
-        Post</a>
+
+      <hr class="my-2">
+
+      <!-- GUEST NAVIGATION (MOBILE): Shown when the user is logged out -->
+      <div id="mobile-guest-nav">
+        <a href="login.html" class="block py-2 text-gray-600 hover:text-blue-600">Login</a>
+        <a href="signup.html"
+          class="block mt-2 bg-blue-600 text-white px-4 py-2 rounded-full text-center hover:bg-blue-700">Sign Up</a>
+      </div>
+
+      <!-- USER NAVIGATION (MOBILE): Shown when the user is logged in -->
+      <div id="mobile-user-nav" class="hidden">
+        <a href="write.html" class="block py-2 text-gray-600 hover:text-blue-600">Write a Post</a>
+        <a href="profile.html" class="block py-2 text-gray-600 hover:text-blue-600">My Profile</a>
+        <button id="mobile-logout-button"
+          class="w-full mt-2 bg-red-500 text-white px-4 py-2 rounded-full text-center hover:bg-red-600">Logout</button>
+      </div>
     </div>
   </header>
 
@@ -78,7 +92,7 @@
       <!-- Featured Post -->
       <section class="mb-16">
         <div id="featured-post" class="bg-white rounded-xl shadow-lg overflow-hidden lg:flex">
-         <p class="text-gray-500">Loading posts...</p> 
+          <p class="text-gray-500">Loading posts...</p>
         </div>
       </section>
 

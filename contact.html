@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - GIKI Chronicles</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-gray-800">
+                GIKI<span class="text-blue-600">Chronicles</span>
+            </a>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a>
+                <a href="contact.html" class="font-semibold text-blue-600 transition duration-300">Contact</a>
+                <div id="guest-nav" class="flex items-center space-x-6">
+                    <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
+                    <a href="signup.html"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">Sign
+                        Up</a>
+                </div>
+                <div id="user-nav" class="hidden items-center space-x-6">
+                    <a href="write.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Write a
+                        Post</a>
+                    <a href="profile.html" class="text-gray-600 hover:text-blue-600 transition duration-300">My
+                        Profile</a>
+                    <button id="logout-button"
+                        class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300">Logout</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-12">
+        <div class="max-w-2xl mx-auto">
+            <div class="text-center mb-12">
+                <h1 class="text-5xl font-extrabold tracking-tight">Get in Touch</h1>
+                <p class="mt-4 text-lg text-gray-500">
+                    Have a suggestion, a story idea, or want to be featured? We'd love to hear from you.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <form id="contact-form">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-gray-700 font-semibold mb-2">Full Name</label>
+                            <input type="text" id="name" name="name"
+                                class="w-full p-3 border border-gray-300 rounded-lg" required>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-gray-700 font-semibold mb-2">Email Address</label>
+                            <input type="email" id="email" name="email"
+                                class="w-full p-3 border border-gray-300 rounded-lg" required>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <label for="subject" class="block text-gray-700 font-semibold mb-2">Subject</label>
+                        <select id="subject" name="subject" class="w-full p-3 border border-gray-300 rounded-lg">
+                            <option>General Suggestion</option>
+                            <option>Apply to be a Featured Post</option>
+                            <option>Report an Issue</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="mt-6">
+                        <label for="message" class="block text-gray-700 font-semibold mb-2">Message</label>
+                        <textarea id="message" name="message" rows="5"
+                            class="w-full p-3 border border-gray-300 rounded-lg" required></textarea>
+                    </div>
+                    <div id="form-message" class="text-center my-4 h-5"></div>
+                    <button type="submit"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full transition duration-300 text-lg">
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Your custom scripts -->
+    <script src="firebase-init.js"></script>
+    <script src="auth.js"></script>
+    <script src="submissions.js"></script>
+    <script src="app.js"></script>
+
+</body>
+
+</html>
