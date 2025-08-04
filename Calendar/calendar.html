@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GikiCalendar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="calendar_styles.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo"><span class="logo-giki">Giki</span>Calendar</div>
+        <nav class="nav">
+            <a id="nav-home" href="#" class="nav-link active">Home</a>
+            <a id="nav-events" href="#" class="nav-link">Events</a>
+            <a id="nav-map" href="#" class="nav-link">Map</a>
+            <a id="nav-submit" href="#" class="nav-link">Submit</a>
+        </nav>
+        <button class="sign-in-btn">
+            Sign In with Google
+            <svg class="arrow" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 4L10.59 5.41L16.17 11H4V13H16.17L10.59 18.59L12 20L20 12L12 4Z" fill="white" />
+            </svg>
+        </button>
+    </header>
+
+    <main class="main-content">
+        <!-- Calendar View -->
+        <div id="calendar-view">
+            <div class="hero-section">
+                <h1 class="hero-title">Welcome to GikiCalendar</h1>
+                <p class="hero-subtitle">Discover what's happening at the university. Your hub for all club and society
+                    events.</p>
+            </div>
+
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <button id="left-arrow" class="nav-arrow left-arrow">&lt;</button>
+                    <div id="month-year" class="month-year"></div>
+                    <button id="right-arrow" class="nav-arrow right-arrow">&gt;</button>
+                </div>
+                <div id="calendar-grid" class="calendar-grid">
+                    <div class="day-of-week">Su</div>
+                    <div class="day-of-week">Mo</div>
+                    <div class="day-of-week">Tu</div>
+                    <div class="day-of-week">We</div>
+                    <div class="day-of-week">Th</div>
+                    <div class="day-of-week">Fr</div>
+                    <div class="day-of-week">Sa</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Event Form View -->
+        <div id="submit-event-view" class="submit-event-section">
+            <div class="hero-section">
+                <h1 class="hero-title">Submit a New Event</h1>
+                <p class="hero-subtitle">Fill out the form below to add your club or society event to the calendar.</p>
+            </div>
+            <div class="submit-event-form">
+                <form id="event-form">
+                    <div class="form-group">
+                        <label for="eventName">Event Name</label>
+                        <input type="text" id="eventName" name="eventName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventDate">Event Date</label>
+                        <input type="date" id="eventDate" name="eventDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventTime">Event Time (Optional)</label>
+                        <input type="time" id="eventTime" name="eventTime">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventType">Event Type</label>
+                        <select id="eventType" name="eventType" required>
+                            <option value="">Select a type...</option>
+                            <option value="Tech">Tech</option>
+                            <option value="Cultural">Cultural</option>
+                            <option value="Academic">Academic</option>
+                            <option value="Sports">Sports</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventLocation">Location</label>
+                        <input type="text" id="eventLocation" name="eventLocation" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventDescription">Description</label>
+                        <textarea id="eventDescription" name="eventDescription" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-form-btn">Submit Event</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Events List View -->
+        <div id="events-view" class="events-section">
+            <div class="hero-section">
+                <h1 class="hero-title">All Giki Events</h1>
+                <p class="hero-subtitle">A list of all upcoming and past events at the university.</p>
+            </div>
+
+            <h2 class="event-category-title">Upcoming Events</h2>
+            <div id="upcoming-events" class="events-container">
+                <!-- Upcoming events will be rendered here -->
+            </div>
+
+            <h2 class="event-category-title">Past Events</h2>
+            <div id="past-events" class="events-container">
+                <!-- Past events will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Map View -->
+        <div id="map-view" class="map-section">
+            <div class="hero-section">
+                <h1 class="hero-title">Campus Map</h1>
+                <p class="hero-subtitle">A detailed map of the GIKI campus.</p>
+            </div>
+            <img src="map.png" alt="Campus Map of GIKI" class="map-image">
+        </div>
+
+    </main>
+
+    <div class="watermark-container">
+        <svg class="watermark" width="20" height="20" viewBox="0 0 20 20" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM11.14 15.65H8.86V10.22H6.58V8.71H13.42V10.22H11.14V15.65ZM10 4.58C9.53 4.58 9.17 4.95 9.17 5.42C9.17 5.89 9.53 6.25 10 6.25C10.47 6.25 10.83 5.89 10.83 5.42C10.83 4.95 10.47 4.58 10 4.58Z"
+                fill="white" />
+        </svg>
+    </div>
+
+    <!-- Event Pop-up Modal -->
+    <div id="event-popup" class="event-popup hidden">
+        <div class="popup-content">
+            <button class="close-btn">&times;</button>
+            <div id="event-tags" class="popup-tags"></div>
+            <h3 id="event-name" class="popup-title"></h3>
+            <p id="event-date" class="popup-date"></p>
+            <p id="event-description" class="popup-description"></p>
+            <div class="popup-buttons">
+                <!-- Dropdown for Calendar Links -->
+                <div class="calendar-dropdown">
+                    <button id="calendar-dropdown-btn" class="add-to-calendar-btn">Add to Calendar</button>
+                    <div id="calendar-dropdown-content" class="calendar-dropdown-content hidden">
+                        <a id="google-link" href="#" target="_blank">Google Calendar</a>
+                        <a id="apple-link" href="#">Apple Calendar</a>
+                        <a id="outlook-link" href="#" target="_blank">Outlook Calendar</a>
+                    </div>
+                </div>
+                <button id="delete-event-btn" class="delete-event-btn">Delete Event</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Custom Notification System -->
+    <div id="notification-container" class="notification-container">
+        <div id="notification" class="notification">
+            <div class="notification-icon">
+                <svg id="notification-icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Success icon (checkmark) -->
+                    <path id="success-icon" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="currentColor"/>
+                    <!-- Error icon (X) -->
+                    <path id="error-icon" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div class="notification-content">
+                <div id="notification-title" class="notification-title"></div>
+                <div id="notification-message" class="notification-message"></div>
+            </div>
+            <button id="notification-close" class="notification-close">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" fill="currentColor"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Custom Delete Confirmation Modal -->
+    <div id="delete-confirm-modal" class="delete-confirm-modal hidden">
+        <div class="delete-confirm-content">
+            <div class="delete-confirm-header">
+                <div class="delete-confirm-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#F44336"/>
+                    </svg>
+                </div>
+                <h3 class="delete-confirm-title">Delete Event</h3>
+                <p class="delete-confirm-message">Are you sure you want to delete this event? This action cannot be undone.</p>
+            </div>
+            <div class="delete-confirm-buttons">
+                <button id="delete-confirm-cancel" class="delete-confirm-btn cancel">Cancel</button>
+                <button id="delete-confirm-delete" class="delete-confirm-btn delete">Delete Event</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Your custom scripts -->
+    <script src="firebase-init.js"></script>
+    <script src="auth.js"></script>
+    <script src="calendar.js"></script>
+</body>
+
+</html>
