@@ -160,24 +160,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Event Listeners ---
     if (mobileMenuButton) mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
 
-    homeTab.addEventListener('click', (e) => { e.preventDefault(); switchPage('blog'); });
-    eventsTab.addEventListener('click', (e) => { e.preventDefault(); switchPage('events'); });
-    mobileHomeTab.addEventListener('click', (e) => { e.preventDefault(); switchPage('blog'); });
-    mobileEventsTab.addEventListener('click', (e) => { e.preventDefault(); switchPage('events'); });
+    if (homeTab) homeTab.addEventListener('click', (e) => { e.preventDefault(); switchPage('blog'); });
+    if (eventsTab) eventsTab.addEventListener('click', (e) => { e.preventDefault(); switchPage('events'); });
+    if (mobileHomeTab) mobileHomeTab.addEventListener('click', (e) => { e.preventDefault(); switchPage('blog'); });
+    if (mobileEventsTab) mobileEventsTab.addEventListener('click', (e) => { e.preventDefault(); switchPage('events'); });
 
     // Event Details Modal Listeners
-    modalClose.addEventListener('click', closeEventModal);
-    eventModal.addEventListener('click', (e) => { if (e.target === eventModal) closeEventModal(); });
-    editEventButton.addEventListener('click', () => openEditEventModal(currentOpenEvent));
-    deleteEventButton.addEventListener('click', openDeleteConfirmModal);
+    if (modalClose) modalClose.addEventListener('click', closeEventModal);
+    if (eventModal) eventModal.addEventListener('click', (e) => { if (e.target === eventModal) closeEventModal(); });
+    if (editEventButton) editEventButton.addEventListener('click', () => openEditEventModal(currentOpenEvent));
+    if (deleteEventButton) deleteEventButton.addEventListener('click', openDeleteConfirmModal);
 
 
     // Add Event Modal Listeners
-    addEventButton.addEventListener('click', openAddEventModal);
-    addEventModalClose.addEventListener('click', closeAddEventModal);
-    addEventModal.addEventListener('click', (e) => { if (e.target === addEventModal) closeAddEventModal(); });
+    if (addEventButton) addEventButton.addEventListener('click', openAddEventModal);
+    if (addEventModalClose) addEventModalClose.addEventListener('click', closeAddEventModal);
+    if (addEventModal) addEventModal.addEventListener('click', (e) => { if (e.target === addEventModal) closeAddEventModal(); });
 
-    addEventForm.addEventListener('submit', (e) => {
+    if (addEventForm) addEventForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const formData = new FormData(addEventForm);
         const newEvent = {
@@ -195,10 +195,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Edit Event Modal Listeners
-    editEventModalClose.addEventListener('click', closeEditEventModal);
-    editEventModal.addEventListener('click', (e) => { if (e.target === editEventModal) closeEditEventModal(); });
+    if (editEventModalClose) editEventModalClose.addEventListener('click', closeEditEventModal);
+    if (editEventModal) editEventModal.addEventListener('click', (e) => { if (e.target === editEventModal) closeEditEventModal(); });
 
-    editEventForm.addEventListener('submit', (e) => {
+    if (editEventForm) editEventForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const formData = new FormData(editEventForm);
         const updatedEvent = {
@@ -217,9 +217,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Delete Confirmation Modal Listeners
-    cancelDeleteButton.addEventListener('click', closeDeleteConfirmModal);
-    deleteConfirmModal.addEventListener('click', (e) => { if (e.target === deleteConfirmModal) closeDeleteConfirmModal(); });
-    confirmDeleteButton.addEventListener('click', () => {
+    if (cancelDeleteButton) cancelDeleteButton.addEventListener('click', closeDeleteConfirmModal);
+    if (deleteConfirmModal) deleteConfirmModal.addEventListener('click', (e) => { if (e.target === deleteConfirmModal) closeDeleteConfirmModal(); });
+    if (confirmDeleteButton) confirmDeleteButton.addEventListener('click', () => {
         if (calendarInstance && currentOpenEvent) {
             calendarInstance.deleteEvent(currentOpenEvent.id);
         }

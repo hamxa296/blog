@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Post - GIKI Chronicles</title>
+    <title>About Us - GIKI Chronicles</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,57 +17,11 @@
             font-family: 'Inter', sans-serif;
             background-color: #f8f9fa;
         }
-
-        /* Styles to make the post content look good */
-        .post-content h1,
-        .post-content h2,
-        .post-content h3 {
-            font-weight: 700;
-            margin-top: 1.5em;
-            margin-bottom: 0.5em;
-        }
-
-        .post-content h1 {
-            font-size: 2.25rem;
-        }
-
-        .post-content h2 {
-            font-size: 1.875rem;
-        }
-
-        .post-content h3 {
-            font-size: 1.5rem;
-        }
-
-        .post-content p {
-            line-height: 1.75;
-            margin-bottom: 1.25em;
-        }
-
-        .post-content a {
-            color: #2563eb;
-            text-decoration: underline;
-        }
-
-        .post-content ul,
-        .post-content ol {
-            margin-left: 1.5rem;
-            margin-bottom: 1.25em;
-        }
-
-        .post-content ul {
-            list-style-type: disc;
-        }
-
-        .post-content ol {
-            list-style-type: decimal;
-        }
     </style>
 </head>
 
 <body class="text-gray-800">
 
-    <!-- Header -->
     <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -76,18 +30,14 @@
             </a>
             <div class="hidden md:flex items-center space-x-6">
                 <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a>
-                <a href="about.html" class="text-gray-600 hover:text-blue-600 transition duration-300">About</a>
+                <a href="about.html" class="font-semibold text-blue-600 transition duration-300">About</a>
                 <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a>
-
-                <!-- GUEST NAVIGATION (DESKTOP) -->
                 <div id="guest-nav" class="flex items-center space-x-6">
                     <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
                     <a href="signup.html"
                         class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">Sign
                         Up</a>
                 </div>
-
-                <!-- USER NAVIGATION (DESKTOP) -->
                 <div id="user-nav" class="hidden items-center space-x-6">
                     <a href="write.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Write a
                         Post</a>
@@ -132,28 +82,59 @@
         </div>
     </header>
 
-    <!-- Main Post Content -->
+    <!-- Main Content -->
     <main class="container mx-auto px-4 py-12">
-        <article class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-10">
+        <div class="max-w-4xl mx-auto">
 
-            <!-- Post Title Placeholder -->
-            <h1 id="post-title" class="text-4xl md:text-5xl font-extrabold mb-4">Loading Post...</h1>
+            <!-- Hero Section -->
+            <section class="text-center mb-16">
+                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight">About GIKI Chronicles</h1>
+                <p class="mt-4 text-xl text-gray-500">
+                    The authentic voice of student life in the Valley.
+                </p>
+            </section>
 
-            <!-- Post Meta (Author/Date) Placeholder -->
-            <div id="post-meta" class="text-gray-500 mb-6">
-                <!-- e.g., Posted by Ayesha Khan on August 2, 2025 -->
-            </div>
+            <!-- Our Mission Section -->
+            <section class="bg-white rounded-xl shadow-lg p-8 md:p-10 mb-12">
+                <h2 class="text-3xl font-bold mb-4">Our Mission</h2>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    GIKI Chronicles is a student-run platform dedicated to capturing the diverse stories, groundbreaking
+                    projects, and unique experiences that define life at the Ghulam Ishaq Khan Institute. We aim to
+                    create a space where every student can share their voice, from late-night project struggles to the
+                    triumphs of campus events. Our mission is to build a living archive of our collective journey,
+                    fostering a stronger, more connected community through the power of storytelling.
+                </p>
+            </section>
 
-            <!-- Featured Image Placeholder -->
-            <img id="post-image" src="https://placehold.co/1200x600/E2E8F0/4A5568?text=Loading+Image"
-                alt="Featured post image" class="w-full h-auto rounded-lg mb-8">
+            <!-- The Team Section -->
+            <section>
+                <h2 class="text-3xl font-bold text-center mb-10">Meet the Team</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Team Member 1 -->
+                    <div class="text-center">
+                        <img class="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
+                            src="https://placehold.co/200x200/E2E8F0/4A5568?text=A" alt="Team Member 1">
+                        <h3 class="text-xl font-bold">Person A</h3>
+                        <p class="text-gray-500">Frontend & UI/UX Lead</p>
+                    </div>
+                    <!-- Team Member 2 -->
+                    <div class="text-center">
+                        <img class="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
+                            src="https://placehold.co/200x200/E2E8F0/4A5568?text=B" alt="Team Member 2">
+                        <h3 class="text-xl font-bold">Person B</h3>
+                        <p class="text-gray-500">Backend & Firebase Lead</p>
+                    </div>
+                    <!-- Team Member 3 -->
+                    <div class="text-center">
+                        <img class="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
+                            src="https://placehold.co/200x200/E2E8F0/4A5568?text=C" alt="Team Member 3">
+                        <h3 class="text-xl font-bold">Person C</h3>
+                        <p class="text-gray-500">Features & Integration Lead</p>
+                    </div>
+                </div>
+            </section>
 
-            <!-- Post Content Placeholder -->
-            <div id="post-content" class="prose prose-lg max-w-none">
-                <p>Please wait while we fetch the article content...</p>
-            </div>
-
-        </article>
+        </div>
     </main>
 
     <!-- Firebase SDKs -->
@@ -164,8 +145,8 @@
     <!-- Your custom scripts -->
     <script src="firebase-init.js"></script>
     <script src="auth.js"></script>
-    <script src="posts.js"></script>
     <script src="app.js"></script>
+
 </body>
 
 </html>
