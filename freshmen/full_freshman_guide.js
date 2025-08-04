@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, setDoc, onSnapshot, collection, query } from 'firebase/firestore';
+const { useState, useEffect, useMemo } = React;
+const { initializeApp } = firebase;
+const { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } = firebase.auth;
+const { getFirestore, doc, setDoc, onSnapshot, collection, query } = firebase.firestore;
 
 const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
