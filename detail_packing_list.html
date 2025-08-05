@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to GIKI - A Freshman's Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF7;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Lora', serif;
+        }
+
+        .chronicle-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #FFFFFF;
+            border: 1px solid #EAE0D5;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+        }
+
+        .header-bg {
+            background-color: #8C1D40;
+            color: #FFFFFF;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #F3EFEA;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .checklist-item:hover {
+            background-color: #FDFBF7;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            margin-right: 1rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            cursor: pointer;
+            accent-color: #8C1D40;
+        }
+
+        .checklist-item label {
+            flex-grow: 1;
+            cursor: pointer;
+        }
+
+        .checked {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 1rem;
+        }
+
+        section {
+            scroll-margin-top: 5rem;
+            /* Offset for sticky navbar */
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <span class="text-2xl text-[#8C1D40] font-bold font-lora">GIKI Chronicles</span>
+                <div class="hidden md:flex md:items-center md:space-x-8">
+                    <a href="#" class="text-gray-600 hover:text-[#8C1D40] transition-colors">Home</a>
+                    <a href="#packing-list" class="text-gray-600 hover:text-[#8C1D40] transition-colors">Packing
+                        List</a>
+                    <a href="giki_dining_guide.html" class="text-gray-600 hover:text-[#8C1D40] transition-colors">Dining
+                        Guide</a>
+                    <a href="#finances" class="text-gray-600 hover:text-[#8C1D40] transition-colors">Finances</a>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-gray-600 hover:text-[#8C1D40] focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">Home</a>
+            <a href="#packing-list" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">Packing List</a>
+            <a href="giki_dining_guide.html" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">Dining
+                Guide</a>
+            <a href="#finances" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">Finances</a>
+        </div>
+    </nav>
+
+    <div class="chronicle-container">
+        <!-- Header Section -->
+        <div class="header-bg text-center p-8 rounded-lg mb-10">
+            <h1 class="text-4xl font-bold tracking-tight">Congratulations, Future GIKian!</h1>
+            <p class="mt-4 text-lg">A very warm welcome to the Ghulam Ishaq Khan Institute. Your journey of innovation,
+                learning, and growth starts now. We're thrilled to have you join our community.</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="space-y-12">
+
+            <!-- Packing List Section -->
+            <section id="packing-list">
+                <div class="flex items-center mb-6">
+                    <img src="https://placehold.co/40x40/8C1D40/FFFFFF?text=PACK" alt="Packing Icon"
+                        class="section-icon rounded-full">
+                    <h2 class="text-3xl font-semibold text-gray-800">Your Essential Packing List</h2>
+                </div>
+                <p class="text-gray-600 mb-8">Starting a new chapter at GIKI is exciting! Here’s a checklist to help you
+                    pack everything you'll need for a comfortable stay at the hostel.</p>
+
+                <div class="grid md:grid-cols-2 gap-x-12 gap-y-8">
+                    <!-- Column 1 -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-4 border-b-2 border-maroon-700 pb-2">Clothing
+                            & Personal Items</h3>
+                        <div id="clothing-list"></div>
+                        <h3 class="text-xl font-semibold text-gray-700 mt-8 mb-4 border-b-2 border-maroon-700 pb-2">
+                            Bedding & Room Essentials</h3>
+                        <div id="bedding-list"></div>
+                    </div>
+                    <!-- Column 2 -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-4 border-b-2 border-maroon-700 pb-2">Academics
+                            & Electronics</h3>
+                        <div id="academics-list"></div>
+                        <h3 class="text-xl font-semibold text-gray-700 mt-8 mb-4 border-b-2 border-maroon-700 pb-2">
+                            Miscellaneous</h3>
+                        <div id="misc-list"></div>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="border-gray-200">
+
+
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const packingData = {
+                clothing: ["Everyday wear (shirts, trousers, shalwar kameez)", "Formal attire for presentations", "Sweaters/Jackets for winter", "Sleepwear", "Undergarments and socks", "Towels (at least 2)", "Sportswear for gym/sports", "Flip-flops/slippers"],
+                bedding: ["Bed sheets (at least 2 sets)", "Pillow and pillowcases", "Blanket or comforter", "Mattress protector (optional but recommended)"],
+                academics: ["Laptop and charger", "Backpack", "Stationery (pens, notebooks, etc.)", "Scientific calculator", "USB flash drive", "Extension cord/power strip"],
+                misc: ["Toiletries (soap, shampoo, toothpaste, etc.)", "Mug, plate, and spoon", "Water bottle", "Padlock for your cupboard", "Basic first-aid kit", "Any personal medications", "Prayer mat (if needed)"]
+            };
+
+            function createChecklistItem(itemText, category) {
+                const id = `${category}-${itemText.replace(/\s+/g, '-').toLowerCase()}`;
+                const div = document.createElement('div');
+                div.className = 'checklist-item';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = id;
+                checkbox.addEventListener('change', function () { label.classList.toggle('checked', this.checked); });
+                const label = document.createElement('label');
+                label.htmlFor = id;
+                label.textContent = itemText;
+                div.appendChild(checkbox);
+                div.appendChild(label);
+                return div;
+            }
+
+            const lists = {
+                clothing: document.getElementById('clothing-list'),
+                bedding: document.getElementById('bedding-list'),
+                academics: document.getElementById('academics-list'),
+                misc: document.getElementById('misc-list')
+            };
+
+            for (const category in packingData) {
+                packingData[category].forEach(item => lists[category].appendChild(createChecklistItem(item, category)));
+            }
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        });
+    </script>
+
+</body>
+
+</html>

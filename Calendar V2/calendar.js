@@ -1,19 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Firebase Configuration & Data (placeholders) ---
     const firebaseConfig = {
-        // Your Firebase config object goes here
-        // apiKey: "YOUR_API_KEY",
-        // authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-        // projectId: "YOUR_PROJECT_ID",
-        // storageBucket: "YOUR_PROJECT_ID.appspot.com",
-        // messagingSenderId: "YOUR_SENDER_ID",
-        // appId: "YOUR_APP_ID"
+        apiKey: "AIzaSyC1Q9tIEHLqAKZj6IjJN8aPiQCAPYbsi7I",
+        authDomain: "giki-chronicles.firebaseapp.com",
+        projectId: "giki-chronicles",
+        storageBucket: "giki-chronicles.firebasestorage.app",
+        messagingSenderId: "80968785263",
+        appId: "1:80968785263:web:666d2e69fef2ef6f5a5c9a"
     };
 
     // Initialize Firebase
-    // firebase.initializeApp(firebaseConfig);
-    // const db = firebase.firestore();
-    // const auth = firebase.auth();
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
 
     // This will be populated from Firebase
     let events = {};
@@ -72,16 +71,16 @@ document.addEventListener('DOMContentLoaded', () => {
     async function handleDeleteConfirm() {
         if (currentEventId) {
             // Placeholder for Firebase delete
-            // const result = await deleteEvent(currentEventId);
-            // if (result.success) {
+            const result = await deleteEvent(currentEventId);
+            if (result.success) {
             showNotification('Success!', 'Event deleted successfully!', 'success');
             hideEventPopup();
             hideDeleteConfirmModal();
-            // await loadEventsAndRender();
-            // } else {
-            //     showNotification('Error', 'Error deleting event: ' + result.error, 'error');
-            //     hideDeleteConfirmModal();
-            // }
+            await loadEventsAndRender();
+            } else {
+                showNotification('Error', 'Error deleting event: ' + result.error, 'error');
+                hideDeleteConfirmModal();
+            }
         }
     }
 
@@ -171,18 +170,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Backend Firebase Functions (placeholders) ---
     async function saveEvent(eventData) {
         try {
-            // const user = auth.currentUser;
-            // const newEvent = {
-            //     name: eventData.name,
-            //     date: eventData.date,
-            //     time: eventData.time || null,
-            //     type: eventData.type,
-            //     location: eventData.location,
-            //     description: eventData.description,
-            //     submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
-            //     submittedBy: user ? user.uid : "Guest"
-            // };
-            // await db.collection("events").add(newEvent);
+            const user = auth.currentUser;
+            const newEvent = {
+                name: eventData.name,
+                date: eventData.date,
+                time: eventData.time || null,
+                type: eventData.type,
+                location: eventData.location,
+                description: eventData.description,
+                submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                submittedBy: user ? user.uid : "Guest"
+            };
+            await db.collection("events").add(newEvent);
             return { success: true };
         } catch (error) {
             console.error("Error saving event:", error);
