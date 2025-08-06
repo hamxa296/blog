@@ -239,6 +239,20 @@ For your health and well-being, the campus has a health center with on-call doct
     warnings: [
       "Always follow the rules and regulations of each facility to ensure a safe and pleasant environment for everyone."
     ]
+  },
+  {
+    id: "finances",
+    tag: "Finances",
+    shortDescription: "Managing your monthly finances as a freshman.",
+    fullContent: `Managing Your Monthly Finances\n\nBudgeting is a key skill to learn at university. Here’s a rough estimate of common monthly expenses to help you plan:\n\nEstimated Monthly Expenses\n\nMess Bill (if opted-in): Rs. 12,000 – 15,000\nLaundry Services: Rs. 1,500 – 2,500\nSnacks & Eating Out: Rs. 3,000 – 5,000\nPhotocopying & Printing: Rs. 500 – 1,000\nMiscellaneous (toiletries, etc.): Rs. 2,000 – 4,000\n\n💰 Estimated Total:** Rs. 19,000 – 27,500\n\n> Note: These are estimates and may vary based on your spending habits.\n\n---\n\nAdditional Financial Tips\n\nBank Accounts: Open a student bank account for easier money management and online transactions.\nBudgeting: Track your daily expenses and set a monthly limit to avoid unnecessary overspending.\nMobile Payments: Apps like Easypaisa, JazzCash, and NayaPay are widely accepted on campus for snacks, food, and essentials.\nATM Locations: There are two HBL ATMs available on campus for cash withdrawals.\nBanking Services: GIKI has an HBL branch on campus for student banking needs.`,
+    faqs: [
+      { question: "Are there any banks on campus?", answer: "Yes, there's a full HBL branch and two ATMs for students." },
+      { question: "How do I pay my hostel or mess dues?", answer: "You can pay via bank transfer or by visiting the Accounts Office on campus." }
+    ],
+    warnings: [
+      "Avoid carrying large amounts of cash; use digital payments whenever possible.",
+      "Be alert to scams—only use official banking apps and verified payment methods."
+    ]
   }
 ];
 
