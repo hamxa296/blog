@@ -30,6 +30,7 @@ async function signUpUser(email, password) {
             email: user.email,
             displayName: email.split('@')[0], // Default display name is the part of the email before the @
             photoURL: '', // Default empty profile picture
+            isAdmin: false, // Default to non-admin
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
@@ -55,7 +56,8 @@ async function signInWithGoogle() {
             uid: user.uid,
             email: user.email,
             displayName: user.displayName,
-            photoURL: user.photoURL
+            photoURL: user.photoURL,
+            isAdmin: false // Default to non-admin for new users
         }, { merge: true });
 
         return { success: true, user: user };
@@ -97,4 +99,24 @@ async function logoutUser() {
  */
 function onAuthStateChange(callback) {
     return auth.onAuthStateChanged(callback);
+}
+
+/**
+ * Checks if the current user is an admin.
+ * @returns {Promise<boolean>}
+ */
+async function isUserAdmin() {
+    const user = auth.currentUser;
+    if (!user) return false;
+    
+    try {
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        if (!userDoc.exists) return false;
+        
+        const userData = userDoc.data();
+        return userData.isAdmin === true; // Explicitly check for true
+    } catch (error) {
+        console.error("Error checking admin status:", error);
+        return false;
+    }
 }

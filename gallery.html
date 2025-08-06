@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - GIKI Chronicles</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-gray-800">
+                GIKI<span class="text-blue-600">Chronicles</span>
+            </a>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="index.html" class="text-gray-600 hover:text-blue-600">Home</a>
+                <a href="gallery.html" class="font-semibold text-blue-600">Gallery</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-12">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-extrabold tracking-tight">Campus Gallery</h1>
+            <p class="mt-4 text-lg text-gray-500">A collection of moments from around the GIKI campus.</p>
+        </div>
+
+        <!-- Highlighted Photo Slideshow -->
+        <section id="highlighted-photo" class="mb-12">
+            <!-- Skeleton Loader -->
+            <div class="w-full h-96 bg-gray-300 rounded-xl animate-pulse"></div>
+        </section>
+
+        <!-- Filter and Submit Section -->
+        <section class="flex justify-between items-center mb-8">
+            <select id="category-filter" class="p-2 border border-gray-300 rounded-lg">
+                <option value="all">All Places</option>
+                <option value="Academic Blocks">Academic Blocks</option>
+                <option value="Hostels">Hostels</option>
+                <option value="Sports Complex">Sports Complex</option>
+                <option value="General">General</option>
+            </select>
+            <button id="open-submission-modal" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700">
+                Get Featured
+            </button>
+        </section>
+
+        <!-- Gallery Grid -->
+        <section id="gallery-grid" class="gallery-grid">
+            <!-- Skeleton Loaders -->
+            <div class="w-full h-64 bg-gray-300 rounded-xl animate-pulse"></div>
+            <div class="w-full h-64 bg-gray-300 rounded-xl animate-pulse"></div>
+            <div class="w-full h-64 bg-gray-300 rounded-xl animate-pulse"></div>
+        </section>
+    </main>
+
+    <!-- Submission Modal -->
+    <div id="submission-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-40">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full">
+            <h2 class="text-2xl font-bold mb-4">Add Your Photo to Gallery</h2>
+            <form id="submission-form">
+                <div class="mb-4">
+                    <label for="caption" class="block font-semibold mb-2">Caption</label>
+                    <input type="text" id="caption" class="w-full p-2 border rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label for="photo-category" class="block font-semibold mb-2">Category</label>
+                    <select id="photo-category" class="w-full p-2 border rounded" required>
+                        <option value="">Select a category</option>
+                        <option value="Academic Blocks">Academic Blocks</option>
+                        <option value="Hostels">Hostels</option>
+                        <option value="Sports Complex">Sports Complex</option>
+                        <option value="General">General</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="photo-upload" class="block font-semibold mb-2">Photo</label>
+                    <input type="file" id="photo-upload" accept="image/*" required>
+                    <p class="text-xs text-gray-500 mt-1">Max file size: 10MB. Images will be optimized automatically.</p>
+                </div>
+                <div id="form-message" class="text-center h-5 mb-4"></div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-full">Add to Gallery</button>
+                <button type="button" id="close-modal" class="w-full mt-2 bg-gray-200 py-2 rounded-full">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Your custom scripts -->
+    <script src="firebase-init.js"></script>
+    <script src="auth.js"></script>
+    <script src="gallery.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html> 

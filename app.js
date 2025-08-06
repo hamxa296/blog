@@ -350,4 +350,247 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'index.html';
         });
     }
+    // --- Gallery Page Logic ---
+    const galleryGrid = document.getElementById('gallery-grid');
+    if (galleryGrid) {
+        const highlightedPhotoSection = document.getElementById('highlighted-photo');
+        const categoryFilter = document.getElementById('category-filter');
+        const openModalBtn = document.getElementById('open-submission-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        const submissionModal = document.getElementById('submission-modal');
+        const submissionForm = document.getElementById('submission-form');
+        const formMessage = document.getElementById('form-message');
+        
+
+
+        let allPhotos = [];
+
+        const renderGallery = (photos) => {
+            galleryGrid.innerHTML = '';
+            if (photos.length === 0) {
+                galleryGrid.innerHTML = `<p class="text-gray-500">No photos found for this category.</p>`;
+                return;
+            }
+            photos.forEach(photo => {
+                const photoCard = document.createElement('div');
+                photoCard.className = 'bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer transform hover:scale-105 transition-transform duration-200';
+                                 photoCard.innerHTML = `
+                     <div class="relative">
+                         <img src="${photo.imageUrl}" alt="${photo.caption}" class="w-full h-64 object-cover" loading="lazy" data-fullsize="${photo.fullSizeUrl || photo.imageUrl}">
+                     </div>
+                     <div class="p-4">
+                         <p class="font-semibold mb-2">${photo.caption}</p>
+                         <p class="text-sm text-gray-500">${photo.category}</p>
+                         <p class="text-xs text-gray-400">By ${photo.uploaderName}</p>
+                     </div>
+                 `;
+                
+                // Add click event for fullscreen view
+                photoCard.addEventListener('click', () => {
+                    openFullscreenView(photo);
+                });
+                
+                galleryGrid.appendChild(photoCard);
+            });
+        };
+
+        let currentSlideIndex = 0;
+        let slideshowInterval;
+
+        const loadPhotos = async () => {
+            const result = await getGalleryPhotos();
+            if (result.success) {
+                allPhotos = result.photos;
+                renderGallery(allPhotos);
+                loadHighlightedSlideshow();
+            }
+        };
+
+        const loadHighlightedSlideshow = async () => {
+            const result = await getHighlightedPhotos();
+            if (result.success && result.photos.length > 0) {
+                const highlightedPhotos = result.photos;
+                
+                // Clear existing interval
+                if (slideshowInterval) {
+                    clearInterval(slideshowInterval);
+                }
+
+                // Function to show current slide
+                const showSlide = (index) => {
+                    const photo = highlightedPhotos[index];
+                    highlightedPhotoSection.innerHTML = `
+                        <div class="relative">
+                            <div class="cursor-pointer transform hover:scale-105 transition-transform duration-200" onclick="openFullscreenView(${JSON.stringify(photo)})">
+                                <img src="${photo.imageUrl}" alt="${photo.caption}" class="w-full h-96 object-cover rounded-xl">
+                                ${highlightedPhotos.length > 1 ? `
+                                    <div class="absolute top-4 right-4 flex space-x-2">
+                                        ${highlightedPhotos.map((_, i) => `
+                                            <div class="w-3 h-3 rounded-full ${i === index ? 'bg-white' : 'bg-white bg-opacity-50'}"></div>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="mt-4 text-center">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-2">${photo.caption}</h3>
+                                <p class="text-lg text-gray-600">${photo.category}</p>
+                                <p class="text-sm text-gray-500 mt-1">By ${photo.uploaderName}</p>
+                            </div>
+                        </div>
+                    `;
+                };
+
+                // Show first slide
+                showSlide(0);
+
+                // Auto-advance slideshow every 5 seconds if multiple photos
+                if (highlightedPhotos.length > 1) {
+                    slideshowInterval = setInterval(() => {
+                        currentSlideIndex = (currentSlideIndex + 1) % highlightedPhotos.length;
+                        showSlide(currentSlideIndex);
+                    }, 5000);
+                }
+            } else {
+                // Show first photo as fallback if no highlighted photos
+                if (allPhotos.length > 0) {
+                    highlightedPhotoSection.innerHTML = `
+                        <div class="relative">
+                            <div class="cursor-pointer transform hover:scale-105 transition-transform duration-200" onclick="openFullscreenView(${JSON.stringify(allPhotos[0])})">
+                                <img src="${allPhotos[0].imageUrl}" alt="${allPhotos[0].caption}" class="w-full h-96 object-cover rounded-xl">
+                            </div>
+                            <div class="mt-4 text-center">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-2">${allPhotos[0].caption}</h3>
+                                <p class="text-lg text-gray-600">${allPhotos[0].category}</p>
+                                <p class="text-sm text-gray-500 mt-1">By ${allPhotos[0].uploaderName}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        };
+
+
+
+        categoryFilter.addEventListener('change', () => {
+            const category = categoryFilter.value;
+            if (category === 'all') {
+                renderGallery(allPhotos);
+            } else {
+                const filteredPhotos = allPhotos.filter(p => p.category === category);
+                renderGallery(filteredPhotos);
+            }
+        });
+
+        openModalBtn.addEventListener('click', () => submissionModal.classList.remove('hidden'));
+        closeModalBtn.addEventListener('click', () => submissionModal.classList.add('hidden'));
+
+
+
+        submissionForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitButton = submissionForm.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.textContent;
+            
+            // Disable form and show loading state
+            submitButton.disabled = true;
+            submitButton.textContent = 'Uploading...';
+            formMessage.textContent = 'Uploading...';
+            
+            const caption = document.getElementById('caption').value;
+            const category = document.getElementById('photo-category').value;
+            const file = document.getElementById('photo-upload').files[0];
+
+            if (!file) {
+                formMessage.textContent = 'Please select a photo.';
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
+                return;
+            }
+
+            if (!category) {
+                formMessage.textContent = 'Please select a category.';
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
+                return;
+            }
+
+            // Check file size (10MB limit)
+            const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+            if (file.size > maxSize) {
+                formMessage.textContent = 'File is too large. Please select an image under 10MB.';
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
+                return;
+            }
+
+            try {
+                const result = await submitPhotoForReview(caption, category, file);
+                if (result.success) {
+                    formMessage.textContent = 'Photo added to gallery!';
+                    submitButton.textContent = 'Success!';
+                    setTimeout(() => {
+                        submissionModal.classList.add('hidden');
+                        formMessage.textContent = '';
+                        submissionForm.reset();
+                        submitButton.disabled = false;
+                        submitButton.textContent = originalButtonText;
+                        loadPhotos(); // Refresh the gallery to show the new photo
+                    }, 2000);
+                } else {
+                    formMessage.textContent = result.error;
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalButtonText;
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                formMessage.textContent = 'Upload failed. Please try again.';
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
+            }
+        });
+
+
+
+        loadPhotos();
+    }
+    
+    // Fullscreen view function
+    window.openFullscreenView = function(photo) {
+        const fullscreenModal = document.createElement('div');
+        fullscreenModal.className = 'fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50';
+        fullscreenModal.innerHTML = `
+            <div class="relative max-w-4xl max-h-full p-4">
+                <button onclick="this.parentElement.parentElement.remove()" class="absolute top-2 right-2 text-white text-2xl font-bold bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-75">×</button>
+                <img src="${photo.fullSizeUrl || photo.imageUrl}" alt="${photo.caption}" class="max-w-full max-h-full object-contain">
+            </div>
+        `;
+        
+        // Close on background click
+        fullscreenModal.addEventListener('click', (e) => {
+            if (e.target === fullscreenModal) {
+                fullscreenModal.remove();
+            }
+        });
+        
+        // Close on escape key
+        document.addEventListener('keydown', function closeOnEscape(e) {
+            if (e.key === 'Escape') {
+                fullscreenModal.remove();
+                document.removeEventListener('keydown', closeOnEscape);
+            }
+        });
+        
+        document.body.appendChild(fullscreenModal);
+    };
+
+    // Toggle highlight function
+    window.toggleHighlight = async function(photoId, isHighlighted) {
+        const result = await togglePhotoHighlight(photoId, isHighlighted);
+        if (result.success) {
+            // Reload photos to update the UI
+            loadPhotos();
+        } else {
+            alert('Failed to update photo status. Please try again.');
+        }
+    };
 });
