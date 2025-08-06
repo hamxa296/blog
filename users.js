@@ -66,3 +66,81 @@ async function uploadProfilePicture(userId, file) {
         return { success: false, error: "Failed to upload photo." };
     }
 }
+async function getUserProfile(userId) {
+    try {
+        const docRef = db.collection("users").doc(userId);
+        const docSnap = await docRef.get();
+        if (docSnap.exists) {
+            return { success: true, profile: docSnap.data() };
+        } else {
+            return { success: false, error: "User profile not found." };
+        }
+    } catch (error) {
+        console.error("Error getting user profile:", error);
+        return { success: false, error: "Failed to fetch user profile." };
+    }
+}
+
+async function updateUserProfile(userId, profileData) {
+    try {
+        const docRef = db.collection("users").doc(userId);
+        await docRef.update(profileData);
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating profile:", error);
+        return { success: false, error: "Failed to update profile." };
+    }
+}
+
+async function uploadProfilePicture(userId, file) {
+    try {
+        const storageRef = firebase.storage().ref();
+        const fileRef = storageRef.child(`profile_pictures/${userId}/${file.name}`);
+        const snapshot = await fileRef.put(file);
+        const downloadURL = await snapshot.ref.getDownloadURL();
+        return { success: true, url: downloadURL };
+    } catch (error) {
+        console.error("Error uploading photo:", error);
+        return { success: false, error: "Failed to upload photo." };
+    }
+}
+
+/**
+ * Checks if the current user is an admin.
+ * This is an alias for the isUserAdmin function from auth.js
+ * @returns {Promise<boolean>}
+ */
+async function checkUserAdminStatus() {
+    console.log("checkUserAdminStatus called");
+    const result = await isUserAdmin();
+    console.log("checkUserAdminStatus result:", result);
+    return result;
+}
+
+// Make checkUserAdminStatus globally accessible
+window.checkUserAdminStatus = checkUserAdminStatus;
+
+/**
+ * Simple admin check for testing
+ * @returns {Promise<boolean>}
+ */
+async function testAdminStatus() {
+    const user = auth.currentUser;
+    if (!user) {
+        console.log("No user logged in");
+        return false;
+    }
+    
+    try {
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            console.log("Test admin check - User data:", userData);
+            return userData.isAdmin === true;
+        }
+        return false;
+    } catch (error) {
+        console.error("Test admin check error:", error);
+        return false;
+    }
+}

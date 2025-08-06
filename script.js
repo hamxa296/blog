@@ -6,6 +6,13 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- Element Selections ---
+    // Sidebar elements
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarClose = document.getElementById('sidebar-close');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+    
+    // Legacy mobile menu elements (keeping for compatibility)
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
     const homeTab = document.getElementById('home-tab');
@@ -136,16 +143,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Page View Switching ---
     function switchPage(view) {
         const showEvents = view === 'events';
-        blogContent.classList.toggle('hidden', showEvents);
-        eventsContent.classList.toggle('hidden', !showEvents);
+        
+        if (blogContent) {
+            blogContent.classList.toggle('hidden', showEvents);
+        }
+        if (eventsContent) {
+            eventsContent.classList.toggle('hidden', !showEvents);
+        }
 
         document.querySelectorAll('#home-tab, #mobile-home-tab').forEach(tab => {
-            tab.classList.toggle('text-blue-600', !showEvents);
-            tab.classList.toggle('font-semibold', !showEvents);
+            if (tab) {
+                tab.classList.toggle('text-blue-600', !showEvents);
+                tab.classList.toggle('font-semibold', !showEvents);
+            }
         });
         document.querySelectorAll('#events-tab, #mobile-events-tab').forEach(tab => {
-            tab.classList.toggle('text-blue-600', showEvents);
-            tab.classList.toggle('font-semibold', showEvents);
+            if (tab) {
+                tab.classList.toggle('text-blue-600', showEvents);
+                tab.classList.toggle('font-semibold', showEvents);
+            }
         });
 
         if (showEvents) {
@@ -157,8 +173,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- Sidebar Functions ---
+    function openSidebar() {
+        if (sidebar) sidebar.classList.remove('-translate-x-full');
+        if (sidebarOverlay) sidebarOverlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+        if (sidebar) sidebar.classList.add('-translate-x-full');
+        if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
     // --- Event Listeners ---
-    if (mobileMenuButton) mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+    // Sidebar listeners
+    if (sidebarToggle) sidebarToggle.addEventListener('click', openSidebar);
+    if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
+    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+    
+    // Close sidebar when clicking on a link
+    document.querySelectorAll('#sidebar a').forEach(link => {
+        link.addEventListener('click', () => {
+            setTimeout(closeSidebar, 100); // Small delay to allow navigation
+        });
+    });
+
+    // Legacy mobile menu listeners
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+    }
 
     if (homeTab) homeTab.addEventListener('click', (e) => { e.preventDefault(); switchPage('blog'); });
     if (eventsTab) eventsTab.addEventListener('click', (e) => { e.preventDefault(); switchPage('events'); });

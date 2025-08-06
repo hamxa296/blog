@@ -254,3 +254,108 @@ async function savePostAsDraft(postData, postId = null) {
         return { success: false, error: "Failed to save draft." };
     }
 }
+/**
+ * Fetches all posts that are awaiting admin review.
+ * @returns {Promise<object>} A promise that resolves with an array of pending post objects.
+ */
+async function getPendingPosts() {
+    const user = auth.currentUser;
+    if (!user) {
+        console.log("No authenticated user");
+        return { success: false, error: "Authentication required." };
+    }
+
+    console.log("Getting pending posts for user:", user.uid);
+
+    // Verify admin status server-side
+    try {
+        console.log("Checking admin status...");
+        const isAdmin = await isUserAdmin();
+        console.log("Admin check result:", isAdmin);
+        
+        if (!isAdmin) {
+            console.error("Unauthorized access attempt to fetch pending posts");
+            return { success: false, error: "Admin privileges required." };
+        }
+
+        console.log("Admin verified, fetching pending posts...");
+        const snapshot = await db.collection("posts")
+            .where("status", "==", "pending")
+            .orderBy("createdAt", "asc") // Show oldest submissions first
+            .get();
+
+        const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log("Found", posts.length, "pending posts");
+        return { success: true, posts: posts };
+
+    } catch (error) {
+        console.error("Error fetching pending posts:", error);
+        return { success: false, error: "Failed to fetch pending posts." };
+    }
+}
+
+/**
+ * Updates the status of a post (e.g., to "approved" or "rejected").
+ * @param {string} postId - The ID of the post to update.
+ * @param {string} newStatus - The new status ("approved" or "rejected").
+ * @returns {Promise<object>} A promise that resolves on success.
+ */
+async function updatePostStatus(postId, newStatus) {
+    const user = auth.currentUser;
+    if (!user) {
+        return { success: false, error: "Authentication required." };
+    }
+
+    // Verify admin status server-side
+    try {
+        const isAdmin = await isUserAdmin();
+        if (!isAdmin) {
+            console.error("Unauthorized access attempt to update post status");
+            return { success: false, error: "Admin privileges required." };
+        }
+
+        const docRef = db.collection("posts").doc(postId);
+        await docRef.update({ 
+            status: newStatus,
+            reviewedBy: user.uid,
+            reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating post status:", error);
+        return { success: false, error: "Failed to update status." };
+    }
+}
+
+/**
+ * Toggles the featured status of a post (admin only).
+ * @param {string} postId - The ID of the post to toggle.
+ * @param {boolean} isFeatured - Whether the post should be featured.
+ * @returns {Promise<object>} A promise that resolves on success.
+ */
+async function toggleFeaturedStatus(postId, isFeatured) {
+    const user = auth.currentUser;
+    if (!user) {
+        return { success: false, error: "Authentication required." };
+    }
+
+    // Verify admin status server-side
+    try {
+        const isAdmin = await isUserAdmin();
+        if (!isAdmin) {
+            console.error("Unauthorized access attempt to toggle featured status");
+            return { success: false, error: "Admin privileges required." };
+        }
+
+        const docRef = db.collection("posts").doc(postId);
+        await docRef.update({ 
+            isFeatured: isFeatured,
+            featuredBy: user.uid,
+            featuredAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Error toggling featured status:", error);
+        return { success: false, error: "Failed to toggle featured status." };
+    }
+}

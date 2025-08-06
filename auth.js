@@ -25,14 +25,20 @@ async function signUpUser(email, password) {
         const user = userCredential.user;
 
         // Create a user document in the 'users' collection
-        await db.collection('users').doc(user.uid).set({
+        const userData = {
             uid: user.uid,
             email: user.email,
             displayName: email.split('@')[0], // Default display name is the part of the email before the @
             photoURL: '', // Default empty profile picture
-            isAdmin: false, // Default to non-admin
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        };
+        
+        // Only add isAdmin field for admin accounts
+        if (typeof isAdminUID === 'function' && isAdminUID(user.uid)) {
+            userData.isAdmin = true;
+        }
+        
+        await db.collection('users').doc(user.uid).set(userData);
 
         return { success: true, user: user };
     } catch (error) {
@@ -51,14 +57,20 @@ async function signInWithGoogle() {
         const user = result.user;
 
         // Create or update the user document in the 'users' collection
-        // { merge: true } prevents overwriting existing fields if the user already has a profile
-        await db.collection('users').doc(user.uid).set({
+        const userData = {
             uid: user.uid,
             email: user.email,
             displayName: user.displayName,
-            photoURL: user.photoURL,
-            isAdmin: false // Default to non-admin for new users
-        }, { merge: true });
+            photoURL: user.photoURL
+        };
+        
+        // Only add isAdmin field for admin accounts
+        if (typeof isAdminUID === 'function' && isAdminUID(user.uid)) {
+            userData.isAdmin = true;
+        }
+        
+        // { merge: true } prevents overwriting existing fields if the user already has a profile
+        await db.collection('users').doc(user.uid).set(userData, { merge: true });
 
         return { success: true, user: user };
     } catch (error) {
@@ -74,7 +86,34 @@ async function signInWithGoogle() {
 async function loginUser(email, password) {
     try {
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
-        return { success: true, user: userCredential.user };
+        const user = userCredential.user;
+        
+        // Ensure user document exists in Firestore
+        try {
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            if (!userDoc.exists) {
+                console.log("Creating missing user document for existing user");
+                const userData = {
+                    uid: user.uid,
+                    email: user.email || email,
+                    displayName: user.displayName || email.split('@')[0],
+                    photoURL: user.photoURL || '',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                // Only add isAdmin field for admin accounts
+                if (typeof isAdminUID === 'function' && isAdminUID(user.uid)) {
+                    userData.isAdmin = true;
+                }
+                
+                await db.collection('users').doc(user.uid).set(userData);
+            }
+        } catch (firestoreError) {
+            console.error("Error ensuring user document exists:", firestoreError);
+            // Continue with login even if Firestore fails
+        }
+        
+        return { success: true, user: user };
     } catch (error) {
         console.error("Login Error:", error);
         return { success: false, error: error.message };
@@ -107,14 +146,27 @@ function onAuthStateChange(callback) {
  */
 async function isUserAdmin() {
     const user = auth.currentUser;
+    console.log("isUserAdmin called, current user:", user ? user.uid : "No user");
+    
     if (!user) return false;
     
     try {
+        console.log("Fetching user document for:", user.uid);
         const userDoc = await db.collection('users').doc(user.uid).get();
-        if (!userDoc.exists) return false;
+        console.log("User document exists:", userDoc.exists);
+        
+        if (!userDoc.exists) {
+            console.log("User document does not exist - this should be handled by auth state listener");
+            return false;
+        }
         
         const userData = userDoc.data();
-        return userData.isAdmin === true; // Explicitly check for true
+        console.log("User data:", userData);
+        console.log("isAdmin value:", userData.isAdmin);
+        
+        const isAdmin = userData.isAdmin === true; // Explicitly check for true
+        console.log("Final admin result:", isAdmin);
+        return isAdmin;
     } catch (error) {
         console.error("Error checking admin status:", error);
         return false;

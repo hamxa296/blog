@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - GIKI Chronicles</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+    </style>
+    
+    <script>
+        console.log("Dashboard page loaded - testing basic JavaScript");
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM loaded successfully");
+            console.log("Dashboard content element:", document.getElementById('admin-content'));
+            console.log("Loading message element:", document.getElementById('loading-message'));
+        });
+    </script>
+</head>
+
+<body class="text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-gray-800">
+                GIKI<span class="text-blue-600">Chronicles</span>
+            </a>
+            <div id="user-nav" class="hidden md:flex items-center space-x-6">
+                <a href="index.html" class="text-gray-600 hover:text-blue-600">Home</a>
+                <a href="profile.html" class="text-gray-600 hover:text-blue-600">My Profile</a>
+                <button id="logout-button"
+                    class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-12">
+        <div id="admin-content" class="max-w-5xl mx-auto hidden">
+            <h1 class="text-4xl font-extrabold mb-8">Content Management Dashboard</h1>
+
+            <!-- Pending Posts Section -->
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-bold mb-6">Pending Posts for Review</h2>
+                <div id="pending-posts-container" class="space-y-4">
+                    <!-- Pending posts will be dynamically loaded here -->
+                    <p class="text-gray-500">Loading pending posts...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading / Access Denied Message -->
+        <div id="loading-message" class="text-center">
+            <p class="text-lg text-gray-500">Verifying access...</p>
+        </div>
+    </main>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Your custom scripts -->
+    <script>
+        console.log("All scripts loaded, checking for errors...");
+        window.addEventListener('error', function(e) {
+            console.error('Global error caught:', e.error);
+        });
+        
+        // Enhanced authentication check for admin page
+        function checkAuthAndAdmin() {
+            const user = auth.currentUser;
+            console.log("Current auth user:", user);
+            
+            if (!user) {
+                console.log("No authenticated user, checking localStorage...");
+                const storedUser = localStorage.getItem('currentUser');
+                if (storedUser) {
+                    console.log("Found stored user:", storedUser);
+                    // Try to restore the session
+                    return false; // Will be handled by auth state listener
+                } else {
+                    console.log("No stored user found, redirecting to login");
+                    window.location.href = 'login.html';
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        // Check authentication immediately when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Dashboard page DOM loaded, checking authentication...");
+            checkAuthAndAdmin();
+        });
+        
+        // Temporary debugging function - remove this after fixing the issue
+        window.debugAuth = function() {
+            console.log("=== AUTH DEBUG INFO ===");
+            console.log("Current auth user:", auth.currentUser);
+            console.log("Auth state:", auth.currentUser ? "LOGGED IN" : "NOT LOGGED IN");
+            
+            const storedUser = localStorage.getItem('currentUser');
+            console.log("Stored user in localStorage:", storedUser);
+            
+            if (auth.currentUser) {
+                console.log("User UID:", auth.currentUser.uid);
+                console.log("User email:", auth.currentUser.email);
+                console.log("User displayName:", auth.currentUser.displayName);
+            }
+            
+            // Check if we're on the working admin account
+            const workingUID = "55xGazVNgsdNz2Wew15OYrGPVSr2";
+            if (auth.currentUser && auth.currentUser.uid === workingUID) {
+                console.log("✅ You're logged in with the working admin account!");
+            } else if (auth.currentUser) {
+                console.log("❌ You're logged in with a different account:", auth.currentUser.uid);
+                console.log("Expected UID:", workingUID);
+            } else {
+                console.log("❌ No user logged in");
+            }
+        };
+        
+        // Function to restore admin status for the working account
+        window.restoreAdminStatus = async function() {
+            const user = auth.currentUser;
+            if (!user) {
+                console.log("❌ No user logged in");
+                return;
+            }
+            
+            const workingUID = "55xGazVNgsdNz2Wew15OYrGPVSr2";
+            if (user.uid !== workingUID) {
+                console.log("❌ This is not the working admin account");
+                console.log("Current UID:", user.uid);
+                console.log("Expected UID:", workingUID);
+                return;
+            }
+            
+            try {
+                console.log("🔧 Restoring admin status for working account...");
+                await db.collection('users').doc(user.uid).set({
+                    uid: user.uid,
+                    email: user.email || 'unknown@email.com',
+                    displayName: user.displayName || (user.email ? user.email.split('@')[0] : 'User'),
+                    photoURL: user.photoURL || '',
+                    isAdmin: true, // Force admin status
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true }); // Use merge to preserve existing fields
+                
+                console.log("✅ Admin status restored successfully!");
+                console.log("Please refresh the page to see the admin dashboard.");
+            } catch (error) {
+                console.error("❌ Error restoring admin status:", error);
+            }
+        };
+        
+        // Quick fix function - use this if you're having authentication issues
+        window.quickFix = async function() {
+            console.log("🔧 Running quick fix for authentication issues...");
+            
+            // Check current auth state
+            const user = auth.currentUser;
+            if (!user) {
+                console.log("❌ No user logged in - please log in first");
+                return;
+            }
+            
+            console.log("✅ User is logged in:", user.email);
+            console.log("User UID:", user.uid);
+            
+            // Force update user document with correct data
+            try {
+                await db.collection('users').doc(user.uid).set({
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName || user.email?.split('@')[0] || 'User',
+                    photoURL: user.photoURL || '',
+                    isAdmin: user.uid === "55xGazVNgsdNz2Wew15OYrGPVSr2", // Auto-set admin for working account
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                
+                console.log("✅ User document updated successfully!");
+                console.log("Please refresh the page to see the admin dashboard.");
+            } catch (error) {
+                console.error("❌ Error updating user document:", error);
+            }
+        };
+        
+        // Force admin function - this will make ANY logged-in user an admin
+        window.forceAdmin = async function() {
+            console.log("🔧 Force making current user admin...");
+            
+            const user = auth.currentUser;
+            if (!user) {
+                console.log("❌ No user logged in");
+                return;
+            }
+            
+            try {
+                await db.collection('users').doc(user.uid).set({
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName || user.email?.split('@')[0] || 'User',
+                    photoURL: user.photoURL || '',
+                    isAdmin: true, // Force admin for ANY user
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                
+                console.log("✅ User forced to admin successfully!");
+                console.log("Please refresh the page to see the admin dashboard.");
+            } catch (error) {
+                console.error("❌ Error forcing admin:", error);
+            }
+        };
+        
+        // Check current user document
+        window.checkUserDoc = async function() {
+            const user = auth.currentUser;
+            if (!user) {
+                console.log("❌ No user logged in");
+                return;
+            }
+            
+            try {
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    const data = userDoc.data();
+                    console.log("📄 Current user document:", data);
+                    console.log("🔑 isAdmin value:", data.isAdmin);
+                    console.log("📧 Email:", data.email);
+                    console.log("👤 DisplayName:", data.displayName);
+                } else {
+                    console.log("❌ User document does not exist");
+                }
+            } catch (error) {
+                console.error("❌ Error checking user document:", error);
+            }
+        };
+        
+        console.log("To debug authentication, run: debugAuth()");
+        console.log("To restore admin status, run: restoreAdminStatus()");
+        console.log("For quick fix, run: quickFix()");
+        console.log("To force admin (any user), run: forceAdmin()");
+        console.log("To check user document, run: checkUserDoc()");
+    </script>
+    
+    <script src="firebase-init.js" onerror="console.error('Failed to load firebase-init.js')" onload="console.log('firebase-init.js loaded')"></script>
+    <script src="admin-config.js" onerror="console.error('Failed to load admin-config.js')" onload="console.log('admin-config.js loaded')"></script>
+    <script src="secure-access.js" onerror="console.error('Failed to load secure-access.js')" onload="console.log('secure-access.js loaded')"></script>
+    <script src="auth.js" onerror="console.error('Failed to load auth.js')" onload="console.log('auth.js loaded')"></script>
+    <script src="users.js" onerror="console.error('Failed to load users.js')" onload="console.log('users.js loaded')"></script>
+    <script src="security.js" onerror="console.error('Failed to load security.js')" onload="console.log('security.js loaded')"></script>
+    <script src="posts.js" onerror="console.error('Failed to load posts.js')" onload="console.log('posts.js loaded')"></script>
+    <script src="app.js" onerror="console.error('Failed to load app.js')" onload="console.log('app.js loaded')"></script>
+    
+</body>
+
+</html>

@@ -28,28 +28,193 @@
     </style>
 </head>
 
-<body>
+<body class="text-gray-800">
+
+  <!-- Header -->
+  <header class="bg-white shadow-sm sticky top-0 z-50">
+    <nav class="container mx-auto px-6 py-4 flex items-center">
+      <!-- Left side: Hamburger + Logo -->
+      <div class="flex items-center space-x-4">
+        <!-- Hamburger Menu Button -->
+        <button id="sidebar-toggle" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+          </svg>
+        </button>
+        
+        <a href="index.html" class="text-2xl font-bold text-gray-800">
+          GIKI<span class="text-blue-600">Chronicles</span>
+        </a>
+      </div>
+      
+      <!-- Right side: Navigation -->
+                        <div class="hidden md:flex items-center space-x-6 ml-auto">
+                    <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a>
+                    <a href="about.html" class="text-gray-600 hover:text-blue-600 transition duration-300">About</a>
+                    <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a>
+                    <a href="gallery.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Gallery</a>
+                    <a href="guide.html" class="bg-gradient-to-r from-green-500 to-blue-600 text-white px-4 py-2 rounded-full hover:from-green-600 hover:to-blue-700 transition duration-300 font-semibold shadow-lg">🎓 Freshmen Guide</a>
+                    <a href="calendar.html" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-4 py-2 rounded-full hover:from-purple-600 hover:to-pink-700 transition duration-300 font-semibold shadow-lg">📅 Calendar</a>
+
+        <!-- GUEST NAVIGATION (DESKTOP) -->
+        <div id="guest-nav" class="flex items-center space-x-6">
+          <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
+          <a href="signup.html"
+            class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">Sign Up</a>
+        </div>
+
+        <!-- USER NAVIGATION (DESKTOP) -->
+        <div id="user-nav" class="hidden md:flex items-center space-x-6">
+          <a href="profile.html" class="text-gray-600 hover:text-blue-600">My Profile</a>
+                                <a href="write.html" class="text-gray-600 hover:text-blue-600">Write Post</a>
+                      <a href="gallery.html" class="text-gray-600 hover:text-blue-600">Gallery</a>
+                      <a href="contact.html" class="text-gray-600 hover:text-blue-600">Contact</a>
+                      <button id="logout-button"
+                        class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300">Logout</button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Sidebar -->
+  <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out">
+    <div class="flex items-center justify-between p-6 border-b">
+      <h2 class="text-xl font-bold text-gray-800">Menu</h2>
+      <button id="sidebar-close" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    
+    <nav class="p-6">
+      <div class="space-y-4">
+        <!-- Main Navigation -->
+        <div>
+          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Main</h3>
+          <div class="space-y-2">
+                                  <a href="index.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        Home
+                      </a>
+                      <a href="about.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        About
+                      </a>
+                      <a href="contact.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        Contact
+                      </a>
+                      <a href="gallery.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        Gallery
+                      </a>
+          </div>
+        </div>
+
+        <!-- Resources -->
+        <div>
+                              <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Resources</h3>
+                    <div class="space-y-2">
+                      <a href="guide.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                        Freshman Guide
+                      </a>
+                      <a href="calendar.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        Calendar
+                      </a>
+                    </div>
+        </div>
+
+        <!-- User Section -->
+        <div id="sidebar-guest-nav">
+          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Account</h3>
+          <div class="space-y-2">
+            <a href="login.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+              </svg>
+              Login
+            </a>
+            <a href="signup.html" class="flex items-center px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+              </svg>
+              Sign Up
+            </a>
+          </div>
+        </div>
+
+        <div id="sidebar-user-nav" class="hidden">
+          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">My Account</h3>
+          <div class="space-y-2">
+            <a href="profile.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+              My Profile
+            </a>
+            <a href="write.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+              </svg>
+              Write Post
+            </a>
+                                <button id="sidebar-admin-access-btn" class="hidden w-full flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                      </svg>
+                      🔐 Admin Portal
+                    </button>
+                    <button id="sidebar-logout-button" class="w-full flex items-center px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition duration-200">
+                      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                      </svg>
+                      Logout
+                    </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Sidebar Overlay -->
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+
     <div id="root"></div>
 
-    <!-- Use the Firebase 'compat' SDKs for this setup -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <!-- Your custom scripts (order is important) -->
+    <script src="firebase-init.js"></script>
+    <!-- Admin configuration - must be loaded before auth.js -->
+    <script src="admin-config.js"></script>
+    <script src="auth.js"></script>
+    <script src="users.js"></script>
+    <script src="script.js"></script>
+    <script src="app.js"></script>
 
     <!-- Your React Component -->
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        // **FIX:** Paste your Firebase config object here.
-        // You can get this from your `firebase-init.js` file or the Firebase console.
-        const firebaseConfig = {
-            apiKey: "AIzaSyC1Q9tIEHLqAKZj6IjJN8aPiQCAPYbsi7I",
-            authDomain: "giki-chronicles.firebaseapp.com",
-            projectId: "giki-chronicles",
-            storageBucket: "giki-chronicles.firebasestorage.app",
-            messagingSenderId: "80968785263",
-            appId: "1:80968785263:web:666d2e69fef2ef6f5a5c9a"
-        };
+        // Use the global firebaseConfig from firebase-init.js
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
@@ -70,9 +235,9 @@
                 title: "🎭 Cultural, Media & Literary Societies",
                 societies: [
                     { name: "Naqsh (Naqsh Arts Society)", description: "Promotes visual arts, including painting, calligraphy, and sketching, while celebrating cultural expression." },
-                    { name: "LDS (Literary and Debating Society)", description: "GIKI’s official platform for debates, MUNs, declamations, and creative writing competitions." },
+                    { name: "LDS (Literary and Debating Society)", description: "GIKI's official platform for debates, MUNs, declamations, and creative writing competitions." },
                     { name: "Media Club", description: "Handles photography, videography, and media coverage of campus events; creates multimedia content for the student body." },
-                    { name: "CDeS (Comedy and Dramatics Entertainment Society)", description: "Performs comedy skits, plays, and theatre productions; GIKI’s center for dramatics and stage acting." },
+                    { name: "CDeS (Comedy and Dramatics Entertainment Society)", description: "Performs comedy skits, plays, and theatre productions; GIKI's center for dramatics and stage acting." },
                 ]
             },
             social: {
@@ -80,7 +245,7 @@
                 societies: [
                     { name: "SOPHEP (Society for the Promotion of Higher Education in Pakistan)", description: "Offers career counseling, professional development, and alumni networking opportunities." },
                     { name: "LES (Leadership and Entrepreneurship Society)", description: "Promotes entrepreneurial thinking and leadership through startup competitions, business simulations, and guest talks." },
-                    { name: "Project Topi", description: "GIKI’s community outreach initiative that supports education, health, and welfare programs in the local Topi area." },
+                    { name: "Project Topi", description: "GIKI's community outreach initiative that supports education, health, and welfare programs in the local Topi area." },
                 ]
             },
             teams: {
@@ -88,7 +253,7 @@
                 societies: [
                     { name: "Team Invictus (AIAA)", description: "Designs, builds, and flies remote-controlled aircraft for the AIAA Design/Build/Fly competition in the U.S. Represents GIKI internationally in aerospace design." },
                     { name: "Team Foxtrot (Independent)", description: "Builds fully autonomous UAVs for global competitions like the IMechE UAS Challenge. Focuses on drone engineering, embedded systems, and AI-based navigation." },
-                    { name: "Team Infinity (Formula Student / Mechanical Engineering)", description: "GIKI’s Formula SAE team that designs and fabricates a formula-style electric race car for international motorsport engineering contests like FSUK." },
+                    { name: "Team Infinity (Formula Student / Mechanical Engineering)", description: "GIKI's Formula SAE team that designs and fabricates a formula-style electric race car for international motorsport engineering contests like FSUK." },
                     { name: "Team Urban (Shell Eco-marathon)", description: "Develops ultra energy-efficient urban concept vehicles. Competes in Shell Eco-marathon Asia and Pakistan, focusing on innovation in sustainable transport." },
                     { name: "Team Hammerhead (Shell Eco-marathon)", description: "Specializes in electric prototype vehicles for Shell Eco-marathon. Focuses on lightweight design, battery optimization, and aerodynamic performance." },
                     { name: "Team Swift (Independent)", description: "An engineering design team dedicated to building performance drones and UAVs, participating in aerial tech competitions and advancing drone innovation on campus." },
@@ -102,7 +267,7 @@
             { id: "what-to-pack", tag: "What to Pack", shortDescription: "Essential things to bring for your hostel stay.", fullContent: "For a comfortable stay in your dorm, be sure to bring essential items:\n- Bed sheets, a pillow, and a blanket.\n- A desk lamp.\n- A plug extension is crucial as outlets can be limited.\n- Your toiletries and a towel.\n- Comfortable shoes (you'll be surprised how much you have to walk here).\n- Casual clothes for daily wear and one or two formal outfits for events.", faqs: [{ question: "Can I bring an electric kettle?", answer: "Yes, electric kettles are generally allowed in the hostels, but check with your hostel warden for any specific restrictions." }, { question: "Should I bring a locker?", answer: "You will be provided with a cupboard for your belongings. A padlock is highly recommended for security." }], warnings: ["Avoid overpacking unnecessary items. Space is limited in the dorm rooms."] },
             { id: "dorm-room-info", tag: "Dorm & Room Info", shortDescription: "Everything you need to know about your new room.", fullContent: "Rooms are allotted by the administration during your orientation week. You will be assigned a roommate and a dorm. Each room comes with basic furniture including a bed, a study table, and a cupboard. Hostel culture is a big part of GIKI life, and respecting your roommate and neighbors is key to a great experience.", faqs: [{ question: "Can I change my room or roommate?", answer: "Room and roommate changes are subject to approval from the hostel administration and are typically only considered in special circumstances." }, { question: "What is the hostel mess like?", answer: "Each hostel has its own mess, providing a convenient and communal dining experience." }], warnings: ["Respect your roommate's personal space and belongings. Communication is key to a healthy living environment."] },
             { id: "weekend-travel", tag: "Weekend Travel", shortDescription: "How to go home and travel from GIKI.", fullContent: `GIKI is located a bit away from major cities, so planning your weekend travel is important. There are GIKI-sponsored buses that run to Rawalpindi/Islamabad, Peshawar, and Abbottabad every Friday and return on Sunday. You can also find ride-sharing options with seniors or other students via hostel or batch group chats — a common and convenient carpooling system.\n\nAll those who wish to avail the shuttle service should note the following:\n\nTicket Booking: Tickets become available every Thursday at the transport office located behind the laundry shop.\nPayment: Only cash is accepted.\nRs. 350 for Islamabad, Rawalpindi, and Peshawar\nRs. 400 for Abbottabad\nTip: Get in line early — the queue can get long and seats are limited!\n\nShuttle Schedule (Every Friday, 4:00 PM Departure from GIKI)\nTo Rawalpindi/Islamabad\n\nDeparture Point: GH / Hostel-9\nArrival Point: Road Master Adda / G-9/4, Peshawar Morr\nTo Peshawar\n\nDeparture Point: GH / Hostel-9\nArrival Point: Bagh-e-Naran, Hayatabad\nTo Abbottabad\n\nDeparture Point: GH / Hostel-9\nArrival Point: GO Petroleum Filling Station`, faqs: [{ question: "Can I book shuttle tickets online?", answer: "No, shuttle tickets are only available in person at the transport office behind the laundry shop. Make sure to bring cash as digital payments are not accepted." }, { question: "What happens if I miss the shuttle?", answer: "If you miss the shuttle, your best bet is to arrange a ride-share with other students. Many carpools are coordinated through hostel WhatsApp groups or batch chats, especially on weekends." }, { question: "Are there any travel restrictions for hostel students?", answer: "Yes. All students must inform their warden and sign the departure register before leaving campus. For female students, it's mandatory to get a gate pass signed by their warden before exiting GIKI premises." }], warnings: ["Always travel in groups, especially at night, and avoid unofficial transport services."] },
-            { id: "mess-and-food", tag: "Mess & Food", shortDescription: "Everything you need to know about food on campus.", fullContent: `GIKI has a central mess system that caters to all students. Additionally, there are several other tuck shops and cafes on campus for when you want a change of pace.\n\nStudent Mess Halls\nThere are designated mess halls for each hostel. The food is served at specific times, and the menu is a mix of Pakistani cuisines, rotating on a weekly basis.\n- Breakfast: 7:00 AM - 9:00 AM\n- Lunch: 12:30 PM - 2:30 PM\n- Dinner: 7:30 PM - 9:30 PM\n\nOther Eateries on Campus\nFor snacks, late-night cravings, or just a different taste, you can explore:\n- Hot and Spicy: Located at TUC. By far the best fast food you can find in GIKI.\n- Ayan and Raju for Desi: Also located at TUC. These restaurants offer a wide variety of Pakistani cuisine and fast food, but they lack the feel (the hygiene and taste).\n- GIKI Cafe: Owned and run by GIKI admin. It’s located under the auditorium (yes, that circular building you see almost everywhere). It's somewhat similar to the mess in terms of taste and hygiene. It's good for tea and some light snacks like nuggets, samosas, or rolls. You can also come for dinner here—it's cheaper than the mess, so if you want to save, Cafe is the cheapest option you’ve got :)`, faqs: [{ question: "Can I bring my own food to the mess?", answer: "No, outside food is not permitted in the mess hall." }, { question: "Are there vegetarian options?", answer: "The mess menu usually includes vegetarian dishes, but you can always request a special meal if needed." }, { question: "Can I opt out of the mess?", answer: "Yes, you can opt-out of the mess on a daily basis (before 2 PM) if you prefer, but it's generally a convenient option." }], warnings: ["Do not forget to 'mess in' or 'mess out' on time to avoid being charged for meals you won't eat."] },
+            { id: "mess-and-food", tag: "Mess & Food", shortDescription: "Everything you need to know about food on campus.", fullContent: `GIKI has a central mess system that caters to all students. Additionally, there are several other tuck shops and cafes on campus for when you want a change of pace.\n\nStudent Mess Halls\nThere are designated mess halls for each hostel. The food is served at specific times, and the menu is a mix of Pakistani cuisines, rotating on a weekly basis.\n- Breakfast: 7:00 AM - 9:00 AM\n- Lunch: 12:30 PM - 2:30 PM\n- Dinner: 7:30 PM - 9:30 PM\n\nOther Eateries on Campus\nFor snacks, late-night cravings, or just a different taste, you can explore:\n- Hot and Spicy: Located at TUC. By far the best fast food you can find in GIKI.\n- Ayan and Raju for Desi: Also located at TUC. These restaurants offer a wide variety of Pakistani cuisine and fast food, but they lack the feel (the hygiene and taste).\n- GIKI Cafe: Owned and run by GIKI admin. It's located under the auditorium (yes, that circular building you see almost everywhere). It's somewhat similar to the mess in terms of taste and hygiene. It's good for tea and some light snacks like nuggets, samosas, or rolls. You can also come for dinner here—it's cheaper than the mess, so if you want to save, Cafe is the cheapest option you've got :)`, faqs: [{ question: "Can I bring my own food to the mess?", answer: "No, outside food is not permitted in the mess hall." }, { question: "Are there vegetarian options?", answer: "The mess menu usually includes vegetarian dishes, but you can always request a special meal if needed." }, { question: "Can I opt out of the mess?", answer: "Yes, you can opt-out of the mess on a daily basis (before 2 PM) if you prefer, but it's generally a convenient option." }], warnings: ["Do not forget to 'mess in' or 'mess out' on time to avoid being charged for meals you won't eat."] },
             { id: "societies-events", tag: "Societies & Events", shortDescription: "A peek into GIKI's vibrant student life.", fullContent: societiesData, faqs: [{ question: "How can I join a society?", answer: "Most societies have a recruitment drive or 'society fair' at the beginning of the semester where you can sign up." }, { question: "What is Orientation Week?", answer: "A week-long event filled with introductory sessions, tours, and fun activities to help you settle into GIKI life." }], warnings: ["Avoid getting overly involved in too many societies in your first year. It's easy to get overwhelmed."] },
             { id: "survival-tips", tag: "Survival Tips", shortDescription: "In-depth advice on academics, homesickness, and essential apps.", fullContent: `Managing your first year at GIKI can be challenging but also incredibly rewarding. Learn to balance fun and academics from the start. Don't be afraid to ask seniors for help; they have been through it all.\n\nAcademics and Stress Management\nGIKI's academic environment is demanding. Stay on top of your coursework from the beginning, attend all classes and labs, and form study groups with your peers. Time management is a key skill to develop. Take breaks, go for a walk, or participate in a sports activity to relieve stress.\n\nDealing with Homesickness\nHomesickness is a normal feeling for many freshmen. Getting involved in societies, sports, or other campus activities can help you feel more at home. Regular video calls with family and friends can also help. Don't be afraid to talk to your Resident Advisor (RA) or a senior student about how you feel.\n\nEssential Apps for a GIKI Student\n- GIKI Portal App: Official app for checking grades, attendance, and fee details.\n- Microsoft Teams: Used for online classes and communication with faculty and classmates.\n- WhatsApp: Primary platform for hostel and class group chats.\n- Google Drive/Docs: Essential for collaborative projects and saving notes.`, faqs: [], warnings: ["Don't isolate yourself in your room. Step out, meet people, and explore the campus to make the most of your time here."] },
             { id: "library", tag: "Library", shortDescription: "All you need to know about GIKI's library.", fullContent: `GIKI's main library is the intellectual heart of the campus, offering a wide range of academic resources to support your studies and research. The library houses an extensive collection of books, journals, and digital databases. It's also an excellent place for quiet study and group work.\n\nServices & Resources\n- Book borrowing: Students can borrow books for a specified period.\n- Digital resources: Access to online journals, e-books, and research databases.\n- Study spaces: Designated quiet zones for individual study and collaborative spaces for group projects.\n- Printing & scanning: Facilities are available for printing, scanning, and photocopying documents.\n\nOpening Hours\n- Monday to Friday: 9:00 AM to 10:00 PM\n- Saturday: 9:00 AM to 5:00 PM\n- Sunday: Closed`, faqs: [{ question: "How do I get a library card?", answer: "Your student ID card doubles as your library card. You just need to register it at the library front desk." }, { question: "Is there a fine for late returns?", answer: "Yes, fines are charged for books returned past their due date. Check with the library staff for the current fee structure." }], warnings: ["Keep your phone on silent mode inside the library's quiet zones.", "Do not bring food or drinks into the library's reading areas."] },
@@ -136,51 +301,66 @@
             const [editingSection, setEditingSection] = useState(null);
             const [editForm, setEditForm] = useState({ tag: '', shortDescription: '', fullContent: '', faqs: [], warnings: [] });
             const [selectedSocietySubTag, setSelectedSocietySubTag] = useState(null);
+            const [currentUser, setCurrentUser] = useState(null);
+            const [isAdmin, setIsAdmin] = useState(false);
 
             useEffect(() => {
                 const initFirebase = async () => {
                     try {
-                        // Use the namespaced `firebase` global object
-                        if (!firebase.apps.length) {
-                            firebase.initializeApp(firebaseConfig);
-                        }
+                        // Use the global Firebase instance from firebase-init.js
                         const firestore = firebase.firestore();
                         const auth = firebase.auth();
                         setDb(firestore);
 
-                        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-                        if (initialAuthToken) {
-                            await auth.signInWithCustomToken(initialAuthToken);
-                        } else {
-                            await auth.signInAnonymously();
-                        }
-
-                        auth.onAuthStateChanged((user) => {
+                        // Listen for auth state changes
+                        auth.onAuthStateChanged(async (user) => {
+                            console.log("Guide: Auth state changed, user:", user);
+                            setCurrentUser(user);
+                            
                             if (user) {
-                                setIsAuthReady(true);
-                                const freshmanGuideRef = firestore.collection('artifacts').doc(appId).collection('public').doc('data').collection('freshmanGuide');
-
-                                const unsubscribe = freshmanGuideRef.onSnapshot((querySnapshot) => {
-                                    if (querySnapshot.empty) {
-                                        const promises = guidePlaceholderData.map(async (data) => {
-                                            const docRef = freshmanGuideRef.doc(data.id);
-                                            await docRef.set(data);
-                                            return data;
-                                        });
-                                        Promise.all(promises).then(data => setGuideSections(data));
+                                // Check if user is admin
+                                try {
+                                    if (typeof checkUserAdminStatus === 'function') {
+                                        const adminStatus = await checkUserAdminStatus();
+                                        console.log("Guide: Admin status check result:", adminStatus);
+                                        setIsAdmin(adminStatus);
                                     } else {
-                                        const fetchedData = [];
-                                        querySnapshot.forEach(doc => fetchedData.push({ id: doc.id, ...doc.data() }));
-                                        setGuideSections(fetchedData);
+                                        console.log("Guide: checkUserAdminStatus function not available");
+                                        setIsAdmin(false);
                                     }
-                                });
-                                return () => unsubscribe();
+                                } catch (error) {
+                                    console.error("Guide: Error checking admin status:", error);
+                                    setIsAdmin(false);
+                                }
                             } else {
-                                setIsAuthReady(true);
+                                setIsAdmin(false);
+                            }
+                            
+                            setIsAuthReady(true);
+                        });
+
+                        // Set up Firestore listener for guide data
+                        const freshmanGuideRef = firestore.collection('artifacts').doc(appId).collection('public').doc('data').collection('freshmanGuide');
+
+                        const unsubscribe = freshmanGuideRef.onSnapshot((querySnapshot) => {
+                            if (querySnapshot.empty) {
+                                const promises = guidePlaceholderData.map(async (data) => {
+                                    const docRef = freshmanGuideRef.doc(data.id);
+                                    await docRef.set(data);
+                                    return data;
+                                });
+                                Promise.all(promises).then(data => setGuideSections(data));
+                            } else {
+                                const fetchedData = [];
+                                querySnapshot.forEach(doc => fetchedData.push({ id: doc.id, ...doc.data() }));
+                                setGuideSections(fetchedData);
                             }
                         });
+                        
+                        return () => unsubscribe();
                     } catch (e) {
                         console.error("Error initializing Firebase or fetching data: ", e);
+                        setIsAuthReady(true);
                     }
                 };
                 initFirebase();
@@ -260,7 +440,7 @@
             }, [guideSections]);
 
             return (
-                <div className="bg-[#f0f2f5] min-h-screen font-inter text-[#2A2A2A] p-4 sm:p-8">
+                <div className="bg-[#f0f2f5] min-h-screen font-inter text-[#2A2A2A] pt-20 p-4 sm:p-8">
                     <div className="bg-gradient-to-r from-[#8C1D40] to-[#1a936f] text-white p-6 sm:p-8 mb-8 rounded-xl shadow-lg text-center">
                         <h1 className="text-3xl sm:text-4xl font-bold font-lora">GIKI Freshman Guide</h1>
                         <p className="mt-2 text-lg text-gray-200">Your ultimate resource for a smooth start at GIKI.</p>
@@ -293,7 +473,9 @@
                                         <div id={section.id} className="mt-12 p-8 bg-white rounded-xl shadow-inner border border-gray-200 transition-all duration-500 ease-in-out">
                                             <div className="flex justify-between items-start mb-4">
                                                 <h2 className="text-3xl font-bold font-lora text-[#1a936f]">{section.tag}</h2>
-                                                <button onClick={() => handleEditClick(section.id)} className="bg-[#1a936f] text-white px-4 py-2 rounded-lg hover:bg-[#156e52] transition-colors shadow-md">Edit</button>
+                                                {isAdmin && (
+                                                    <button onClick={() => handleEditClick(section.id)} className="bg-[#1a936f] text-white px-4 py-2 rounded-lg hover:bg-[#156e52] transition-colors shadow-md">Edit</button>
+                                                )}
                                             </div>
                                             {section.id === "societies-events" && societySubCategories ? (
                                                 <div className="flex flex-col sm:flex-col gap-6">

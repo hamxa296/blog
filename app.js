@@ -323,18 +323,78 @@ document.addEventListener('DOMContentLoaded', () => {
         const guestNav = document.getElementById('guest-nav');
         const mobileUserNav = document.getElementById('mobile-user-nav');
         const mobileGuestNav = document.getElementById('mobile-guest-nav');
+        const adminAccessBtn = document.getElementById('admin-access-btn');
+        const mobileAdminAccessBtn = document.getElementById('mobile-admin-access-btn');
+        
         if (user) {
             if (userNav) userNav.style.display = 'flex';
             if (guestNav) guestNav.style.display = 'none';
             if (mobileUserNav) mobileUserNav.style.display = 'block';
             if (mobileGuestNav) mobileGuestNav.style.display = 'none';
+            
+            // Show user navigation in sidebar
+            const sidebarUserNav = document.getElementById('sidebar-user-nav');
+            const sidebarGuestNav = document.getElementById('sidebar-guest-nav');
+            if (sidebarUserNav) sidebarUserNav.style.display = 'block';
+            if (sidebarGuestNav) sidebarGuestNav.style.display = 'none';
+            
+                        // Check if user is admin and show admin access button
+            if (typeof checkUserAdminStatus === 'function') {
+                checkUserAdminStatus().then(isAdmin => {
+                    if (isAdmin && adminAccessBtn) {
+                        adminAccessBtn.style.display = 'inline-block';
+                    }
+                    if (isAdmin && mobileAdminAccessBtn) {
+                        mobileAdminAccessBtn.style.display = 'block';
+                    }
+                    // Show sidebar admin button
+                    const sidebarAdminBtn = document.getElementById('sidebar-admin-access-btn');
+                    if (isAdmin && sidebarAdminBtn) {
+                        sidebarAdminBtn.style.display = 'flex';
+                    }
+                });
+            }
         } else {
             if (userNav) userNav.style.display = 'none';
             if (guestNav) guestNav.style.display = 'flex';
             if (mobileUserNav) mobileUserNav.style.display = 'none';
             if (mobileGuestNav) mobileGuestNav.style.display = 'block';
+            if (adminAccessBtn) adminAccessBtn.style.display = 'none';
+            if (mobileAdminAccessBtn) mobileAdminAccessBtn.style.display = 'none';
+            
+            // Show guest navigation in sidebar
+            const sidebarUserNav = document.getElementById('sidebar-user-nav');
+            const sidebarGuestNav = document.getElementById('sidebar-guest-nav');
+            if (sidebarUserNav) sidebarUserNav.style.display = 'none';
+            if (sidebarGuestNav) sidebarGuestNav.style.display = 'block';
+            
+            // Hide sidebar admin button
+            const sidebarAdminBtn = document.getElementById('sidebar-admin-access-btn');
+            if (sidebarAdminBtn) sidebarAdminBtn.style.display = 'none';
         }
     });
+
+    // Admin access button click handlers
+    const adminAccessBtn = document.getElementById('admin-access-btn');
+    if (adminAccessBtn) {
+        adminAccessBtn.addEventListener('click', () => {
+            window.location.href = 'admin-access.html';
+        });
+    }
+    
+    const mobileAdminAccessBtn = document.getElementById('mobile-admin-access-btn');
+    if (mobileAdminAccessBtn) {
+        mobileAdminAccessBtn.addEventListener('click', () => {
+            window.location.href = 'admin-access.html';
+        });
+    }
+
+    const sidebarAdminAccessBtn = document.getElementById('sidebar-admin-access-btn');
+    if (sidebarAdminAccessBtn) {
+        sidebarAdminAccessBtn.addEventListener('click', () => {
+            window.location.href = 'admin-access.html';
+        });
+    }
 
     const logoutButton = document.getElementById('logout-button');
     if (logoutButton) {
@@ -350,6 +410,14 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'index.html';
         });
     }
+
+    const sidebarLogoutButton = document.getElementById('sidebar-logout-button');
+    if (sidebarLogoutButton) {
+        sidebarLogoutButton.addEventListener('click', async () => {
+            await logoutUser();
+            window.location.href = 'index.html';
+        });
+    }
     // --- Gallery Page Logic ---
     const galleryGrid = document.getElementById('gallery-grid');
     if (galleryGrid) {
@@ -360,7 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const submissionModal = document.getElementById('submission-modal');
         const submissionForm = document.getElementById('submission-form');
         const formMessage = document.getElementById('form-message');
-        
+
 
 
         let allPhotos = [];
@@ -374,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
             photos.forEach(photo => {
                 const photoCard = document.createElement('div');
                 photoCard.className = 'bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer transform hover:scale-105 transition-transform duration-200';
-                                 photoCard.innerHTML = `
+                photoCard.innerHTML = `
                      <div class="relative">
                          <img src="${photo.imageUrl}" alt="${photo.caption}" class="w-full h-64 object-cover" loading="lazy" data-fullsize="${photo.fullSizeUrl || photo.imageUrl}">
                      </div>
@@ -384,12 +452,12 @@ document.addEventListener('DOMContentLoaded', () => {
                          <p class="text-xs text-gray-400">By ${photo.uploaderName}</p>
                      </div>
                  `;
-                
+
                 // Add click event for fullscreen view
                 photoCard.addEventListener('click', () => {
                     openFullscreenView(photo);
                 });
-                
+
                 galleryGrid.appendChild(photoCard);
             });
         };
@@ -410,7 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await getHighlightedPhotos();
             if (result.success && result.photos.length > 0) {
                 const highlightedPhotos = result.photos;
-                
+
                 // Clear existing interval
                 if (slideshowInterval) {
                     clearInterval(slideshowInterval);
@@ -490,12 +558,12 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const submitButton = submissionForm.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.textContent;
-            
+
             // Disable form and show loading state
             submitButton.disabled = true;
             submitButton.textContent = 'Uploading...';
             formMessage.textContent = 'Uploading...';
-            
+
             const caption = document.getElementById('caption').value;
             const category = document.getElementById('photo-category').value;
             const file = document.getElementById('photo-upload').files[0];
@@ -553,9 +621,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         loadPhotos();
     }
-    
+
     // Fullscreen view function
-    window.openFullscreenView = function(photo) {
+    window.openFullscreenView = function (photo) {
         const fullscreenModal = document.createElement('div');
         fullscreenModal.className = 'fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50';
         fullscreenModal.innerHTML = `
@@ -564,14 +632,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 <img src="${photo.fullSizeUrl || photo.imageUrl}" alt="${photo.caption}" class="max-w-full max-h-full object-contain">
             </div>
         `;
-        
+
         // Close on background click
         fullscreenModal.addEventListener('click', (e) => {
             if (e.target === fullscreenModal) {
                 fullscreenModal.remove();
             }
         });
-        
+
         // Close on escape key
         document.addEventListener('keydown', function closeOnEscape(e) {
             if (e.key === 'Escape') {
@@ -579,12 +647,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.removeEventListener('keydown', closeOnEscape);
             }
         });
-        
+
         document.body.appendChild(fullscreenModal);
     };
 
     // Toggle highlight function
-    window.toggleHighlight = async function(photoId, isHighlighted) {
+    window.toggleHighlight = async function (photoId, isHighlighted) {
         const result = await togglePhotoHighlight(photoId, isHighlighted);
         if (result.success) {
             // Reload photos to update the UI
@@ -592,5 +660,148 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             alert('Failed to update photo status. Please try again.');
         }
+    };
+    // --- Admin Page Logic ---
+    const adminContent = document.getElementById('admin-content');
+    if (adminContent) {
+        const loadingMessage = document.getElementById('loading-message');
+        const pendingPostsContainer = document.getElementById('pending-posts-container');
+
+        const displayPendingPosts = async () => {
+            console.log("Fetching pending posts...");
+            const result = await getPendingPosts();
+            console.log("Pending posts result:", result);
+            
+            pendingPostsContainer.innerHTML = ''; // Clear loader
+
+            if (result.success && result.posts.length > 0) {
+                console.log("Displaying", result.posts.length, "pending posts");
+                result.posts.forEach(post => {
+                    const postElement = document.createElement('div');
+                    postElement.className = 'flex justify-between items-center p-4 border rounded-lg bg-gray-50';
+                    postElement.innerHTML = `
+                        <div>
+                            <p class="font-bold text-lg">${post.title}</p>
+                            <p class="text-sm text-gray-500">By: ${post.authorName}</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button data-id="${post.id}" class="approve-btn bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold hover:bg-green-600">Approve</button>
+                            <button data-id="${post.id}" class="reject-btn bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold hover:bg-red-600">Reject</button>
+                        </div>
+                    `;
+                    pendingPostsContainer.appendChild(postElement);
+                });
+            } else {
+                console.log("No pending posts or error:", result.error);
+                pendingPostsContainer.innerHTML = '<p class="text-gray-500">There are no posts awaiting review.</p>';
+            }
+
+            // Add event listeners to the new buttons
+            document.querySelectorAll('.approve-btn').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const postId = e.target.dataset.id;
+                    await updatePostStatus(postId, 'approved');
+                    displayPendingPosts(); // Refresh the list
+                });
+            });
+
+            document.querySelectorAll('.reject-btn').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const postId = e.target.dataset.id;
+                    await updatePostStatus(postId, 'rejected');
+                    displayPendingPosts(); // Refresh the list
+                });
+            });
+        };
+
+        const checkAdminAndLoad = async () => {
+            console.log("Checking admin status...");
+            
+            // Check for secure access first
+            const hasSecureAccess = checkSecureAdminAccess();
+            console.log("Secure access check:", hasSecureAccess);
+            
+            if (hasSecureAccess) {
+                console.log("✅ Secure admin access granted");
+                loadingMessage.style.display = 'none';
+                adminContent.style.display = 'block';
+                displayPendingPosts();
+                return;
+            }
+            
+            // TEMPORARY: Force admin access for testing
+            const forceAdmin = false; // Set this to false to restore normal admin checking
+            
+            if (forceAdmin) {
+                console.log("🔧 TEMPORARY: Bypassing admin check for testing");
+                loadingMessage.style.display = 'none';
+                adminContent.style.display = 'block';
+                displayPendingPosts();
+                return;
+            }
+            
+            // Try the simple test first
+            const testResult = await testAdminStatus();
+            console.log("Test admin result:", testResult);
+            
+            const isAdmin = typeof checkUserAdminStatus === 'function' ? await checkUserAdminStatus() : false;
+            console.log("Admin status result:", isAdmin);
+            
+            if (isAdmin) {
+                console.log("Admin access granted, loading dashboard...");
+                loadingMessage.style.display = 'none';
+                adminContent.style.display = 'block';
+                displayPendingPosts();
+            } else {
+                console.log("Admin access denied");
+                loadingMessage.innerHTML = '<p class="text-lg text-red-500">Access Denied. You must be an administrator to view this page.</p>';
+            }
+        };
+
+        onAuthStateChange(user => {
+            if (user) {
+                checkAdminAndLoad();
+            } else {
+                // If no user is logged in, redirect to the login page
+                window.location.href = 'login.html';
+            }
+        });
+    }
+    const displayApprovedPostsAdmin = async () => {
+        const result = await getApprovedPosts();
+        approvedPostsContainer.innerHTML = ''; // Clear loader
+
+        if (result.success && result.posts.length > 0) {
+            result.posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'flex justify-between items-center p-4 border rounded-lg bg-white';
+
+                const featureButtonText = post.isFeatured ? 'Unfeature' : 'Feature';
+                const featureButtonClass = post.isFeatured ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-blue-500 hover:bg-blue-600';
+
+                postElement.innerHTML = `
+                        <div>
+                            <p class="font-bold text-lg">${post.title}</p>
+                            <p class="text-sm text-gray-500">By: ${post.authorName}</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button data-id="${post.id}" data-featured="${post.isFeatured}" class="feature-btn ${featureButtonClass} text-white px-3 py-1 rounded-full text-sm font-semibold">${featureButtonText}</button>
+                        </div>
+                    `;
+                approvedPostsContainer.appendChild(postElement);
+            });
+        } else {
+            approvedPostsContainer.innerHTML = '<p class="text-gray-500">There are no approved posts to feature.</p>';
+        }
+
+        // Add event listeners to the new feature buttons
+        document.querySelectorAll('.feature-btn').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const postId = e.target.dataset.id;
+                const isCurrentlyFeatured = e.target.dataset.featured === 'true';
+                await toggleFeaturedStatus(postId, !isCurrentlyFeatured);
+                displayApprovedPostsAdmin(); // Refresh the list
+            });
+        });
     };
 });

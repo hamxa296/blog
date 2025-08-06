@@ -1,0 +1,70 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user is not suspended
+    function isActiveUser() {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isSuspended != true;
+    }
+    
+    // Helper function to check if user is the author of a post
+    function isPostAuthor(postData) {
+      return isAuthenticated() && postData.authorId == request.auth.uid;
+    }
+    
+    // Users collection - users can read/write their own profile
+    match /users/{userId} {
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isAuthenticated() && request.auth.uid == userId;
+      allow delete: if false; // No one can delete user accounts for now
+    }
+    
+    // Posts collection - complex rules for different operations
+    match /posts/{postId} {
+      // Anyone can read approved posts
+      allow read: if resource.data.status == "approved";
+      
+      // Authenticated users can create posts
+      allow create: if isActiveUser() && 
+                      request.resource.data.authorId == request.auth.uid &&
+                      request.resource.data.status == "pending";
+      
+      // Authors can update their own pending posts
+      allow update: if isActiveUser() && 
+                      isPostAuthor(resource.data) && 
+                      resource.data.status == "pending" &&
+                      request.resource.data.status == "pending";
+      
+      // Allow admin operations (will be checked client-side)
+      allow update: if isActiveUser();
+      
+      // Only admins can delete posts (will be checked client-side)
+      allow delete: if isActiveUser();
+    }
+    
+    // Admin audit log - allow authenticated users to write (admin check done client-side)
+    match /admin_audit_log/{logId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // Gallery photos - anyone can read, authenticated users can upload
+    match /gallery/{photoId} {
+      allow read: if true; // Public read access
+      allow create: if isActiveUser();
+      allow update, delete: if isActiveUser();
+    }
+    
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+} 

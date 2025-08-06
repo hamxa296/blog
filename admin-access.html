@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Access - GIKI Chronicles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+    <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Admin Access</h1>
+            <p class="text-gray-600">Generate secure access link</p>
+        </div>
+        
+        <div class="space-y-4">
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p class="text-sm text-blue-800 mb-2">Today's secure link:</p>
+                <div id="secure-link" class="text-xs bg-white p-2 rounded border break-all"></div>
+            </div>
+            
+            <button id="copy-btn" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">
+                Copy Link
+            </button>
+            
+            <button id="open-btn" class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-200">
+                Open Admin Dashboard
+            </button>
+            
+            <div class="text-center mt-6">
+                <a href="index.html" class="text-blue-600 hover:text-blue-800 text-sm">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="secure-access.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const secureLink = createSecureAdminLink();
+            document.getElementById('secure-link').textContent = secureLink;
+            
+            document.getElementById('copy-btn').addEventListener('click', function() {
+                navigator.clipboard.writeText(secureLink).then(function() {
+                    this.textContent = 'Copied!';
+                    setTimeout(() => {
+                        this.textContent = 'Copy Link';
+                    }, 2000);
+                }.bind(this));
+            });
+            
+            document.getElementById('open-btn').addEventListener('click', function() {
+                window.open(secureLink, '_blank');
+            });
+        });
+    </script>
+</body>
+</html> 

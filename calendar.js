@@ -85,20 +85,26 @@ document.addEventListener('DOMContentLoaded', () => {
         appleCalendarLink.download = `${event.name}.ics`;
     }
 
-    googleCalendarLink.addEventListener('click', () => {
-        if (currentEvent) generateCalendarLinks(currentEvent);
-        hideAddToCalendarModal();
-    });
+    if (googleCalendarLink) {
+        googleCalendarLink.addEventListener('click', () => {
+            if (currentEvent) generateCalendarLinks(currentEvent);
+            hideAddToCalendarModal();
+        });
+    }
 
-    outlookCalendarLink.addEventListener('click', () => {
-        if (currentEvent) generateCalendarLinks(currentEvent);
-        hideAddToCalendarModal();
-    });
+    if (outlookCalendarLink) {
+        outlookCalendarLink.addEventListener('click', () => {
+            if (currentEvent) generateCalendarLinks(currentEvent);
+            hideAddToCalendarModal();
+        });
+    }
 
-    appleCalendarLink.addEventListener('click', () => {
-        if (currentEvent) generateCalendarLinks(currentEvent);
-        hideAddToCalendarModal();
-    });
+    if (appleCalendarLink) {
+        appleCalendarLink.addEventListener('click', () => {
+            if (currentEvent) generateCalendarLinks(currentEvent);
+            hideAddToCalendarModal();
+        });
+    }
 
     // --- Backend Firebase Functions ---
     async function saveEvent(eventData) {
