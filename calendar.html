@@ -8,24 +8,46 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="calendar_styles.css">
+    <link rel="stylesheet" href="styles.css">
+
 </head>
 
 <body>
-    <header class="header">
-        <div class="logo"><span class="logo-giki">Giki</span>Calendar</div>
-        <nav class="nav">
-            <a id="nav-home" href="#" class="nav-link active">Home</a>
-            <a id="nav-events" href="#" class="nav-link">Events</a>
-            <a id="nav-map" href="#" class="nav-link">Map</a>
-            <a id="nav-submit" href="#" class="nav-link">Submit</a>
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex items-center">
+            <!-- Left side: Hamburger + Logo -->
+            <div class="flex items-center space-x-4">
+                <!-- Hamburger Menu Button -->
+                <button id="sidebar-toggle" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+                
+                <a href="index.html" class="text-2xl font-bold text-gray-800">
+                    GIKI<span class="text-blue-600">Chronicles</span>
+                </a>
+            </div>
+            
+            <!-- Right side: Navigation -->
+            <div class="hidden md:flex items-center space-x-6 ml-auto">
+                <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a>
+                <a href="about.html" class="text-gray-600 hover:text-blue-600 transition duration-300">About</a>
+                <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a>
+                <a href="gallery.html" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-4 py-2 rounded-full hover:from-purple-600 hover:to-pink-700 transition duration-300 font-semibold shadow-lg">Gallery</a>
+                <a href="guide.html" class="bg-gradient-to-r from-green-500 to-blue-600 text-white px-4 py-2 rounded-full hover:from-green-600 hover:to-blue-700 transition duration-300 font-semibold shadow-lg">🎓 Freshmen Guide</a>
+                <a href="calendar.html" class="font-semibold text-blue-600 transition duration-300">📅 Calendar</a>
+
+                <!-- GUEST NAVIGATION (DESKTOP) -->
+                <div id="guest-nav" class="flex items-center space-x-6">
+                    <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
+                </div>
+
+                <!-- USER NAVIGATION (DESKTOP) -->
+                <div id="user-nav" class="hidden md:flex items-center space-x-6">
+                </div>
+            </div>
         </nav>
-        <button class="sign-in-btn">
-            Sign In with Google
-            <svg class="arrow" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 4L10.59 5.41L16.17 11H4V13H16.17L10.59 18.59L12 20L20 12L12 4Z" fill="white" />
-            </svg>
-        </button>
     </header>
 
     <main class="main-content">

@@ -151,6 +151,11 @@ async function isUserAdmin() {
     if (!user) return false;
     
     try {
+        // First, ensure user data is loaded
+        if (typeof window.ensureUserDataLoaded === 'function') {
+            await window.ensureUserDataLoaded();
+        }
+        
         console.log("Fetching user document for:", user.uid);
         const userDoc = await db.collection('users').doc(user.uid).get();
         console.log("User document exists:", userDoc.exists);

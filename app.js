@@ -4,7 +4,25 @@
  * of frontend elements with the backend functions.
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log("App.js: DOM Content Loaded");
+    
+    // Wait a bit for Firebase to initialize
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Check if user data needs to be loaded
+    if (typeof window.ensureUserDataLoaded === 'function') {
+        try {
+            const currentUser = firebase.auth().currentUser;
+            if (currentUser) {
+                console.log("App.js: Ensuring user data is loaded on page load");
+                await window.ensureUserDataLoaded();
+            }
+        } catch (error) {
+            console.error("App.js: Error ensuring user data loaded on page load:", error);
+        }
+    }
+    
     // --- Initialize Quill Editor ---
     let quill;
     if (document.getElementById('editor-container')) {
@@ -317,8 +335,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Listen for custom auth state changed events (for cross-tab synchronization)
+    window.addEventListener('authStateChanged', async (event) => {
+        console.log("App.js: Custom auth state changed event received:", event.detail);
+        const { user, initialized } = event.detail;
+        
+        if (initialized && user) {
+            // Ensure user data is properly loaded when auth state is initialized
+            if (typeof window.ensureUserDataLoaded === 'function') {
+                try {
+                    await window.ensureUserDataLoaded();
+                } catch (error) {
+                    console.error("App.js: Error ensuring user data loaded from custom event:", error);
+                }
+            }
+        }
+    });
+
     // --- Dynamic Navigation Bar & Logout Logic ---
-    onAuthStateChange(user => {
+    onAuthStateChange(async user => {
+        console.log("App.js: Auth state changed, user:", user ? user.uid : "No user");
+        
         const userNav = document.getElementById('user-nav');
         const guestNav = document.getElementById('guest-nav');
         const mobileUserNav = document.getElementById('mobile-user-nav');
@@ -327,6 +364,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const mobileAdminAccessBtn = document.getElementById('mobile-admin-access-btn');
         
         if (user) {
+            // Ensure user data is properly loaded
+            if (typeof window.ensureUserDataLoaded === 'function') {
+                try {
+                    const dataLoaded = await window.ensureUserDataLoaded();
+                    console.log("App.js: User data loaded:", dataLoaded);
+                } catch (error) {
+                    console.error("App.js: Error ensuring user data loaded:", error);
+                }
+            }
+            
             if (userNav) userNav.style.display = 'flex';
             if (guestNav) guestNav.style.display = 'none';
             if (mobileUserNav) mobileUserNav.style.display = 'block';
@@ -338,9 +385,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (sidebarUserNav) sidebarUserNav.style.display = 'block';
             if (sidebarGuestNav) sidebarGuestNav.style.display = 'none';
             
-                        // Check if user is admin and show admin access button
+            // Check if user is admin and show admin access button
             if (typeof checkUserAdminStatus === 'function') {
-                checkUserAdminStatus().then(isAdmin => {
+                try {
+                    const isAdmin = await checkUserAdminStatus();
+                    console.log("App.js: Admin status check result:", isAdmin);
                     if (isAdmin && adminAccessBtn) {
                         adminAccessBtn.style.display = 'inline-block';
                     }
@@ -352,7 +401,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (isAdmin && sidebarAdminBtn) {
                         sidebarAdminBtn.style.display = 'flex';
                     }
-                });
+                } catch (error) {
+                    console.error("App.js: Error checking admin status:", error);
+                }
             }
         } else {
             if (userNav) userNav.style.display = 'none';

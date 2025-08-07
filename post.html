@@ -68,68 +68,41 @@
 <body class="text-gray-800">
 
     <!-- Header -->
-    <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-bold text-gray-800">
-                GIKI<span class="text-blue-600">Chronicles</span>
-            </a>
-            <div class="hidden md:flex items-center space-x-6">
+        <nav class="container mx-auto px-6 py-4 flex items-center">
+            <!-- Left side: Hamburger + Logo -->
+            <div class="flex items-center space-x-4">
+                <!-- Hamburger Menu Button -->
+                <button id="sidebar-toggle" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+                
+                <a href="index.html" class="text-2xl font-bold text-gray-800">
+                    GIKI<span class="text-blue-600">Chronicles</span>
+                </a>
+            </div>
+            
+            <!-- Right side: Navigation -->
+            <div class="hidden md:flex items-center space-x-6 ml-auto">
                 <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a>
                 <a href="about.html" class="text-gray-600 hover:text-blue-600 transition duration-300">About</a>
                 <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a>
+                <a href="gallery.html" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-4 py-2 rounded-full hover:from-purple-600 hover:to-pink-700 transition duration-300 font-semibold shadow-lg">Gallery</a>
+                <a href="guide.html" class="bg-gradient-to-r from-green-500 to-blue-600 text-white px-4 py-2 rounded-full hover:from-green-600 hover:to-blue-700 transition duration-300 font-semibold shadow-lg">🎓 Freshmen Guide</a>
+                <a href="calendar.html" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-4 py-2 rounded-full hover:from-purple-600 hover:to-pink-700 transition duration-300 font-semibold shadow-lg">📅 Calendar</a>
 
                 <!-- GUEST NAVIGATION (DESKTOP) -->
                 <div id="guest-nav" class="flex items-center space-x-6">
                     <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
-                    <a href="signup.html"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">Sign
-                        Up</a>
                 </div>
 
                 <!-- USER NAVIGATION (DESKTOP) -->
-                <div id="user-nav" class="hidden items-center space-x-6">
-                    <a href="write.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Write a
-                        Post</a>
-                    <a href="profile.html" class="text-gray-600 hover:text-blue-600 transition duration-300">My
-                        Profile</a>
-                    <button id="logout-button"
-                        class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300">Logout</button>
+                <div id="user-nav" class="hidden md:flex items-center space-x-6">
                 </div>
             </div>
-            <!-- Mobile Menu Button -->
-            <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
-                    </path>
-                </svg>
-            </button>
         </nav>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-            <a href="index.html" class="block py-2 text-gray-600 hover:text-blue-600">Home</a>
-            <a href="about.html" class="block py-2 text-gray-600 hover:text-blue-600">About</a>
-            <a href="contact.html" class="block py-2 text-gray-600 hover:text-blue-600">Contact</a>
-
-            <hr class="my-2">
-
-            <!-- GUEST NAVIGATION (MOBILE) -->
-            <div id="mobile-guest-nav">
-                <a href="login.html" class="block py-2 text-gray-600 hover:text-blue-600">Login</a>
-                <a href="signup.html"
-                    class="block mt-2 bg-blue-600 text-white px-4 py-2 rounded-full text-center hover:bg-blue-700">Sign
-                    Up</a>
-            </div>
-
-            <!-- USER NAVIGATION (MOBILE) -->
-            <div id="mobile-user-nav" class="hidden">
-                <a href="write.html" class="block py-2 text-gray-600 hover:text-blue-600">Write a Post</a>
-                <a href="profile.html" class="block py-2 text-gray-600 hover:text-blue-600">My Profile</a>
-                <button id="mobile-logout-button"
-                    class="w-full mt-2 bg-red-500 text-white px-4 py-2 rounded-full text-center hover:bg-red-600">Logout</button>
-            </div>
-        </div>
     </header>
 
     <!-- Main Post Content -->
