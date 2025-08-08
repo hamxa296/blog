@@ -37,3 +37,123 @@ body {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
 }
+
+/* Theme Styles */
+/* Basic Light Theme (Default) */
+.theme-basic-light {
+    --primary-color: #3b82f6;
+    --primary-hover: #2563eb;
+    --bg-color: #f8f9fa;
+    --text-color: #1f2937;
+    --sidebar-bg: #ffffff;
+    --card-bg: #ffffff;
+    --border-color: #e5e7eb;
+}
+
+/* Basic Dark Theme */
+.theme-basic-dark {
+    --primary-color: #60a5fa;
+    --primary-hover: #3b82f6;
+    --bg-color: #1f2937;
+    --text-color: #f9fafb;
+    --sidebar-bg: #111827;
+    --card-bg: #374151;
+    --border-color: #4b5563;
+}
+
+/* Purple Theme */
+.theme-purple {
+    --primary-color: #332d56;
+    --primary-hover: #4c1d95;
+    --bg-color: #f8f9fa;
+    --text-color: #1f2937;
+    --sidebar-bg: #ffffff;
+    --card-bg: #ffffff;
+    --border-color: #e5e7eb;
+}
+
+/* Blue Theme */
+.theme-blue {
+    --primary-color: #4E6688;
+    --primary-hover: #3b5998;
+    --bg-color: #f8f9fa;
+    --text-color: #1f2937;
+    --sidebar-bg: #ffffff;
+    --card-bg: #ffffff;
+    --border-color: #e5e7eb;
+}
+
+/* Teal Theme */
+.theme-teal {
+    --primary-color: #71C0BB;
+    --primary-hover: #5a9ca8;
+    --bg-color: #f8f9fa;
+    --text-color: #1f2937;
+    --sidebar-bg: #ffffff;
+    --card-bg: #ffffff;
+    --border-color: #e5e7eb;
+}
+
+/* Lime Theme */
+.theme-lime {
+    --primary-color: #E3EEB2;
+    --primary-hover: #d4e6a3;
+    --bg-color: #f8f9fa;
+    --text-color: #1f2937;
+    --sidebar-bg: #ffffff;
+    --card-bg: #ffffff;
+    --border-color: #e5e7eb;
+}
+
+/* Apply theme variables */
+body {
+    background-color: var(--bg-color, #f8f9fa);
+    color: var(--text-color, #1f2937);
+}
+
+/* Theme-specific button styles */
+.theme-basic-light .bg-blue-600,
+.theme-purple .bg-blue-600,
+.theme-blue .bg-blue-600,
+.theme-teal .bg-blue-600,
+.theme-lime .bg-blue-600 {
+    background-color: var(--primary-color) !important;
+}
+
+.theme-basic-light .hover\:bg-blue-700:hover,
+.theme-purple .hover\:bg-blue-700:hover,
+.theme-blue .hover\:bg-blue-700:hover,
+.theme-teal .hover\:bg-blue-700:hover,
+.theme-lime .hover\:bg-blue-700:hover {
+    background-color: var(--primary-hover) !important;
+}
+
+/* Dark theme specific overrides */
+.theme-basic-dark {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+
+.theme-basic-dark .bg-white {
+    background-color: var(--card-bg) !important;
+}
+
+.theme-basic-dark .text-gray-800 {
+    color: var(--text-color) !important;
+}
+
+.theme-basic-dark .text-gray-600 {
+    color: #d1d5db !important;
+}
+
+.theme-basic-dark .border-gray-300 {
+    border-color: var(--border-color) !important;
+}
+
+.theme-basic-dark #sidebar {
+    background-color: var(--sidebar-bg) !important;
+}
+
+.theme-basic-dark .shadow-sm {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
+}

@@ -32,21 +32,12 @@
 }
 
 body {
-    background-image: linear-gradient(rgba(16, 12, 31, 0.8), rgba(16, 12, 31, 0.8)), url('bg.png');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-color: var(--primary-bg);
-    color: var(--text-color);
-    font-family: 'Poppins', sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background-color: #f9fafb;
+    color: #1f2937;
+    font-family: 'Inter', sans-serif;
     min-height: 100vh;
-    padding: 2rem;
     position: relative;
     overflow-x: hidden;
-    transition: background-color 0.5s ease;
 }
 
 /* Header */
@@ -108,7 +99,15 @@ body {
 }
 
 .nav-link.active {
-    color: #fff;
+    color: #3b82f6;
+    font-weight: 600;
+}
+
+/* New navigation styles for the updated header */
+#nav-events.active,
+#nav-submit.active {
+    color: #3b82f6;
+    font-weight: 600;
 }
 
 .sign-in-btn {
@@ -171,21 +170,21 @@ body {
 
 /* Calendar */
 .calendar-container {
-    background-color: var(--secondary-bg);
-    background: linear-gradient(135deg, var(--secondary-bg) 0%, #20183F 100%);
-    border-radius: 1.5rem;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
     padding: 2.5rem;
     width: 100%;
     max-width: 700px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     margin: 0 auto;
     min-height: 500px;
 }
 
 .calendar-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .calendar-header {
@@ -198,13 +197,13 @@ body {
 .month-year {
     font-size: 1.75rem;
     font-weight: 600;
-    color: #fff;
+    color: #1f2937;
 }
 
 .nav-arrow {
     background: none;
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
+    border: 1px solid #d1d5db;
+    color: #6b7280;
     font-size: 1.5rem;
     width: 2.5rem;
     height: 2.5rem;
@@ -217,8 +216,9 @@ body {
 }
 
 .nav-arrow:hover {
-    background-color: var(--accent-color);
+    background-color: #3b82f6;
     color: #fff;
+    border-color: #3b82f6;
     transform: scale(1.1);
 }
 
@@ -233,7 +233,7 @@ body {
 
 .day-of-week {
     font-weight: 500;
-    color: var(--faded-text);
+    color: #6b7280;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -256,20 +256,20 @@ body {
 }
 
 .day:hover:not(.selected):not(.other-month) {
-    background-color: var(--hover-bg);
+    background-color: #f3f4f6;
 }
 
 .day.selected {
-    background-color: var(--selected-bg);
+    background-color: #3b82f6;
     color: #fff;
     font-weight: 600;
-    box-shadow: 0 4px 10px rgba(108, 96, 180, 0.3);
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
     transform: scale(1.05);
     transition: transform 0.2s ease;
 }
 
 .day.other-month {
-    color: var(--faded-text);
+    color: #9ca3af;
     opacity: 0.6;
     cursor: default;
 }

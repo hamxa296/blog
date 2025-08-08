@@ -117,7 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 location: eventData.location,
                 description: eventData.description,
                 submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                submittedBy: auth.currentUser ? auth.currentUser.uid : "Guest"
+                submittedBy: auth.currentUser ? auth.currentUser.uid : "Guest",
+                status: "pending" // All new events start as pending
             };
             await db.collection("events").add(newEvent);
             return { success: true };
@@ -129,7 +130,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function getAllEvents() {
         try {
-            const querySnapshot = await db.collection("events").get();
+            const querySnapshot = await db.collection("events")
+                .where("status", "==", "approved")
+                .get();
             const fetchedEvents = {};
 
             querySnapshot.forEach((doc) => {
@@ -225,7 +228,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Frontend UI Logic ---
-    const navLinks = document.querySelectorAll('.nav-link');
+    const navEvents = document.getElementById('nav-events');
+    const navSubmit = document.getElementById('nav-submit');
     const calendarView = document.getElementById('calendar-view');
     const submitEventView = document.getElementById('submit-event-view');
     const eventsView = document.getElementById('events-view');
@@ -246,10 +250,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     function showPage(pageId) {
-        calendarView.style.display = 'none';
-        submitEventView.style.display = 'none';
-        eventsView.style.display = 'none';
-        mapView.style.display = 'none';
+        if (calendarView) calendarView.style.display = 'none';
+        if (submitEventView) submitEventView.style.display = 'none';
+        if (eventsView) eventsView.style.display = 'none';
+        if (mapView) mapView.style.display = 'none';
 
         let viewId;
         switch (pageId) {
@@ -276,7 +280,11 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error(`View ${viewId} not found`);
         }
 
-        navLinks.forEach(link => link.classList.remove('active'));
+        // Remove active class from all nav links
+        if (navEvents) navEvents.classList.remove('active');
+        if (navSubmit) navSubmit.classList.remove('active');
+        
+        // Add active class to current nav link
         const activeLink = document.getElementById(`nav-${pageId}`);
         if (activeLink) {
             activeLink.classList.add('active');
@@ -286,6 +294,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderCalendar() {
+        if (!monthYearEl || !calendarGrid) return; // Exit if elements don't exist
+        
         const month = currentDate.getMonth();
         const year = currentDate.getFullYear();
         monthYearEl.textContent = `${monthNames[month]} ${year}`;
@@ -466,15 +476,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Event listeners
-    leftArrow.addEventListener('click', () => {
-        currentDate.setMonth(currentDate.getMonth() - 1);
-        renderCalendar();
-    });
+    if (leftArrow) {
+        leftArrow.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        });
+    }
 
-    rightArrow.addEventListener('click', () => {
-        currentDate.setMonth(currentDate.getMonth() + 1);
-        renderCalendar();
-    });
+    if (rightArrow) {
+        rightArrow.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        });
+    }
 
     if (closeBtn) {
         closeBtn.addEventListener('click', hideEventPopup);
@@ -488,12 +502,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (navLinks) {
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                showPage(link.id.replace('nav-', ''));
-            });
+    if (navEvents) {
+        navEvents.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('events');
+        });
+    }
+
+    if (navSubmit) {
+        navSubmit.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('submit');
         });
     }
 
@@ -518,7 +537,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const result = await saveEvent(eventData);
             if (result.success) {
-                showNotification('Success!', 'Event submitted successfully!', 'success');
+                showNotification('Success!', 'Event submitted successfully! It will be reviewed by an admin before appearing on the calendar.', 'success');
                 eventForm.reset();
                 showPage('home');
                 await loadEventsAndRender();
@@ -528,7 +547,105 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initial render
-    showPage('home');
-    loadEventsAndRender();
+    // Initial render - only if we're on the calendar page
+    if (calendarView && submitEventView && eventsView) {
+        showPage('home');
+        loadEventsAndRender();
+    }
+
+    // --- Theme Management ---
+    // Load saved theme from localStorage and apply it
+    const savedTheme = localStorage.getItem('selected-theme') || 'basic-light';
+    applyTheme(savedTheme);
+
+    // Function to apply theme
+    function applyTheme(themeName) {
+        // Remove all existing theme classes
+        document.body.classList.remove('theme-basic-light', 'theme-basic-dark', 'theme-purple', 'theme-blue', 'theme-teal', 'theme-lime');
+        
+        // Add the selected theme class
+        document.body.classList.add(`theme-${themeName}`);
+    }
 });
+
+// --- Admin Functions for Event Approval ---
+
+/**
+ * Fetches all pending events for admin review.
+ * @returns {Promise<object>} A promise that resolves with pending events.
+ */
+async function getPendingEvents() {
+    const user = auth.currentUser;
+    if (!user) {
+        console.log("No authenticated user");
+        return { success: false, error: "Authentication required." };
+    }
+
+    console.log("Getting pending events for user:", user.uid);
+
+    // Verify admin status server-side
+    try {
+        console.log("Checking admin status...");
+        const isAdmin = await isUserAdmin();
+        console.log("Admin check result:", isAdmin);
+        
+        if (!isAdmin) {
+            console.error("Unauthorized access attempt to fetch pending events");
+            return { success: false, error: "Admin privileges required." };
+        }
+
+        console.log("Admin verified, fetching pending events...");
+        const snapshot = await db.collection("events")
+            .where("status", "==", "pending")
+            .get();
+
+        const events = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        
+        // Sort by submittedAt on the client side (oldest first)
+        events.sort((a, b) => {
+            const aTime = a.submittedAt ? a.submittedAt.toDate ? a.submittedAt.toDate() : new Date(a.submittedAt) : new Date(0);
+            const bTime = b.submittedAt ? b.submittedAt.toDate ? b.submittedAt.toDate() : new Date(b.submittedAt) : new Date(0);
+            return aTime - bTime;
+        });
+        
+        console.log("Found", events.length, "pending events");
+        return { success: true, events: events };
+
+    } catch (error) {
+        console.error("Error fetching pending events:", error);
+        return { success: false, error: "Failed to fetch pending events." };
+    }
+}
+
+/**
+ * Updates the status of an event (e.g., to "approved" or "rejected").
+ * @param {string} eventId - The ID of the event to update.
+ * @param {string} newStatus - The new status ("approved" or "rejected").
+ * @returns {Promise<object>} A promise that resolves on success.
+ */
+async function updateEventStatus(eventId, newStatus) {
+    const user = auth.currentUser;
+    if (!user) {
+        return { success: false, error: "Authentication required." };
+    }
+
+    // Verify admin status server-side
+    try {
+        const isAdmin = await isUserAdmin();
+        if (!isAdmin) {
+            console.error("Unauthorized access attempt to update event status");
+            return { success: false, error: "Admin privileges required." };
+        }
+
+        const docRef = db.collection("events").doc(eventId);
+        await docRef.update({ 
+            status: newStatus,
+            reviewedBy: user.uid,
+            reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating event status:", error);
+        return { success: false, error: "Failed to update status." };
+    }
+}

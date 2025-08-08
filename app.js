@@ -258,8 +258,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const result = await getApprovedPosts();
             recentPostsGrid.innerHTML = '';
             if (result.success && result.posts.length > 0) {
-                result.posts.forEach(post => {
-                    if (post.isFeatured) return;
+                // Filter out featured posts and limit to 3 posts
+                const nonFeaturedPosts = result.posts.filter(post => !post.isFeatured);
+                const limitedPosts = nonFeaturedPosts.slice(0, 3);
+                
+                limitedPosts.forEach(post => {
                     const postCard = document.createElement('div');
                     postCard.className = 'bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300';
                     const postDate = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : 'N/A';
@@ -273,6 +276,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </div>`;
                     recentPostsGrid.appendChild(postCard);
                 });
+                
+                // Add "View More" button if there are more than 3 posts
+                if (nonFeaturedPosts.length > 3) {
+                    const viewMoreContainer = document.createElement('div');
+                    viewMoreContainer.className = 'col-span-full flex justify-center mt-8';
+                    viewMoreContainer.innerHTML = `
+                        <a href="browse.html" class="bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transition duration-300 font-semibold shadow-lg transform hover:-translate-y-1">
+                            View More Posts
+                        </a>
+                    `;
+                    recentPostsGrid.appendChild(viewMoreContainer);
+                }
             } else if (result.success) {
                 recentPostsGrid.innerHTML = '<p class="text-gray-500">No posts have been approved yet.</p>';
             }
@@ -765,6 +780,61 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         };
 
+        const displayPendingEvents = async () => {
+            console.log("Fetching pending events...");
+            const result = await getPendingEvents();
+            console.log("Pending events result:", result);
+            
+            const pendingEventsContainer = document.getElementById('pending-events-container');
+            if (!pendingEventsContainer) {
+                console.error("Pending events container not found");
+                return;
+            }
+            
+            pendingEventsContainer.innerHTML = ''; // Clear loader
+
+            if (result.success && result.events.length > 0) {
+                console.log("Displaying", result.events.length, "pending events");
+                result.events.forEach(event => {
+                    const eventElement = document.createElement('div');
+                    eventElement.className = 'flex justify-between items-center p-4 border rounded-lg bg-gray-50';
+                    eventElement.innerHTML = `
+                        <div>
+                            <p class="font-bold text-lg">${event.name}</p>
+                            <p class="text-sm text-gray-500">Date: ${event.date} ${event.time ? `at ${event.time}` : ''}</p>
+                            <p class="text-sm text-gray-500">Type: ${event.type} | Location: ${event.location}</p>
+                            <p class="text-sm text-gray-600">${event.description}</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button data-id="${event.id}" class="approve-event-btn bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold hover:bg-green-600">Approve</button>
+                            <button data-id="${event.id}" class="reject-event-btn bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold hover:bg-red-600">Reject</button>
+                        </div>
+                    `;
+                    pendingEventsContainer.appendChild(eventElement);
+                });
+            } else {
+                console.log("No pending events or error:", result.error);
+                pendingEventsContainer.innerHTML = '<p class="text-gray-500">There are no events awaiting review.</p>';
+            }
+
+            // Add event listeners to the new buttons
+            document.querySelectorAll('.approve-event-btn').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const eventId = e.target.dataset.id;
+                    await updateEventStatus(eventId, 'approved');
+                    displayPendingEvents(); // Refresh the list
+                });
+            });
+
+            document.querySelectorAll('.reject-event-btn').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const eventId = e.target.dataset.id;
+                    await updateEventStatus(eventId, 'rejected');
+                    displayPendingEvents(); // Refresh the list
+                });
+            });
+        };
+
         const checkAdminAndLoad = async () => {
             console.log("Checking admin status...");
             
@@ -777,6 +847,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 loadingMessage.style.display = 'none';
                 adminContent.style.display = 'block';
                 displayPendingPosts();
+                displayPendingEvents();
                 return;
             }
             
@@ -788,6 +859,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 loadingMessage.style.display = 'none';
                 adminContent.style.display = 'block';
                 displayPendingPosts();
+                displayPendingEvents();
                 return;
             }
             
@@ -803,6 +875,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 loadingMessage.style.display = 'none';
                 adminContent.style.display = 'block';
                 displayPendingPosts();
+                displayPendingEvents();
             } else {
                 console.log("Admin access denied");
                 loadingMessage.innerHTML = '<p class="text-lg text-red-500">Access Denied. You must be an administrator to view this page.</p>';
@@ -855,4 +928,43 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         });
     };
+
+    // --- Theme Management ---
+    const themeSelect = document.getElementById('theme-select');
+
+    // Always apply saved theme on load, even if there's no dropdown on this page
+    const savedTheme = localStorage.getItem('selected-theme') || 'basic-light';
+    applyTheme(savedTheme);
+
+    if (themeSelect) {
+        // Sync dropdown with saved theme
+        themeSelect.value = savedTheme;
+
+        // Add event listener for theme changes
+        themeSelect.addEventListener('change', (e) => {
+            const selectedTheme = e.target.value;
+            localStorage.setItem('selected-theme', selectedTheme);
+            applyTheme(selectedTheme);
+        });
+    }
+
+    // Function to apply theme
+    function applyTheme(themeName) {
+        // Remove all existing theme classes
+        document.body.classList.remove('theme-basic-light', 'theme-basic-dark', 'theme-purple', 'theme-blue', 'theme-teal', 'theme-lime');
+        
+        // Add the selected theme class
+        document.body.classList.add(`theme-${themeName}`);
+        
+        // Update the GIKI Chronicles logo color based on theme
+        const logoElement = document.querySelector('a[href="index.html"]');
+        if (logoElement) {
+            const logoText = logoElement.innerHTML;
+            if (logoText.includes('GIKI<span class="text-blue-600">Chronicles</span>')) {
+                // Update the blue color in the logo to match the theme
+                const newLogoText = logoText.replace('text-blue-600', `text-[${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}]`);
+                logoElement.innerHTML = newLogoText;
+            }
+        }
+    }
 });
