@@ -66,44 +66,7 @@ async function uploadProfilePicture(userId, file) {
         return { success: false, error: "Failed to upload photo." };
     }
 }
-async function getUserProfile(userId) {
-    try {
-        const docRef = db.collection("users").doc(userId);
-        const docSnap = await docRef.get();
-        if (docSnap.exists) {
-            return { success: true, profile: docSnap.data() };
-        } else {
-            return { success: false, error: "User profile not found." };
-        }
-    } catch (error) {
-        console.error("Error getting user profile:", error);
-        return { success: false, error: "Failed to fetch user profile." };
-    }
-}
 
-async function updateUserProfile(userId, profileData) {
-    try {
-        const docRef = db.collection("users").doc(userId);
-        await docRef.update(profileData);
-        return { success: true };
-    } catch (error) {
-        console.error("Error updating profile:", error);
-        return { success: false, error: "Failed to update profile." };
-    }
-}
-
-async function uploadProfilePicture(userId, file) {
-    try {
-        const storageRef = firebase.storage().ref();
-        const fileRef = storageRef.child(`profile_pictures/${userId}/${file.name}`);
-        const snapshot = await fileRef.put(file);
-        const downloadURL = await snapshot.ref.getDownloadURL();
-        return { success: true, url: downloadURL };
-    } catch (error) {
-        console.error("Error uploading photo:", error);
-        return { success: false, error: "Failed to upload photo." };
-    }
-}
 
 /**
  * Checks if the current user is an admin.

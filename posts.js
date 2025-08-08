@@ -46,6 +46,10 @@ async function createPost(postData) {
 
         const docRef = await db.collection("posts").add(newPost);
         console.log("Post created successfully with ID:", docRef.id);
+        
+        // Note: Stats will be updated when the post is approved by admin
+        // We don't update stats for pending posts to keep counts accurate
+        
         return { success: true, postId: docRef.id };
 
     } catch (error) {

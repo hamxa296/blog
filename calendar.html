@@ -31,8 +31,8 @@
                     </a>
                     <a href="index.html" class="text-sm text-gray-500 hover:text-blue-600 transition duration-300 mt-1">
                         ← Back to Home
-                    </a>
-                </div>
+                </a>
+            </div>
             </div>
             <div class="hidden md:flex items-center space-x-6 ml-auto">
                 <a href="#" id="nav-events" class="text-gray-600 hover:text-blue-600 transition duration-300">Events</a>
@@ -45,7 +45,7 @@
     </header>
 
     <!-- Sidebar -->
-    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out">
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
       <div class="flex items-center justify-between p-6 border-b">
         <h2 class="text-xl font-bold text-gray-800">Menu</h2>
         <button id="sidebar-close" class="text-gray-600 hover:text-blue-600 focus:outline-none">
@@ -55,7 +55,7 @@
         </button>
       </div>
       
-      <nav class="p-6">
+      <nav class="p-6 flex-1 overflow-y-auto">
         <div class="space-y-4">
           <!-- Main Navigation -->
           <div>
@@ -122,10 +122,7 @@
                 <select id="theme-select" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-700">
                   <option value="basic-light">Basic Light</option>
                   <option value="basic-dark">Basic Dark</option>
-                  <option value="purple">Purple (#332D56)</option>
-                  <option value="blue">Blue (#4E6688)</option>
-                  <option value="teal">Teal (#71C0BB)</option>
-                  <option value="lime">Lime (#E3EEB2)</option>
+                  <option value="giki">GIKI Palette</option>
                 </select>
               </div>
             </div>
@@ -182,31 +179,31 @@
 
     <main class="min-h-screen bg-gray-50">
         <div class="container mx-auto px-4 py-12">
-            <div id="calendar-view">
+        <div id="calendar-view">
                 <div class="text-center mb-12">
                     <h1 class="text-4xl font-bold text-gray-800 mb-4">GIKI Calendar</h1>
                     <p class="text-lg text-gray-600 max-w-2xl mx-auto">
                         Discover what's happening at the university. Your hub for all club and society events.
                     </p>
-                </div>
+            </div>
 
-                <div class="calendar-container">
-                    <div class="calendar-header">
-                        <button id="left-arrow" class="nav-arrow left-arrow">&lt;</button>
-                        <div id="month-year" class="month-year"></div>
-                        <button id="right-arrow" class="nav-arrow right-arrow">&gt;</button>
-                    </div>
-                    <div id="calendar-grid" class="calendar-grid">
-                        <div class="day-of-week">Su</div>
-                        <div class="day-of-week">Mo</div>
-                        <div class="day-of-week">Tu</div>
-                        <div class="day-of-week">We</div>
-                        <div class="day-of-week">Th</div>
-                        <div class="day-of-week">Fr</div>
-                        <div class="day-of-week">Sa</div>
-                    </div>
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <button id="left-arrow" class="nav-arrow left-arrow">&lt;</button>
+                    <div id="month-year" class="month-year"></div>
+                    <button id="right-arrow" class="nav-arrow right-arrow">&gt;</button>
+                </div>
+                <div id="calendar-grid" class="calendar-grid">
+                    <div class="day-of-week">Su</div>
+                    <div class="day-of-week">Mo</div>
+                    <div class="day-of-week">Tu</div>
+                    <div class="day-of-week">We</div>
+                    <div class="day-of-week">Th</div>
+                    <div class="day-of-week">Fr</div>
+                    <div class="day-of-week">Sa</div>
                 </div>
             </div>
+        </div>
 
             <div id="submit-event-view" class="submit-event-section hidden">
                 <div class="text-center mb-12">
@@ -214,43 +211,43 @@
                     <p class="text-lg text-gray-600 max-w-2xl mx-auto">
                         Fill out the form below to add your club or society event to the calendar.
                     </p>
-                </div>
-                <div class="submit-event-form">
-                    <form id="event-form">
-                        <div class="form-group">
-                            <label for="eventName">Event Name</label>
-                            <input type="text" id="eventName" name="eventName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="eventDate">Event Date</label>
-                            <input type="date" id="eventDate" name="eventDate" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="eventTime">Event Time (Optional)</label>
-                            <input type="time" id="eventTime" name="eventTime">
-                        </div>
-                        <div class="form-group">
-                            <label for="eventType">Event Type</label>
-                            <select id="eventType" name="eventType" required>
-                                <option value="">Select a type...</option>
-                                <option value="Tech">Tech</option>
-                                <option value="Cultural">Cultural</option>
-                                <option value="Academic">Academic</option>
-                                <option value="Sports">Sports</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="eventLocation">Location</label>
-                            <input type="text" id="eventLocation" name="eventLocation" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="eventDescription">Description</label>
-                            <textarea id="eventDescription" name="eventDescription" required></textarea>
-                        </div>
-                        <button type="submit" class="submit-form-btn">Submit Event</button>
-                    </form>
-                </div>
             </div>
+            <div class="submit-event-form">
+                <form id="event-form">
+                    <div class="form-group">
+                        <label for="eventName">Event Name</label>
+                        <input type="text" id="eventName" name="eventName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventDate">Event Date</label>
+                        <input type="date" id="eventDate" name="eventDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventTime">Event Time (Optional)</label>
+                        <input type="time" id="eventTime" name="eventTime">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventType">Event Type</label>
+                        <select id="eventType" name="eventType" required>
+                            <option value="">Select a type...</option>
+                            <option value="Tech">Tech</option>
+                            <option value="Cultural">Cultural</option>
+                            <option value="Academic">Academic</option>
+                            <option value="Sports">Sports</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventLocation">Location</label>
+                        <input type="text" id="eventLocation" name="eventLocation" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventDescription">Description</label>
+                        <textarea id="eventDescription" name="eventDescription" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-form-btn">Submit Event</button>
+                </form>
+            </div>
+        </div>
 
             <div id="events-view" class="events-section hidden">
                 <div class="text-center mb-12">
@@ -258,16 +255,16 @@
                     <p class="text-lg text-gray-600 max-w-2xl mx-auto">
                         A list of all upcoming and past events at the university.
                     </p>
-                </div>
-
-                <h2 class="event-category-title">Upcoming Events</h2>
-                <div id="upcoming-events" class="events-container">
-                </div>
-
-                <h2 class="event-category-title">Past Events</h2>
-                <div id="past-events" class="events-container">
-                </div>
             </div>
+
+            <h2 class="event-category-title">Upcoming Events</h2>
+            <div id="upcoming-events" class="events-container">
+                </div>
+
+            <h2 class="event-category-title">Past Events</h2>
+            <div id="past-events" class="events-container">
+                </div>
+        </div>
 
             <div id="map-view" class="map-section hidden">
                 <div class="text-center mb-12">
@@ -275,8 +272,8 @@
                     <p class="text-lg text-gray-600 max-w-2xl mx-auto">
                         A detailed map of the GIKI campus.
                     </p>
-                </div>
-                <img src="map.png" alt="Campus Map of GIKI" class="map-image">
+            </div>
+            <img src="map.png" alt="Campus Map of GIKI" class="map-image">
             </div>
         </div>
     </main>
@@ -285,7 +282,7 @@
         <div class="popup-content">
             <button class="close-btn">&times;</button>
             <div id="event-list-container">
-            </div>
+                </div>
         </div>
     </div>
 

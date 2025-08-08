@@ -62,6 +62,60 @@
         .post-content ol {
             list-style-type: decimal;
         }
+
+        /* Reactions styling */
+        .reaction-btn.active {
+            border-color: currentColor;
+            color: var(--primary-color, #2563eb);
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+
+        .reaction-btn.active#like-btn {
+            border-color: #2563eb;
+            color: #2563eb;
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+
+        .reaction-btn.active#heart-btn {
+            border-color: #dc2626;
+            color: #dc2626;
+            background-color: rgba(220, 38, 38, 0.1);
+        }
+
+        .reaction-btn.active#celebrate-btn {
+            border-color: #ca8a04;
+            color: #ca8a04;
+            background-color: rgba(202, 138, 4, 0.1);
+        }
+
+        .reaction-btn.active#insightful-btn {
+            border-color: #16a34a;
+            color: #16a34a;
+            background-color: rgba(22, 163, 74, 0.1);
+        }
+
+        /* Comment styling */
+        .comment-item {
+            border-left: 3px solid #e5e7eb;
+            transition: border-color 0.3s ease;
+        }
+
+        .comment-item:hover {
+            border-left-color: var(--primary-color, #2563eb);
+        }
+
+        /* Bookmark button styling */
+        #bookmark-btn.bookmarked {
+            border-color: #ca8a04;
+            color: #ca8a04;
+            background-color: rgba(202, 138, 4, 0.1);
+        }
+
+        /* Reply form styling */
+        .reply-form {
+            border-left: 4px solid #3b82f6;
+            background-color: #f8fafc;
+        }
     </style>
 </head>
 
@@ -94,7 +148,7 @@
     </header>
 
     <!-- Sidebar -->
-    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out">
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
       <div class="flex items-center justify-between p-6 border-b">
         <h2 class="text-xl font-bold text-gray-800">Menu</h2>
         <button id="sidebar-close" class="text-gray-600 hover:text-blue-600 focus:outline-none">
@@ -104,7 +158,7 @@
         </button>
       </div>
       
-      <nav class="p-6">
+      <nav class="p-6 flex-1 overflow-y-auto">
         <div class="space-y-4">
           <!-- Main Navigation -->
           <div>
@@ -171,10 +225,7 @@
                 <select id="theme-select" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-700">
                   <option value="basic-light">Basic Light</option>
                   <option value="basic-dark">Basic Dark</option>
-                  <option value="purple">Purple (#332D56)</option>
-                  <option value="blue">Blue (#4E6688)</option>
-                  <option value="teal">Teal (#71C0BB)</option>
-                  <option value="lime">Lime (#E3EEB2)</option>
+                  <option value="giki">GIKI Palette</option>
                 </select>
               </div>
             </div>
@@ -250,7 +301,93 @@
                 <p>Please wait while we fetch the article content...</p>
             </div>
 
+            <!-- Post Actions -->
+            <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-200">
+                <div class="flex items-center space-x-4">
+                    <button id="bookmark-btn" class="flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 hover:border-yellow-500 transition duration-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                        </svg>
+                        <span>Bookmark</span>
+                    </button>
+                </div>
+                <div class="text-sm text-gray-500">
+                    <span>Share your thoughts below!</span>
+                </div>
+            </div>
+
         </article>
+
+        <!-- Reactions Section -->
+        <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8 mt-8">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">What do you think?</h3>
+            <div id="reactions-container" class="flex items-center space-x-4 mb-6">
+                <button id="like-btn" class="reaction-btn flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 hover:border-blue-500 transition duration-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L9 7v13m-3-4H4m0 0H2m2 0v-6"></path>
+                    </svg>
+                    <span id="like-count">0</span>
+                </button>
+                <button id="heart-btn" class="reaction-btn flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 hover:border-red-500 transition duration-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                    <span id="heart-count">0</span>
+                </button>
+                <button id="celebrate-btn" class="reaction-btn flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 hover:border-yellow-500 transition duration-300">
+                    <span class="text-lg">🎉</span>
+                    <span id="celebrate-count">0</span>
+                </button>
+                <button id="insightful-btn" class="reaction-btn flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 hover:border-green-500 transition duration-300">
+                    <span class="text-lg">💡</span>
+                    <span id="insightful-count">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8 mt-8">
+            <h3 class="text-xl font-bold text-gray-800 mb-6">Comments</h3>
+            
+            <!-- Comment Form (for logged-in users) -->
+            <div id="comment-form-container" class="hidden mb-8">
+                <form id="comment-form" class="space-y-4">
+                    <div>
+                        <label for="comment-text" class="block text-sm font-medium text-gray-700 mb-2">Write a comment</label>
+                        <textarea id="comment-text" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none" placeholder="Share your thoughts about this post..."></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold">
+                            Post Comment
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Login prompt for guests -->
+            <div id="comment-login-prompt" class="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg mb-8">
+                <p class="text-gray-600 mb-4">Join the conversation! Log in to leave a comment.</p>
+                <a href="login.html" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold">
+                    Log In
+                </a>
+            </div>
+
+            <!-- Comments List -->
+            <div id="comments-container">
+                <div id="comments-loading" class="text-center py-8">
+                    <div class="animate-pulse">
+                        <div class="h-4 bg-gray-200 rounded w-1/3 mx-auto mb-4"></div>
+                        <div class="h-3 bg-gray-200 rounded w-1/2 mx-auto"></div>
+                    </div>
+                </div>
+                <div id="comments-list" class="space-y-6 hidden">
+                    <!-- Comments will be dynamically loaded here -->
+                </div>
+                <div id="no-comments" class="text-center py-8 text-gray-500 hidden">
+                    <p>Be the first to comment on this post!</p>
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- Sidebar Overlay -->
@@ -267,6 +404,7 @@
     <script src="admin-config.js"></script>
     <script src="auth.js"></script>
     <script src="posts.js"></script>
+    <script src="comments.js"></script>
     <script src="script.js"></script>
     <script src="app.js"></script>
 </body>

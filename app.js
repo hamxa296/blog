@@ -23,15 +23,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
     
-    // --- Initialize Quill Editor ---
-    let quill;
-    if (document.getElementById('editor-container')) {
-        quill = new Quill('#editor-container', {
-            theme: 'snow',
-            placeholder: 'Craft your story here...',
-            modules: { toolbar: [[{ 'header': [1, 2, 3, false] }], ['bold', 'italic', 'underline'], [{ 'list': 'ordered' }, { 'list': 'bullet' }], ['link', 'image'], ['clean']] }
-        });
-    }
+    // --- Quill Editor Initialization ---
+    // Note: Quill is now initialized in write.html after DOM is ready
+    // This ensures proper loading order and availability
 
     // --- Authentication Logic (Login, Signup, Google) ---
     const loginForm = document.getElementById('login-form');
@@ -64,6 +58,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- Post Form Logic (Handles both Create and Edit) ---
     const postForm = document.getElementById('post-form');
     if (postForm) {
+        // Wait for Quill to be ready if it's needed
+        if (document.getElementById('editor-container')) {
+            window.addEventListener('quillReady', function() {
+                initializePostForm();
+            });
+        } else {
+            // No editor on this page, initialize form normally
+            initializePostForm();
+        }
+    }
+    
+    function initializePostForm() {
         const urlParams = new URLSearchParams(window.location.search);
         const postIdToEdit = urlParams.get('edit');
         if (postIdToEdit) {
@@ -80,7 +86,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     document.getElementById('post-photo').value = post.photoUrl || '';
                     document.getElementById('post-genre').value = post.genre || 'General';
                     document.getElementById('post-tags').value = post.tags ? post.tags.join(', ') : '';
-                    quill.root.innerHTML = post.content;
+                    if (window.quill) {
+                        window.quill.root.innerHTML = post.content;
+                    }
                 } else {
                     document.getElementById('form-message').textContent = result.error;
                 }
@@ -90,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         postForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formMessage = document.getElementById('form-message');
-            if (!quill || quill.getLength() <= 1) {
+            if (!window.quill || window.quill.getLength() <= 1) {
                 formMessage.textContent = 'Please write some content for your post.';
                 return;
             }
@@ -101,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 photoUrl: document.getElementById('post-photo').value,
                 genre: document.getElementById('post-genre').value,
                 tags: document.getElementById('post-tags').value,
-                content: quill.root.innerHTML
+                content: window.quill.root.innerHTML
             };
             let result;
             const postId = document.getElementById('post-id').value;
@@ -117,12 +125,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 formMessage.textContent = result.error;
             }
         });
-    }
+    } // End of initializePostForm function
 
-    // --- Profile Page Logic ---
+    // --- Profile Page Logic (Legacy - only for old profile pages) ---
     const profileForm = document.getElementById('profile-form');
-    if (profileForm) {
-        const displayNameInput = document.getElementById('display-name');
+    const displayNameInput = document.getElementById('display-name'); // Check for old profile page
+    if (profileForm && displayNameInput) {
         const userEmailInput = document.getElementById('user-email');
         const userBioInput = document.getElementById('user-bio');
         const profilePicImg = document.getElementById('profile-pic');
@@ -134,10 +142,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const result = await getUserProfile(user.uid);
             if (result.success) {
                 const profile = result.profile;
-                displayNameInput.value = profile.displayName || '';
-                userEmailInput.value = profile.email || '';
-                userBioInput.value = profile.bio || '';
-                if (profile.photoURL) {
+                if (displayNameInput) displayNameInput.value = profile.displayName || '';
+                if (userEmailInput) userEmailInput.value = profile.email || '';
+                if (userBioInput) userBioInput.value = profile.bio || '';
+                if (profile.photoURL && profilePicImg) {
                     profilePicImg.src = profile.photoURL;
                 }
             } else {
@@ -222,7 +230,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
         onAuthStateChange(user => {
             if (user) {
-                loadProfileData(user);
+                if (typeof loadProfileData === 'function') {
+                    loadProfileData(user);
+                }
                 loadUserPosts(user);
             } else {
                 window.location.href = 'login.html';
@@ -269,7 +279,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     postCard.innerHTML = `
                         <a href="post.html?id=${post.id}"><img class="h-48 w-full object-cover" src="${post.photoUrl || 'https://placehold.co/600x400/E2E8F0/4A5568?text=GIKI+Blog'}" alt="${post.title}"></a>
                         <div class="p-6">
-                            <p class="text-sm text-gray-500 mb-2">${postDate}</p>
+                            <p class="text-sm text-gray-500 mb-2">${postDate} • by <a href="profile.html?user=${post.authorId}" class="text-blue-600 hover:text-blue-800 font-medium">${post.authorName}</a></p>
                             <h4 class="text-xl font-semibold mb-3">${post.title}</h4>
                             <p class="text-gray-600 text-sm mb-4">${post.description || ''}</p>
                             <a href="post.html?id=${post.id}" class="font-semibold text-blue-600 hover:underline">Read More &rarr;</a>
@@ -311,13 +321,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.title = `${post.title} - GIKI Chronicles`;
                 document.getElementById('post-title').textContent = post.title;
                 const postDate = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : 'N/A';
-                document.getElementById('post-meta').textContent = `Posted by ${post.authorName} on ${postDate}`;
+                document.getElementById('post-meta').innerHTML = `Posted by <a href="profile.html?user=${post.authorId}" class="text-blue-600 hover:text-blue-800 font-medium">${post.authorName}</a> on ${postDate}`;
                 if (post.photoUrl) {
                     document.getElementById('post-image').src = post.photoUrl;
                 } else {
                     document.getElementById('post-image').style.display = 'none';
                 }
                 document.getElementById('post-content').innerHTML = post.content;
+                
+                // Initialize comments and reactions for this post
+                if (typeof initializeCommentsAndReactions === 'function') {
+                    initializeCommentsAndReactions(postId);
+                }
             } else {
                 document.getElementById('post-title').textContent = 'Error';
             }
@@ -732,6 +747,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (adminContent) {
         const loadingMessage = document.getElementById('loading-message');
         const pendingPostsContainer = document.getElementById('pending-posts-container');
+        const pendingGalleryContainer = document.getElementById('pending-gallery-container');
 
         const displayPendingPosts = async () => {
             console.log("Fetching pending posts...");
@@ -746,11 +762,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const postElement = document.createElement('div');
                     postElement.className = 'flex justify-between items-center p-4 border rounded-lg bg-gray-50';
                     postElement.innerHTML = `
-                        <div>
+                        <div class="flex-1">
                             <p class="font-bold text-lg">${post.title}</p>
                             <p class="text-sm text-gray-500">By: ${post.authorName}</p>
+                            <p class="text-sm text-gray-600 mt-1">${post.description || 'No description provided'}</p>
+                            <p class="text-xs text-gray-400 mt-1">Genre: ${post.genre || 'General'}</p>
                         </div>
                         <div class="flex space-x-2">
+                            <button data-id="${post.id}" class="view-content-btn bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold hover:bg-blue-600">View Content</button>
                             <button data-id="${post.id}" class="approve-btn bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold hover:bg-green-600">Approve</button>
                             <button data-id="${post.id}" class="reject-btn bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold hover:bg-red-600">Reject</button>
                         </div>
@@ -763,6 +782,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             // Add event listeners to the new buttons
+            document.querySelectorAll('.view-content-btn').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const postId = e.target.dataset.id;
+                    await showPostContent(postId);
+                });
+            });
+
             document.querySelectorAll('.approve-btn').forEach(button => {
                 button.addEventListener('click', async (e) => {
                     const postId = e.target.dataset.id;
@@ -779,6 +805,192 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
             });
         };
+
+        // Function to show full post content in modal
+        const showPostContent = async (postId) => {
+            try {
+                console.log("Fetching full post content for ID:", postId);
+                
+                // Get the post document from Firestore
+                const postDoc = await db.collection("posts").doc(postId).get();
+                
+                if (!postDoc.exists) {
+                    alert("Post not found");
+                    return;
+                }
+                
+                const post = postDoc.data();
+                const modal = document.getElementById('post-content-modal');
+                const contentContainer = document.getElementById('modal-post-content');
+                
+                // Generate full post HTML
+                const postHTML = generateFullPostHTML(post, postId);
+                contentContainer.innerHTML = postHTML;
+                
+                // Set up modal action buttons
+                setupModalActions(postId);
+                
+                // Set up close functionality
+                setupModalCloseHandlers();
+                
+                // Show modal
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                
+            } catch (error) {
+                console.error("Error fetching post content:", error);
+                alert("Error loading post content");
+            }
+        };
+
+        // Generate full post HTML for modal display
+        function generateFullPostHTML(post, postId) {
+            const tagsHTML = post.tags && post.tags.length > 0 
+                ? `<div class="flex flex-wrap gap-2 mb-6">
+                     ${post.tags.map(tag => `<span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">${tag}</span>`).join('')}
+                   </div>`
+                : '';
+
+            const photoHTML = post.photoUrl 
+                ? `<div class="mb-8">
+                     <img src="${post.photoUrl}" alt="${post.title}" class="w-full h-64 object-cover rounded-lg shadow-lg">
+                   </div>`
+                : '';
+
+            const descriptionHTML = post.description 
+                ? `<div class="mb-8 text-xl text-gray-600 font-light leading-relaxed">
+                     ${post.description}
+                   </div>`
+                : '';
+
+            const submittedDate = post.submittedAt ? new Date(post.submittedAt.seconds * 1000).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }) : 'Unknown date';
+
+            return `
+                <div class="max-w-4xl mx-auto">
+                    <!-- Post Header -->
+                    <div class="mb-8">
+                        <div class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+                            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-semibold">PENDING REVIEW</span>
+                            <span>•</span>
+                            <span class="bg-gray-100 px-3 py-1 rounded-full">${post.genre || 'General'}</span>
+                            <span>•</span>
+                            <span>Submitted: ${submittedDate}</span>
+                            <span>•</span>
+                            <span>By: ${post.authorName || 'Unknown Author'}</span>
+                        </div>
+                        
+                        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
+                            ${post.title}
+                        </h1>
+                        
+                        ${descriptionHTML}
+                        ${tagsHTML}
+                    </div>
+
+                    <!-- Featured Image -->
+                    ${photoHTML}
+
+                    <!-- Post Content -->
+                    <div class="prose prose-lg max-w-none">
+                        ${post.content || '<p class="text-gray-500 italic">No content provided</p>'}
+                    </div>
+
+                    <!-- Admin Notes -->
+                    <div class="mt-12 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div>
+                                <span class="text-blue-800 font-medium">Admin Review</span>
+                                <p class="text-blue-700 text-sm mt-1">This post is pending approval. Review the content for quality, appropriateness, and adherence to community guidelines before approving.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Setup modal action buttons
+        function setupModalActions(postId) {
+            const approveBtn = document.getElementById('modal-approve-btn');
+            const rejectBtn = document.getElementById('modal-reject-btn');
+            
+            // Remove existing listeners
+            approveBtn.replaceWith(approveBtn.cloneNode(true));
+            rejectBtn.replaceWith(rejectBtn.cloneNode(true));
+            
+            // Get fresh references
+            const newApproveBtn = document.getElementById('modal-approve-btn');
+            const newRejectBtn = document.getElementById('modal-reject-btn');
+            
+            newApproveBtn.addEventListener('click', async () => {
+                await updatePostStatus(postId, 'approved');
+                window.closePostModal();
+                displayPendingPosts(); // Refresh the list
+            });
+            
+            newRejectBtn.addEventListener('click', async () => {
+                const confirm = window.confirm('Are you sure you want to reject this post?');
+                if (confirm) {
+                    await updatePostStatus(postId, 'rejected');
+                    window.closePostModal();
+                    displayPendingPosts(); // Refresh the list
+                }
+            });
+        }
+
+        // Close post modal (global function)
+        window.closePostModal = function() {
+            const modal = document.getElementById('post-content-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = ''; // Restore scrolling
+                console.log('Modal closed');
+            }
+        }
+
+        // Setup modal close handlers
+        function setupModalCloseHandlers() {
+            const closeBtn = document.getElementById('close-post-modal');
+            const modal = document.getElementById('post-content-modal');
+            
+            if (closeBtn) {
+                // Remove any existing listeners and add new one
+                closeBtn.replaceWith(closeBtn.cloneNode(true));
+                const newCloseBtn = document.getElementById('close-post-modal');
+                newCloseBtn.addEventListener('click', window.closePostModal);
+                console.log('Close button listener attached');
+            }
+            
+            if (modal) {
+                // Close on overlay click
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        window.closePostModal();
+                    }
+                });
+                
+                // Close on Escape key (attach to document)
+                document.addEventListener('keydown', handleEscapeKey);
+            }
+        }
+        
+        // Handle escape key for modal
+        function handleEscapeKey(e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('post-content-modal');
+                if (modal && !modal.classList.contains('hidden')) {
+                    window.closePostModal();
+                }
+            }
+        }
 
         const displayPendingEvents = async () => {
             console.log("Fetching pending events...");
@@ -835,6 +1047,59 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         };
 
+        const displayPendingGallery = async () => {
+            if (!pendingGalleryContainer) return;
+            const result = await getPendingGalleryPhotos();
+            pendingGalleryContainer.innerHTML = '';
+
+            if (result.success && result.photos.length > 0) {
+                result.photos.forEach(photo => {
+                    const el = document.createElement('div');
+                    el.className = 'p-4 border rounded-lg bg-gray-50';
+                    el.innerHTML = `
+                        <div class="flex items-start gap-4">
+                            <img src="${photo.imageUrl}" alt="${photo.caption || ''}" class="w-24 h-24 object-cover rounded"/>
+                            <div class="flex-1">
+                                <p class="font-semibold">${photo.caption || 'Untitled'}</p>
+                                <p class="text-sm text-gray-500">Category: ${photo.category || 'General'} | By: ${photo.uploaderName || ''}</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex items-center gap-2">
+                            <label class="inline-flex items-center text-sm text-gray-700 gap-2">
+                                <input type="checkbox" class="highlight-toggle" data-id="${photo.id}"> Highlight in slideshow
+                            </label>
+                            <div class="ml-auto flex gap-2">
+                                <button data-id="${photo.id}" class="approve-photo-btn bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold hover:bg-green-600">Approve</button>
+                                <button data-id="${photo.id}" class="reject-photo-btn bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold hover:bg-red-600">Reject</button>
+                            </div>
+                        </div>
+                    `;
+                    pendingGalleryContainer.appendChild(el);
+                });
+
+                // Approve
+                pendingGalleryContainer.querySelectorAll('.approve-photo-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.dataset.id;
+                        const chk = e.currentTarget.closest('div').querySelector('.highlight-toggle');
+                        const highlight = chk ? chk.checked : false;
+                        await updateGalleryPhotoStatus(id, 'approved', { isHighlighted: highlight });
+                        displayPendingGallery();
+                    });
+                });
+                // Reject
+                pendingGalleryContainer.querySelectorAll('.reject-photo-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.dataset.id;
+                        await updateGalleryPhotoStatus(id, 'rejected');
+                        displayPendingGallery();
+                    });
+                });
+            } else {
+                pendingGalleryContainer.innerHTML = '<p class="text-gray-500">There are no gallery photos awaiting review.</p>';
+            }
+        };
+
         const checkAdminAndLoad = async () => {
             console.log("Checking admin status...");
             
@@ -848,6 +1113,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 adminContent.style.display = 'block';
                 displayPendingPosts();
                 displayPendingEvents();
+                displayPendingGallery();
                 return;
             }
             
@@ -860,6 +1126,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 adminContent.style.display = 'block';
                 displayPendingPosts();
                 displayPendingEvents();
+                displayPendingGallery();
                 return;
             }
             
@@ -876,6 +1143,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 adminContent.style.display = 'block';
                 displayPendingPosts();
                 displayPendingEvents();
+                displayPendingGallery();
             } else {
                 console.log("Admin access denied");
                 loadingMessage.innerHTML = '<p class="text-lg text-red-500">Access Denied. You must be an administrator to view this page.</p>';
@@ -933,7 +1201,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const themeSelect = document.getElementById('theme-select');
 
     // Always apply saved theme on load, even if there's no dropdown on this page
-    const savedTheme = localStorage.getItem('selected-theme') || 'basic-light';
+            const savedTheme = localStorage.getItem('selected-theme') || 'basic-dark';
     applyTheme(savedTheme);
 
     if (themeSelect) {
@@ -951,7 +1219,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Function to apply theme
     function applyTheme(themeName) {
         // Remove all existing theme classes
-        document.body.classList.remove('theme-basic-light', 'theme-basic-dark', 'theme-purple', 'theme-blue', 'theme-teal', 'theme-lime');
+        document.body.classList.remove('theme-basic-light', 'theme-basic-dark', 'theme-giki');
         
         // Add the selected theme class
         document.body.classList.add(`theme-${themeName}`);

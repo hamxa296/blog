@@ -24,7 +24,10 @@
  */
 async function getGalleryPhotos() {
     try {
-        const snapshot = await db.collection("galleryPhotos").orderBy("createdAt", "desc").get();
+        const snapshot = await db.collection("galleryPhotos")
+            .where("status", "==", "approved")
+            .orderBy("createdAt", "desc")
+            .get();
         const photos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         return { success: true, photos };
     } catch (error) {
@@ -39,11 +42,17 @@ async function getGalleryPhotos() {
  */
 async function getHighlightedPhotos() {
     try {
+        // Avoid composite index by fetching highlighted approved and sorting client-side
         const snapshot = await db.collection("galleryPhotos")
+            .where("status", "==", "approved")
             .where("isHighlighted", "==", true)
-            .orderBy("createdAt", "desc")
             .get();
         const photos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        photos.sort((a, b) => {
+            const at = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+            const bt = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+            return bt - at;
+        });
         return { success: true, photos };
     } catch (error) {
         console.error("Error fetching highlighted photos:", error);
@@ -72,7 +81,7 @@ async function togglePhotoHighlight(photoId, isHighlighted) {
 
 
 /**
- * Saves a new photo directly to the gallery.
+ * Saves a new photo for review by an administrator.
  * @param {string} caption - The photo caption.
  * @param {string} category - The photo category.
  * @param {File} file - The image file to upload.
@@ -83,7 +92,7 @@ async function submitPhotoForReview(caption, category, file) {
     if (!user) return { success: false, error: "You must be logged in to submit a photo." };
 
     try {
-        // --- Cloudinary Upload Logic with Transformations ---
+        // --- Cloudinary Upload Logic ---
         const cloudName = "dfkpmldma";
         const uploadPreset = "giki-chronicles";
         const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
@@ -91,10 +100,10 @@ async function submitPhotoForReview(caption, category, file) {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", uploadPreset);
-        
-        // Add transformations for multiple sizes
-        formData.append("transformation", "w_400,h_300,c_fill,q_auto,f_auto"); // Thumbnail
-        formData.append("eager", "w_1200,h_800,c_fill,q_auto,f_auto"); // Full size
+        // NOTE: Keep minimal parameters for maximum compatibility with unsigned presets
+        // If you want eager transformations, whitelist them in your unsigned preset
+        // and then uncomment the next line:
+        // formData.append("eager", "c_fill,w_1200,h_800,q_auto,f_auto");
 
         const response = await fetch(url, {
             method: "POST",
@@ -102,17 +111,20 @@ async function submitPhotoForReview(caption, category, file) {
         });
 
         if (!response.ok) {
-            throw new Error("Image upload failed.");
+            let detail = '';
+            try { detail = await response.text(); } catch (_) {}
+            throw new Error(`Image upload failed${detail ? `: ${detail}` : ''}`);
         }
 
         const data = await response.json();
+        if (!data.secure_url) {
+            throw new Error(`Upload response missing URL${data.error?.message ? `: ${data.error.message}` : ''}`);
+        }
         const imageUrl = data.secure_url;
         const cloudinaryId = data.public_id;
-        
-        // Get the eager (full size) URL
-        const fullSizeUrl = data.eager && data.eager.length > 0 ? data.eager[0].secure_url : imageUrl;
+        const fullSizeUrl = imageUrl; // Use original as full-size; add eager if preset supports it
 
-        // --- Save to Firestore Gallery ---
+        // --- Save to Firestore Gallery (Pending Review) ---
         await db.collection("galleryPhotos").add({
             imageUrl, // Thumbnail URL
             fullSizeUrl, // Full size URL
@@ -121,14 +133,48 @@ async function submitPhotoForReview(caption, category, file) {
             uploaderId: user.uid,
             uploaderName: user.displayName || user.email,
             cloudinaryId,
-            isHighlighted: false, // Default to not highlighted
+            isHighlighted: false, // Admin can change on approval
+            status: "pending",
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
 
-        return { success: true, message: "Photo added to gallery!" };
+        return { success: true, message: "Photo submitted for review!" };
 
     } catch (error) {
         console.error("Error submitting photo:", error);
         return { success: false, error: "Failed to submit photo." };
     }
 } 
+
+// --- Admin Functions for Gallery Approval ---
+async function getPendingGalleryPhotos() {
+    try {
+        const snapshot = await db.collection("galleryPhotos")
+            .where("status", "==", "pending")
+            .get();
+        const photos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        photos.sort((a, b) => {
+            const at = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+            const bt = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+            return at - bt;
+        });
+        return { success: true, photos };
+    } catch (error) {
+        console.error("Error fetching pending gallery photos:", error);
+        return { success: false, error: "Could not load pending photos." };
+    }
+}
+
+async function updateGalleryPhotoStatus(photoId, newStatus, options = {}) {
+    try {
+        const updateData = { status: newStatus };
+        if (typeof options.isHighlighted === 'boolean') {
+            updateData.isHighlighted = options.isHighlighted;
+        }
+        await db.collection("galleryPhotos").doc(photoId).update(updateData);
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating gallery photo status:", error);
+        return { success: false, error: "Could not update status." };
+    }
+}

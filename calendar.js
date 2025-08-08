@@ -555,13 +555,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Theme Management ---
     // Load saved theme from localStorage and apply it
-    const savedTheme = localStorage.getItem('selected-theme') || 'basic-light';
+            const savedTheme = localStorage.getItem('selected-theme') || 'basic-dark';
     applyTheme(savedTheme);
 
     // Function to apply theme
     function applyTheme(themeName) {
         // Remove all existing theme classes
-        document.body.classList.remove('theme-basic-light', 'theme-basic-dark', 'theme-purple', 'theme-blue', 'theme-teal', 'theme-lime');
+        document.body.classList.remove('theme-basic-light', 'theme-basic-dark', 'theme-giki');
         
         // Add the selected theme class
         document.body.classList.add(`theme-${themeName}`);

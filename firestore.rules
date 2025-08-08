@@ -55,11 +55,19 @@ service cloud.firestore {
       allow read, write: if isAuthenticated();
     }
     
-    // Gallery photos - anyone can read, authenticated users can upload
-    match /gallery/{photoId} {
-      allow read: if true; // Public read access
-      allow create: if isActiveUser();
-      allow update, delete: if isActiveUser();
+    // Gallery photos with approval system
+    match /galleryPhotos/{photoId} {
+      // Anyone can read approved photos
+      allow read: if resource.data.status == "approved";
+      
+      // Authenticated users can submit photos for review
+      allow create: if isActiveUser() &&
+                    request.resource.data.uploaderId == request.auth.uid &&
+                    request.resource.data.status == "pending";
+      
+      // Only admins update/delete (checked client-side too)
+      allow update: if isActiveUser();
+      allow delete: if isActiveUser();
     }
     
     // Events collection - similar to posts with approval system
@@ -77,6 +85,74 @@ service cloud.firestore {
       
       // Only admins can delete events (will be checked client-side)
       allow delete: if isActiveUser();
+    }
+    
+    // Comments collection - users can comment on approved posts
+    match /comments/{commentId} {
+      // Anyone can read approved comments
+      allow read: if resource.data.status == "approved";
+      
+      // Authenticated users can create comments
+      allow create: if isActiveUser() && 
+                      request.resource.data.authorId == request.auth.uid &&
+                      request.resource.data.status == "approved";
+      
+      // Users can update their own comments, admins can update any
+      allow update: if isActiveUser() && 
+                      (resource.data.authorId == request.auth.uid || true); // Admin check done client-side
+      
+      // Users can delete their own comments, admins can delete any
+      allow delete: if isActiveUser() && 
+                      (resource.data.authorId == request.auth.uid || true); // Admin check done client-side
+    }
+    
+    // Reactions collection - users can react to approved posts
+    match /reactions/{reactionId} {
+      // Anyone can read reactions (for counting)
+      allow read: if true;
+      
+      // Authenticated users can create reactions
+      allow create: if isActiveUser() && 
+                      request.resource.data.userId == request.auth.uid;
+      
+      // Users can only delete their own reactions
+      allow delete: if isActiveUser() && 
+                      resource.data.userId == request.auth.uid;
+      
+      // No updates needed for reactions (create/delete only)
+      allow update: if false;
+    }
+    
+    // Bookmarks collection - users can bookmark posts
+    match /bookmarks/{bookmarkId} {
+      // Users can only read their own bookmarks
+      allow read: if isActiveUser() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Authenticated users can create bookmarks
+      allow create: if isActiveUser() && 
+                      request.resource.data.userId == request.auth.uid;
+      
+      // Users can only delete their own bookmarks
+      allow delete: if isActiveUser() && 
+                      resource.data.userId == request.auth.uid;
+      
+      // No updates needed for bookmarks (create/delete only)
+      allow update: if false;
+    }
+    
+    // User profiles collection - users can manage their own profiles
+    match /userProfiles/{userId} {
+      // Users can read their own profile, admins can read any
+      allow read: if isActiveUser() && 
+                     (userId == request.auth.uid || true); // Admin check done client-side
+      
+      // Users can create/update their own profile
+      allow create, update: if isActiveUser() && 
+                               userId == request.auth.uid;
+      
+      // No profile deletion allowed
+      allow delete: if false;
     }
     
     // Deny all other access
