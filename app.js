@@ -540,8 +540,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const photoCard = document.createElement('div');
                 photoCard.className = 'bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer transform hover:scale-105 transition-transform duration-200';
                 photoCard.innerHTML = `
-                     <div class="relative">
-                         <img src="${photo.imageUrl}" alt="${photo.caption}" class="w-full h-64 object-cover" loading="lazy" data-fullsize="${photo.fullSizeUrl || photo.imageUrl}">
+                     <div class="relative bg-gray-100 flex items-center justify-center" style="height: 280px;">
+                         <img src="${photo.imageUrl}" alt="${photo.caption}" class="max-w-full max-h-full object-contain" loading="lazy" data-fullsize="${photo.fullSizeUrl || photo.imageUrl}">
                      </div>
                      <div class="p-4">
                          <p class="font-semibold mb-2">${photo.caption}</p>
@@ -587,7 +587,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     highlightedPhotoSection.innerHTML = `
                         <div class="relative">
                             <div class="cursor-pointer transform hover:scale-105 transition-transform duration-200" onclick="openFullscreenView(${JSON.stringify(photo)})">
-                                <img src="${photo.imageUrl}" alt="${photo.caption}" class="w-full h-96 object-cover rounded-xl">
+                                <div class="bg-gray-100 flex items-center justify-center rounded-xl" style="height: 400px;">
+                                    <img src="${photo.imageUrl}" alt="${photo.caption}" class="max-w-full max-h-full object-contain rounded-xl">
+                                </div>
                                 ${highlightedPhotos.length > 1 ? `
                                     <div class="absolute top-4 right-4 flex space-x-2">
                                         ${highlightedPhotos.map((_, i) => `
@@ -621,7 +623,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     highlightedPhotoSection.innerHTML = `
                         <div class="relative">
                             <div class="cursor-pointer transform hover:scale-105 transition-transform duration-200" onclick="openFullscreenView(${JSON.stringify(allPhotos[0])})">
-                                <img src="${allPhotos[0].imageUrl}" alt="${allPhotos[0].caption}" class="w-full h-96 object-cover rounded-xl">
+                                <div class="bg-gray-100 flex items-center justify-center rounded-xl" style="height: 400px;">
+                                    <img src="${allPhotos[0].imageUrl}" alt="${allPhotos[0].caption}" class="max-w-full max-h-full object-contain rounded-xl">
+                                </div>
                             </div>
                             <div class="mt-4 text-center">
                                 <h3 class="text-2xl font-bold text-gray-800 mb-2">${allPhotos[0].caption}</h3>
@@ -722,11 +726,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Fullscreen view function
     window.openFullscreenView = function (photo) {
         const fullscreenModal = document.createElement('div');
-        fullscreenModal.className = 'fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50';
+        fullscreenModal.className = 'fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4 cursor-pointer';
         fullscreenModal.innerHTML = `
-            <div class="relative max-w-4xl max-h-full p-4">
-                <button onclick="this.parentElement.parentElement.remove()" class="absolute top-2 right-2 text-white text-2xl font-bold bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-75">×</button>
-                <img src="${photo.fullSizeUrl || photo.imageUrl}" alt="${photo.caption}" class="max-w-full max-h-full object-contain">
+            <div class="relative w-full h-full flex items-center justify-center pointer-events-none">
+                <button onclick="this.parentElement.parentElement.remove()" class="absolute top-4 right-4 text-white bg-black bg-opacity-60 hover:bg-opacity-80 rounded-full w-12 h-12 flex items-center justify-center transition-all duration-200 transform hover:scale-110 shadow-lg backdrop-blur-sm z-10 pointer-events-auto">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                <img src="${photo.fullSizeUrl || photo.imageUrl}" alt="${photo.caption}" class="max-w-full max-h-full object-contain pointer-events-auto" style="max-height: calc(100vh - 2rem);">
             </div>
         `;
 
@@ -762,54 +770,232 @@ document.addEventListener('DOMContentLoaded', async () => {
     const adminContent = document.getElementById('admin-content');
     if (adminContent) {
         const loadingMessage = document.getElementById('loading-message');
-        const pendingPostsContainer = document.getElementById('pending-posts-container');
+        const postsContainer = document.getElementById('posts-container');
+        const refreshPostsBtn = document.getElementById('refresh-posts-btn');
+        
+        // Tab management
+        let currentTab = 'all';
+        const tabButtons = {
+            'all': document.getElementById('tab-all'),
+            'pending': document.getElementById('tab-pending'),
+            'approved': document.getElementById('tab-approved'),
+            'rejected': document.getElementById('tab-rejected')
+        };
 
-        const displayPendingPosts = async () => {
-            console.log("Fetching pending posts...");
-            const result = await getPendingPosts();
-            console.log("Pending posts result:", result);
-            
-            pendingPostsContainer.innerHTML = ''; // Clear loader
-
-            if (result.success && result.posts.length > 0) {
-                console.log("Displaying", result.posts.length, "pending posts");
-                result.posts.forEach(post => {
-                    const postElement = document.createElement('div');
-                    postElement.className = 'flex justify-between items-center p-4 border rounded-lg bg-gray-50';
-                    postElement.innerHTML = `
-                        <div>
-                            <p class="font-bold text-lg">${post.title}</p>
-                            <p class="text-sm text-gray-500">By: ${post.authorName}</p>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button data-id="${post.id}" class="approve-btn bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold hover:bg-green-600">Approve</button>
-                            <button data-id="${post.id}" class="reject-btn bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold hover:bg-red-600">Reject</button>
-                        </div>
-                    `;
-                    pendingPostsContainer.appendChild(postElement);
+        // Initialize tab functionality
+        Object.keys(tabButtons).forEach(tab => {
+            if (tabButtons[tab]) {
+                tabButtons[tab].addEventListener('click', () => {
+                    currentTab = tab;
+                    updateTabStyles();
+                    displayPosts();
                 });
-            } else {
-                console.log("No pending posts or error:", result.error);
-                pendingPostsContainer.innerHTML = '<p class="text-gray-500">There are no posts awaiting review.</p>';
+            }
+        });
+
+        function updateTabStyles() {
+            Object.keys(tabButtons).forEach(tab => {
+                if (tabButtons[tab]) {
+                    if (tab === currentTab) {
+                        tabButtons[tab].className = 'tab-btn px-4 py-2 rounded-md font-medium transition-colors bg-blue-500 text-white';
+                    } else {
+                        tabButtons[tab].className = 'tab-btn px-4 py-2 rounded-md font-medium transition-colors text-gray-700 hover:bg-white';
+                    }
+                }
+            });
+        }
+
+        // Refresh button functionality
+        if (refreshPostsBtn) {
+            refreshPostsBtn.addEventListener('click', () => {
+                displayPosts();
+            });
+        }
+
+        const displayPosts = async () => {
+            console.log("Fetching posts for tab:", currentTab);
+            const result = await getAllPosts(currentTab);
+            console.log("Posts result:", result);
+            
+            if (postsContainer) {
+                postsContainer.innerHTML = ''; // Clear loader
+
+                if (result.success && result.posts.length > 0) {
+                    console.log("Displaying", result.posts.length, "posts");
+                    result.posts.forEach(post => {
+                        const postElement = createPostElement(post);
+                        postsContainer.appendChild(postElement);
+                    });
+                } else {
+                    console.log("No posts or error:", result.error);
+                    const statusText = currentTab === 'all' ? 'posts' : currentTab + ' posts';
+                    postsContainer.innerHTML = `<p class="text-gray-500">No ${statusText} found.</p>`;
+                }
+            }
+        };
+
+        function createPostElement(post) {
+            const postElement = document.createElement('div');
+            postElement.className = 'flex justify-between items-center p-4 border rounded-lg bg-white hover:bg-gray-50 transition-colors';
+            
+            const postDate = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : 'N/A';
+            let statusColor = 'bg-yellow-200 text-yellow-800';
+            if (post.status === 'approved') {
+                statusColor = 'bg-green-200 text-green-800';
+            } else if (post.status === 'rejected') {
+                statusColor = 'bg-red-200 text-red-800';
             }
 
-            // Add event listeners to the new buttons
-            document.querySelectorAll('.approve-btn').forEach(button => {
-                button.addEventListener('click', async (e) => {
+            postElement.innerHTML = `
+                <div class="flex-1">
+                    <div class="flex items-center space-x-3">
+                        <h3 class="font-bold text-lg">${post.title}</h3>
+                        <span class="px-2 py-1 rounded-full text-xs font-semibold ${statusColor}">${post.status}</span>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">By: ${post.authorName} • ${postDate}</p>
+                    <p class="text-sm text-gray-600 mt-1">${post.description || 'No description'}</p>
+                </div>
+                <div class="flex space-x-2">
+                    <button data-id="${post.id}" class="view-btn bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold hover:bg-blue-600">View</button>
+                    ${post.status === 'pending' ? `
+                        <button data-id="${post.id}" class="approve-btn bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold hover:bg-green-600">Approve</button>
+                        <button data-id="${post.id}" class="reject-btn bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold hover:bg-red-600">Reject</button>
+                    ` : ''}
+                    <button data-id="${post.id}" class="delete-btn bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold hover:bg-red-700">Delete</button>
+                </div>
+            `;
+
+            // Add event listeners
+            const viewBtn = postElement.querySelector('.view-btn');
+            if (viewBtn) {
+                viewBtn.addEventListener('click', () => viewPost(post));
+            }
+
+            const approveBtn = postElement.querySelector('.approve-btn');
+            if (approveBtn) {
+                approveBtn.addEventListener('click', async (e) => {
                     const postId = e.target.dataset.id;
                     await updatePostStatus(postId, 'approved');
-                    displayPendingPosts(); // Refresh the list
+                    displayPosts(); // Refresh the list
                 });
-            });
+            }
 
-            document.querySelectorAll('.reject-btn').forEach(button => {
-                button.addEventListener('click', async (e) => {
+            const rejectBtn = postElement.querySelector('.reject-btn');
+            if (rejectBtn) {
+                rejectBtn.addEventListener('click', async (e) => {
                     const postId = e.target.dataset.id;
                     await updatePostStatus(postId, 'rejected');
-                    displayPendingPosts(); // Refresh the list
+                    displayPosts(); // Refresh the list
                 });
-            });
+            }
+
+            const deleteBtn = postElement.querySelector('.delete-btn');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', (e) => {
+                    const postId = e.target.dataset.id;
+                    showDeleteConfirmation(postId, post.title);
+                });
+            }
+
+            return postElement;
+        }
+
+        function viewPost(post) {
+            const modal = document.getElementById('post-content-modal');
+            const modalContent = document.getElementById('modal-post-content');
+            const modalApproveBtn = document.getElementById('modal-approve-btn');
+            const modalRejectBtn = document.getElementById('modal-reject-btn');
+
+            if (modal && modalContent) {
+                modalContent.innerHTML = `
+                    <h1 class="text-3xl font-bold mb-4">${post.title}</h1>
+                    <div class="text-sm text-gray-500 mb-4">
+                        By ${post.authorName} • ${post.createdAt ? post.createdAt.toDate().toLocaleDateString() : 'N/A'}
+                    </div>
+                    <div class="prose max-w-none">
+                        ${post.content}
+                    </div>
+                `;
+
+                // Update modal buttons based on post status
+                if (modalApproveBtn && modalRejectBtn) {
+                    if (post.status === 'pending') {
+                        modalApproveBtn.style.display = 'inline-block';
+                        modalRejectBtn.style.display = 'inline-block';
+                        modalApproveBtn.onclick = () => {
+                            updatePostStatus(post.id, 'approved');
+                            modal.classList.add('hidden');
+                            displayPosts();
+                        };
+                        modalRejectBtn.onclick = () => {
+                            updatePostStatus(post.id, 'rejected');
+                            modal.classList.add('hidden');
+                            displayPosts();
+                        };
+                    } else {
+                        modalApproveBtn.style.display = 'none';
+                        modalRejectBtn.style.display = 'none';
+                    }
+                }
+
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function showDeleteConfirmation(postId, postTitle) {
+            const modal = document.getElementById('delete-confirmation-modal');
+            const postIdSpan = document.getElementById('delete-post-id');
+            const confirmBtn = document.getElementById('confirm-delete-btn');
+            const cancelBtn = document.getElementById('cancel-delete-btn');
+
+            if (modal && postIdSpan && confirmBtn && cancelBtn) {
+                postIdSpan.textContent = postId;
+                
+                confirmBtn.onclick = async () => {
+                    const result = await deletePostPermanently(postId);
+                    if (result.success) {
+                        modal.classList.add('hidden');
+                        displayPosts(); // Refresh the list
+                    } else {
+                        alert('Error deleting post: ' + result.error);
+                    }
+                };
+
+                cancelBtn.onclick = () => {
+                    modal.classList.add('hidden');
+                };
+
+                modal.classList.remove('hidden');
+            }
+        }
+
+        // Close modal functions
+        window.closePostModal = function() {
+            const modal = document.getElementById('post-content-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
         };
+
+        // Close delete modal when clicking outside
+        const deleteModal = document.getElementById('delete-confirmation-modal');
+        if (deleteModal) {
+            deleteModal.addEventListener('click', (e) => {
+                if (e.target === deleteModal) {
+                    deleteModal.classList.add('hidden');
+                }
+            });
+        }
+
+        // Close post modal when clicking outside
+        const postModal = document.getElementById('post-content-modal');
+        if (postModal) {
+            postModal.addEventListener('click', (e) => {
+                if (e.target === postModal) {
+                    postModal.classList.add('hidden');
+                }
+            });
+        }
 
         const checkAdminAndLoad = async () => {
             console.log("Checking admin status...");
@@ -822,7 +1008,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.log("✅ Secure admin access granted");
                 loadingMessage.style.display = 'none';
                 adminContent.style.display = 'block';
-                displayPendingPosts();
+                displayPosts();
+                displayPendingEvents();
+                displayPendingGalleryPhotos();
                 return;
             }
             
@@ -833,7 +1021,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.log("🔧 TEMPORARY: Bypassing admin check for testing");
                 loadingMessage.style.display = 'none';
                 adminContent.style.display = 'block';
-                displayPendingPosts();
+                displayPosts();
+                displayPendingEvents();
+                displayPendingGalleryPhotos();
                 return;
             }
             
@@ -848,7 +1038,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.log("Admin access granted, loading dashboard...");
                 loadingMessage.style.display = 'none';
                 adminContent.style.display = 'block';
-                displayPendingPosts();
+                displayPosts();
+                displayPendingEvents();
+                displayPendingGalleryPhotos();
             } else {
                 console.log("Admin access denied");
                 loadingMessage.innerHTML = '<p class="text-lg text-red-500">Access Denied. You must be an administrator to view this page.</p>';
@@ -900,5 +1092,169 @@ document.addEventListener('DOMContentLoaded', async () => {
                 displayApprovedPostsAdmin(); // Refresh the list
             });
         });
+    };
+
+    // Display pending events for admin review
+    const displayPendingEvents = async () => {
+        const pendingEventsContainer = document.getElementById('pending-events-container');
+        if (!pendingEventsContainer) {
+            console.error('Pending events container not found');
+            return;
+        }
+
+        try {
+            const result = await getPendingEvents();
+            
+            if (result.success && result.events && result.events.length > 0) {
+                pendingEventsContainer.innerHTML = '';
+                
+                result.events.forEach(event => {
+                    const eventElement = document.createElement('div');
+                    eventElement.className = 'bg-white border rounded-lg p-4 shadow-sm';
+                    
+                    const eventDate = event.date ? new Date(event.date).toLocaleDateString() : 'No date';
+                    const eventTime = event.time || 'No time';
+                    
+                    eventElement.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <h3 class="font-bold text-lg text-gray-800">${event.name}</h3>
+                                <p class="text-sm text-gray-600 mt-1">${event.description}</p>
+                                <div class="flex items-center space-x-4 mt-2 text-sm text-gray-500">
+                                    <span>📅 ${eventDate}</span>
+                                    <span>🕒 ${eventTime}</span>
+                                    <span>📍 ${event.location || 'No location'}</span>
+                                </div>
+                                <p class="text-xs text-gray-400 mt-2">Submitted by: ${event.submittedBy || 'Unknown'}</p>
+                            </div>
+                            <div class="flex space-x-2 ml-4">
+                                <button onclick="approveEvent('${event.id}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
+                                    Approve
+                                </button>
+                                <button onclick="rejectEvent('${event.id}')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
+                                    Reject
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    pendingEventsContainer.appendChild(eventElement);
+                });
+            } else {
+                pendingEventsContainer.innerHTML = '<p class="text-gray-500">No pending events to review.</p>';
+            }
+        } catch (error) {
+            console.error('Error loading pending events:', error);
+            pendingEventsContainer.innerHTML = '<p class="text-red-500">Error loading pending events.</p>';
+        }
+    };
+
+    // Display pending gallery photos for admin review
+    const displayPendingGalleryPhotos = async () => {
+        const pendingGalleryContainer = document.getElementById('pending-gallery-container');
+        if (!pendingGalleryContainer) {
+            console.error('Pending gallery container not found');
+            return;
+        }
+
+        try {
+            const result = await getPendingGalleryPhotos();
+            
+            if (result.success && result.photos && result.photos.length > 0) {
+                pendingGalleryContainer.innerHTML = '';
+                
+                result.photos.forEach(photo => {
+                    const photoElement = document.createElement('div');
+                    photoElement.className = 'bg-white border rounded-lg p-4 shadow-sm';
+                    
+                    photoElement.innerHTML = `
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                                <img src="${photo.imageUrl}" alt="${photo.caption}" class="w-24 h-24 object-cover rounded-lg">
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-lg text-gray-800">${photo.caption}</h3>
+                                <p class="text-sm text-gray-600 mt-1">Category: ${photo.category}</p>
+                                <p class="text-xs text-gray-400 mt-2">Submitted by: ${photo.uploaderName || 'Unknown'}</p>
+                                <p class="text-xs text-gray-400">Uploaded: ${photo.createdAt ? new Date(photo.createdAt.toDate ? photo.createdAt.toDate() : photo.createdAt).toLocaleDateString() : 'Unknown'}</p>
+                            </div>
+                            <div class="flex flex-col space-y-2">
+                                <button onclick="approveGalleryPhoto('${photo.id}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
+                                    Approve
+                                </button>
+                                <button onclick="rejectGalleryPhoto('${photo.id}')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
+                                    Reject
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    pendingGalleryContainer.appendChild(photoElement);
+                });
+            } else {
+                pendingGalleryContainer.innerHTML = '<p class="text-gray-500">No pending gallery photos to review.</p>';
+            }
+        } catch (error) {
+            console.error('Error loading pending gallery photos:', error);
+            pendingGalleryContainer.innerHTML = '<p class="text-red-500">Error loading pending gallery photos.</p>';
+        }
+    };
+
+    // Event approval functions
+    window.approveEvent = async (eventId) => {
+        try {
+            const result = await updateEventStatus(eventId, 'approved');
+            if (result.success) {
+                displayPendingEvents(); // Refresh the list
+            } else {
+                alert('Error approving event: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Error approving event:', error);
+            alert('Error approving event');
+        }
+    };
+
+    window.rejectEvent = async (eventId) => {
+        try {
+            const result = await updateEventStatus(eventId, 'rejected');
+            if (result.success) {
+                displayPendingEvents(); // Refresh the list
+            } else {
+                alert('Error rejecting event: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Error rejecting event:', error);
+            alert('Error rejecting event');
+        }
+    };
+
+    // Gallery photo approval functions
+    window.approveGalleryPhoto = async (photoId) => {
+        try {
+            const result = await updateGalleryPhotoStatus(photoId, 'approved');
+            if (result.success) {
+                displayPendingGalleryPhotos(); // Refresh the list
+            } else {
+                alert('Error approving photo: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Error approving photo:', error);
+            alert('Error approving photo');
+        }
+    };
+
+    window.rejectGalleryPhoto = async (photoId) => {
+        try {
+            const result = await updateGalleryPhotoStatus(photoId, 'rejected');
+            if (result.success) {
+                displayPendingGalleryPhotos(); // Refresh the list
+            } else {
+                alert('Error rejecting photo: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Error rejecting photo:', error);
+            alert('Error rejecting photo');
+        }
     };
 });

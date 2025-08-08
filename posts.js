@@ -371,3 +371,80 @@ async function toggleFeaturedStatus(postId, isFeatured) {
         return { success: false, error: "Failed to toggle featured status." };
     }
 }
+
+/**
+ * Fetches all blog posts from Firestore (admin only).
+ * @param {string} status - Optional filter by status ("pending", "approved", "rejected", or "all")
+ * @returns {Promise<object>} A promise that resolves with all posts.
+ */
+async function getAllPosts(status = "all") {
+    const user = auth.currentUser;
+    if (!user) {
+        return { success: false, error: "Authentication required." };
+    }
+
+    // Verify admin status server-side
+    try {
+        const isAdmin = await isUserAdmin();
+        if (!isAdmin) {
+            console.error("Unauthorized access attempt to fetch all posts");
+            return { success: false, error: "Admin privileges required." };
+        }
+
+        let query = db.collection("posts").orderBy("createdAt", "desc");
+        
+        // Apply status filter if specified
+        if (status && status !== "all") {
+            query = query.where("status", "==", status);
+        }
+
+        const snapshot = await query.get();
+
+        if (snapshot.empty) {
+            console.log("No posts found.");
+            return { success: true, posts: [] };
+        }
+
+        const posts = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        return { success: true, posts: posts };
+
+    } catch (error) {
+        console.error("Error fetching all posts:", error);
+        return { success: false, error: "Failed to fetch posts." };
+    }
+}
+
+/**
+ * Permanently deletes a post from Firestore (admin only).
+ * @param {string} postId - The ID of the post to delete.
+ * @returns {Promise<object>} A promise that resolves on success.
+ */
+async function deletePostPermanently(postId) {
+    const user = auth.currentUser;
+    if (!user) {
+        return { success: false, error: "Authentication required." };
+    }
+
+    // Verify admin status server-side
+    try {
+        const isAdmin = await isUserAdmin();
+        if (!isAdmin) {
+            console.error("Unauthorized access attempt to delete post");
+            return { success: false, error: "Admin privileges required." };
+        }
+
+        // Delete the post document
+        await db.collection("posts").doc(postId).delete();
+        
+        console.log("Post deleted permanently:", postId);
+        return { success: true };
+
+    } catch (error) {
+        console.error("Error deleting post:", error);
+        return { success: false, error: "Failed to delete post." };
+    }
+}

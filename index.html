@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GIKI Chronicles - A Student Blog</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -12,7 +13,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="styles.css">
@@ -32,8 +33,9 @@
           </svg>
         </button>
         
-        <a href="index.html" class="text-2xl font-bold text-gray-800">
-          GIKI<span class="text-blue-600">Chronicles</span>
+        <a href="index.html" class="flex flex-col items-center">
+          <img src="logo.png" alt="GIKI Chronicles Logo" class="h-12 w-auto">
+          <span class="text-sm font-semibold" style="color: #000000; font-family: 'Lora', serif;">GIKI Chronicles</span>
         </a>
       </div>
       
@@ -405,7 +407,7 @@
   <footer class="bg-gray-800 text-white mt-16">
     <div class="container mx-auto px-6 py-8">
       <div class="flex flex-col md:flex-row justify-between items-center">
-        <p>&copy; 2025 GIKI Chronicles. All Rights Reserved.</p>
+        <p>&copy; 2023 GIKI Chronicles. All Rights Reserved.</p>
         <div class="flex mt-4 md:mt-0 space-x-4">
           <a href="#" class="text-gray-400 hover:text-white transition duration-300">Facebook</a>
           <a href="#" class="text-gray-400 hover:text-white transition duration-300">Twitter</a>
@@ -416,8 +418,9 @@
   </footer>
 
   <!-- Custom JavaScript -->
-  <script src="calendar.js"></script>
-  <script src="script.js"></script>
+      <script src="calendar.js"></script>
+    <script src="script.js"></script>
+    <script src="theme-manager.js"></script>
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>

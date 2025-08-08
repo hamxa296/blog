@@ -555,8 +555,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Theme Management ---
     // Load saved theme from localStorage and apply it
-            const savedTheme = localStorage.getItem('selected-theme') || 'basic-dark';
+    const savedTheme = localStorage.getItem('selected-theme') || 'basic-dark';
     applyTheme(savedTheme);
+
+    // Set the theme selector to match the saved theme
+    const themeSelect = document.getElementById('theme-select');
+    if (themeSelect) {
+        themeSelect.value = savedTheme;
+    }
 
     // Function to apply theme
     function applyTheme(themeName) {
@@ -565,6 +571,17 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Add the selected theme class
         document.body.classList.add(`theme-${themeName}`);
+        
+        // Save the theme to localStorage
+        localStorage.setItem('selected-theme', themeName);
+    }
+
+    // Add event listener for theme selector
+    if (themeSelect) {
+        themeSelect.addEventListener('change', function() {
+            const selectedTheme = this.value;
+            applyTheme(selectedTheme);
+        });
     }
 });
 
