@@ -360,7 +360,14 @@
         
         // Enhanced authentication check for admin page
         function checkAuthAndAdmin() {
-            const user = auth.currentUser;
+            // Wait for Firebase to be available
+            if (typeof firebase === 'undefined' || !firebase.auth) {
+                console.log("Firebase not loaded yet, waiting...");
+                setTimeout(checkAuthAndAdmin, 100);
+                return;
+            }
+            
+            const user = firebase.auth().currentUser;
             console.log("Current auth user:", user);
             
             if (!user) {
@@ -380,33 +387,50 @@
             return true;
         }
         
-        // Check authentication immediately when page loads
+        // Check authentication after Firebase is loaded
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("Dashboard page DOM loaded, checking authentication...");
-            checkAuthAndAdmin();
+            console.log("Dashboard page DOM loaded, waiting for Firebase...");
+            // Wait for Firebase to be available
+            const checkFirebase = () => {
+                if (typeof firebase !== 'undefined' && firebase.auth) {
+                    console.log("Firebase loaded, checking authentication...");
+                    checkAuthAndAdmin();
+                } else {
+                    setTimeout(checkFirebase, 100);
+                }
+            };
+            checkFirebase();
         });
         
         // Temporary debugging function - remove this after fixing the issue
         window.debugAuth = function() {
             console.log("=== AUTH DEBUG INFO ===");
-            console.log("Current auth user:", auth.currentUser);
-            console.log("Auth state:", auth.currentUser ? "LOGGED IN" : "NOT LOGGED IN");
+            
+            // Check if Firebase is available
+            if (typeof firebase === 'undefined' || !firebase.auth) {
+                console.log("❌ Firebase not loaded yet");
+                return;
+            }
+            
+            const currentUser = firebase.auth().currentUser;
+            console.log("Current auth user:", currentUser);
+            console.log("Auth state:", currentUser ? "LOGGED IN" : "NOT LOGGED IN");
             
             const storedUser = localStorage.getItem('currentUser');
             console.log("Stored user in localStorage:", storedUser);
             
-            if (auth.currentUser) {
-                console.log("User UID:", auth.currentUser.uid);
-                console.log("User email:", auth.currentUser.email);
-                console.log("User displayName:", auth.currentUser.displayName);
+            if (currentUser) {
+                console.log("User UID:", currentUser.uid);
+                console.log("User email:", currentUser.email);
+                console.log("User displayName:", currentUser.displayName);
             }
             
             // Check if we're on the working admin account
             const workingUID = "55xGazVNgsdNz2Wew15OYrGPVSr2";
-            if (auth.currentUser && auth.currentUser.uid === workingUID) {
+            if (currentUser && currentUser.uid === workingUID) {
                 console.log("✅ You're logged in with the working admin account!");
-            } else if (auth.currentUser) {
-                console.log("❌ You're logged in with a different account:", auth.currentUser.uid);
+            } else if (currentUser) {
+                console.log("❌ You're logged in with a different account:", currentUser.uid);
                 console.log("Expected UID:", workingUID);
             } else {
                 console.log("❌ No user logged in");
@@ -415,7 +439,13 @@
         
         // Function to restore admin status for the working account
         window.restoreAdminStatus = async function() {
-            const user = auth.currentUser;
+            // Check if Firebase is available
+            if (typeof firebase === 'undefined' || !firebase.auth) {
+                console.log("❌ Firebase not loaded yet");
+                return;
+            }
+            
+            const user = firebase.auth().currentUser;
             if (!user) {
                 console.log("❌ No user logged in");
                 return;
@@ -431,7 +461,7 @@
             
             try {
                 console.log("🔧 Restoring admin status for working account...");
-                await db.collection('users').doc(user.uid).set({
+                await firebase.firestore().collection('users').doc(user.uid).set({
                     uid: user.uid,
                     email: user.email || 'unknown@email.com',
                     displayName: user.displayName || (user.email ? user.email.split('@')[0] : 'User'),
@@ -451,8 +481,14 @@
         window.quickFix = async function() {
             console.log("🔧 Running quick fix for authentication issues...");
             
+            // Check if Firebase is available
+            if (typeof firebase === 'undefined' || !firebase.auth) {
+                console.log("❌ Firebase not loaded yet");
+                return;
+            }
+            
             // Check current auth state
-            const user = auth.currentUser;
+            const user = firebase.auth().currentUser;
             if (!user) {
                 console.log("❌ No user logged in - please log in first");
                 return;
@@ -463,7 +499,7 @@
             
             // Force update user document with correct data
             try {
-                await db.collection('users').doc(user.uid).set({
+                await firebase.firestore().collection('users').doc(user.uid).set({
                     uid: user.uid,
                     email: user.email,
                     displayName: user.displayName || user.email?.split('@')[0] || 'User',
@@ -483,14 +519,20 @@
         window.forceAdmin = async function() {
             console.log("🔧 Force making current user admin...");
             
-            const user = auth.currentUser;
+            // Check if Firebase is available
+            if (typeof firebase === 'undefined' || !firebase.auth) {
+                console.log("❌ Firebase not loaded yet");
+                return;
+            }
+            
+            const user = firebase.auth().currentUser;
             if (!user) {
                 console.log("❌ No user logged in");
                 return;
             }
             
             try {
-                await db.collection('users').doc(user.uid).set({
+                await firebase.firestore().collection('users').doc(user.uid).set({
                     uid: user.uid,
                     email: user.email,
                     displayName: user.displayName || user.email?.split('@')[0] || 'User',
@@ -508,14 +550,20 @@
         
         // Check current user document
         window.checkUserDoc = async function() {
-            const user = auth.currentUser;
+            // Check if Firebase is available
+            if (typeof firebase === 'undefined' || !firebase.auth) {
+                console.log("❌ Firebase not loaded yet");
+                return;
+            }
+            
+            const user = firebase.auth().currentUser;
             if (!user) {
                 console.log("❌ No user logged in");
                 return;
             }
             
             try {
-                const userDoc = await db.collection('users').doc(user.uid).get();
+                const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
                 if (userDoc.exists) {
                     const data = userDoc.data();
                     console.log("📄 Current user document:", data);
@@ -560,14 +608,22 @@
         
         // Load stats when admin dashboard is shown
         document.addEventListener('DOMContentLoaded', () => {
-            auth.onAuthStateChanged(async (user) => {
-                if (user) {
-                    const isAdmin = await isUserAdmin();
-                    if (isAdmin) {
-                        loadGalleryStats();
-                    }
+            // Wait for Firebase to be available
+            const checkFirebase = () => {
+                if (typeof firebase !== 'undefined' && firebase.auth) {
+                    firebase.auth().onAuthStateChanged(async (user) => {
+                        if (user) {
+                            const isAdmin = await isUserAdmin();
+                            if (isAdmin) {
+                                loadGalleryStats();
+                            }
+                        }
+                    });
+                } else {
+                    setTimeout(checkFirebase, 100);
                 }
-            });
+            };
+            checkFirebase();
         });
     </script>
     

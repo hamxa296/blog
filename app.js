@@ -106,16 +106,183 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const post = result.post;
                     document.getElementById('post-title').value = post.title;
                     document.getElementById('post-description').value = post.description || '';
-                    document.getElementById('post-photo').value = post.photoUrl || '';
+                    document.getElementById('post-photo-url').value = post.photoUrl || '';
                     document.getElementById('post-genre').value = post.genre || 'General';
                     document.getElementById('post-tags').value = post.tags ? post.tags.join(', ') : '';
                     quill.root.innerHTML = post.content;
+                    
+                    // If there's a photo URL, show it in the URL tab
+                    if (post.photoUrl) {
+                        if (urlTab && uploadTab) {
+                            urlTab.click();
+                        }
+                    }
                 } else {
                     document.getElementById('form-message').textContent = result.error;
                 }
             };
             loadPostForEditing();
         }
+        // --- Image Upload Functionality ---
+        let uploadedImageUrl = null; // Store the uploaded image URL
+        
+        // Tab switching functionality
+        const urlTab = document.getElementById('url-tab');
+        const uploadTab = document.getElementById('upload-tab');
+        const urlSection = document.getElementById('url-section');
+        const uploadSection = document.getElementById('upload-section');
+        
+        if (urlTab && uploadTab) {
+            urlTab.addEventListener('click', () => {
+                urlTab.className = 'flex-1 py-2 px-3 text-sm font-medium bg-blue-600 text-white transition-colors';
+                uploadTab.className = 'flex-1 py-2 px-3 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors';
+                urlSection.classList.remove('hidden');
+                uploadSection.classList.add('hidden');
+                // Clear uploaded image when switching to URL
+                uploadedImageUrl = null;
+            });
+            
+            uploadTab.addEventListener('click', () => {
+                uploadTab.className = 'flex-1 py-2 px-3 text-sm font-medium bg-blue-600 text-white transition-colors';
+                urlTab.className = 'flex-1 py-2 px-3 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors';
+                uploadSection.classList.remove('hidden');
+                urlSection.classList.add('hidden');
+                // Clear URL input when switching to upload
+                document.getElementById('post-photo-url').value = '';
+            });
+        }
+        
+        // File upload handling
+        const fileInput = document.getElementById('post-photo-file');
+        const uploadProgress = document.getElementById('upload-progress');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const uploadStatus = document.getElementById('upload-status');
+        const uploadPreview = document.getElementById('upload-preview');
+        const previewImage = document.getElementById('preview-image');
+        const uploadedUrlSpan = document.getElementById('uploaded-url');
+        const removeUploadBtn = document.getElementById('remove-upload');
+        const uploadZone = document.querySelector('.border-dashed');
+        
+        // Upload function to avoid code duplication
+        const uploadImage = async (file) => {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                alert('Please select a valid image file.');
+                return;
+            }
+            
+            // Validate file size (10MB limit)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File size must be less than 10MB.');
+                return;
+            }
+            
+            // Show upload progress
+            uploadProgress.classList.remove('hidden');
+            uploadStatus.textContent = 'Uploading to Cloudinary...';
+            
+            try {
+                // Upload to Cloudinary
+                const cloudName = "dfkpmldma";
+                const uploadPreset = "giki-chronicles";
+                const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+                
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("upload_preset", uploadPreset);
+                
+                // Simulate progress (Cloudinary doesn't provide real-time progress)
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += Math.random() * 15;
+                    if (progress > 90) progress = 90;
+                    progressBar.style.width = `${progress}%`;
+                    progressText.textContent = `${Math.round(progress)}%`;
+                }, 200);
+                
+                const response = await fetch(url, {
+                    method: "POST",
+                    body: formData,
+                });
+                
+                clearInterval(progressInterval);
+                
+                if (!response.ok) {
+                    throw new Error(`Upload failed: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                uploadedImageUrl = data.secure_url;
+                
+                // Show completion
+                progressBar.style.width = '100%';
+                progressText.textContent = '100%';
+                uploadStatus.textContent = 'Upload complete!';
+                
+                // Show preview
+                previewImage.src = uploadedImageUrl;
+                uploadedUrlSpan.textContent = uploadedImageUrl;
+                uploadPreview.classList.remove('hidden');
+                
+                // Hide progress after a moment
+                setTimeout(() => {
+                    uploadProgress.classList.add('hidden');
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Upload error:', error);
+                uploadStatus.textContent = 'Upload failed. Please try again.';
+                progressBar.style.width = '0%';
+                progressText.textContent = '0%';
+                
+                setTimeout(() => {
+                    uploadProgress.classList.add('hidden');
+                }, 3000);
+            }
+        };
+        
+        if (fileInput) {
+            fileInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                await uploadImage(file);
+            });
+        }
+        
+        // Drag and drop functionality
+        if (uploadZone) {
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadZone.classList.add('dragover');
+            });
+            
+            uploadZone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('dragover');
+            });
+            
+            uploadZone.addEventListener('drop', async (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    await uploadImage(files[0]);
+                }
+            });
+        }
+        
+        // Remove uploaded image
+        if (removeUploadBtn) {
+            removeUploadBtn.addEventListener('click', () => {
+                uploadedImageUrl = null;
+                fileInput.value = '';
+                uploadPreview.classList.add('hidden');
+                uploadProgress.classList.add('hidden');
+            });
+        }
+        
         postForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formMessage = document.getElementById('form-message');
@@ -126,10 +293,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             formMessage.textContent = 'Submitting...';
             formMessage.className = 'text-center h-5 text-blue-600 font-medium';
+            
+            // Get photo URL from either URL input or uploaded image
+            let photoUrl = '';
+            if (uploadedImageUrl) {
+                photoUrl = uploadedImageUrl;
+            } else {
+                photoUrl = document.getElementById('post-photo-url').value;
+            }
+            
             const postData = {
                 title: document.getElementById('post-title').value,
                 description: document.getElementById('post-description').value,
-                photoUrl: document.getElementById('post-photo').value,
+                photoUrl: photoUrl,
                 genre: document.getElementById('post-genre').value,
                 tags: document.getElementById('post-tags').value,
                 content: quill.root.innerHTML
@@ -147,10 +323,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Clear the form for a new post
                 document.getElementById('post-title').value = '';
                 document.getElementById('post-description').value = '';
-                document.getElementById('post-photo').value = '';
+                document.getElementById('post-photo-url').value = '';
                 document.getElementById('post-genre').value = 'General';
                 document.getElementById('post-tags').value = '';
                 quill.setText('');
+                
+                // Clear uploaded image
+                uploadedImageUrl = null;
+                if (fileInput) fileInput.value = '';
+                if (uploadPreview) uploadPreview.classList.add('hidden');
+                if (uploadProgress) uploadProgress.classList.add('hidden');
+                
+                // Reset to URL tab
+                if (urlTab && uploadTab) {
+                    urlTab.click();
+                }
                 // Clear the hidden post ID if it was set
                 document.getElementById('post-id').value = '';
                 // Reset button text

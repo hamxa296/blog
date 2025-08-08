@@ -49,6 +49,30 @@
             border-bottom-right-radius: 0.75rem;
             border-color: #e5e7eb !important;
         }
+
+        /* Image upload styles */
+        .upload-zone {
+            transition: all 0.3s ease;
+        }
+        
+        .upload-zone:hover {
+            border-color: #3b82f6;
+            background-color: #f8fafc;
+        }
+        
+        .upload-zone.dragover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+            transform: scale(1.02);
+        }
+        
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+        
+        .preview-image {
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 
@@ -127,11 +151,62 @@
                         </div>
                         <div class="p-6 space-y-4">
                             <div>
-                                <label for="post-photo" class="block text-sm font-medium text-gray-700 mb-1">Featured
-                                    Photo URL</label>
-                                <input type="url" id="post-photo" name="photoUrl"
-                                    placeholder="https://example.com/photo.jpg"
-                                    class="w-full p-2 border border-gray-300 rounded-lg">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Featured Photo</label>
+                                
+                                <!-- Image Upload Options -->
+                                <div class="space-y-3">
+                                    <!-- Option Tabs -->
+                                    <div class="flex border border-gray-300 rounded-lg overflow-hidden">
+                                        <button type="button" id="url-tab" class="flex-1 py-2 px-3 text-sm font-medium bg-blue-600 text-white transition-colors">
+                                            Add URL
+                                        </button>
+                                        <button type="button" id="upload-tab" class="flex-1 py-2 px-3 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+                                            Upload Image
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- URL Input Section -->
+                                    <div id="url-section" class="space-y-2">
+                                        <input type="url" id="post-photo-url" name="photoUrl"
+                                            placeholder="https://example.com/photo.jpg"
+                                            class="w-full p-2 border border-gray-300 rounded-lg">
+                                        <p class="text-xs text-gray-500">Paste a direct link to an image</p>
+                                    </div>
+                                    
+                                    <!-- Upload Section -->
+                                    <div id="upload-section" class="space-y-3 hidden">
+                                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-400 transition-colors">
+                                            <input type="file" id="post-photo-file" accept="image/*" class="hidden">
+                                            <label for="post-photo-file" class="cursor-pointer">
+                                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                                <p class="mt-2 text-sm text-gray-600">Click to upload an image</p>
+                                                <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                                            </label>
+                                        </div>
+                                        
+                                        <!-- Upload Progress -->
+                                        <div id="upload-progress" class="hidden">
+                                            <div class="flex items-center space-x-2">
+                                                <div class="flex-1 bg-gray-200 rounded-full h-2">
+                                                    <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                                                </div>
+                                                <span id="progress-text" class="text-sm text-gray-600">0%</span>
+                                            </div>
+                                            <p id="upload-status" class="text-sm text-gray-600 mt-1">Preparing upload...</p>
+                                        </div>
+                                        
+                                        <!-- Uploaded Image Preview -->
+                                        <div id="upload-preview" class="hidden">
+                                            <img id="preview-image" src="" alt="Preview" class="w-full h-32 object-cover rounded-lg">
+                                            <div class="flex justify-between items-center mt-2">
+                                                <span id="uploaded-url" class="text-sm text-gray-600 truncate"></span>
+                                                <button type="button" id="remove-upload" class="text-red-600 hover:text-red-800 text-sm">Remove</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div>
                                 <label for="post-description" class="block text-sm font-medium text-gray-700 mb-1">Short
