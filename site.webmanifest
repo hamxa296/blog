@@ -1,0 +1,30 @@
+{
+    "name": "GIKI Chronicles",
+    "short_name": "GIKI Blog",
+    "description": "A student blog for GIK Institute",
+    "icons": [
+        {
+            "src": "/favicons/favicon-16x16.png",
+            "sizes": "16x16",
+            "type": "image/png"
+        },
+        {
+            "src": "/favicons/favicon-32x32.png",
+            "sizes": "32x32",
+            "type": "image/png"
+        },
+        {
+            "src": "/favicons/favicon-48x48.png",
+            "sizes": "48x48",
+            "type": "image/png"
+        },
+        {
+            "src": "/favicons/apple-touch-icon.png",
+            "sizes": "180x180",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#002347",
+    "background_color": "#ffffff",
+    "display": "standalone"
+}

@@ -553,36 +553,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadEventsAndRender();
     }
 
-    // --- Theme Management ---
-    // Load saved theme from localStorage and apply it
-    const savedTheme = localStorage.getItem('selected-theme') || 'basic-dark';
-    applyTheme(savedTheme);
-
-    // Set the theme selector to match the saved theme
-    const themeSelect = document.getElementById('theme-select');
-    if (themeSelect) {
-        themeSelect.value = savedTheme;
-    }
-
-    // Function to apply theme
-    function applyTheme(themeName) {
-        // Remove all existing theme classes
-        document.body.classList.remove('theme-basic-light', 'theme-basic-dark', 'theme-giki');
-        
-        // Add the selected theme class
-        document.body.classList.add(`theme-${themeName}`);
-        
-        // Save the theme to localStorage
-        localStorage.setItem('selected-theme', themeName);
-    }
-
-    // Add event listener for theme selector
-    if (themeSelect) {
-        themeSelect.addEventListener('change', function() {
-            const selectedTheme = this.value;
-            applyTheme(selectedTheme);
-        });
-    }
+    // Theme management is handled by theme-manager.js
 });
 
 // --- Admin Functions for Event Approval ---
