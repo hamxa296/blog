@@ -34,31 +34,55 @@ async function initializeGalleryAdmin() {
 
 // Show admin interface elements
 function showAdminInterface() {
-    document.getElementById('admin-photo-tabs').classList.remove('hidden');
-    document.getElementById('admin-stats').classList.remove('hidden');
+    // Check if we're on the gallery page (these elements only exist on gallery.html)
+    const adminPhotoTabs = document.getElementById('admin-photo-tabs');
+    const adminStats = document.getElementById('admin-stats');
     
-    // Add event listeners for admin tabs
-    document.getElementById('tab-approved').addEventListener('click', () => switchPhotoTab('approved'));
-    document.getElementById('tab-pending').addEventListener('click', () => switchPhotoTab('pending'));
-    document.getElementById('tab-rejected').addEventListener('click', () => switchPhotoTab('rejected'));
+    if (adminPhotoTabs) {
+        adminPhotoTabs.classList.remove('hidden');
+    }
     
-    // Set default active tab
-    document.getElementById('tab-approved').classList.add('bg-green-200');
+    if (adminStats) {
+        adminStats.classList.remove('hidden');
+    }
+    
+    // Add event listeners for admin tabs (only if they exist)
+    const tabApproved = document.getElementById('tab-approved');
+    const tabPending = document.getElementById('tab-pending');
+    const tabRejected = document.getElementById('tab-rejected');
+    
+    if (tabApproved) {
+        tabApproved.addEventListener('click', () => switchPhotoTab('approved'));
+        tabApproved.classList.add('bg-green-200');
+    }
+    
+    if (tabPending) {
+        tabPending.addEventListener('click', () => switchPhotoTab('pending'));
+    }
+    
+    if (tabRejected) {
+        tabRejected.addEventListener('click', () => switchPhotoTab('rejected'));
+    }
 }
 
 // Switch between photo status tabs
 async function switchPhotoTab(status) {
     currentPhotoStatus = status;
     
-    // Update tab styling
-    document.querySelectorAll('#admin-photo-tabs button').forEach(btn => {
-        btn.classList.remove('bg-green-200', 'bg-yellow-200', 'bg-red-200');
-    });
-    
-    const activeTab = document.getElementById(`tab-${status}`);
-    if (status === 'approved') activeTab.classList.add('bg-green-200');
-    else if (status === 'pending') activeTab.classList.add('bg-yellow-200');
-    else if (status === 'rejected') activeTab.classList.add('bg-red-200');
+    // Update tab styling (only if we're on the gallery page)
+    const adminPhotoTabs = document.querySelector('#admin-photo-tabs');
+    if (adminPhotoTabs) {
+        adminPhotoTabs.querySelectorAll('button').forEach(btn => {
+            btn.classList.remove('bg-green-200', 'bg-yellow-200', 'bg-red-200');
+        });
+        
+        const activeTab = document.getElementById(`tab-${status}`);
+        if (activeTab) {
+            if (status === 'approved') activeTab.classList.add('bg-green-200');
+            else if (status === 'pending') activeTab.classList.add('bg-yellow-200');
+            else if (status === 'rejected') activeTab.classList.add('bg-red-200');
+        }
+    }
     
     // Load photos for selected status
     await loadPhotosByStatus(status);
@@ -100,6 +124,13 @@ async function loadMorePhotos() {
 // Render photo grid with admin controls
 function renderPhotoGrid(photos, status) {
     const grid = document.getElementById('gallery-grid');
+    
+    // Only proceed if we're on the gallery page
+    if (!grid) {
+        console.log('Gallery grid not found - not on gallery page');
+        return;
+    }
+    
     grid.innerHTML = '';
     
     if (photos.length === 0) {
@@ -133,6 +164,12 @@ function renderPhotoGrid(photos, status) {
 function appendPhotoGrid(photos, status) {
     const grid = document.getElementById('gallery-grid');
     
+    // Only proceed if we're on the gallery page
+    if (!grid) {
+        console.log('Gallery grid not found - not on gallery page');
+        return;
+    }
+    
     // Remove existing load more button
     const existingLoadMore = grid.querySelector('.load-more-container');
     if (existingLoadMore) {
@@ -156,6 +193,13 @@ function appendPhotoGrid(photos, status) {
 // Add load more button
 function addLoadMoreButton() {
     const grid = document.getElementById('gallery-grid');
+    
+    // Only proceed if we're on the gallery page
+    if (!grid) {
+        console.log('Gallery grid not found - not on gallery page');
+        return;
+    }
+    
     const loadMoreContainer = document.createElement('div');
     loadMoreContainer.className = 'load-more-container col-span-full text-center py-8';
     loadMoreContainer.innerHTML = `
@@ -176,8 +220,21 @@ function createPhotoCard(photo, status) {
     
     // Generate optimized image URLs with different sizes
     const imageUrl = photo.imageUrl;
-    const optimizedImageUrl = imageUrl.includes('cloudinary') ? 
-        imageUrl.replace('/upload/', '/upload/c_fill,w_400,h_300,q_auto,f_auto/') : imageUrl;
+    let optimizedImageUrl = imageUrl;
+    
+    if (imageUrl.includes('cloudinary')) {
+        // Fix the Cloudinary URL transformation to preserve aspect ratio
+        // Use c_scale instead of c_fill to maintain original proportions
+        // Original: https://res.cloudinary.com/dfkpmldma/image/upload/v1754675533/ebpkauzzsw0cjngi32hm.jpg
+        // Should be: https://res.cloudinary.com/dfkpmldma/image/upload/c_scale,w_400,q_auto,f_auto/v1754675533/ebpkauzzsw0cjngi32hm.jpg
+        
+        if (imageUrl.includes('/upload/')) {
+            optimizedImageUrl = imageUrl.replace('/upload/', '/upload/c_scale,w_400,q_auto,f_auto/');
+        } else {
+            // Fallback if the URL structure is different
+            optimizedImageUrl = imageUrl;
+        }
+    }
     
     card.innerHTML = `
         <div class="relative">
@@ -237,9 +294,36 @@ async function loadAdminStats() {
     const result = await getGalleryStats();
     if (result.success) {
         const stats = result.stats;
-        document.getElementById('stats-approved').textContent = `Approved: ${stats.approved}`;
-        document.getElementById('stats-pending').textContent = `Pending: ${stats.pending}`;
-        document.getElementById('stats-rejected').textContent = `Rejected: ${stats.rejected}`;
+        
+        // Update gallery page stats (if we're on gallery.html)
+        const statsApproved = document.getElementById('stats-approved');
+        const statsPending = document.getElementById('stats-pending');
+        const statsRejected = document.getElementById('stats-rejected');
+        
+        if (statsApproved) {
+            statsApproved.textContent = `Approved: ${stats.approved}`;
+        }
+        if (statsPending) {
+            statsPending.textContent = `Pending: ${stats.pending}`;
+        }
+        if (statsRejected) {
+            statsRejected.textContent = `Rejected: ${stats.rejected}`;
+        }
+        
+        // Update admin page stats (if we're on admin.html)
+        const adminStatsApproved = document.getElementById('stats-approved-photos');
+        const adminStatsPending = document.getElementById('stats-pending-photos');
+        const adminStatsRejected = document.getElementById('stats-rejected-photos');
+        
+        if (adminStatsApproved) {
+            adminStatsApproved.textContent = stats.approved;
+        }
+        if (adminStatsPending) {
+            adminStatsPending.textContent = stats.pending;
+        }
+        if (adminStatsRejected) {
+            adminStatsRejected.textContent = stats.rejected;
+        }
     }
 }
 
@@ -256,6 +340,12 @@ async function openPhotoReview(photoId) {
         
         const modal = document.getElementById('admin-review-modal');
         const content = document.getElementById('review-photo-content');
+        
+        // Only proceed if we're on the gallery page with the modal
+        if (!modal || !content) {
+            console.log('Photo review modal not found - not on gallery page');
+            return;
+        }
         
         content.innerHTML = `
             <div class="text-center">
@@ -294,9 +384,13 @@ async function openPhotoReview(photoId) {
         modal.classList.remove('hidden');
         
         // Add event listeners
-        document.getElementById('approve-photo-btn').onclick = () => approvePhoto(currentPhoto.id);
-        document.getElementById('reject-photo-btn').onclick = () => rejectPhoto(currentPhoto.id);
-        document.getElementById('close-review-modal').onclick = () => modal.classList.add('hidden');
+        const approveBtn = document.getElementById('approve-photo-btn');
+        const rejectBtn = document.getElementById('reject-photo-btn');
+        const closeBtn = document.getElementById('close-review-modal');
+        
+        if (approveBtn) approveBtn.onclick = () => approvePhoto(currentPhoto.id);
+        if (rejectBtn) rejectBtn.onclick = () => rejectPhoto(currentPhoto.id);
+        if (closeBtn) closeBtn.onclick = () => modal.classList.add('hidden');
         
     } catch (error) {
         console.error('Error opening photo review:', error);
@@ -313,7 +407,13 @@ async function approvePhoto(photoId) {
     const result = await updateGalleryPhotoStatus(photoId, 'approved', { isHighlighted });
     if (result.success) {
         alert('Photo approved successfully!');
-        document.getElementById('admin-review-modal').classList.add('hidden');
+        
+        // Close modal if it exists
+        const modal = document.getElementById('admin-review-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+        
         await switchPhotoTab(currentPhotoStatus);
         await loadAdminStats();
     } else {
@@ -324,50 +424,85 @@ async function approvePhoto(photoId) {
 // Reject photo
 async function rejectPhoto(photoId) {
     const modal = document.getElementById('rejection-modal');
+    
+    // Only proceed if we're on the gallery page with the modal
+    if (!modal) {
+        console.log('Rejection modal not found - not on gallery page');
+        return;
+    }
+    
     modal.classList.remove('hidden');
     
-    document.getElementById('confirm-rejection').onclick = async () => {
-        const reason = document.getElementById('rejection-reason').value;
-        
-        const result = await updateGalleryPhotoStatus(photoId, 'rejected', { rejectionReason: reason });
-        if (result.success) {
-            alert('Photo rejected successfully!');
-            modal.classList.add('hidden');
-            document.getElementById('admin-review-modal').classList.add('hidden');
-            document.getElementById('rejection-reason').value = '';
-            await switchPhotoTab(currentPhotoStatus);
-            await loadAdminStats();
-        } else {
-            alert('Error rejecting photo: ' + result.error);
-        }
-    };
+    const confirmBtn = document.getElementById('confirm-rejection');
+    const cancelBtn = document.getElementById('cancel-rejection');
+    const reasonInput = document.getElementById('rejection-reason');
     
-    document.getElementById('cancel-rejection').onclick = () => {
-        modal.classList.add('hidden');
-        document.getElementById('rejection-reason').value = '';
-    };
+    if (confirmBtn) {
+        confirmBtn.onclick = async () => {
+            const reason = reasonInput ? reasonInput.value : '';
+            
+            const result = await updateGalleryPhotoStatus(photoId, 'rejected', { rejectionReason: reason });
+            if (result.success) {
+                alert('Photo rejected successfully!');
+                modal.classList.add('hidden');
+                
+                // Close admin review modal if it exists
+                const adminModal = document.getElementById('admin-review-modal');
+                if (adminModal) {
+                    adminModal.classList.add('hidden');
+                }
+                
+                if (reasonInput) reasonInput.value = '';
+                await switchPhotoTab(currentPhotoStatus);
+                await loadAdminStats();
+            } else {
+                alert('Error rejecting photo: ' + result.error);
+            }
+        };
+    }
+    
+    if (cancelBtn) {
+        cancelBtn.onclick = () => {
+            modal.classList.add('hidden');
+            if (reasonInput) reasonInput.value = '';
+        };
+    }
 }
 
 // Delete photo
 async function deletePhoto(photoId, cloudinaryId) {
     const modal = document.getElementById('delete-photo-modal');
+    
+    // Only proceed if we're on the gallery page with the modal
+    if (!modal) {
+        console.log('Delete photo modal not found - not on gallery page');
+        return;
+    }
+    
     modal.classList.remove('hidden');
     
-    document.getElementById('confirm-delete').onclick = async () => {
-        const result = await deleteGalleryPhoto(photoId, cloudinaryId);
-        if (result.success) {
-            alert('Photo deleted successfully!');
-            modal.classList.add('hidden');
-            await switchPhotoTab(currentPhotoStatus);
-            await loadAdminStats();
-        } else {
-            alert('Error deleting photo: ' + result.error);
-        }
-    };
+    const confirmBtn = document.getElementById('confirm-delete');
+    const cancelBtn = document.getElementById('cancel-delete');
     
-    document.getElementById('cancel-delete').onclick = () => {
-        modal.classList.add('hidden');
-    };
+    if (confirmBtn) {
+        confirmBtn.onclick = async () => {
+            const result = await deleteGalleryPhoto(photoId, cloudinaryId);
+            if (result.success) {
+                alert('Photo deleted successfully!');
+                modal.classList.add('hidden');
+                await switchPhotoTab(currentPhotoStatus);
+                await loadAdminStats();
+            } else {
+                alert('Error deleting photo: ' + result.error);
+            }
+        };
+    }
+    
+    if (cancelBtn) {
+        cancelBtn.onclick = () => {
+            modal.classList.add('hidden');
+        };
+    }
 }
 
 // Initialize lazy loading

@@ -1340,7 +1340,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const displayPendingGalleryPhotos = async () => {
         const pendingGalleryContainer = document.getElementById('pending-gallery-container');
         if (!pendingGalleryContainer) {
-            console.error('Pending gallery container not found');
+            console.log('Pending gallery container not found - not on admin page or element removed');
             return;
         }
 

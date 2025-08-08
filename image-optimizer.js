@@ -28,13 +28,13 @@ class ImageOptimizer {
             return this.generateFallbackResponsiveUrls(originalUrl, alt);
         }
         
-        const baseUrl = originalUrl.replace('/upload/', '/upload/');
         const urls = {};
         
         // Generate different sizes for different devices
         Object.entries(this.breakpoints).forEach(([device, width]) => {
             const format = this.supportedFormats ? 'f_auto,q_auto' : 'q_auto';
-            urls[device] = `${baseUrl}c_fill,w_${width},h_${Math.round(width * 0.75)},${format}/${originalUrl.split('/').pop()}`;
+            // Fix: Use c_scale to preserve aspect ratio instead of c_fill
+            urls[device] = originalUrl.replace('/upload/', `/upload/c_scale,w_${width},${format}/`);
         });
         
         return urls;
@@ -116,7 +116,7 @@ class ImageOptimizer {
     // Generate low-quality placeholder URL
     generateLowQualityUrl(originalUrl) {
         if (originalUrl.includes('cloudinary')) {
-            return originalUrl.replace('/upload/', '/upload/c_fill,w_20,h_15,q_10,f_auto/');
+            return originalUrl.replace('/upload/', '/upload/c_scale,w_20,q_10,f_auto/');
         }
         return originalUrl;
     }
@@ -127,6 +127,11 @@ class ImageOptimizer {
         
         images.forEach(img => {
             if (img.src && !img.dataset.optimized) {
+                // Skip gallery images that are already optimized by gallery-admin.js
+                if (img.closest('#gallery-grid') || img.closest('.gallery-admin')) {
+                    img.dataset.optimized = 'true';
+                    return;
+                }
                 this.optimizeImage(img);
             }
         });

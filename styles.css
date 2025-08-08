@@ -44,9 +44,11 @@ body {
     --primary-hover: #2563eb;
     --bg-color: #f8f9fa;
     --text-color: #1f2937;
+    --text-muted: #6b7280;
     --sidebar-bg: #ffffff;
     --card-bg: #ffffff;
     --border-color: #e5e7eb;
+    --hover-bg: #f3f4f6;
 }
 
 /* Basic Dark Theme */
@@ -55,9 +57,11 @@ body {
     --primary-hover: #3b82f6;
     --bg-color: #1f2937;
     --text-color: #f9fafb;
+    --text-muted: #9ca3af;
     --sidebar-bg: #111827;
     --card-bg: #374151;
     --border-color: #4b5563;
+    --hover-bg: #4b5563;
 }
 
 /* GIKI Palette Theme */
@@ -69,9 +73,11 @@ body {
     --highlight-color: #E3EEB2; /* Lime */
     --bg-color: #f8f9fa;
     --text-color: #1f2937;
+    --text-muted: #6b7280;
     --sidebar-bg: #ffffff;
     --card-bg: #ffffff;
     --border-color: #e5e7eb;
+    --hover-bg: #f3f4f6;
 }
 
 

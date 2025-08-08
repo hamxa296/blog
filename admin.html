@@ -52,6 +52,7 @@
                 
                         <a href="index.html" class="flex flex-col items-center">
           <img src="logo.png" alt="GIKI Chronicles Logo" class="h-16 w-auto">
+          <span class="text-lg font-bold text-gray-800 mt-1">GIKI Chronicles</span>
         </a>
             </div>
             
@@ -591,41 +592,53 @@
     <script src="calendar.js" onerror="console.error('Failed to load calendar.js')" onload="console.log('calendar.js loaded')"></script>
     
     <script>
-        // Load gallery statistics for admin dashboard
-        async function loadGalleryStats() {
-            try {
-                const result = await getGalleryStats();
-                if (result.success) {
-                    const stats = result.stats;
-                    document.getElementById('stats-approved-photos').textContent = stats.approved;
-                    document.getElementById('stats-pending-photos').textContent = stats.pending;
-                    document.getElementById('stats-rejected-photos').textContent = stats.rejected;
-                }
-            } catch (error) {
-                console.error('Error loading gallery stats:', error);
-            }
-        }
-        
-        // Load stats when admin dashboard is shown
-        document.addEventListener('DOMContentLoaded', () => {
+        // Wait for all scripts to load before running admin-specific code
+        window.addEventListener('load', function() {
+            console.log('All scripts loaded, initializing admin page...');
+            
             // Wait for Firebase to be available
-            const checkFirebase = () => {
+            const waitForFirebase = () => {
                 if (typeof firebase !== 'undefined' && firebase.auth) {
-                    firebase.auth().onAuthStateChanged(async (user) => {
-                        if (user) {
-                            const isAdmin = await isUserAdmin();
-                            if (isAdmin) {
-                                loadGalleryStats();
-                            }
-                        }
-                    });
+                    console.log('Firebase is available, initializing admin functionality...');
+                    initializeAdminPage();
                 } else {
-                    setTimeout(checkFirebase, 100);
+                    console.log('Firebase not ready yet, waiting...');
+                    setTimeout(waitForFirebase, 100);
                 }
             };
-            checkFirebase();
+            
+            waitForFirebase();
         });
+        
+        function initializeAdminPage() {
+            // Load gallery statistics for admin dashboard
+            async function loadGalleryStats() {
+                try {
+                    const result = await getGalleryStats();
+                    if (result.success) {
+                        const stats = result.stats;
+                        document.getElementById('stats-approved-photos').textContent = stats.approved;
+                        document.getElementById('stats-pending-photos').textContent = stats.pending;
+                        document.getElementById('stats-rejected-photos').textContent = stats.rejected;
+                    }
+                } catch (error) {
+                    console.error('Error loading gallery stats:', error);
+                }
+            }
+            
+            // Load stats when admin dashboard is shown
+            firebase.auth().onAuthStateChanged(async (user) => {
+                if (user) {
+                    const isAdmin = await isUserAdmin();
+                    if (isAdmin) {
+                        loadGalleryStats();
+                    }
+                }
+            });
+        }
     </script>
+    
+
     
     <script>
         // --- Theme Management ---

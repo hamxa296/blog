@@ -29,20 +29,8 @@ const filesToCombine = [
 
 // Minification function (basic)
 function minifyJS(code) {
-    return code
-        .replace(/\/\*[\s\S]*?\*\//g, '') // Remove comments
-        .replace(/\/\/.*$/gm, '') // Remove single line comments
-        .replace(/\s+/g, ' ') // Replace multiple spaces with single space
-        .replace(/\s*{\s*/g, '{') // Remove spaces around braces
-        .replace(/\s*}\s*/g, '}') // Remove spaces around braces
-        .replace(/\s*;\s*/g, ';') // Remove spaces around semicolons
-        .replace(/\s*,\s*/g, ',') // Remove spaces around commas
-        .replace(/\s*=\s*/g, '=') // Remove spaces around equals
-        .replace(/\s*\+\s*/g, '+') // Remove spaces around plus
-        .replace(/\s*-\s*/g, '-') // Remove spaces around minus
-        .replace(/\s*\*\s*/g, '*') // Remove spaces around multiply
-        .replace(/\s*\/\s*/g, '/') // Remove spaces around divide
-        .trim();
+    // For now, just return the code as-is to avoid template literal issues
+    return code;
 }
 
 // Combine files

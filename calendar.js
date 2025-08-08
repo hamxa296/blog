@@ -230,6 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Frontend UI Logic ---
     const navEvents = document.getElementById('nav-events');
     const navSubmit = document.getElementById('nav-submit');
+    const navCalendar = document.getElementById('nav-calendar');
     const calendarView = document.getElementById('calendar-view');
     const submitEventView = document.getElementById('submit-event-view');
     const eventsView = document.getElementById('events-view');
@@ -551,9 +552,29 @@ document.addEventListener('DOMContentLoaded', () => {
     if (calendarView && submitEventView && eventsView) {
         showPage('home');
         loadEventsAndRender();
+        
+        // Apply theme on page load to ensure consistency
+        applyThemeToCalendar();
     }
 
     // Theme management is handled by theme-manager.js
+    // But we need to apply theme when switching to calendar page
+    function applyThemeToCalendar() {
+        const savedTheme = localStorage.getItem('selected-theme') || 'basic-dark';
+        const body = document.body;
+        
+        // Remove all existing theme classes
+        body.classList.remove('theme-basic-light', 'theme-basic-dark', 'theme-giki');
+        
+        // Add the selected theme class
+        body.classList.add(`theme-${savedTheme}`);
+        
+        // Update theme selector if it exists
+        const themeSelect = document.getElementById('theme-select');
+        if (themeSelect) {
+            themeSelect.value = savedTheme;
+        }
+    }
 });
 
 // --- Admin Functions for Event Approval ---
