@@ -70,6 +70,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     function initializePostForm() {
+        console.log('initializePostForm called');
+        const postForm = document.getElementById('post-form');
+        if (!postForm) {
+            console.error('Post form not found');
+            return;
+        }
+        
         const urlParams = new URLSearchParams(window.location.search);
         const postIdToEdit = urlParams.get('edit');
         if (postIdToEdit) {
@@ -95,14 +102,44 @@ document.addEventListener('DOMContentLoaded', async () => {
             };
             loadPostForEditing();
         }
-        postForm.addEventListener('submit', async (e) => {
+        
+        // Remove any existing event listeners to prevent duplicates
+        const newPostForm = postForm.cloneNode(true);
+        postForm.parentNode.replaceChild(newPostForm, postForm);
+        
+        newPostForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            console.log('Form submission started');
             const formMessage = document.getElementById('form-message');
-            if (!window.quill || window.quill.getLength() <= 1) {
+            
+            // Check if user is authenticated
+            const user = auth.currentUser;
+            if (!user) {
+                formMessage.textContent = 'You must be logged in to submit a post.';
+                return;
+            }
+            
+            // Better content validation
+            let hasContent = false;
+            if (window.quill) {
+                const content = window.quill.root.innerHTML;
+                const textContent = window.quill.getText().trim();
+                console.log('Quill content length:', window.quill.getLength());
+                console.log('Quill text content:', textContent);
+                console.log('Quill HTML content:', content);
+                
+                // Check if there's actual text content (not just empty paragraphs)
+                hasContent = textContent.length > 0 && content !== '<p><br></p>' && content !== '<p></p>';
+            }
+            
+            if (!hasContent) {
                 formMessage.textContent = 'Please write some content for your post.';
                 return;
             }
+            
             formMessage.textContent = 'Submitting...';
+            console.log('Preparing post data...');
+            
             const postData = {
                 title: document.getElementById('post-title').value,
                 description: document.getElementById('post-description').value,
@@ -111,13 +148,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                 tags: document.getElementById('post-tags').value,
                 content: window.quill.root.innerHTML
             };
+            
+            console.log('Post data prepared:', postData);
+            
             let result;
             const postId = document.getElementById('post-id').value;
             if (postId) {
+                console.log('Updating existing post:', postId);
                 result = await updatePost(postId, postData);
             } else {
+                console.log('Creating new post');
                 result = await createPost(postData);
             }
+            
+            console.log('Post operation result:', result);
+            
             if (result.success) {
                 formMessage.textContent = 'Post submitted successfully!';
                 setTimeout(() => { window.location.href = 'profile.html'; }, 2000);
@@ -125,7 +170,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 formMessage.textContent = result.error;
             }
         });
+        
+        console.log('Post form initialized successfully');
     } // End of initializePostForm function
+    
+    // Make the function globally available
+    window.initializePostForm = initializePostForm;
 
     // --- Profile Page Logic (Legacy - only for old profile pages) ---
     const profileForm = document.getElementById('profile-form');

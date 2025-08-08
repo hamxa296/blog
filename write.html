@@ -85,6 +85,18 @@
         .ql-editor {
             background-color: white !important;
             color: #374151 !important;
+            min-height: 350px !important;
+        }
+        
+        /* Fix placeholder styling */
+        .ql-editor.ql-blank::before {
+            color: #9ca3af !important;
+            font-style: italic !important;
+        }
+        
+        /* Ensure Quill container is properly sized */
+        .ql-container {
+            min-height: 350px !important;
         }
     </style>
 </head>
@@ -366,6 +378,10 @@
                             class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full transition duration-300">
                             Preview
                         </button>
+                        <!-- <button type="button" id="test-editor-button"
+                            class="w-full bg-green-200 hover:bg-green-300 text-green-800 font-bold py-2 px-4 rounded-full transition duration-300">
+                            Test Editor
+                        </button> -->
                     </div>
                 </div>
 
@@ -401,6 +417,16 @@
                 console.error('Quill failed to load from CDN, trying backup...');
                 loadQuillBackup();
             }
+            
+            // Add a timeout fallback to ensure form is initialized even if Quill fails
+            setTimeout(() => {
+                if (typeof window.initializePostForm === 'function') {
+                    console.log('Initializing post form with timeout fallback');
+                    window.initializePostForm();
+                } else {
+                    console.error('initializePostForm function not available');
+                }
+            }, 3000); // 3 second timeout
         });
         
         function loadQuillBackup() {
@@ -443,6 +469,10 @@
                     getLength: function() { 
                         const fallback = document.getElementById('fallback-editor');
                         return fallback ? fallback.value.length : 0;
+                    },
+                    getText: function() {
+                        const fallback = document.getElementById('fallback-editor');
+                        return fallback ? fallback.value : '';
                     }
                 };
                 
@@ -453,40 +483,71 @@
                         window.quill.root.innerHTML = this.value.replace(/\n/g, '<br>');
                     });
                 }
+                
+                // Trigger quillReady event for form initialization
+                window.dispatchEvent(new CustomEvent('quillReady', { detail: window.quill }));
             }
         }
         
-        function initializeQuillEditor() {
-            const editorContainer = document.getElementById('editor-container');
-            if (editorContainer) {
-                // Clear container first
-                editorContainer.innerHTML = '';
-                
-                // Initialize Quill with proper configuration
-                const quill = new Quill('#editor-container', {
-                    theme: 'snow',
-                    placeholder: 'Craft your story here...',
-                    modules: {
-                        toolbar: [
-                            [{ 'header': [1, 2, 3, false] }],
-                            ['bold', 'italic', 'underline'],
-                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                            ['link', 'image'],
-                            ['clean']
-                        ]
+                        function initializeQuillEditor() {
+                    const editorContainer = document.getElementById('editor-container');
+                    if (editorContainer) {
+                        // Clear container first
+                        editorContainer.innerHTML = '';
+                        
+                        // Initialize Quill with proper configuration
+                        const quill = new Quill('#editor-container', {
+                            theme: 'snow',
+                            placeholder: 'Craft your story here...',
+                            modules: {
+                                toolbar: [
+                                    [{ 'header': [1, 2, 3, false] }],
+                                    ['bold', 'italic', 'underline'],
+                                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                    ['link', 'image'],
+                                    ['clean']
+                                ]
+                            }
+                        });
+                        
+                        // Make quill globally available
+                        window.quill = quill;
+                        console.log('Quill editor initialized successfully:', quill);
+                        
+                        // Add event listener to detect when content changes
+                        quill.on('text-change', function() {
+                            console.log('Quill content changed, length:', quill.getLength());
+                            console.log('Quill content:', quill.root.innerHTML);
+                        });
+                        
+                        // Trigger custom event to notify other scripts that Quill is ready
+                        window.dispatchEvent(new CustomEvent('quillReady', { detail: quill }));
+                    } else {
+                        console.log('Editor container not found on this page');
+                    }
+                }
+        
+        // Add test editor button functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const testButton = document.getElementById('test-editor-button');
+            if (testButton) {
+                testButton.addEventListener('click', function() {
+                    if (window.quill) {
+                        console.log('Testing Quill editor...');
+                        console.log('Quill instance:', window.quill);
+                        console.log('Content length:', window.quill.getLength());
+                        console.log('Text content:', window.quill.getText());
+                        console.log('HTML content:', window.quill.root.innerHTML);
+                        
+                        // Test adding some content
+                        window.quill.setText('This is a test message to verify the editor is working.');
+                        alert('Test content added! Check the console for editor details.');
+                    } else {
+                        alert('Quill editor not available!');
                     }
                 });
-                
-                // Make quill globally available
-                window.quill = quill;
-                console.log('Quill editor initialized successfully:', quill);
-                
-                // Trigger custom event to notify other scripts that Quill is ready
-                window.dispatchEvent(new CustomEvent('quillReady', { detail: quill }));
-            } else {
-                console.log('Editor container not found on this page');
             }
-        }
+        });
     </script>
 
     <script>

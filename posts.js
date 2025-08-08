@@ -20,15 +20,19 @@
 */
 
 async function createPost(postData) {
+    console.log("createPost called with data:", postData);
     const user = auth.currentUser;
     if (!user) {
         console.error("No user is logged in.");
         return { success: false, error: "You must be logged in to create a post." };
     }
 
+    console.log("User authenticated:", user.uid, user.email);
+
     try {
         // Convert the comma-separated tags string into an array of strings.
         const tagsArray = postData.tags ? postData.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+        console.log("Tags array:", tagsArray);
 
         const newPost = {
             title: postData.title,
@@ -44,6 +48,9 @@ async function createPost(postData) {
             isFeatured: false // Default to not featured
         };
 
+        console.log("Prepared post data:", newPost);
+        console.log("Attempting to add to Firestore...");
+
         const docRef = await db.collection("posts").add(newPost);
         console.log("Post created successfully with ID:", docRef.id);
         
@@ -54,7 +61,8 @@ async function createPost(postData) {
 
     } catch (error) {
         console.error("Error creating post:", error);
-        return { success: false, error: "Failed to create post." };
+        console.error("Error details:", error.message, error.code);
+        return { success: false, error: "Failed to create post: " + error.message };
     }
 }
 
