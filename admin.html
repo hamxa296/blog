@@ -247,11 +247,30 @@
                 </div>
             </div>
 
-            <!-- Pending Gallery Photos Section -->
+            <!-- Gallery Management Section -->
             <div class="bg-white rounded-xl shadow-lg p-8 mt-8">
-                <h2 class="text-2xl font-bold mb-6">Pending Gallery Photos</h2>
-                <div id="pending-gallery-container" class="space-y-4">
-                    <p class="text-gray-500">Loading pending photos...</p>
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Gallery Management</h2>
+                    <a href="gallery.html" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                        <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        Manage Gallery
+                    </a>
+                </div>
+                <div id="gallery-stats" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-green-800">Approved Photos</h3>
+                        <p id="stats-approved-photos" class="text-2xl font-bold text-green-600">-</p>
+                    </div>
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-yellow-800">Pending Photos</h3>
+                        <p id="stats-pending-photos" class="text-2xl font-bold text-yellow-600">-</p>
+                    </div>
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-red-800">Rejected Photos</h3>
+                        <p id="stats-rejected-photos" class="text-2xl font-bold text-red-600">-</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -518,17 +537,39 @@
         console.log("To check user document, run: checkUserDoc()");
     </script>
     
-    <script src="firebase-init.js" onerror="console.error('Failed to load firebase-init.js')" onload="console.log('firebase-init.js loaded')"></script>
-    <script src="admin-config.js" onerror="console.error('Failed to load admin-config.js')" onload="console.log('admin-config.js loaded')"></script>
+    <!-- Optimized combined JavaScript -->
+    <script src="combined.min.js" onerror="console.error('Failed to load combined.min.js')" onload="console.log('combined.min.js loaded')"></script>
     <script src="secure-access.js" onerror="console.error('Failed to load secure-access.js')" onload="console.log('secure-access.js loaded')"></script>
-    <script src="auth.js" onerror="console.error('Failed to load auth.js')" onload="console.log('auth.js loaded')"></script>
-    <script src="users.js" onerror="console.error('Failed to load users.js')" onload="console.log('users.js loaded')"></script>
-    <script src="security.js" onerror="console.error('Failed to load security.js')" onload="console.log('security.js loaded')"></script>
-    <script src="posts.js" onerror="console.error('Failed to load posts.js')" onload="console.log('posts.js loaded')"></script>
     <script src="calendar.js" onerror="console.error('Failed to load calendar.js')" onload="console.log('calendar.js loaded')"></script>
-    <script src="gallery.js" onerror="console.error('Failed to load gallery.js')" onload="console.log('gallery.js loaded')"></script>
-    <script src="script.js" onerror="console.error('Failed to load script.js')" onload="console.log('script.js loaded')"></script>
-    <script src="app.js" onerror="console.error('Failed to load app.js')" onload="console.log('app.js loaded')"></script>
+    
+    <script>
+        // Load gallery statistics for admin dashboard
+        async function loadGalleryStats() {
+            try {
+                const result = await getGalleryStats();
+                if (result.success) {
+                    const stats = result.stats;
+                    document.getElementById('stats-approved-photos').textContent = stats.approved;
+                    document.getElementById('stats-pending-photos').textContent = stats.pending;
+                    document.getElementById('stats-rejected-photos').textContent = stats.rejected;
+                }
+            } catch (error) {
+                console.error('Error loading gallery stats:', error);
+            }
+        }
+        
+        // Load stats when admin dashboard is shown
+        document.addEventListener('DOMContentLoaded', () => {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    const isAdmin = await isUserAdmin();
+                    if (isAdmin) {
+                        loadGalleryStats();
+                    }
+                }
+            });
+        });
+    </script>
     
     <script>
         // --- Theme Management ---
