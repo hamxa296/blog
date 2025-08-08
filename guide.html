@@ -1,650 +1,1647 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>GIKI Freshman Guide</title>
-    <!-- Tailwind CSS -->
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-     crossorigin=""/>
+
+    <!-- Use Tailwind CSS for a responsive and modern design -->
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- React Libraries -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <!-- Babel for JSX transpilation -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Custom Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Lora:wght@400;700&display=swap"
-        rel="stylesheet">
+
+    <!-- Use Inter font for a clean, modern look -->
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:wght@700&display=swap">
+
     <style>
         body {
+
             font-family: 'Inter', sans-serif;
+
         }
 
         .font-lora {
+
             font-family: 'Lora', serif;
+
         }
     </style>
+
 </head>
 
-<body class="text-gray-800">
+<body class="bg-[#f0f2f5] min-h-screen text-[#2A2A2A] p-4 sm:p-8">
 
-  <!-- Header -->
-  <header class="bg-white shadow-sm sticky top-0 z-50">
-    <nav class="container mx-auto px-6 py-4 flex items-center">
-      <!-- Left side: Hamburger + Logo -->
-      <div class="flex items-center space-x-4">
-        <!-- Hamburger Menu Button -->
-        <button id="sidebar-toggle" class="text-gray-600 hover:text-blue-600 focus:outline-none">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-          </svg>
-        </button>
-        
-        <a href="index.html" class="text-2xl font-bold text-gray-800">
-          GIKI<span class="text-blue-600">Chronicles</span>
-        </a>
-      </div>
-      
-      <!-- Right side: Navigation -->
-                        <div class="hidden md:flex items-center space-x-6 ml-auto">
-                    <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a>
-                    <a href="about.html" class="text-gray-600 hover:text-blue-600 transition duration-300">About</a>
-                    <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a>
-                    <a href="gallery.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Gallery</a>
-                    <a href="guide.html" class="bg-gradient-to-r from-green-500 to-blue-600 text-white px-4 py-2 rounded-full hover:from-green-600 hover:to-blue-700 transition duration-300 font-semibold shadow-lg">🎓 Freshmen Guide</a>
-                    <a href="calendar.html" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-4 py-2 rounded-full hover:from-purple-600 hover:to-pink-700 transition duration-300 font-semibold shadow-lg">📅 Calendar</a>
 
-        <!-- GUEST NAVIGATION (DESKTOP) -->
-        <div id="guest-nav" class="flex items-center space-x-6">
-          <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
-          <a href="signup.html"
-            class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">Sign Up</a>
-        </div>
+    <!-- Header Section -->
 
-        <!-- USER NAVIGATION (DESKTOP) -->
-        <div id="user-nav" class="hidden md:flex items-center space-x-6">
-          <a href="profile.html" class="text-gray-600 hover:text-blue-600">My Profile</a>
-                                <a href="write.html" class="text-gray-600 hover:text-blue-600">Write Post</a>
-                      <a href="gallery.html" class="text-gray-600 hover:text-blue-600">Gallery</a>
-                      <a href="contact.html" class="text-gray-600 hover:text-blue-600">Contact</a>
-                      <button id="logout-button"
-                        class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300">Logout</button>
-        </div>
-      </div>
-    </nav>
-  </header>
+    <div
+        class="bg-gradient-to-r from-[#8C1D40] to-[#1a936f] text-white p-6 sm:p-8 mb-8 rounded-xl shadow-lg text-center">
 
-  <!-- Sidebar -->
-<div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
-    <div class="flex items-center justify-between p-6 border-b">
-      <h2 class="text-xl font-bold text-gray-800">Menu</h2>
-      <button id="sidebar-close" class="text-gray-600 hover:text-blue-600 focus:outline-none">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-      </button>
+        <h1 class="text-3xl sm:text-4xl font-bold font-lora">GIKI Freshman Guide</h1>
+
+        <p class="mt-2 text-lg text-gray-200">Your ultimate resource for a smooth start at GIKI.</p>
+
     </div>
-    
-    <nav class="p-6 flex-1 overflow-y-auto">
-      <div class="space-y-4">
-        <!-- Main Navigation -->
-        <div>
-          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Main</h3>
-          <div class="space-y-2">
-                                  <a href="index.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                        </svg>
-                        Home
-                      </a>
-                      <a href="about.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        About
-                      </a>
-                      <a href="contact.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                        </svg>
-                        Contact
-                      </a>
-                      <a href="gallery.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                        Gallery
-                      </a>
-          </div>
+
+
+    <!-- Main App Container -->
+
+    <div
+        class="max-w-5xl mx-auto chronicle-container bg-white p-6 sm:p-10 rounded-2xl shadow-xl border border-gray-200">
+
+
+
+        <!-- Welcome Message Section -->
+
+        <div class="text-center mb-10" id="welcome-message">
+
+            <h2 class="text-2xl sm:text-3xl font-bold font-lora text-[#8C1D40]">Welcome to GIKI!</h2>
+
+            <p class="mt-4 text-lg text-gray-700 max-w-2xl mx-auto">
+
+                Welcome to your new home! This guide is designed to help you navigate your first few weeks here. We've
+                compiled essential information, tips, and resources to make your transition as smooth as possible.
+
+            </p>
+
         </div>
 
-        <!-- Resources -->
-        <div>
-                              <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Resources</h3>
-                    <div class="space-y-2">
-                      <a href="guide.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                        </svg>
-                        Freshman Guide
-                      </a>
-                      <a href="calendar.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                        Calendar
-                      </a>
+
+        <!-- Main Content Area - This is where the app will render -->
+
+        <main id="app-container">
+
+            <!-- Content will be injected here by the JavaScript -->
+
+        </main>
+
+    </div>
+
+
+    <!-- Modal for Editing Sections -->
+
+    <div id="edit-modal"
+        class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
+
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+
+                <h3 class="text-2xl font-lora font-bold text-[#8C1D40]">Edit <span id="modal-title"></span></h3>
+
+                <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600 transition-colors">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+
+                </button>
+
+            </div>
+
+            <div class="space-y-6">
+
+                <div>
+
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="edit-tag">Tag</label>
+
+                    <input type="text" id="edit-tag" name="tag"
+                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1a936f] focus:border-[#1a936f]">
+
+                </div>
+
+                <div>
+
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="edit-shortDescription">Short
+                        Description</label>
+
+                    <textarea id="edit-shortDescription" name="shortDescription" rows="2"
+                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1a936f] focus:border-[#1a936f]"></textarea>
+
+                </div>
+
+                <div>
+
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="edit-fullContent">Full
+                        Content</label>
+
+                    <textarea id="edit-fullContent" name="fullContent" rows="6"
+                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1a936f] focus:border-[#1a936f] font-mono text-sm"></textarea>
+
+                </div>
+
+                <div id="faqs-container">
+
+                    <div class="flex justify-between items-center mb-2">
+
+                        <label class="block text-sm font-medium text-gray-700">FAQs</label>
+
+                        <button id="add-faq-btn"
+                            class="bg-[#1a936f] text-white px-3 py-1 rounded-md text-sm hover:bg-[#156e52] transition-colors shadow-md">Add
+                            FAQ</button>
+
                     </div>
+
+                </div>
+
+                <div id="warnings-container">
+
+                    <div class="flex justify-between items-center mb-2">
+
+                        <label class="block text-sm font-medium text-gray-700">Warnings</label>
+
+                        <button id="add-warning-btn"
+                            class="bg-[#1a936f] text-white px-3 py-1 rounded-md text-sm hover:bg-[#156e52] transition-colors shadow-md">Add
+                            Warning</button>
+
+                    </div>
+
+                </div>
+
+                <div class="flex justify-end space-x-4 pt-4 border-t">
+
+                    <button id="cancel-edit-btn"
+                        class="px-4 py-2 rounded-lg font-bold text-gray-600 border border-gray-300 hover:bg-gray-100 transition-colors">Cancel</button>
+
+                    <button id="save-edit-btn"
+                        class="px-4 py-2 rounded-lg font-bold text-white bg-[#1a936f] hover:bg-[#156e52] transition-colors">Save
+                        Changes</button>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <!-- User Section -->
-        <div id="sidebar-guest-nav">
-          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Account</h3>
-          <div class="space-y-2">
-            <a href="login.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-              </svg>
-              Login
-            </a>
-            <a href="signup.html" class="flex items-center px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition duration-200">
-              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
-              </svg>
-              Sign Up
-            </a>
-          </div>
-        </div>
+    </div>
 
-        <div id="sidebar-user-nav" class="hidden">
-          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">My Account</h3>
-          <div class="space-y-2">
-            <a href="profile.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-              </svg>
-              My Profile
-            </a>
-            <a href="write.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-              </svg>
-              Write Post
-            </a>
-                                <button id="sidebar-admin-access-btn" class="hidden w-full flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                      </svg>
-                      🔐 Admin Portal
-                    </button>
-                    <button id="sidebar-logout-button" class="w-full flex items-center px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition duration-200">
-                      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                      </svg>
-                      Logout
-                    </button>
-          </div>
-        </div>
-      </div>
-    </nav>
-  </div>
-
-  <!-- Sidebar Overlay -->
-  <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
-
-    <div id="root"></div>
 
     <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    
-    <!-- Your custom scripts (order is important) -->
-    <script src="firebase-init.js"></script>
-    <!-- Admin configuration - must be loaded before auth.js -->
-    <script src="admin-config.js"></script>
-    <script src="auth.js"></script>
-    <script src="users.js"></script>
-    <script src="script.js"></script>
-    <script src="app.js"></script>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-     integrity="sha256-20nQCchB9co0qIjJZQrJxKfList+aVxOaI7QVsLahMEnw="
-     crossorigin=""></script>
-    <!-- Your React Component -->
-    <script type="text/babel">
-        const { useState, useEffect, useMemo } = React;
+    <script type="module">
 
-        // Use the global firebaseConfig from firebase-init.js
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        import { getFirestore, doc, setDoc, onSnapshot, collection, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+
+        // --- GLOBAL VARIABLES & DATA ---
+
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
+
+        let db = null;
+
+        let auth = null;
+
+        let guideSections = [];
+
+        let expandedSection = null;
+
+        let editingSectionId = null;
+
+
         // Hardcoded societies and teams data to be used if Firestore is empty.
+
         const societiesData = {
+
             academic: {
+
                 title: "🎯 Academic & Technical Societies",
+
                 societies: [
+
                     { name: "ACM (Association for Computing Machinery)", description: "Focuses on programming, software development, and CS-related competitions, workshops, and hackathons." },
+
                     { name: "AIAA (American Institute of Aeronautics and Astronautics)", description: "An aerospace-focused society supporting projects like UAV design and participation in the Design/Build/Fly competition." },
+
                     { name: "IEEE (Institute of Electrical and Electronics Engineers)", description: "Covers electronics, robotics, embedded systems, and electrical innovation through events and hands-on projects." },
+
                     { name: "GMS (GIKI Mathematics Society)", description: "Promotes analytical thinking and math literacy through competitions, puzzles, and problem-solving events." },
+
                     { name: "NETRONiX", description: "GIKI's network and gaming society; manages campus LAN infrastructure and organizes e-sports and tech events like Über.GameX." },
+
                     { name: "Science Society (GIKI Science Society)", description: "Encourages scientific research and experimentation through exhibitions, science fairs, and DIY projects." },
+
                 ]
+
             },
+
             cultural: {
+
                 title: "🎭 Cultural, Media & Literary Societies",
+
                 societies: [
+
                     { name: "Naqsh (Naqsh Arts Society)", description: "Promotes visual arts, including painting, calligraphy, and sketching, while celebrating cultural expression." },
-                    { name: "LDS (Literary and Debating Society)", description: "GIKI's official platform for debates, MUNs, declamations, and creative writing competitions." },
+
+                    { name: "LDS (Literary and Debating Society)", description: "GIKI’s official platform for debates, MUNs, declamations, and creative writing competitions." },
+
                     { name: "Media Club", description: "Handles photography, videography, and media coverage of campus events; creates multimedia content for the student body." },
-                    { name: "CDeS (Comedy and Dramatics Entertainment Society)", description: "Performs comedy skits, plays, and theatre productions; GIKI's center for dramatics and stage acting." },
+
+                    { name: "CDeS (Comedy and Dramatics Entertainment Society)", description: "Performs comedy skits, plays, and theatre productions; GIKI’s center for dramatics and stage acting." },
+
                 ]
+
             },
+
             social: {
+
                 title: "📢 Social Impact & Professional Development Societies",
+
                 societies: [
+
                     { name: "SOPHEP (Society for the Promotion of Higher Education in Pakistan)", description: "Offers career counseling, professional development, and alumni networking opportunities." },
+
                     { name: "LES (Leadership and Entrepreneurship Society)", description: "Promotes entrepreneurial thinking and leadership through startup competitions, business simulations, and guest talks." },
-                    { name: "Project Topi", description: "GIKI's community outreach initiative that supports education, health, and welfare programs in the local Topi area." },
+
+                    { name: "Project Topi", description: "GIKI’s community outreach initiative that supports education, health, and welfare programs in the local Topi area." },
+
                 ]
+
             },
+
             teams: {
+
                 title: "🚀 GIKI Competitive & Engineering Teams",
+
                 societies: [
+
                     { name: "Team Invictus (AIAA)", description: "Designs, builds, and flies remote-controlled aircraft for the AIAA Design/Build/Fly competition in the U.S. Represents GIKI internationally in aerospace design." },
+
                     { name: "Team Foxtrot (Independent)", description: "Builds fully autonomous UAVs for global competitions like the IMechE UAS Challenge. Focuses on drone engineering, embedded systems, and AI-based navigation." },
-                    { name: "Team Infinity (Formula Student / Mechanical Engineering)", description: "GIKI's Formula SAE team that designs and fabricates a formula-style electric race car for international motorsport engineering contests like FSUK." },
+
+                    { name: "Team Infinity (Formula Student / Mechanical Engineering)", description: "GIKI’s Formula SAE team that designs and fabricates a formula-style electric race car for international motorsport engineering contests like FSUK." },
+
                     { name: "Team Urban (Shell Eco-marathon)", description: "Develops ultra energy-efficient urban concept vehicles. Competes in Shell Eco-marathon Asia and Pakistan, focusing on innovation in sustainable transport." },
+
                     { name: "Team Hammerhead (Shell Eco-marathon)", description: "Specializes in electric prototype vehicles for Shell Eco-marathon. Focuses on lightweight design, battery optimization, and aerodynamic performance." },
+
                     { name: "Team Swift (Independent)", description: "An engineering design team dedicated to building performance drones and UAVs, participating in aerial tech competitions and advancing drone innovation on campus." },
+
                 ]
+
             }
+
         };
 
-        // Placeholder data for the guide sections.
+
         const guidePlaceholderData = [
-            { id: "important-contacts", tag: "Important Contacts", shortDescription: "Key people and departments to know on campus.", fullContent: [{ contact: "Hostel Warden", department: "Hostel Administration", purpose: "Primary contact for all hostel-related issues." }, { contact: "Class Representatives (CRs)", department: "Student Body", purpose: "Reach out for academic matters and class-related issues." }, { contact: "IT Cell", department: "Information Technology", purpose: "For network, internet, and technical issues on campus." }, { contact: "Health Center", department: "Medical Services", purpose: "Available for medical emergencies and health consultations." }, { contact: "Transport Help", department: "Transport Office", purpose: "Assistance with campus transport and bus services." }], faqs: [{ question: "Where is the Health Center located?", answer: "The Health Center is located near the main administration building." }, { question: "How do I contact my CR?", answer: "Your CRs will be introduced in the first few days of orientation. You will have a class group chat where you can contact them." }], warnings: ["Do not hesitate to reach out for help. The GIKI administration and student body are there to support you."] },
-            { id: "what-to-pack", tag: "What to Pack", shortDescription: "Essential things to bring for your hostel stay.", fullContent: "For a comfortable stay in your dorm, be sure to bring essential items:\n- Bed sheets, a pillow, and a blanket.\n- A desk lamp.\n- A plug extension is crucial as outlets can be limited.\n- Your toiletries and a towel.\n- Comfortable shoes (you'll be surprised how much you have to walk here).\n- Casual clothes for daily wear and one or two formal outfits for events.", faqs: [{ question: "Can I bring an electric kettle?", answer: "Yes, electric kettles are generally allowed in the hostels, but check with your hostel warden for any specific restrictions." }, { question: "Should I bring a locker?", answer: "You will be provided with a cupboard for your belongings. A padlock is highly recommended for security." }], warnings: ["Avoid overpacking unnecessary items. Space is limited in the dorm rooms."] },
-            { id: "dorm-room-info", tag: "Dorm & Room Info", shortDescription: "Everything you need to know about your new room.", fullContent: "Rooms are allotted by the administration during your orientation week. You will be assigned a roommate and a dorm. Each room comes with basic furniture including a bed, a study table, and a cupboard. Hostel culture is a big part of GIKI life, and respecting your roommate and neighbors is key to a great experience.", faqs: [{ question: "Can I change my room or roommate?", answer: "Room and roommate changes are subject to approval from the hostel administration and are typically only considered in special circumstances." }, { question: "What is the hostel mess like?", answer: "Each hostel has its own mess, providing a convenient and communal dining experience." }], warnings: ["Respect your roommate's personal space and belongings. Communication is key to a healthy living environment."] },
-            { id: "weekend-travel", tag: "Weekend Travel", shortDescription: "How to go home and travel from GIKI.", fullContent: `GIKI is located a bit away from major cities, so planning your weekend travel is important. There are GIKI-sponsored buses that run to Rawalpindi/Islamabad, Peshawar, and Abbottabad every Friday and return on Sunday. You can also find ride-sharing options with seniors or other students via hostel or batch group chats — a common and convenient carpooling system.\n\nAll those who wish to avail the shuttle service should note the following:\n\nTicket Booking: Tickets become available every Thursday at the transport office located behind the laundry shop.\nPayment: Only cash is accepted.\nRs. 350 for Islamabad, Rawalpindi, and Peshawar\nRs. 400 for Abbottabad\nTip: Get in line early — the queue can get long and seats are limited!\n\nShuttle Schedule (Every Friday, 4:00 PM Departure from GIKI)\nTo Rawalpindi/Islamabad\n\nDeparture Point: GH / Hostel-9\nArrival Point: Road Master Adda / G-9/4, Peshawar Morr\nTo Peshawar\n\nDeparture Point: GH / Hostel-9\nArrival Point: Bagh-e-Naran, Hayatabad\nTo Abbottabad\n\nDeparture Point: GH / Hostel-9\nArrival Point: GO Petroleum Filling Station`, faqs: [{ question: "Can I book shuttle tickets online?", answer: "No, shuttle tickets are only available in person at the transport office behind the laundry shop. Make sure to bring cash as digital payments are not accepted." }, { question: "What happens if I miss the shuttle?", answer: "If you miss the shuttle, your best bet is to arrange a ride-share with other students. Many carpools are coordinated through hostel WhatsApp groups or batch chats, especially on weekends." }, { question: "Are there any travel restrictions for hostel students?", answer: "Yes. All students must inform their warden and sign the departure register before leaving campus. For female students, it's mandatory to get a gate pass signed by their warden before exiting GIKI premises." }], warnings: ["Always travel in groups, especially at night, and avoid unofficial transport services."] },
-            { id: "mess-and-food", tag: "Mess & Food", shortDescription: "Everything you need to know about food on campus.", fullContent: `GIKI has a central mess system that caters to all students. Additionally, there are several other tuck shops and cafes on campus for when you want a change of pace.\n\nStudent Mess Halls\nThere are designated mess halls for each hostel. The food is served at specific times, and the menu is a mix of Pakistani cuisines, rotating on a weekly basis.\n- Breakfast: 7:00 AM - 9:00 AM\n- Lunch: 12:30 PM - 2:30 PM\n- Dinner: 7:30 PM - 9:30 PM\n\nOther Eateries on Campus\nFor snacks, late-night cravings, or just a different taste, you can explore:\n- Hot and Spicy: Located at TUC. By far the best fast food you can find in GIKI.\n- Ayan and Raju for Desi: Also located at TUC. These restaurants offer a wide variety of Pakistani cuisine and fast food, but they lack the feel (the hygiene and taste).\n- GIKI Cafe: Owned and run by GIKI admin. It's located under the auditorium (yes, that circular building you see almost everywhere). It's somewhat similar to the mess in terms of taste and hygiene. It's good for tea and some light snacks like nuggets, samosas, or rolls. You can also come for dinner here—it's cheaper than the mess, so if you want to save, Cafe is the cheapest option you've got :)`, faqs: [{ question: "Can I bring my own food to the mess?", answer: "No, outside food is not permitted in the mess hall." }, { question: "Are there vegetarian options?", answer: "The mess menu usually includes vegetarian dishes, but you can always request a special meal if needed." }, { question: "Can I opt out of the mess?", answer: "Yes, you can opt-out of the mess on a daily basis (before 2 PM) if you prefer, but it's generally a convenient option." }], warnings: ["Do not forget to 'mess in' or 'mess out' on time to avoid being charged for meals you won't eat."] },
-            { id: "societies-events", tag: "Societies & Events", shortDescription: "A peek into GIKI's vibrant student life.", fullContent: societiesData, faqs: [{ question: "How can I join a society?", answer: "Most societies have a recruitment drive or 'society fair' at the beginning of the semester where you can sign up." }, { question: "What is Orientation Week?", answer: "A week-long event filled with introductory sessions, tours, and fun activities to help you settle into GIKI life." }], warnings: ["Avoid getting overly involved in too many societies in your first year. It's easy to get overwhelmed."] },
-            { id: "survival-tips", tag: "Survival Tips", shortDescription: "In-depth advice on academics, homesickness, and essential apps.", fullContent: `Managing your first year at GIKI can be challenging but also incredibly rewarding. Learn to balance fun and academics from the start. Don't be afraid to ask seniors for help; they have been through it all.\n\nAcademics and Stress Management\nGIKI's academic environment is demanding. Stay on top of your coursework from the beginning, attend all classes and labs, and form study groups with your peers. Time management is a key skill to develop. Take breaks, go for a walk, or participate in a sports activity to relieve stress.\n\nDealing with Homesickness\nHomesickness is a normal feeling for many freshmen. Getting involved in societies, sports, or other campus activities can help you feel more at home. Regular video calls with family and friends can also help. Don't be afraid to talk to your Resident Advisor (RA) or a senior student about how you feel.\n\nEssential Apps for a GIKI Student\n- GIKI Portal App: Official app for checking grades, attendance, and fee details.\n- Microsoft Teams: Used for online classes and communication with faculty and classmates.\n- WhatsApp: Primary platform for hostel and class group chats.\n- Google Drive/Docs: Essential for collaborative projects and saving notes.`, faqs: [], warnings: ["Don't isolate yourself in your room. Step out, meet people, and explore the campus to make the most of your time here."] },
-            { id: "library", tag: "Library", shortDescription: "All you need to know about GIKI's library.", fullContent: `GIKI's main library is the intellectual heart of the campus, offering a wide range of academic resources to support your studies and research. The library houses an extensive collection of books, journals, and digital databases. It's also an excellent place for quiet study and group work.\n\nServices & Resources\n- Book borrowing: Students can borrow books for a specified period.\n- Digital resources: Access to online journals, e-books, and research databases.\n- Study spaces: Designated quiet zones for individual study and collaborative spaces for group projects.\n- Printing & scanning: Facilities are available for printing, scanning, and photocopying documents.\n\nOpening Hours\n- Monday to Friday: 9:00 AM to 10:00 PM\n- Saturday: 9:00 AM to 5:00 PM\n- Sunday: Closed`, faqs: [{ question: "How do I get a library card?", answer: "Your student ID card doubles as your library card. You just need to register it at the library front desk." }, { question: "Is there a fine for late returns?", answer: "Yes, fines are charged for books returned past their due date. Check with the library staff for the current fee structure." }], warnings: ["Keep your phone on silent mode inside the library's quiet zones.", "Do not bring food or drinks into the library's reading areas."] },
-            { id: "facilities", tag: "Facilities", shortDescription: "A brief overview of campus facilities and services.", fullContent: `GIKI offers a range of modern facilities to support a well-rounded student experience. The campus is home to a dedicated sports complex with indoor and outdoor courts for various sports like badminton, squash, and basketball. Academic life is supported by state-of-the-art computer labs, specialized departmental labs, and a fully-equipped main library.\n\nFor your health and well-being, the campus has a health center with on-call doctors and nurses for medical emergencies and consultations. The main auditorium hosts a variety of academic and social events throughout the year. Additionally, the Student Activity Centre (SAC) serves as a hub for student societies and extracurricular activities.`, faqs: [{ question: "Are the computer labs open 24/7?", answer: "Most computer labs are open until late at night, and some are accessible 24/7, especially during exam periods." }, { question: "Can I use the sports facilities at any time?", answer: "The sports complex has specific hours of operation. Check the schedule posted at the complex for details." }], warnings: ["Always follow the rules and regulations of each facility to ensure a safe and pleasant environment for everyone."] }
+
+            {
+
+                id: "important-contacts",
+
+                tag: "Important Contacts",
+
+                shortDescription: "Key people and departments to know on campus.",
+
+                fullContent: [
+
+                    { contact: "Hostel Warden", department: "Hostel Administration", purpose: "Primary contact for all hostel-related issues." },
+
+                    { contact: "Class Representatives (CRs)", department: "Student Body", purpose: "Reach out for academic matters and class-related issues." },
+
+                    { contact: "IT Cell", department: "Information Technology", purpose: "For network, internet, and technical issues on campus." },
+
+                    { contact: "Health Center", department: "Medical Services", purpose: "Available for medical emergencies and health consultations." },
+
+                    { contact: "Transport Help", department: "Transport Office", purpose: "Assistance with campus transport and bus services." }
+
+                ],
+
+                faqs: [
+
+                    { question: "Where is the Health Center located?", answer: "The Health Center is located near the main administration building." },
+
+                    { question: "How do I contact my CR?", answer: "Your CRs will be introduced in the first few days of orientation. You will have a class group chat where you can contact them." }
+
+                ],
+
+                warnings: [
+
+                    "Do not hesitate to reach out for help. The GIKI administration and student body are there to support you."
+
+                ]
+
+            },
+
+            {
+
+                id: "what-to-pack",
+
+                tag: "What to Pack",
+
+                shortDescription: "Essential things to bring for your hostel stay.",
+
+                fullContent: `For a comfortable stay in your dorm, be sure to bring essential items:
+
+- Bed sheets, a pillow, and a blanket.
+
+- A desk lamp.
+
+- A plug extension is crucial as outlets can be limited.
+
+- Your toiletries and a towel.
+
+- Comfortable shoes (you'll be surprised how much you have to walk here).
+
+- Casual clothes for daily wear and one or two formal outfits for events.`,
+
+                faqs: [
+
+                    { question: "Can I bring an electric kettle?", answer: "Yes, electric kettles are generally allowed in the hostels, but check with your hostel warden for any specific restrictions." },
+
+                    { question: "Should I bring a locker?", answer: "You will be provided with a cupboard for your belongings. A padlock is highly recommended for security." }
+
+                ],
+
+                warnings: [
+
+                    "Avoid overpacking unnecessary items. Space is limited in the dorm rooms."
+
+                ]
+
+            },
+
+            {
+
+                id: "dorm-room-info",
+
+                tag: "Dorm & Room Info",
+
+                shortDescription: "Everything you need to know about your new room.",
+
+                fullContent: "Rooms are allotted by the administration during your orientation week. You will be assigned a roommate and a dorm. Each room comes with basic furniture including a bed, a study table, and a cupboard. Hostel culture is a big part of GIKI life, and respecting your roommate and neighbors is key to a great experience.",
+
+                faqs: [
+
+                    { question: "Can I change my room or roommate?", answer: "Room and roommate changes are subject to approval from the hostel administration and are typically only considered in special circumstances." },
+
+                    { question: "What is the hostel mess like?", answer: "Each hostel has its own mess, providing a convenient and communal dining experience." }
+
+                ],
+
+                warnings: [
+
+                    "Respect your roommate's personal space and belongings. Communication is key to a healthy living environment."
+
+                ]
+
+            },
+
+            {
+
+                id: "weekend-travel",
+
+                tag: "Weekend Travel",
+
+                shortDescription: "How to go home and travel from GIKI.",
+
+                fullContent: `GIKI is located a bit away from major cities, so planning your weekend travel is important. There are GIKI-sponsored buses that run to Rawalpindi/Islamabad, Peshawar, and Abbottabad every Friday and return on Sunday. You can also find ride-sharing options with seniors or other students via hostel or batch group chats — a common and convenient carpooling system.
+
+
+All those who wish to avail the shuttle service should note the following:
+
+
+Ticket Booking: Tickets become available every Thursday at the transport office located behind the laundry shop.
+
+Payment: Only cash is accepted.
+
+Rs. 350 for Islamabad, Rawalpindi, and Peshawar
+
+Rs. 400 for Abbottabad
+
+Tip: Get in line early — the queue can get long and seats are limited!
+
+
+Shuttle Schedule (Every Friday, 4:00 PM Departure from GIKI)
+
+To Rawalpindi/Islamabad
+
+
+Departure Point: GH / Hostel-9
+
+Arrival Point: Road Master Adda / G-9/4, Peshawar Morr
+
+To Peshawar
+
+
+Departure Point: GH / Hostel-9
+
+Arrival Point: Bagh-e-Naran, Hayatabad
+
+To Abbottabad
+
+
+Departure Point: GH / Hostel-9
+
+Arrival Point: GO Petroleum Filling Station`,
+
+                faqs: [
+
+                    { question: "Can I book shuttle tickets online?", answer: "No, shuttle tickets are only available in person at the transport office behind the laundry shop. Make sure to bring cash as digital payments are not accepted." },
+
+                    { question: "What happens if I miss the shuttle?", answer: "If you miss the shuttle, your best bet is to arrange a ride-share with other students. Many carpools are coordinated through hostel WhatsApp groups or batch chats, especially on weekends." },
+
+                    { question: "Are there any travel restrictions for hostel students?", answer: "Yes. All students must inform their warden and sign the departure register before leaving campus. For female students, it's mandatory to get a gate pass signed by their warden before exiting GIKI premises." }
+
+                ],
+
+                warnings: [
+
+                    "Always travel in groups, especially at night, and avoid unofficial transport services."
+
+                ]
+
+            },
+
+            {
+
+                id: "mess-and-food",
+
+                tag: "Mess & Food",
+
+                shortDescription: "Everything you need to know about food on campus.",
+
+                fullContent: `GIKI has a central mess system that caters to all students. Additionally, there are several other tuck shops and cafes on campus for when you want a change of pace.
+
+
+Student Mess Halls
+
+There are designated mess halls for each hostel. The food is served at specific times, and the menu is a mix of Pakistani cuisines, rotating on a weekly basis.
+
+- Breakfast: 7:00 AM - 9:00 AM
+
+- Lunch: 12:30 PM - 2:30 PM
+
+- Dinner: 7:30 PM - 9:30 PM
+
+
+Other Eateries on Campus
+
+For snacks, late-night cravings, or just a different taste, you can explore:
+
+- Hot and Spicy: Located at TUC. By far the best fast food you can find in GIKI.
+
+- Ayan and Raju for Desi: Also located at TUC. These restaurants offer a wide variety of Pakistani cuisine and fast food, but they lack the feel (the hygiene and taste).
+
+- GIKI Cafe: Owned and run by GIKI admin. It’s located under the auditorium (yes, that circular building you see almost everywhere). It's somewhat similar to the mess in terms of taste and hygiene. It's good for tea and some light snacks like nuggets, samosas, or rolls. You can also come for dinner here—it's cheaper than the mess, so if you want to save, Cafe is the cheapest option you’ve got :)`,
+
+                faqs: [
+
+                    { question: "Can I bring my own food to the mess?", answer: "No, outside food is not permitted in the mess hall." },
+
+                    { question: "Are there vegetarian options?", answer: "The mess menu usually includes vegetarian dishes, but you can always request a special meal if needed." },
+
+                    { question: "Can I opt out of the mess?", answer: "Yes, you can opt-out of the mess on a daily basis (before 2 PM) if you prefer, but it's generally a convenient option." }
+
+                ],
+
+                warnings: [
+
+                    "Do not forget to 'mess in' or 'mess out' on time to avoid being charged for meals you won't eat."
+
+                ]
+
+            },
+
+            {
+
+                id: "finances",
+
+                tag: "Finances",
+
+                shortDescription: "Managing your money on campus and a guide to expenses.",
+
+                fullContent: `Managing your finances is an essential part of university life. GIKI's fee structure includes tuition and hostel charges, which are managed through the GIKI portal. Beyond fees, you will have to manage your daily expenses for food, transportation, and recreation.
+
+
+Fee Payment and GIKI Portal:
+
+All fee details and payment deadlines are available on your official GIKI portal. You will receive an official email from the administration with a step-by-step guide on how to pay your fees. Remember to check the portal regularly to avoid missing any deadlines.
+
+
+Living Expenses:
+
+Your primary expenses will include mess charges (if you opt-in), transportation, and tuck shop purchases. The mess charges are billed semester-wise, and you will be notified of the cost beforehand. Carpooling with friends and using the GIKI shuttle service are great ways to save money on travel.
+
+
+Budgeting Tips:
+
+- Track your spending. You can use a notebook or a budgeting app to keep a record of all your expenses.
+
+- Differentiate between wants and needs. Prioritize your needs and try to minimize spending on non-essential items.
+
+- Take advantage of campus facilities. Instead of spending on food outside, utilize the mess and other affordable eateries on campus.`,
+
+                faqs: [
+
+                    { question: "How do I pay my fees?", answer: "Fee payments are made through specific bank challan forms provided by the GIKI administration and can be accessed via the GIKI portal. You'll receive an email with instructions at the start of each semester." },
+
+                    { question: "What are the typical monthly expenses?", answer: "Aside from tuition and hostel fees, a typical month's expenses can vary widely. It generally includes mess charges, tuck shop food, and shuttle services, which can range from Rs. 5,000 to Rs. 15,000 depending on your lifestyle." }
+
+                ],
+
+                warnings: [
+
+                    "Avoid overspending in your first few months. It's easy to get carried away, but a consistent budget is crucial for a stress-free semester."
+
+                ]
+
+            },
+
+            {
+
+                id: "societies-events",
+
+                tag: "Societies & Events",
+
+                shortDescription: "A peek into GIKI's vibrant student life.",
+
+                fullContent: societiesData,
+
+                faqs: [
+
+                    { question: "How can I join a society?", answer: "Most societies have a recruitment drive or 'society fair' at the beginning of the semester where you can sign up." },
+
+                    { question: "What is Orientation Week?", answer: "A week-long event filled with introductory sessions, tours, and fun activities to help you settle into GIKI life." }
+
+                ],
+
+                warnings: [
+
+                    "Avoid getting overly involved in too many societies in your first year. It's easy to get overwhelmed."
+
+                ]
+
+            },
+
+            {
+
+                id: "survival-tips",
+
+                tag: "Survival Tips",
+
+                shortDescription: "In-depth advice on academics, homesickness, and essential apps.",
+
+                fullContent: `Managing your first year at GIKI can be challenging but also incredibly rewarding. Learn to balance fun and academics from the start. Don't be afraid to ask seniors for help; they have been through it all.
+
+
+Academics and Stress Management
+
+GIKI's academic environment is demanding. Stay on top of your coursework from the beginning, attend all classes and labs, and form study groups with your peers. Time management is a key skill to develop. Take breaks, go for a walk, or participate in a sports activity to relieve stress.
+
+
+Dealing with Homesickness
+
+Homesickness is a normal feeling for many freshmen. Getting involved in societies, sports, or other campus activities can help you feel more at home. Regular video calls with family and friends can also help. Don't be afraid to talk to your Resident Advisor (RA) or a senior student about how you feel.
+
+
+Essential Apps for a GIKI Student
+
+- GIKI Portal App: Official app for checking grades, attendance, and fee details.
+
+- Microsoft Teams: Used for online classes and communication with faculty and classmates.
+
+- WhatsApp: Primary platform for hostel and class group chats.
+
+- Google Drive/Docs: Essential for collaborative projects and saving notes.`,
+
+                faqs: [],
+
+                warnings: [
+
+                    "Don't isolate yourself in your room. Step out, meet people, and explore the campus to make the most of your time here."
+
+                ]
+
+            },
+
+            {
+
+                id: "library",
+
+                tag: "Library",
+
+                shortDescription: "All you need to know about GIKI's library.",
+
+                fullContent: `GIKI's main library is the intellectual heart of the campus, offering a wide range of academic resources to support your studies and research. The library houses an extensive collection of books, journals, and digital databases. It's also an excellent place for quiet study and group work.
+
+
+Services & Resources
+
+- Book borrowing: Students can borrow books for a specified period.
+
+- Digital resources: Access to online journals, e-books, and research databases.
+
+- Study spaces: Designated quiet zones for individual study and collaborative spaces for group projects.
+
+- Printing & scanning: Facilities are available for printing, scanning, and photocopying documents.
+
+
+Opening Hours
+
+- Monday to Friday: 9:00 AM to 10:00 PM
+
+- Saturday: 9:00 AM to 5:00 PM
+
+- Sunday: Closed`,
+
+                faqs: [
+
+                    { question: "How do I get a library card?", answer: "Your student ID card doubles as your library card. You just need to register it at the library front desk." },
+
+                    { question: "Is there a fine for late returns?", answer: "Yes, fines are charged for books returned past their due date. Check with the library staff for the current fee structure." }
+
+                ],
+
+                warnings: [
+
+                    "Keep your phone on silent mode inside the library's quiet zones.",
+
+                    "Do not bring food or drinks into the library's reading areas."
+
+                ]
+
+            },
+
+            {
+
+                id: "facilities",
+
+                tag: "Facilities",
+
+                shortDescription: "A brief overview of campus facilities and services.",
+
+                fullContent: `GIKI offers a range of modern facilities to support a well-rounded student experience. The campus is home to a dedicated sports complex with indoor and outdoor courts for various sports like badminton, squash, and basketball. Academic life is supported by state-of-the-art computer labs, specialized departmental labs, and a fully-equipped main library.
+
+
+For your health and well-being, the campus has a health center with on-call doctors and nurses for medical emergencies and consultations. The main auditorium hosts a variety of academic and social events throughout the year. Additionally, the Student Activity Centre (SAC) serves as a hub for student societies and extracurricular activities.`,
+
+                faqs: [
+
+                    { question: "Are the computer labs open 24/7?", answer: "Most computer labs are open until late at night, and some are accessible 24/7, especially during exam periods." },
+
+                    { question: "Can I use the sports facilities at any time?", answer: "The sports complex has specific hours of operation. Check the schedule posted at the complex for details." }
+
+                ],
+
+                warnings: [
+
+                    "Always follow the rules and regulations of each facility to ensure a safe and pleasant environment for everyone."
+
+                ]
+
+            }
+
         ];
 
-        // Helper function to update a doc in Firestore
-        const updateGuideSection = async (db, sectionId, newData) => {
-            try {
-                const docRef = firebase.firestore().collection('artifacts').doc(appId).collection('public').doc('data').collection('freshmanGuide').doc(sectionId);
-                await docRef.set(newData, { merge: true });
-                console.log("Document successfully updated!");
-            } catch (e) {
-                console.error("Error updating document: ", e);
-            }
+
+        let isGenerating = false;
+
+        let generationError = null;
+
+        let personalizedInput = '';
+
+        let personalizedList = null;
+
+        let selectedSocietySubTag = null;
+
+        let editForm = {
+
+            tag: '',
+
+            shortDescription: '',
+
+            fullContent: '',
+
+            faqs: [],
+
+            warnings: [],
+
         };
 
-        const Divider = () => (
-            <div className="flex items-center my-8">
-                <div className="flex-grow h-px bg-gray-300"></div>
-                <div className="mx-4 h-3 w-3 bg-gray-400 rounded-full"></div>
-                <div className="flex-grow h-px bg-gray-300"></div>
-            </div>
-        );
 
-        const App = () => {
-            const [db, setDb] = useState(null);
-            const [isAuthReady, setIsAuthReady] = useState(false);
-            const [guideSections, setGuideSections] = useState([]);
-            const [expandedSection, setExpandedSection] = useState(null);
-            const [editingSection, setEditingSection] = useState(null);
-            const [editForm, setEditForm] = useState({ tag: '', shortDescription: '', fullContent: '', faqs: [], warnings: [] });
-            const [selectedSocietySubTag, setSelectedSocietySubTag] = useState(null);
-            const [currentUser, setCurrentUser] = useState(null);
-            const [isAdmin, setIsAdmin] = useState(false);
+        // --- DOM ELEMENTS ---
 
-            useEffect(() => {
-                const initFirebase = async () => {
-                    try {
-                        // Use the global Firebase instance from firebase-init.js
-                        const firestore = firebase.firestore();
-                        const auth = firebase.auth();
-                        setDb(firestore);
+        const appContainer = document.getElementById('app-container');
 
-                        // Listen for auth state changes
-                        auth.onAuthStateChanged(async (user) => {
-                            console.log("Guide: Auth state changed, user:", user);
-                            setCurrentUser(user);
-                            
-                            if (user) {
-                                // Check if user is admin
-                                try {
-                                    if (typeof checkUserAdminStatus === 'function') {
-                                        const adminStatus = await checkUserAdminStatus();
-                                        console.log("Guide: Admin status check result:", adminStatus);
-                                        setIsAdmin(adminStatus);
-                                    } else {
-                                        console.log("Guide: checkUserAdminStatus function not available");
-                                        setIsAdmin(false);
-                                    }
-                                } catch (error) {
-                                    console.error("Guide: Error checking admin status:", error);
-                                    setIsAdmin(false);
-                                }
-                            } else {
-                                setIsAdmin(false);
-                            }
-                            
-                            setIsAuthReady(true);
-                        });
+        const modal = document.getElementById('edit-modal');
 
-                        // Set up Firestore listener for guide data
-                        const freshmanGuideRef = firestore.collection('artifacts').doc(appId).collection('public').doc('data').collection('freshmanGuide');
+        const modalTitle = document.getElementById('modal-title');
 
-                        const unsubscribe = freshmanGuideRef.onSnapshot((querySnapshot) => {
-                            if (querySnapshot.empty) {
-                                const promises = guidePlaceholderData.map(async (data) => {
-                                    const docRef = freshmanGuideRef.doc(data.id);
-                                    await docRef.set(data);
-                                    return data;
-                                });
-                                Promise.all(promises).then(data => setGuideSections(data));
-                            } else {
-                                const fetchedData = [];
-                                querySnapshot.forEach(doc => fetchedData.push({ id: doc.id, ...doc.data() }));
-                                setGuideSections(fetchedData);
-                            }
-                        });
-                        
-                        return () => unsubscribe();
-                    } catch (e) {
-                        console.error("Error initializing Firebase or fetching data: ", e);
-                        setIsAuthReady(true);
-                    }
-                };
-                initFirebase();
-            }, []);
+        const editTagInput = document.getElementById('edit-tag');
 
-            const handleTagClick = (sectionId) => {
-                setExpandedSection(sectionId);
-                setSelectedSocietySubTag(null);
-                const element = document.getElementById(sectionId);
-                if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            };
+        const editShortDescTextarea = document.getElementById('edit-shortDescription');
 
-            const handleBackClick = () => {
-                setExpandedSection(null);
-                setSelectedSocietySubTag(null);
-            };
+        const editFullContentTextarea = document.getElementById('edit-fullContent');
 
-            const handleEditClick = (sectionId) => {
-                const currentData = guideSections.find(s => s.id === sectionId);
-                if (currentData) {
-                    setEditingSection(sectionId);
-                    const content = typeof currentData.fullContent === 'string' ? currentData.fullContent : JSON.stringify(currentData.fullContent, null, 2);
-                    setEditForm({
-                        tag: currentData.tag,
-                        shortDescription: currentData.shortDescription,
-                        fullContent: content,
-                        faqs: currentData.faqs || [],
-                        warnings: currentData.warnings || [],
-                    });
-                }
-            };
+        const faqsContainer = document.getElementById('faqs-container');
 
-            const handleSaveEdit = async () => {
-                if (!editingSection || !db) return;
-                let updatedContent = editForm.fullContent;
-                try {
-                    if (editingSection === 'important-contacts' || editingSection === 'societies-events') {
-                        updatedContent = JSON.parse(editForm.fullContent);
-                    }
-                } catch (e) {
-                    console.error('Invalid JSON format for this section:', e);
-                    return;
-                }
-                const newData = {
-                    tag: editForm.tag,
-                    shortDescription: editForm.shortDescription,
-                    fullContent: updatedContent,
-                    faqs: editForm.faqs,
-                    warnings: editForm.warnings,
-                };
-                await updateGuideSection(db, editingSection, newData);
-                setEditingSection(null);
-            };
+        const warningsContainer = document.getElementById('warnings-container');
 
-            const handleCloseModal = () => setEditingSection(null);
-            const handleFormChange = (e) => {
-                const { name, value } = e.target;
-                setEditForm(prev => ({ ...prev, [name]: value }));
-            };
-            const handleFaqChange = (index, field, value) => {
-                const newFaqs = [...editForm.faqs];
-                newFaqs[index][field] = value;
-                setEditForm(prev => ({ ...prev, faqs: newFaqs }));
-            };
-            const handleAddFaq = () => setEditForm(prev => ({ ...prev, faqs: [...prev.faqs, { question: '', answer: '' }] }));
-            const handleRemoveFaq = (index) => setEditForm(prev => ({ ...prev, faqs: editForm.faqs.filter((_, i) => i !== index) }));
-            const handleWarningChange = (index, value) => {
-                const newWarnings = [...editForm.warnings];
-                newWarnings[index] = value;
-                setEditForm(prev => ({ ...prev, warnings: newWarnings }));
-            };
-            const handleAddWarning = () => setEditForm(prev => ({ ...prev, warnings: [...prev.warnings, ''] }));
-            const handleRemoveWarning = (index) => setEditForm(prev => ({ ...prev, warnings: editForm.warnings.filter((_, i) => i !== index) }));
+        const addFaqBtn = document.getElementById('add-faq-btn');
 
-            const societySubCategories = useMemo(() => {
-                return guideSections.find(s => s.id === 'societies-events')?.fullContent;
-            }, [guideSections]);
+        const addWarningBtn = document.getElementById('add-warning-btn');
 
-            return (
-                <div className="bg-[#f0f2f5] min-h-screen font-inter text-[#2A2A2A] pt-20 p-4 sm:p-8">
-                    <div className="bg-gradient-to-r from-[#8C1D40] to-[#1a936f] text-white p-6 sm:p-8 mb-8 rounded-xl shadow-lg text-center">
-                        <h1 className="text-3xl sm:text-4xl font-bold font-lora">GIKI Freshman Guide</h1>
-                        <p className="mt-2 text-lg text-gray-200">Your ultimate resource for a smooth start at GIKI.</p>
-                    </div>
-                    <div className="max-w-5xl mx-auto chronicle-container bg-white p-6 sm:p-10 rounded-2xl shadow-xl border border-gray-200">
-                        <div className="text-center mb-10">
-                            <h2 className="text-2xl sm:text-3xl font-bold font-lora text-[#8C1D40]">Welcome to GIKI!</h2>
-                            <p className="mt-4 text-lg text-gray-700 max-w-2xl mx-auto">
-                                Welcome to your new home! This guide is designed to help you navigate your first few weeks here. We've compiled essential information, tips, and resources to make your transition as smooth as possible.
-                            </p>
-                        </div>
-                        <main>
-                            {expandedSection === null && (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-                                    {guideSections.length > 0 ? (
-                                        guideSections.map(section => (
-                                            <div key={section.id} className="p-6 bg-white rounded-xl cursor-pointer shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg" onClick={() => handleTagClick(section.id)} title={section.shortDescription}>
-                                                
+        const saveEditBtn = document.getElementById('save-edit-btn');
 
-                                                <h3 className="text-xl font-semibold font-lora text-[#1a936f]">{section.tag}</h3>
-                                                <p className="mt-2 text-sm text-gray-600">{section.shortDescription}</p>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <div className="col-span-2 text-center text-gray-500"><p>Loading guide data or creating initial documents...</p></div>
-                                    )}
-                                </div>
-                            )}
-                            {guideSections.map(section => (
-                                <div key={section.id}>
-                                    {expandedSection === section.id && (
-                                        <div id={section.id} className="mt-12 p-8 bg-white rounded-xl shadow-inner border border-gray-200 transition-all duration-500 ease-in-out">
-                                            <div className="flex justify-between items-start mb-4">
-                                                <h2 className="text-3xl font-bold font-lora text-[#1a936f]">{section.tag}</h2>
-                                                {isAdmin && (
-                                                    <button onClick={() => handleEditClick(section.id)} className="bg-[#1a936f] text-white px-4 py-2 rounded-lg hover:bg-[#156e52] transition-colors shadow-md">Edit</button>
-                                                )}
-                                            </div>
-                                            {section.id === "societies-events" && societySubCategories ? (
-                                                <div className="flex flex-col sm:flex-col gap-6">
-                                                    <nav className="flex flex-wrap gap-2 mb-6">
-                                                        {Object.keys(societySubCategories).map((key) => (
-                                                            <button key={key} onClick={() => setSelectedSocietySubTag(key)} className={`px-6 py-2 rounded-full font-semibold transition-colors duration-200 ${selectedSocietySubTag === key ? 'bg-[#1a936f] text-white shadow-md' : 'text-gray-700 bg-gray-200 hover:bg-gray-300'}`}>
-                                                                <span>{societySubCategories[key].title}</span>
-                                                            </button>
-                                                        ))}
-                                                    </nav>
-                                                    <div className="sm:flex-grow">
-                                                        {selectedSocietySubTag ? (
-                                                            societySubCategories[selectedSocietySubTag]?.societies?.map((item, index) => (
-                                                                <div key={index} className="p-4 bg-gray-50 rounded-lg mb-4 shadow-sm border border-gray-100">
-                                                                    <h4 className="text-xl font-semibold text-[#2A2A2A]">{item.name}</h4>
-                                                                    <p className="mt-1 text-gray-600 text-sm">{item.description}</p>
-                                                                </div>
-                                                            ))
-                                                        ) : (
-                                                            <div className="text-center p-8 text-gray-500 bg-gray-50 rounded-lg border border-gray-200"><p className="text-lg">Please select a society category to view the details.</p></div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                Array.isArray(section.fullContent) && section.id === "important-contacts" ? (
-                                                    <div className="overflow-x-auto">
-                                                        <table className="w-full text-left table-auto border-collapse">
-                                                            <thead className="text-gray-700 bg-gray-100">
-                                                                <tr>
-                                                                    <th className="py-3 px-4 border-b font-semibold">Contact</th>
-                                                                    <th className="py-3 px-4 border-b font-semibold">Department</th>
-                                                                    <th className="py-3 px-4 border-b font-semibold">Purpose</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                {section.fullContent.map((item, index) => (
-                                                                    <tr key={index} className="border-b last:border-b-0">
-                                                                        <td className="py-3 px-4 text-[#2A2A2A]">{item.contact}</td>
-                                                                        <td className="py-3 px-4 text-gray-600">{item.department}</td>
-                                                                        <td className="py-3 px-4 text-gray-600">{item.purpose}</td>
-                                                                    </tr>
-                                                                ))}
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                ) : (
-                                                    section.fullContent && typeof section.fullContent === 'string' && section.fullContent.trim().startsWith('-') ? (
-                                                        <ul className="mt-4 space-y-2 list-disc list-inside">
-                                                            {section.fullContent.split('\n').filter(line => line.trim()).map((line, index) => {
-                                                                const content = line.trim().startsWith('-') ? line.trim().substring(1).trim() : line;
-                                                                return content && <li key={index} className="text-gray-700">{content}</li>;
-                                                            })}
-                                                        </ul>
-                                                    ) : (
-                                                        <p className="mt-4 text-[#2A2A2A] leading-relaxed whitespace-pre-wrap">{section.fullContent}</p>
-                                                    )
-                                                )
-                                            )}
-                                            <Divider />
-                                            {section.faqs && section.faqs.length > 0 && (
-                                                <div className="mt-8 p-6 rounded-xl bg-gray-100 border border-gray-200">
-                                                    <h3 className="text-2xl font-semibold font-lora text-[#1a936f] border-b-2 pb-2 mb-4 border-gray-200">FAQs</h3>
-                                                    <div className="space-y-4">
-                                                        {section.faqs.map((faq, index) => (
-                                                            <details key={index} className="group cursor-pointer p-4 rounded-lg bg-white border border-gray-200 shadow-sm">
-                                                                <summary className="flex justify-between items-center font-medium list-none">
-                                                                    <span className="font-semibold text-gray-700">{faq.question}</span>
-                                                                    <span className="transition group-open:rotate-180"><svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg></span>
-                                                                </summary>
-                                                                <p className="text-gray-600 mt-2 ml-4">{faq.answer}</p>
-                                                            </details>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {section.warnings && section.warnings.length > 0 && (
-                                                <div className="mt-8">
-                                                    <h3 className="text-2xl font-semibold font-lora text-red-700 border-b-2 pb-2 mb-4 border-gray-200">What Not to Do</h3>
-                                                    <div className="space-y-4">
-                                                        {section.warnings.map((warning, index) => (
-                                                            <div key={index} className="flex items-start p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-md">
-                                                                <span className="text-2xl mr-3 flex-shrink-0">⚠️</span>
-                                                                <p>{warning}</p>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                            {expandedSection !== null && (
-                                <div className="text-center mt-12">
-                                    <button onClick={handleBackClick} className="bg-[#1a936f] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#156e52] transition-colors shadow-md">&larr; Back to all sections</button>
-                                </div>
-                            )}
-                        </main>
-                    </div>
-                    {editingSection && (
-                        <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 z-50">
-                            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
-                                <div className="flex justify-between items-center border-b pb-4 mb-4">
-                                    <h3 className="text-2xl font-lora font-bold text-[#8C1D40]">Edit {editForm.tag}</h3>
-                                    <button onClick={handleCloseModal} className="text-gray-400 hover:text-gray-600 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
-                                </div>
-                                <div className="space-y-6">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Tag</label>
-                                        <input type="text" name="tag" value={editForm.tag} onChange={handleFormChange} className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1a936f] focus:border-[#1a936f]" />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Short Description</label>
-                                        <textarea name="shortDescription" value={editForm.shortDescription} onChange={handleFormChange} rows="2" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1a936f] focus:border-[#1a936f]" />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Full Content ({editingSection === 'important-contacts' || editingSection === 'societies-events' ? 'JSON formatted content' : 'Plain Text'})</label>
-                                        <textarea name="fullContent" value={editForm.fullContent} onChange={handleFormChange} rows="6" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1a936f] focus:border-[#1a936f] font-mono text-sm" />
-                                    </div>
-                                    <div>
-                                        <div className="flex justify-between items-center mb-2">
-                                            <label className="block text-sm font-medium text-gray-700">FAQs</label>
-                                            <button onClick={handleAddFaq} className="bg-[#1a936f] text-white px-3 py-1 rounded-md text-sm hover:bg-[#156e52] transition-colors shadow-md">Add FAQ</button>
-                                        </div>
-                                        {editForm.faqs.map((faq, index) => (
-                                            <div key={index} className="flex space-x-2 mb-2 p-2 bg-gray-50 rounded-md border border-gray-200">
-                                                <input type="text" placeholder="Question" value={faq.question} onChange={(e) => handleFaqChange(index, 'question', e.target.value)} className="flex-1 p-2 border border-gray-300 rounded-md" />
-                                                <input type="text" placeholder="Answer" value={faq.answer} onChange={(e) => handleFaqChange(index, 'answer', e.target.value)} className="flex-1 p-2 border border-gray-300 rounded-md" />
-                                                <button onClick={() => handleRemoveFaq(index)} className="text-red-500 hover:text-red-700"><svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.381 21H7.618a2 2 0 01-1.993-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1H9a1 1 0 00-1 1v3m10 0H4" /></svg></button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div>
-                                        <div className="flex justify-between items-center mb-2">
-                                            <label className="block text-sm font-medium text-gray-700">Warnings</label>
-                                            <button onClick={handleAddWarning} className="bg-[#1a936f] text-white px-3 py-1 rounded-md text-sm hover:bg-[#156e52] transition-colors shadow-md">Add Warning</button>
-                                        </div>
-                                        {editForm.warnings.map((warning, index) => (
-                                            <div key={index} className="flex space-x-2 mb-2 p-2 bg-gray-50 rounded-md border border-gray-200">
-                                                <input type="text" placeholder="Warning message" value={warning} onChange={(e) => handleWarningChange(index, e.target.value)} className="flex-1 p-2 border border-gray-300 rounded-md" />
-                                                <button onClick={() => handleRemoveWarning(index)} className="text-red-500 hover:text-red-700"><svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.381 21H7.618a2 2 0 01-1.993-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1H9a1 1 0 00-1 1v3m10 0H4" /></svg></button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div className="flex justify-end space-x-4 pt-4 border-t">
-                                        <button onClick={handleCloseModal} className="px-4 py-2 rounded-lg font-bold text-gray-600 border border-gray-300 hover:bg-gray-100 transition-colors">Cancel</button>
-                                        <button onClick={handleSaveEdit} className="px-4 py-2 rounded-lg font-bold text-white bg-[#1a936f] hover:bg-[#156e52] transition-colors">Save Changes</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+
+        const closeModalBtn = document.getElementById('close-modal-btn');
+
+
+        // --- HELPER FUNCTIONS ---
+
+        const renderDivider = () => '<div class="flex items-center my-8"><div class="flex-grow h-px bg-gray-300"></div><div class="mx-4 h-3 w-3 bg-gray-400 rounded-full"></div><div class="flex-grow h-px bg-gray-300"></div></div>';
+
+
+        const renderFaqs = (faqs) => {
+
+            if (!faqs || faqs.length === 0) return '';
+
+            return `<div class="mt-8 p-6 rounded-xl bg-gray-100 border border-gray-200">
+
+                <h3 class="text-2xl font-semibold font-lora text-[#1a936f] border-b-2 pb-2 mb-4 border-gray-200">FAQs</h3>
+
+                <div class="space-y-4">
+
+                    ${faqs.map((faq, index) => `
+
+                        <details class="group cursor-pointer p-4 rounded-lg bg-white border border-gray-200 shadow-sm">
+
+                            <summary class="flex justify-between items-center font-medium list-none">
+
+                                <span class="font-semibold text-gray-700">${faq.question}</span>
+
+                                <span class="transition group-open:rotate-180">
+
+                                    <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+
+                                </span>
+
+                            </summary>
+
+                            <p class="text-gray-600 mt-2 ml-4">${faq.answer}</p>
+
+                        </details>
+
+                    `).join('')}
+
                 </div>
-            );
+
+            </div>`;
+
         };
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+
+        const renderWarnings = (warnings) => {
+
+            if (!warnings || warnings.length === 0) return '';
+
+            return `<div class="mt-8">
+
+                <h3 class="text-2xl font-semibold font-lora text-red-700 border-b-2 pb-2 mb-4 border-gray-200">What Not to Do</h3>
+
+                <div class="space-y-4">
+
+                    ${warnings.map((warning, index) => `
+
+                        <div class="flex items-start p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-md">
+
+                            <span class="text-2xl mr-3 flex-shrink-0">⚠</span>
+
+                            <p>${warning}</p>
+
+                        </div>
+
+                    `).join('')}
+
+                </div>
+
+            </div>`;
+
+        };
+
+
+        // --- RENDERING FUNCTIONS ---
+
+        const renderTagGrid = () => {
+
+            appContainer.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+
+                ${guideSections.map(section => `
+
+                    <div
+
+                        class="p-6 bg-white rounded-xl cursor-pointer shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
+
+                        data-id="${section.id}"
+
+                    >
+
+                        <h3 class="text-xl font-semibold font-lora text-[#1a936f]">${section.tag}</h3>
+
+                        <p class="mt-2 text-sm text-gray-600">${section.shortDescription}</p>
+
+                    </div>
+
+                `).join('')}
+
+            </div>`;
+
+
+            appContainer.querySelectorAll('[data-id]').forEach(tag => {
+
+                tag.addEventListener('click', (e) => {
+
+                    const id = e.currentTarget.dataset.id;
+
+                    expandedSection = guideSections.find(s => s.id === id);
+
+                    renderExpandedSection();
+
+                });
+
+            });
+
+        };
+
+
+        const renderExpandedSection = () => {
+
+            if (!expandedSection) {
+
+                renderTagGrid();
+
+                return;
+
+            }
+
+
+            let fullContentHtml = '';
+
+            if (expandedSection.id === "societies-events") {
+
+                const societySubCategories = expandedSection.fullContent;
+
+                const subNavHtml = Object.keys(societySubCategories).map(key => `
+
+                    <button class="px-6 py-2 rounded-full font-semibold transition-colors duration-200
+
+                        ${selectedSocietySubTag === key ? 'bg-[#1a936f] text-white shadow-md' : 'text-gray-700 bg-gray-200 hover:bg-gray-300'}"
+
+                        data-sub-tag="${key}">
+
+                        <span>${societySubCategories[key].title}</span>
+
+                    </button>
+
+                `).join('');
+
+
+                const societyContentHtml = selectedSocietySubTag ?
+
+                    societySubCategories[selectedSocietySubTag].societies.map(item => `
+
+                        <div class="p-4 bg-gray-50 rounded-lg mb-4 shadow-sm border border-gray-100">
+
+                            <h4 class="text-xl font-semibold text-[#2A2A2A]">${item.name}</h4>
+
+                            <p class="mt-1 text-gray-600 text-sm">${item.description}</p>
+
+                        </div>
+
+                    `).join('')
+
+                    : `<div class="text-center p-8 text-gray-500 bg-gray-50 rounded-lg border border-gray-200">
+
+                        <p class="text-lg">Please select a society category to view the details.</p>
+
+                       </div>`;
+
+
+                fullContentHtml = `<div class="flex flex-col sm:flex-col gap-6">
+
+                    <nav class="flex flex-wrap gap-2 mb-6" id="sub-nav">${subNavHtml}</nav>
+
+                    <div class="sm:flex-grow">${societyContentHtml}</div>
+
+                </div>`;
+
+            } else if (Array.isArray(expandedSection.fullContent) && expandedSection.id === "important-contacts") {
+
+                fullContentHtml = `<div class="overflow-x-auto">
+
+                    <table class="w-full text-left table-auto border-collapse">
+
+                        <thead class="text-gray-700 bg-gray-100">
+
+                            <tr>
+
+                                <th class="py-3 px-4 border-b font-semibold">Contact</th>
+
+                                <th class="py-3 px-4 border-b font-semibold">Department</th>
+
+                                <th class="py-3 px-4 border-b font-semibold">Purpose</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            ${expandedSection.fullContent.map((item, index) => `
+
+                                <tr class="border-b last:border-b-0">
+
+                                    <td class="py-3 px-4 text-[#2A2A2A]">${item.contact}</td>
+
+                                    <td class="py-3 px-4 text-gray-600">${item.department}</td>
+
+                                    <td class="py-3 px-4 text-gray-600">${item.purpose}</td>
+
+                                </tr>
+
+                            `).join('')}
+
+                        </tbody>
+
+                    </table>
+
+                </div>`;
+
+            } else if (typeof expandedSection.fullContent === 'string' && expandedSection.fullContent.trim().startsWith('-')) {
+
+                const listItems = expandedSection.fullContent.split('\n').filter(line => line.trim()).map((line, index) => {
+
+                    const content = line.trim().startsWith('-') ? line.trim().substring(1).trim() : line;
+
+                    return content ? `<li class="text-gray-700">${content}</li>` : '';
+
+                }).join('');
+
+                fullContentHtml = `<ul class="mt-4 space-y-2 list-disc list-inside">${listItems}</ul>`;
+
+            } else {
+
+                fullContentHtml = `<p class="mt-4 text-[#2A2A2A] leading-relaxed whitespace-pre-wrap">${expandedSection.fullContent}</p>`;
+
+            }
+
+
+            const personalizedListSection = expandedSection.id === "what-to-pack" ? `
+
+                <div class="mt-8 p-6 rounded-xl bg-blue-50 border border-blue-200">
+
+                    <h3 class="text-2xl font-semibold font-lora text-blue-800">Need a Personalized List?</h3>
+
+                    <p class="mt-2 text-sm text-gray-600">Tell us a bit about yourself to get a custom packing list. For example, "I'm a computer science student" or "I get cold easily."</p>
+
+                    <div class="flex flex-col sm:flex-row gap-4 mt-4">
+
+                        <input type="text" id="personalized-input" value="${personalizedInput}" placeholder="e.g., 'I am an engineering student who loves to play badminton'" class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+                        <button id="generate-list-btn" class="flex items-center justify-center px-6 py-3 rounded-lg font-bold text-white transition-colors shadow-md ${isGenerating ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}" ${isGenerating ? 'disabled' : ''}>
+
+                           ${isGenerating ? `
+
+                                <div class="flex items-center">
+
+                                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+
+                                    Generating...
+
+                                </div>
+
+                           ` : 'Generate List'}
+
+                        </button>
+
+                    </div>
+
+                    ${personalizedList && personalizedList.items.length > 0 ? `
+
+                        <div class="mt-6 p-4 bg-white rounded-lg border border-blue-200">
+
+                            <h4 class="text-xl font-semibold font-lora text-blue-800 mb-2">${personalizedList.title}</h4>
+
+                            <ul class="list-disc list-inside space-y-3">
+
+                                ${personalizedList.items.map((item, index) => `
+
+                                    <li class="text-gray-700"><strong>${item.split(':')[0].trim()}:</strong> ${item.split(':').slice(1).join(':').trim()}</li>
+
+                                `).join('')}
+
+                            </ul>
+
+                        </div>
+
+                    ` : ''}
+
+                    ${generationError ? `<div class="mt-6 p-4 bg-red-100 text-red-700 rounded-lg border-l-4 border-red-500">${generationError}</div>` : ''}
+
+                </div>
+
+            ` : '';
+
+
+            const sectionHtml = `
+
+                <div id="${expandedSection.id}" class="mt-12 p-8 bg-white rounded-xl shadow-inner border border-gray-200 transition-all duration-500 ease-in-out">
+
+                    <div class="flex justify-between items-start mb-4">
+
+                        <h2 class="text-3xl font-bold font-lora text-[#1a936f]">${expandedSection.tag}</h2>
+
+                        <button id="edit-btn" data-id="${expandedSection.id}" class="bg-[#1a936f] text-white px-4 py-2 rounded-lg hover:bg-[#156e52] transition-colors shadow-md">Edit</button>
+
+                    </div>
+
+                    ${fullContentHtml}
+
+                    ${personalizedListSection}
+
+                    ${renderDivider()}
+
+                    ${renderFaqs(expandedSection.faqs)}
+
+                    ${renderWarnings(expandedSection.warnings)}
+
+                </div>
+
+                <div class="text-center mt-12">
+
+                    <button id="back-btn" class="bg-[#1a936f] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#156e52] transition-colors shadow-md">
+
+                        &larr; Back to all sections
+
+                    </button>
+
+                </div>
+
+            `;
+
+
+            appContainer.innerHTML = sectionHtml;
+
+
+            // Add event listeners for the back and edit buttons
+
+            document.getElementById('back-btn').addEventListener('click', () => {
+
+                expandedSection = null;
+
+                selectedSocietySubTag = null;
+
+                personalizedInput = '';
+
+                personalizedList = null;
+
+                generationError = null;
+
+                renderExpandedSection();
+
+            });
+
+            document.getElementById('edit-btn').addEventListener('click', () => showEditModal(expandedSection.id));
+
+
+            // Add event listeners for sub-nav buttons if they exist
+
+            if (expandedSection.id === "societies-events") {
+
+                document.getElementById('sub-nav').querySelectorAll('[data-sub-tag]').forEach(btn => {
+
+                    btn.addEventListener('click', (e) => {
+
+                        selectedSocietySubTag = e.currentTarget.dataset.subTag;
+
+                        renderExpandedSection();
+
+                    });
+
+                });
+
+            }
+
+
+            // Add event listeners for the personalized list generator
+
+            if (expandedSection.id === "what-to-pack") {
+
+                const personalizedInputEl = document.getElementById('personalized-input');
+
+                const generateListBtn = document.getElementById('generate-list-btn');
+
+                personalizedInputEl.addEventListener('input', (e) => {
+
+                    personalizedInput = e.target.value;
+
+                    generateListBtn.disabled = isGenerating || !personalizedInput.trim();
+
+                    generateListBtn.classList.toggle('cursor-not-allowed', isGenerating || !personalizedInput.trim());
+
+                    generateListBtn.classList.toggle('bg-blue-400', isGenerating || !personalizedInput.trim());
+
+                    generateListBtn.classList.toggle('bg-blue-600', !isGenerating && personalizedInput.trim());
+
+                    generateListBtn.classList.toggle('hover:bg-blue-700', !isGenerating && personalizedInput.trim());
+
+                });
+
+                generateListBtn.addEventListener('click', generatePersonalizedList);
+
+            }
+
+        };
+
+
+        const generatePersonalizedList = async () => {
+
+            isGenerating = true;
+
+            generationError = null;
+
+            personalizedList = null;
+
+            renderExpandedSection(); // Re-render to show loading state
+
+
+            const prompt = `Generate a packing list for a college freshman, based on the user's input: "${personalizedInput}". The list should be relevant to GIKI University and its environment in Pakistan. The format should be "Item: Description" on a new line. Do not use bullet points, hyphens, or asterisks. Provide a short, one-sentence title first.`;
+
+            const chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+
+            const payload = { contents: chatHistory };
+
+            const apiKey = "";
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+
+                let retries = 0;
+
+            const maxRetries = 5;
+
+            const initialDelay = 1000;
+
+
+            const executeFetch = async () => {
+
+                try {
+
+                    const response = await fetch(apiUrl, {
+
+                        method: 'POST',
+
+                        headers: { 'Content-Type': 'application/json' },
+
+                        body: JSON.stringify(payload)
+
+                    });
+
+
+                    if (!response.ok) {
+
+                        throw new Error(`API error: ${ response.statusText }`);
+
+                    }
+
+
+                    const result = await response.json();
+
+
+                    if (result.candidates && result.candidates.length > 0 &&
+
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+
+                        result.candidates[0].content.parts.length > 0) {
+
+                        const text = result.candidates[0].content.parts[0].text;
+
+
+                        const lines = text.split('\n').filter(line => line.trim());
+
+                        const listTitle = lines.length > 0 ? lines[0] : 'Your Custom Packing List';
+
+                        const listItems = lines.slice(1).map(line => line.replace(/^[\s\d\-\*\#\.]+/, '').trim()).filter(item => item);
+
+                        personalizedList = { title: listTitle, items: listItems };
+
+                    } else {
+
+                        generationError = "Could not get a response from the model. Please try again.";
+
+                    }
+
+                } catch (e) {
+
+                    if (retries < maxRetries) {
+
+                        const delay = initialDelay * Math.pow(2, retries);
+
+                        retries++;
+
+                        console.log(`Retrying API call in ${ delay }ms...`);
+
+                        await new Promise(res => setTimeout(res, delay));
+
+                        await executeFetch();
+
+                    } else {
+
+                        console.error("Error fetching personalized list:", e);
+
+                        generationError = "Failed to generate a personalized list. Please check your network and try again.";
+
+                    }
+
+                } finally {
+
+                    if (retries >= maxRetries || !generationError) {
+
+                        isGenerating = false;
+
+                        renderExpandedSection(); // Re-render to show the result or error
+
+                    }
+
+                }
+
+            };
+
+            await executeFetch();
+
+        };
+
+
+        const renderEditModal = (section) => {
+
+            modalTitle.textContent = section.tag;
+
+            editTagInput.value = section.tag;
+
+            editShortDescTextarea.value = section.shortDescription;
+
+
+            // Handle complex content (objects/arrays) by stringifying it for the textarea
+
+            if (typeof section.fullContent === 'string') {
+
+                editFullContentTextarea.value = section.fullContent;
+
+            } else {
+
+                editFullContentTextarea.value = JSON.stringify(section.fullContent, null, 2);
+
+            }
+
+
+            faqsContainer.innerHTML = `<div class="flex justify-between items-center mb-2"><label class="block text-sm font-medium text-gray-700">FAQs</label><button id="add-faq-btn" class="bg-[#1a936f] text-white px-3 py-1 rounded-md text-sm hover:bg-[#156e52] transition-colors shadow-md">Add FAQ</button></div>`;
+
+            section.faqs.forEach((faq, index) => {
+
+                const faqItem = document.createElement('div');
+
+                faqItem.className = 'flex space-x-2 mb-2 p-2 bg-gray-50 rounded-md border border-gray-200';
+
+                faqItem.innerHTML = `
+
+                    <input type="text" placeholder="Question" value="${faq.question}" data-index="${index}" data-field="question" class="flex-1 p-2 border border-gray-300 rounded-md" />
+
+                    <input type="text" placeholder="Answer" value="${faq.answer}" data-index="${index}" data-field="answer" class="flex-1 p-2 border border-gray-300 rounded-md" />
+
+                    <button class="text-red-500 hover:text-red-700" data-remove="faq" data-index="${index}">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.381 21H7.618a2 2 0 01-1.993-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1H9a1 1 0 00-1 1v3m10 0H4" /></svg>
+
+                    </button>
+
+                `;
+
+                faqsContainer.appendChild(faqItem);
+
+            });
+
+            document.getElementById('add-faq-btn').addEventListener('click', handleAddFaq);
+
+
+            warningsContainer.innerHTML = `<div class="flex justify-between items-center mb-2"><label class="block text-sm font-medium text-gray-700">Warnings</label><button id="add-warning-btn" class="bg-[#1a936f] text-white px-3 py-1 rounded-md text-sm hover:bg-[#156e52] transition-colors shadow-md">Add Warning</button></div>`;
+
+            section.warnings.forEach((warning, index) => {
+
+                const warningItem = document.createElement('div');
+
+                warningItem.className = 'flex space-x-2 mb-2 p-2 bg-gray-50 rounded-md border border-gray-200';
+
+                warningItem.innerHTML = `
+
+                    <input type="text" placeholder="Warning message" value="${warning}" data-index="${index}" class="flex-1 p-2 border border-gray-300 rounded-md" />
+
+                    <button class="text-red-500 hover:text-red-700" data-remove="warning" data-index="${index}">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.381 21H7.618a2 2 0 01-1.993-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1H9a1 1 0 00-1 1v3m10 0H4" /></svg>
+
+                    </button>
+
+                `;
+
+                warningsContainer.appendChild(warningItem);
+
+            });
+
+            document.getElementById('add-warning-btn').addEventListener('click', handleAddWarning);
+
+
+            // Add event listeners for dynamic form elements
+
+            document.querySelectorAll('[data-field="question"], [data-field="answer"]').forEach(input => {
+
+                input.addEventListener('input', (e) => {
+
+                    const index = e.target.dataset.index;
+
+                    const field = e.target.dataset.field;
+
+                    editForm.faqs[index][field] = e.target.value;
+
+                });
+
+            });
+
+            document.querySelectorAll('[data-remove="faq"]').forEach(btn => {
+
+                btn.addEventListener('click', (e) => handleRemoveFaq(e.currentTarget.dataset.index));
+
+            });
+
+            document.querySelectorAll('[data-remove="warning"]').forEach(btn => {
+
+                btn.addEventListener('click', (e) => handleRemoveWarning(e.currentTarget.dataset.index));
+
+            });
+
+            document.querySelectorAll('#warnings-container input').forEach(input => {
+
+                input.addEventListener('input', (e) => {
+
+                    editForm.warnings[e.target.dataset.index] = e.target.value;
+
+                });
+
+            });
+
+
+            modal.classList.remove('hidden');
+
+        };
+
+
+        const showEditModal = (sectionId) => {
+
+            editingSectionId = sectionId;
+
+            const section = guideSections.find(s => s.id === sectionId);
+
+            if (!section) return;
+
+
+            // Deep copy the section data to the form state
+
+            editForm = JSON.parse(JSON.stringify(section));
+
+            renderEditModal(editForm);
+
+        };
+
+
+        const handleAddFaq = () => {
+
+            editForm.faqs.push({ question: '', answer: '' });
+
+            renderEditModal(editForm);
+
+        };
+
+        const handleRemoveFaq = (index) => {
+
+            editForm.faqs.splice(index, 1);
+
+            renderEditModal(editForm);
+
+        };
+
+        const handleAddWarning = () => {
+
+            editForm.warnings.push('');
+
+            renderEditModal(editForm);
+
+        };
+
+        const handleRemoveWarning = (index) => {
+
+            editForm.warnings.splice(index, 1);
+
+            renderEditModal(editForm);
+
+        };
+
+
+        const handleSaveEdit = async () => {
+
+            if (!editingSectionId || !db) return;
+
+
+            let updatedContent = editFullContentTextarea.value;
+
+            try {
+
+                if (editingSectionId === 'important-contacts' || editingSectionId === 'societies-events') {
+
+                    updatedContent = JSON.parse(editFullContentTextarea.value);
+
+                }
+
+            } catch (e) {
+
+                // In a real app, this would be a custom UI alert
+
+                console.error('Invalid JSON format for this section:', e);
+
+                return;
+
+            }
+
+
+            const newData = {
+
+                tag: editTagInput.value,
+
+                shortDescription: editShortDescTextarea.value,
+
+                fullContent: updatedContent,
+
+                faqs: editForm.faqs,
+
+                warnings: editForm.warnings,
+
+            };
+
+
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'freshmanGuide', editingSectionId);
+
+            await setDoc(docRef, newData, { merge: true });
+
+            modal.classList.add('hidden');
+
+            editingSectionId = null;
+
+        };
+
+
+        const handleCloseModal = () => {
+
+            modal.classList.add('hidden');
+
+            editingSectionId = null;
+
+        };
+
+
+        // --- INITIALIZATION ---
+
+        window.onload = async () => {
+
+            try {
+
+                const app = initializeApp(firebaseConfig);
+
+                db = getFirestore(app);
+
+                auth = getAuth(app);
+
+
+                const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+                if (initialAuthToken) {
+
+                    await signInWithCustomToken(auth, initialAuthToken);
+
+                } else {
+
+                    await signInAnonymously(auth);
+
+                }
+
+
+                onAuthStateChanged(auth, (user) => {
+
+                    if (user) {
+
+                        const freshmanGuideRef = collection(db, 'artifacts', appId, 'public', 'data', 'freshmanGuide');
+
+                        const q = query(freshmanGuideRef);
+
+                        onSnapshot(q, (querySnapshot) => {
+
+                            const fetchedData = [];
+
+                            if (querySnapshot.empty) {
+
+                                console.log("No data found, using placeholder data.");
+
+                                guidePlaceholderData.forEach(data => {
+
+                                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'freshmanGuide', data.id);
+
+                                    setDoc(docRef, data);
+
+                                });
+
+                                guideSections = guidePlaceholderData;
+
+                            } else {
+
+                                querySnapshot.forEach((doc) => {
+
+                                    fetchedData.push({ id: doc.id, ...doc.data() });
+
+                                });
+
+                                guideSections = fetchedData;
+
+                            }
+
+                            // Re-render the UI after data is loaded/updated
+
+                            if (!expandedSection) {
+
+                                renderTagGrid();
+
+                            } else {
+
+                                expandedSection = guideSections.find(s => s.id === expandedSection.id);
+
+                                renderExpandedSection();
+
+                            }
+
+                        });
+
+                    } else {
+
+                        console.log("User is signed out or anonymous.");
+
+                        // Render with placeholder data if not authenticated
+
+                        guideSections = guidePlaceholderData;
+
+                        renderTagGrid();
+
+                    }
+
+                });
+
+            } catch (e) {
+
+                console.error("Error initializing Firebase:", e);
+
+                // Render with placeholder data on error
+
+                guideSections = guidePlaceholderData;
+
+                renderTagGrid();
+
+            }
+
+        };
+
+
+        // Modal event listeners
+
+        closeModalBtn.addEventListener('click', handleCloseModal);
+
+        cancelEditBtn.addEventListener('click', handleCloseModal);
+
+        saveEditBtn.addEventListener('click', handleSaveEdit);
+
     </script>
+
 </body>
 
 </html>
