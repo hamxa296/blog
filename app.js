@@ -26,6 +26,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- Initialize Quill Editor ---
     let quill;
     if (document.getElementById('editor-container')) {
+        // Clear any existing Quill instances
+        const existingEditor = document.querySelector('.ql-editor');
+        if (existingEditor) {
+            existingEditor.remove();
+        }
+        
+        // Clear the container
+        const container = document.getElementById('editor-container');
+        container.innerHTML = '';
+        
+        // Initialize new Quill instance
         quill = new Quill('#editor-container', {
             theme: 'snow',
             placeholder: 'Craft your story here...',
