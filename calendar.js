@@ -658,3 +658,163 @@ async function updateEventStatus(eventId, newStatus) {
         return { success: false, error: "Failed to update status." };
     }
 }
+
+/**
+ * Fetches all events by status (pending, approved, rejected, all).
+ * @param {string} status - The status to filter by ("pending", "approved", "rejected", "all").
+ * @returns {Promise<object>} A promise that resolves with events.
+ */
+async function getEventsByStatus(status = "all") {
+    const user = auth.currentUser;
+    if (!user) {
+        return { success: false, error: "Authentication required." };
+    }
+
+    try {
+        const isAdmin = await isUserAdmin();
+        if (!isAdmin) {
+            console.error("Unauthorized access attempt to fetch events");
+            return { success: false, error: "Admin privileges required." };
+        }
+
+        let query = db.collection("events").orderBy("createdAt", "desc");
+        
+        if (status !== "all") {
+            query = query.where("status", "==", status);
+        }
+
+        const snapshot = await query.get();
+        const events = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        
+        return { success: true, events: events };
+    } catch (error) {
+        console.error("Error fetching events by status:", error);
+        return { success: false, error: "Failed to fetch events." };
+    }
+}
+
+/**
+ * Fetches upcoming events (approved events with dates in the future).
+ * @returns {Promise<object>} A promise that resolves with upcoming events.
+ */
+async function getUpcomingEvents() {
+    const user = auth.currentUser;
+    if (!user) {
+        return { success: false, error: "Authentication required." };
+    }
+
+    try {
+        const isAdmin = await isUserAdmin();
+        if (!isAdmin) {
+            return { success: false, error: "Admin privileges required." };
+        }
+
+        const now = new Date();
+        const snapshot = await db.collection("events")
+            .where("status", "==", "approved")
+            .where("date", ">=", now.toISOString().split('T')[0])
+            .orderBy("date", "asc")
+            .get();
+
+        const events = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        return { success: true, events: events };
+    } catch (error) {
+        console.error("Error fetching upcoming events:", error);
+        return { success: false, error: "Failed to fetch upcoming events." };
+    }
+}
+
+/**
+ * Fetches past events (approved events with dates in the past).
+ * @returns {Promise<object>} A promise that resolves with past events.
+ */
+async function getPastEvents() {
+    const user = auth.currentUser;
+    if (!user) {
+        return { success: false, error: "Authentication required." };
+    }
+
+    try {
+        const isAdmin = await isUserAdmin();
+        if (!isAdmin) {
+            return { success: false, error: "Admin privileges required." };
+        }
+
+        const now = new Date();
+        const snapshot = await db.collection("events")
+            .where("status", "==", "approved")
+            .where("date", "<", now.toISOString().split('T')[0])
+            .orderBy("date", "desc")
+            .get();
+
+        const events = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        return { success: true, events: events };
+    } catch (error) {
+        console.error("Error fetching past events:", error);
+        return { success: false, error: "Failed to fetch past events." };
+    }
+}
+
+/**
+ * Deletes an event permanently from the database.
+ * @param {string} eventId - The ID of the event to delete.
+ * @returns {Promise<object>} A promise that resolves on success.
+ */
+async function deleteEvent(eventId) {
+    const user = auth.currentUser;
+    if (!user) {
+        return { success: false, error: "Authentication required." };
+    }
+
+    try {
+        const isAdmin = await isUserAdmin();
+        if (!isAdmin) {
+            console.error("Unauthorized access attempt to delete event");
+            return { success: false, error: "Admin privileges required." };
+        }
+
+        await db.collection("events").doc(eventId).delete();
+        console.log("Event deleted successfully:", eventId);
+        return { success: true, message: "Event deleted successfully." };
+    } catch (error) {
+        console.error("Error deleting event:", error);
+        return { success: false, error: "Failed to delete event." };
+    }
+}
+
+/**
+ * Gets event statistics for admin dashboard.
+ * @returns {Promise<object>} A promise that resolves with event statistics.
+ */
+async function getEventStats() {
+    const user = auth.currentUser;
+    if (!user) {
+        return { success: false, error: "Authentication required." };
+    }
+
+    try {
+        const isAdmin = await isUserAdmin();
+        if (!isAdmin) {
+            return { success: false, error: "Admin privileges required." };
+        }
+
+        const [pending, approved, rejected] = await Promise.all([
+            db.collection("events").where("status", "==", "pending").get(),
+            db.collection("events").where("status", "==", "approved").get(),
+            db.collection("events").where("status", "==", "rejected").get()
+        ]);
+
+        return {
+            success: true,
+            stats: {
+                pending: pending.size,
+                approved: approved.size,
+                rejected: rejected.size,
+                total: pending.size + approved.size + rejected.size
+            }
+        };
+    } catch (error) {
+        console.error("Error fetching event stats:", error);
+        return { success: false, error: "Failed to fetch event statistics." };
+    }
+}

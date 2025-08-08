@@ -523,6 +523,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('post-title').textContent = 'Post not found!';
                 return;
             }
+            
+            // Show loading state
+            const postContent = document.getElementById('post-content');
+            if (postContent) {
+                postContent.innerHTML = '<div class="flex justify-center items-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div></div>';
+            }
+            
             const result = await getPostById(postId);
             if (result.success) {
                 const post = result.post;
@@ -536,10 +543,135 @@ document.addEventListener('DOMContentLoaded', async () => {
                     document.getElementById('post-image').style.display = 'none';
                 }
                 document.getElementById('post-content').innerHTML = post.content;
+                
+                // Apply theme-aware styles to the loaded content
+                applyThemeToPostContent();
+                
+                // Load comments and reactions much later (after user has seen the post content)
+                setTimeout(() => {
+                    if (typeof initializeCommentsAndReactions === 'function') {
+                        initializeCommentsAndReactions(postId);
+                    } else {
+                        console.warn('initializeCommentsAndReactions function not found');
+                    }
+                }, 2000); // 2 second delay - user can read the post content first
             } else {
                 document.getElementById('post-title').textContent = 'Error';
             }
         };
+        
+        // Function to apply theme-aware styles to post content
+        const applyThemeToPostContent = () => {
+            const postContent = document.getElementById('post-content');
+            if (!postContent) return;
+            
+            const currentTheme = localStorage.getItem('selected-theme') || 'basic-dark';
+            const isDarkTheme = currentTheme === 'basic-dark';
+            
+            // Apply theme-aware styles to all text elements in the post content
+            const textElements = postContent.querySelectorAll('h1, h2, h3, h4, h5, h6, p, li, span, div, blockquote, code, pre, strong, em, a, ul, ol');
+            
+            textElements.forEach(element => {
+                // Skip elements that already have explicit theme styles
+                if (element.style.color && element.style.color.includes('var(--')) {
+                    return;
+                }
+                
+                if (isDarkTheme) {
+                    // Apply dark theme styles
+                    element.style.color = '#f9fafb'; // Light text for dark theme
+                    
+                    // Special handling for links
+                    if (element.tagName === 'A') {
+                        element.style.color = '#60a5fa'; // Blue for links in dark theme
+                    }
+                    
+                    // Special handling for code blocks
+                    if (element.tagName === 'CODE') {
+                        element.style.backgroundColor = '#1f2937';
+                        element.style.color = '#f9fafb';
+                    }
+                    
+                    // Special handling for pre blocks
+                    if (element.tagName === 'PRE') {
+                        element.style.backgroundColor = '#1f2937';
+                        element.style.color = '#f9fafb';
+                    }
+                    
+                    // Special handling for blockquotes
+                    if (element.tagName === 'BLOCKQUOTE') {
+                        element.style.color = '#9ca3af';
+                        element.style.borderLeftColor = '#4b5563';
+                    }
+                } else {
+                    // Apply light theme styles
+                    element.style.color = '#1f2937'; // Dark text for light theme
+                    
+                    // Special handling for links
+                    if (element.tagName === 'A') {
+                        element.style.color = '#2563eb'; // Blue for links in light theme
+                    }
+                    
+                    // Special handling for code blocks
+                    if (element.tagName === 'CODE') {
+                        element.style.backgroundColor = '#f8f9fa';
+                        element.style.color = '#1f2937';
+                    }
+                    
+                    // Special handling for pre blocks
+                    if (element.tagName === 'PRE') {
+                        element.style.backgroundColor = '#f8f9fa';
+                        element.style.color = '#1f2937';
+                    }
+                    
+                    // Special handling for blockquotes
+                    if (element.tagName === 'BLOCKQUOTE') {
+                        element.style.color = '#6b7280';
+                        element.style.borderLeftColor = '#e5e7eb';
+                    }
+                }
+            });
+        };
+        
+        // Make the function globally accessible for theme changes
+        window.applyThemeToPostContent = applyThemeToPostContent;
+        
+        // Listen for theme changes
+        const themeSelect = document.getElementById('theme-select');
+        if (themeSelect) {
+            themeSelect.addEventListener('change', () => {
+                // Wait a bit for the theme to be applied, then update post content
+                setTimeout(() => {
+                    applyThemeToPostContent();
+                }, 100);
+            });
+        }
+        
+        // Set up mutation observer to handle dynamically added content
+        const postContent = document.getElementById('post-content');
+        if (postContent) {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                        // New content was added, apply theme styles
+                        setTimeout(() => {
+                            applyThemeToPostContent();
+                        }, 50);
+                    }
+                });
+            });
+            
+            observer.observe(postContent, {
+                childList: true,
+                subtree: true
+            });
+        }
+        
+        // Also apply theme styles when the page loads (in case content is already there)
+        setTimeout(() => {
+            applyThemeToPostContent();
+        }, 200);
+        
         displaySinglePost();
     }
 

@@ -23,6 +23,52 @@
             font-family: 'Inter', sans-serif;
             background-color: #f8f9fa;
         }
+        
+        /* Event Management Styles */
+        .event-tab {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .event-tab.active {
+            border-bottom-color: #3b82f6 !important;
+            color: #2563eb !important;
+        }
+        
+        .event-container {
+            min-height: 200px;
+        }
+        
+        .event-card {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Status badges */
+        .status-badge {
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+        }
+        
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-approved {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-rejected {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
     </style>
     
     <script>
@@ -239,12 +285,86 @@
                 </div>
             </div>
 
-            <!-- Pending Events Section -->
+            <!-- Event Management Section -->
             <div class="bg-white rounded-xl shadow-lg p-8">
-                <h2 class="text-2xl font-bold mb-6">Pending Events for Review</h2>
-                <div id="pending-events-container" class="space-y-4">
-                    <!-- Pending events will be dynamically loaded here -->
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Event Management</h2>
+                    <div class="flex space-x-2">
+                        <button id="refresh-events" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            Refresh
+                        </button>
+                        <a href="calendar.html" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            View Calendar
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Event Statistics -->
+                <div id="event-stats" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-yellow-800">Pending Events</h3>
+                        <p id="stats-pending-events" class="text-2xl font-bold text-yellow-600">-</p>
+                    </div>
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-green-800">Approved Events</h3>
+                        <p id="stats-approved-events" class="text-2xl font-bold text-green-600">-</p>
+                    </div>
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-red-800">Rejected Events</h3>
+                        <p id="stats-rejected-events" class="text-2xl font-bold text-red-600">-</p>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-blue-800">Total Events</h3>
+                        <p id="stats-total-events" class="text-2xl font-bold text-blue-600">-</p>
+                    </div>
+                </div>
+
+                <!-- Event Tabs -->
+                <div class="border-b border-gray-200 mb-6">
+                    <nav class="-mb-px flex space-x-8">
+                        <button id="tab-pending" class="event-tab active py-2 px-1 border-b-2 border-blue-500 font-medium text-sm text-blue-600">
+                            Pending Events
+                        </button>
+                        <button id="tab-approved" class="event-tab py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                            Approved Events
+                        </button>
+                        <button id="tab-rejected" class="event-tab py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                            Rejected Events
+                        </button>
+                        <button id="tab-upcoming" class="event-tab py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                            Upcoming Events
+                        </button>
+                        <button id="tab-past" class="event-tab py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                            Past Events
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- Event Containers -->
+                <div id="pending-events-container" class="event-container space-y-4">
                     <p class="text-gray-500">Loading pending events...</p>
+                </div>
+
+                <div id="approved-events-container" class="event-container space-y-4 hidden">
+                    <p class="text-gray-500">Loading approved events...</p>
+                </div>
+
+                <div id="rejected-events-container" class="event-container space-y-4 hidden">
+                    <p class="text-gray-500">Loading rejected events...</p>
+                </div>
+
+                <div id="upcoming-events-container" class="event-container space-y-4 hidden">
+                    <p class="text-gray-500">Loading upcoming events...</p>
+                </div>
+
+                <div id="past-events-container" class="event-container space-y-4 hidden">
+                    <p class="text-gray-500">Loading past events...</p>
                 </div>
             </div>
 
@@ -614,27 +734,287 @@
             // Load gallery statistics for admin dashboard
             async function loadGalleryStats() {
                 try {
-                    const result = await getGalleryStats();
-                    if (result.success) {
-                        const stats = result.stats;
-                        document.getElementById('stats-approved-photos').textContent = stats.approved;
-                        document.getElementById('stats-pending-photos').textContent = stats.pending;
-                        document.getElementById('stats-rejected-photos').textContent = stats.rejected;
+                    if (typeof getGalleryStats === 'function') {
+                        const stats = await getGalleryStats();
+                        if (stats.success) {
+                            document.getElementById('stats-approved-photos').textContent = stats.approved || 0;
+                            document.getElementById('stats-pending-photos').textContent = stats.pending || 0;
+                            document.getElementById('stats-rejected-photos').textContent = stats.rejected || 0;
+                        }
                     }
                 } catch (error) {
                     console.error('Error loading gallery stats:', error);
                 }
             }
-            
-            // Load stats when admin dashboard is shown
-            firebase.auth().onAuthStateChanged(async (user) => {
-                if (user) {
-                    const isAdmin = await isUserAdmin();
-                    if (isAdmin) {
-                        loadGalleryStats();
+
+            // Event Management Functions
+            let currentTab = 'pending';
+            let currentEvents = [];
+
+            // Load event statistics
+            async function loadEventStats() {
+                try {
+                    if (typeof getEventStats === 'function') {
+                        const result = await getEventStats();
+                        if (result.success) {
+                            document.getElementById('stats-pending-events').textContent = result.stats.pending || 0;
+                            document.getElementById('stats-approved-events').textContent = result.stats.approved || 0;
+                            document.getElementById('stats-rejected-events').textContent = result.stats.rejected || 0;
+                            document.getElementById('stats-total-events').textContent = result.stats.total || 0;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading event stats:', error);
+                }
+            }
+
+            // Load events by status
+            async function loadEventsByStatus(status) {
+                const container = document.getElementById(`${status}-events-container`);
+                if (!container) return;
+
+                container.innerHTML = '<p class="text-gray-500">Loading events...</p>';
+
+                try {
+                    let result;
+                    switch (status) {
+                        case 'pending':
+                        case 'approved':
+                        case 'rejected':
+                            result = await getEventsByStatus(status);
+                            break;
+                        case 'upcoming':
+                            result = await getUpcomingEvents();
+                            break;
+                        case 'past':
+                            result = await getPastEvents();
+                            break;
+                        default:
+                            result = { success: false, error: 'Invalid status' };
+                    }
+
+                    if (result.success) {
+                        currentEvents = result.events || [];
+                        renderEvents(container, currentEvents, status);
+                    } else {
+                        container.innerHTML = `<p class="text-red-500">Error: ${result.error}</p>`;
+                    }
+                } catch (error) {
+                    console.error(`Error loading ${status} events:`, error);
+                    container.innerHTML = '<p class="text-red-500">Failed to load events</p>';
+                }
+            }
+
+            // Render events in container
+            function renderEvents(container, events, status) {
+                if (!events || events.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500">No events found.</p>';
+                    return;
+                }
+
+                const eventsHTML = events.map(event => createEventCard(event, status)).join('');
+                container.innerHTML = eventsHTML;
+            }
+
+            // Create event card
+            function createEventCard(event, status) {
+                const date = new Date(event.date);
+                const formattedDate = date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                
+                const time = event.time ? ` at ${event.time}` : '';
+                const statusBadge = getStatusBadge(event.status);
+                const actionButtons = getActionButtons(event, status);
+
+                return `
+                    <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex-1">
+                                <h3 class="text-xl font-semibold text-gray-800 mb-2">${event.eventName}</h3>
+                                <div class="flex items-center space-x-4 text-sm text-gray-600">
+                                    <span class="flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                        ${formattedDate}${time}
+                                    </span>
+                                    <span class="flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        </svg>
+                                        ${event.location || 'No location'}
+                                    </span>
+                                    <span class="flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                        </svg>
+                                        ${event.eventType || 'No type'}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                ${statusBadge}
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-700 mb-4">${event.description || 'No description provided'}</p>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="text-sm text-gray-500">
+                                <span>Submitted: ${event.submittedAt ? new Date(event.submittedAt.toDate ? event.submittedAt.toDate() : event.submittedAt).toLocaleDateString() : 'Unknown'}</span>
+                            </div>
+                            <div class="flex space-x-2">
+                                ${actionButtons}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Get status badge
+            function getStatusBadge(status) {
+                const badges = {
+                    pending: '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Pending</span>',
+                    approved: '<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Approved</span>',
+                    rejected: '<span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Rejected</span>'
+                };
+                return badges[status] || badges.pending;
+            }
+
+            // Get action buttons based on status
+            function getActionButtons(event, status) {
+                let buttons = '';
+                
+                if (status === 'pending') {
+                    buttons += `
+                        <button onclick="approveEvent('${event.id}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
+                            Approve
+                        </button>
+                        <button onclick="rejectEvent('${event.id}')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
+                            Reject
+                        </button>
+                    `;
+                }
+                
+                buttons += `
+                    <button onclick="deleteEventFromAdmin('${event.id}')" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
+                        Delete
+                    </button>
+                `;
+                
+                return buttons;
+            }
+
+            // Switch tabs
+            function switchEventTab(tabName) {
+                // Update tab styles
+                document.querySelectorAll('.event-tab').forEach(tab => {
+                    tab.classList.remove('active', 'border-blue-500', 'text-blue-600');
+                    tab.classList.add('border-transparent', 'text-gray-500');
+                });
+                
+                document.getElementById(`tab-${tabName}`).classList.add('active', 'border-blue-500', 'text-blue-600');
+                document.getElementById(`tab-${tabName}`).classList.remove('border-transparent', 'text-gray-500');
+                
+                // Hide all containers
+                document.querySelectorAll('.event-container').forEach(container => {
+                    container.classList.add('hidden');
+                });
+                
+                // Show selected container
+                document.getElementById(`${tabName}-events-container`).classList.remove('hidden');
+                
+                // Load events for this tab
+                currentTab = tabName;
+                loadEventsByStatus(tabName);
+            }
+
+            // Event action functions (global scope)
+            window.approveEvent = async function(eventId) {
+                if (confirm('Are you sure you want to approve this event?')) {
+                    try {
+                        const result = await updateEventStatus(eventId, 'approved');
+                        if (result.success) {
+                            alert('Event approved successfully!');
+                            loadEventStats();
+                            loadEventsByStatus(currentTab);
+                        } else {
+                            alert('Error: ' + result.error);
+                        }
+                    } catch (error) {
+                        console.error('Error approving event:', error);
+                        alert('Failed to approve event');
                     }
                 }
-            });
+            };
+
+            window.rejectEvent = async function(eventId) {
+                if (confirm('Are you sure you want to reject this event?')) {
+                    try {
+                        const result = await updateEventStatus(eventId, 'rejected');
+                        if (result.success) {
+                            alert('Event rejected successfully!');
+                            loadEventStats();
+                            loadEventsByStatus(currentTab);
+                        } else {
+                            alert('Error: ' + result.error);
+                        }
+                    } catch (error) {
+                        console.error('Error rejecting event:', error);
+                        alert('Failed to reject event');
+                    }
+                }
+            };
+
+            window.deleteEventFromAdmin = async function(eventId) {
+                if (confirm('Are you sure you want to delete this event? This action cannot be undone.')) {
+                    try {
+                        if (typeof deleteEvent === 'function') {
+                            const result = await deleteEvent(eventId);
+                            if (result.success) {
+                                alert('Event deleted successfully!');
+                                loadEventStats();
+                                loadEventsByStatus(currentTab);
+                            } else {
+                                alert('Error: ' + result.error);
+                            }
+                        } else {
+                            alert('Delete function not available');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting event:', error);
+                        alert('Failed to delete event');
+                    }
+                }
+            };
+
+            // Initialize event management
+            function initializeEventManagement() {
+                // Add tab event listeners
+                document.getElementById('tab-pending').addEventListener('click', () => switchEventTab('pending'));
+                document.getElementById('tab-approved').addEventListener('click', () => switchEventTab('approved'));
+                document.getElementById('tab-rejected').addEventListener('click', () => switchEventTab('rejected'));
+                document.getElementById('tab-upcoming').addEventListener('click', () => switchEventTab('upcoming'));
+                document.getElementById('tab-past').addEventListener('click', () => switchEventTab('past'));
+
+                // Add refresh button listener
+                document.getElementById('refresh-events').addEventListener('click', () => {
+                    loadEventStats();
+                    loadEventsByStatus(currentTab);
+                });
+
+                // Load initial data
+                loadEventStats();
+                loadEventsByStatus('pending');
+            }
+
+            // Initialize everything
+            loadGalleryStats();
+            initializeEventManagement();
         }
     </script>
     

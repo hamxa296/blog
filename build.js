@@ -29,7 +29,8 @@ const filesToCombine = [
 
 // Minification function (basic)
 function minifyJS(code) {
-    // For now, just return the code as-is to avoid template literal issues
+    // Temporarily disable minification to avoid template literal issues
+    // This will be re-enabled once we fix the template literal processing
     return code;
 }
 
