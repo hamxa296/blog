@@ -78,11 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const outlookLink = `https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&subject=${encodeURIComponent(event.name)}&startdt=${formatDateForOutlook(event.date, event.time)}&enddt=${formatDateForOutlook(event.date, event.time, 60)}&body=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}`;
         outlookCalendarLink.href = outlookLink;
 
-        // Apple Calendar (.ics) link
-        const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${formatUTCDateWithTime(event.date, event.time)}\nDTEND:${formatUTCDateWithTime(event.date, event.time, 60)}\nSUMMARY:${event.name}\nDESCRIPTION:${event.description}\nLOCATION:${event.location || ''}\nEND:VEVENT\nEND:VCALENDAR`;
-        const appleLink = `data:text/calendar;charset=utf8,${encodeURIComponent(icsContent)}`;
-        appleCalendarLink.href = appleLink;
-        appleCalendarLink.download = `${event.name}.ics`;
+        // Apple Calendar (.ics) link - Store the event data for download
+        currentEvent = event; // Store for Apple Calendar download
     }
 
     if (googleCalendarLink) {
@@ -101,7 +98,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (appleCalendarLink) {
         appleCalendarLink.addEventListener('click', () => {
-            if (currentEvent) generateCalendarLinks(currentEvent);
+            if (currentEvent) {
+                downloadAppleCalendarFile(currentEvent);
+            }
             hideAddToCalendarModal();
         });
     }
@@ -170,9 +169,82 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function formatUTCDateWithTime(dateString, timeString, addMinutes = 0) {
         const [year, month, day] = dateString.split('-').map(Number);
-        const [hours, minutes] = timeString.split(':').map(Number);
-        const date = new Date(year, month - 1, day, hours, minutes + addMinutes, 0, 0);
-        return date.toISOString().replace(/-|:|\.\d+/g, "");
+        let date;
+        
+        if (timeString) {
+            const [hours, minutes] = timeString.split(':').map(Number);
+            // Create date in local timezone
+            date = new Date(year, month - 1, day, hours, minutes + addMinutes, 0, 0);
+        } else {
+            // If no time specified, default to 9 AM
+            date = new Date(year, month - 1, day, 9 + addMinutes, 0, 0, 0);
+        }
+        
+        // Format as required by iCalendar (UTC time)
+        const utcDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+        return utcDate.toISOString().replace(/-|:|\.\d+/g, "");
+    }
+
+    function downloadAppleCalendarFile(event) {
+        try {
+            // Validate event data
+            if (!event || !event.name || !event.date) {
+                throw new Error('Invalid event data');
+            }
+            
+            // Generate proper iCalendar content
+            const startDate = formatUTCDateWithTime(event.date, event.time);
+            const endDate = formatUTCDateWithTime(event.date, event.time, 60);
+            
+            // Escape special characters in description and location
+            const escapedDescription = (event.description || '').replace(/\n/g, '\\n').replace(/;/g, '\\;').replace(/,/g, '\\,');
+            const escapedLocation = (event.location || '').replace(/;/g, '\\;').replace(/,/g, '\\,');
+            const escapedName = event.name.replace(/;/g, '\\;').replace(/,/g, '\\,');
+            
+            // Generate unique UID for the event
+            const uid = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}@gikichronicles.com`;
+            
+            const icsContent = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//GIKI Chronicles//Calendar Event//EN',
+                'CALSCALE:GREGORIAN',
+                'METHOD:PUBLISH',
+                'BEGIN:VEVENT',
+                `UID:${uid}`,
+                `DTSTAMP:${new Date().toISOString().replace(/-|:|\.\d+/g, '')}`,
+                `DTSTART:${startDate}`,
+                `DTEND:${endDate}`,
+                `SUMMARY:${escapedName}`,
+                `DESCRIPTION:${escapedDescription}`,
+                `LOCATION:${escapedLocation}`,
+                'STATUS:CONFIRMED',
+                'SEQUENCE:0',
+                'END:VEVENT',
+                'END:VCALENDAR'
+            ].join('\r\n');
+            
+            // Create blob and download
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            
+            // Create temporary link and trigger download
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${event.name.replace(/[^a-z0-9]/gi, '_')}.ics`;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Clean up
+            window.URL.revokeObjectURL(url);
+            
+            showNotification('Success', 'Calendar file downloaded successfully', 'success');
+        } catch (error) {
+            console.error('Error downloading Apple Calendar file:', error);
+            showNotification('Error', 'Failed to download calendar file. Please try again.', 'error');
+        }
     }
 
     function formatEventDateTime(dateString, timeString = null) {
@@ -517,6 +589,50 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Sidebar navigation event listeners for mobile
+    const sidebarNavCal = document.getElementById('sidebar-nav-cal');
+    const sidebarNavEvents = document.getElementById('sidebar-nav-events');
+    const sidebarNavSubmit = document.getElementById('sidebar-nav-submit');
+
+    if (sidebarNavCal) {
+        sidebarNavCal.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('home');
+            // Close sidebar on mobile
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            if (sidebar) sidebar.classList.remove('translate-x-0');
+            if (sidebar) sidebar.classList.add('-translate-x-full');
+            if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
+        });
+    }
+
+    if (sidebarNavEvents) {
+        sidebarNavEvents.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('events');
+            // Close sidebar on mobile
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            if (sidebar) sidebar.classList.remove('translate-x-0');
+            if (sidebar) sidebar.classList.add('-translate-x-full');
+            if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
+        });
+    }
+
+    if (sidebarNavSubmit) {
+        sidebarNavSubmit.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('submit');
+            // Close sidebar on mobile
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            if (sidebar) sidebar.classList.remove('translate-x-0');
+            if (sidebar) sidebar.classList.add('-translate-x-full');
+            if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
+        });
+    }
+
     if (eventForm) {
         eventForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -548,13 +664,59 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Sidebar toggle functionality
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebarClose = document.getElementById('sidebar-close');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.remove('-translate-x-full');
+            sidebar.classList.add('translate-x-0');
+            if (sidebarOverlay) sidebarOverlay.classList.remove('hidden');
+        });
+    }
+
+    if (sidebarClose && sidebar) {
+        sidebarClose.addEventListener('click', () => {
+            sidebar.classList.remove('translate-x-0');
+            sidebar.classList.add('-translate-x-full');
+            if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
+        });
+    }
+
+    if (sidebarOverlay && sidebar) {
+        sidebarOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('translate-x-0');
+            sidebar.classList.add('-translate-x-full');
+            sidebarOverlay.classList.add('hidden');
+        });
+    }
+
+    // Handle URL hash navigation from homepage dropdown
+    function handleHashNavigation() {
+        const hash = window.location.hash.substring(1); // Remove the #
+        if (hash === 'events') {
+            showPage('events');
+        } else if (hash === 'submit') {
+            showPage('submit');
+        } else {
+            showPage('home');
+        }
+    }
+
     // Initial render - only if we're on the calendar page
     if (calendarView && submitEventView && eventsView) {
-        showPage('home');
+        // Check for hash navigation first
+        handleHashNavigation();
         loadEventsAndRender();
         
         // Apply theme on page load to ensure consistency
         applyThemeToCalendar();
+        
+        // Listen for hash changes
+        window.addEventListener('hashchange', handleHashNavigation);
     }
 
     // Theme management is handled by theme-manager.js
@@ -817,4 +979,159 @@ async function getEventStats() {
         console.error("Error fetching event stats:", error);
         return { success: false, error: "Failed to fetch event statistics." };
     }
+}
+
+// --- Authentication State Management ---
+
+/**
+ * Updates the sidebar navigation based on authentication state
+ */
+function updateSidebarAuth(user) {
+    const sidebarGuestNav = document.getElementById('sidebar-guest-nav');
+    const sidebarUserNav = document.getElementById('sidebar-user-nav');
+    const authButtons = document.getElementById('auth-buttons');
+    const sidebarLogoutButton = document.getElementById('sidebar-logout-button');
+    const sidebarAdminAccessBtn = document.getElementById('sidebar-admin-access-btn');
+
+    if (user) {
+        // User is logged in
+        console.log("Updating sidebar for logged in user:", user.email);
+        
+        // Update main header auth buttons
+        if (authButtons) {
+            authButtons.innerHTML = `
+                <button id="logout-button" class="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition duration-300">
+                    Sign Out
+                </button>
+            `;
+            
+                    // Add logout functionality to main header
+        const logoutButton = document.getElementById('logout-button');
+        if (logoutButton) {
+            // Remove existing event listeners to prevent duplication
+            const newLogoutButton = logoutButton.cloneNode(true);
+            logoutButton.parentNode.replaceChild(newLogoutButton, logoutButton);
+            
+            newLogoutButton.addEventListener('click', async () => {
+                try {
+                    await logoutUser();
+                    showNotification('Success', 'Logged out successfully', 'success');
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    showNotification('Error', 'Failed to logout', 'error');
+                }
+            });
+        }
+        }
+
+        // Update sidebar navigation
+        if (sidebarGuestNav) {
+            sidebarGuestNav.classList.add('hidden');
+        }
+        if (sidebarUserNav) {
+            sidebarUserNav.classList.remove('hidden');
+        }
+
+        // Add logout functionality to sidebar
+        if (sidebarLogoutButton) {
+            // Remove existing event listeners to prevent duplication
+            const newSidebarLogoutButton = sidebarLogoutButton.cloneNode(true);
+            sidebarLogoutButton.parentNode.replaceChild(newSidebarLogoutButton, sidebarLogoutButton);
+            
+            newSidebarLogoutButton.addEventListener('click', async () => {
+                try {
+                    await logoutUser();
+                    showNotification('Success', 'Logged out successfully', 'success');
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    showNotification('Error', 'Failed to logout', 'error');
+                }
+            });
+        }
+
+        // Check if user is admin and show admin access button
+        if (sidebarAdminAccessBtn) {
+            isUserAdmin().then(isAdmin => {
+                if (isAdmin) {
+                    sidebarAdminAccessBtn.classList.remove('hidden');
+                    // Remove existing event listeners to prevent duplication
+                    const newAdminAccessBtn = sidebarAdminAccessBtn.cloneNode(true);
+                    sidebarAdminAccessBtn.parentNode.replaceChild(newAdminAccessBtn, sidebarAdminAccessBtn);
+                    
+                    newAdminAccessBtn.addEventListener('click', () => {
+                        window.location.href = 'admin-access.html';
+                    });
+                } else {
+                    sidebarAdminAccessBtn.classList.add('hidden');
+                }
+            }).catch(error => {
+                console.error('Error checking admin status:', error);
+                sidebarAdminAccessBtn.classList.add('hidden');
+            });
+        }
+
+    } else {
+        // User is not logged in
+        console.log("Updating sidebar for guest user");
+        
+        // Update main header auth buttons
+        if (authButtons) {
+            authButtons.innerHTML = `
+                <a href="login.html" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">
+                    Sign In
+                </a>
+            `;
+        }
+
+        // Update sidebar navigation
+        if (sidebarGuestNav) {
+            sidebarGuestNav.classList.remove('hidden');
+        }
+        if (sidebarUserNav) {
+            sidebarUserNav.classList.add('hidden');
+        }
+
+        // Hide admin access button
+        if (sidebarAdminAccessBtn) {
+            sidebarAdminAccessBtn.classList.add('hidden');
+        }
+    }
+}
+
+/**
+ * Initialize authentication state listener
+ */
+function initializeAuthStateListener() {
+    // Listen for auth state changes
+    auth.onAuthStateChanged(async (user) => {
+        console.log("Calendar page auth state changed:", user ? user.email : "No user");
+        updateSidebarAuth(user);
+    });
+
+    // Also listen for the custom auth state changed event from firebase-init.js
+    window.addEventListener('authStateChanged', (event) => {
+        console.log("Calendar page received authStateChanged event:", event.detail);
+        updateSidebarAuth(event.detail.user);
+    });
+
+    // Initial update based on current auth state
+    updateSidebarAuth(auth.currentUser);
+}
+
+// Initialize auth state listener when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Wait a bit for Firebase to initialize
+    setTimeout(() => {
+        initializeAuthStateListener();
+    }, 100);
+});
+
+// Also initialize immediately if DOM is already loaded
+if (document.readyState === 'loading') {
+    // DOM is still loading, wait for DOMContentLoaded
+} else {
+    // DOM is already loaded, initialize immediately
+    setTimeout(() => {
+        initializeAuthStateListener();
+    }, 100);
 }

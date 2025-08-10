@@ -43,6 +43,27 @@ body {
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
+    max-width: 100vw;
+}
+
+/* Global overflow prevention */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+main {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+.container {
+    overflow-x: hidden;
+    max-width: 100%;
 }
 
 /* Header */
@@ -186,6 +207,8 @@ body {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     margin: 0 auto;
     min-height: 500px;
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
 .calendar-container:hover {
@@ -235,6 +258,8 @@ body {
     gap: 0.75rem;
     text-align: center;
     min-height: 400px;
+    width: 100%;
+    overflow: hidden;
 }
 
 .day-of-week {
@@ -244,6 +269,10 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 50px;
+    overflow: hidden;
+    word-wrap: break-word;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .day {
@@ -259,6 +288,10 @@ body {
     justify-content: center;
     min-height: 50px;
     user-select: none;
+    overflow: hidden;
+    word-wrap: break-word;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .day:hover:not(.selected):not(.other-month) {
@@ -905,7 +938,8 @@ body {
 /* Responsive Styles */
 @media (max-width: 768px) {
     body {
-        padding: 1rem;
+        padding: 0.5rem;
+        overflow-x: hidden;
     }
 
     .header {
@@ -930,7 +964,7 @@ body {
     }
 
     .hero-title {
-        font-size: 2.5rem;
+        font-size: 2rem;
     }
 
     .hero-subtitle {
@@ -938,43 +972,70 @@ body {
     }
 
     .calendar-container {
-        padding: 1.5rem;
+        padding: 1rem;
+        max-width: 100%;
+        margin: 0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-sizing: border-box;
     }
 
     .calendar-header {
         flex-direction: column;
         gap: 1rem;
+        margin-bottom: 1.5rem;
     }
 
     .month-year {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
+    }
+
+    .nav-arrow {
+        width: 2rem;
+        height: 2rem;
+        font-size: 1.25rem;
     }
 
     .calendar-grid {
-        gap: 0.5rem;
+        gap: 0.25rem;
+        min-height: 300px;
+        overflow: hidden;
+        width: 100%;
+        max-width: 100%;
     }
 
     .day {
-        min-height: 40px;
-        padding: 0.5rem 0.25rem;
+        min-height: 35px;
+        padding: 0.25rem 0.125rem;
+        font-size: 0.875rem;
+        overflow: hidden;
+        word-wrap: break-word;
+        max-width: 100%;
+    }
+
+    .day-of-week {
+        min-height: 35px;
+        font-size: 0.875rem;
     }
 
     .event-dot {
-        bottom: 3px;
-        width: 4px;
-        height: 4px;
+        bottom: 2px;
+        width: 3px;
+        height: 3px;
     }
 
     .popup-content {
-        padding: 1.5rem;
+        padding: 1rem;
+        margin: 1rem;
+        max-width: calc(100vw - 2rem);
     }
 
     .popup-title {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
     }
 
     .popup-description {
-        font-size: 0.9rem;
+        font-size: 0.875rem;
     }
 
     .events-container {
@@ -984,4 +1045,60 @@ body {
     .map-image {
         max-width: 100%;
     }
+}
+
+/* Additional overflow prevention for calendar */
+@media (max-width: 480px) {
+    .calendar-container {
+        padding: 0.5rem;
+        margin: 0;
+        border-radius: 6px;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+    
+    .calendar-grid {
+        gap: 0.125rem;
+        min-height: 250px;
+        overflow: hidden;
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .day {
+        min-height: 30px;
+        padding: 0.125rem;
+        font-size: 0.75rem;
+        overflow: hidden;
+        word-wrap: break-word;
+        max-width: 100%;
+    }
+    
+    .day-of-week {
+        min-height: 30px;
+        font-size: 0.75rem;
+        overflow: hidden;
+        word-wrap: break-word;
+        max-width: 100%;
+    }
+    
+    .month-year {
+        font-size: 1rem;
+    }
+    
+    .nav-arrow {
+        width: 1.75rem;
+        height: 1.75rem;
+        font-size: 1rem;
+    }
+}
+
+/* Force prevent horizontal overflow */
+.calendar-page {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+}
+
+.calendar-page * {
+    max-width: 100% !important;
 }

@@ -220,6 +220,61 @@ header {
     border-color: var(--border-color) !important;
 }
 
+/* Enhanced theme dropdown styling for better readability */
+.theme-basic-dark #theme-select {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+    font-weight: 500 !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+}
+
+.theme-basic-dark #theme-select option {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    font-weight: 500 !important;
+    padding: 0.5rem !important;
+}
+
+.theme-basic-dark #theme-select:focus {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1) !important;
+    outline: none !important;
+}
+
+/* Theme dropdown label styling */
+.theme-basic-dark label[for="theme-select"] {
+    color: var(--text-color) !important;
+    font-weight: 600 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Theme card styling for browse page */
+.theme-card {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+}
+
+.theme-basic-dark .theme-card {
+    background: linear-gradient(135deg, rgba(45, 47, 46, 0.95), rgba(58, 60, 59, 0.95)) !important;
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
+    border: 1px solid rgba(58, 60, 59, 0.2) !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+.theme-basic-light .theme-card {
+    background: linear-gradient(135deg, rgba(248, 246, 241, 0.95), rgba(240, 238, 233, 0.95)) !important;
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
+    border: 1px solid rgba(212, 210, 205, 0.2) !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
 .theme-basic-dark .focus\:ring-blue-500:focus {
     --tw-ring-color: var(--primary-color) !important;
 }
@@ -429,4 +484,66 @@ header {
     #sidebar-admin-access-btn {
         display: none !important;
     }
+}
+
+/* Additional calendar responsive fixes */
+@media (max-width: 480px) {
+    .calendar-container {
+        padding: 0.75rem;
+        margin: 0;
+        border-radius: 6px;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+    
+    .calendar-grid {
+        gap: 0.125rem;
+        min-height: 250px;
+        overflow: hidden;
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .day {
+        min-height: 30px;
+        padding: 0.125rem;
+        font-size: 0.75rem;
+        overflow: hidden;
+        word-wrap: break-word;
+        max-width: 100%;
+    }
+    
+    .day-of-week {
+        min-height: 30px;
+        font-size: 0.75rem;
+        overflow: hidden;
+        word-wrap: break-word;
+        max-width: 100%;
+    }
+    
+    .month-year {
+        font-size: 1rem;
+    }
+    
+    .nav-arrow {
+        width: 1.75rem;
+        height: 1.75rem;
+        font-size: 1rem;
+    }
+}
+
+/* Prevent horizontal overflow on all screen sizes */
+body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+main {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+.container {
+    overflow-x: hidden;
+    max-width: 100%;
 }

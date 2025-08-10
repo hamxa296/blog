@@ -22,12 +22,12 @@
   </style>
 </head>
 
-<body class="text-gray-800">
+<body class="text-gray-800 calendar-page">
   <!-- Header -->
   <header class="bg-white shadow-sm sticky top-0 z-50">
-    <nav class="container mx-auto px-6 py-4 flex items-center">
+    <nav class="container mx-auto px-4 py-4 flex items-center">
       <div class="flex items-center space-x-4">
-        <button id="sidebar-toggle" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+        <button id="sidebar-toggle" class="md:hidden text-gray-600 hover:text-blue-600 focus:outline-none">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
           </svg>
@@ -118,6 +118,37 @@
           </div>
         </div>
 
+        <!-- Calendar Navigation -->
+        <div>
+          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Calendar</h3>
+          <div class="space-y-2">
+            <a href="#" id="sidebar-nav-cal"
+              class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              </svg>
+              Calendar View
+            </a>
+            <a href="#" id="sidebar-nav-events"
+              class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
+                </path>
+              </svg>
+              View Events
+            </a>
+            <a href="#" id="sidebar-nav-submit"
+              class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+              </svg>
+              Submit Event
+            </a>
+          </div>
+        </div>
+
         <!-- Resources -->
         <div>
           <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Resources</h3>
@@ -195,7 +226,7 @@
               Write Post
             </a>
             <button id="sidebar-admin-access-btn"
-              class="hidden w-full flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+              class="hidden md:flex w-full items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
@@ -221,11 +252,11 @@
   <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
 
   <main class="min-h-screen bg-gray-50">
-    <div class="container mx-auto px-4 py-12">
+    <div class="container mx-auto px-4 py-8 md:py-12">
       <div id="calendar-view">
-        <div class="text-center mb-12">
-          <h1 class="text-4xl font-bold text-gray-800 mb-4">GIKI Calendar</h1>
-          <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        <div class="text-center mb-8 md:mb-12">
+          <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">GIKI Calendar</h1>
+          <p class="text-base md:text-lg text-gray-600 max-w-2xl mx-auto px-4">
             Discover what's happening at the university. Your hub for all club and society events.
           </p>
         </div>
@@ -387,7 +418,6 @@
   <script src="auth.js"></script>
   <script src="secure-access.js"></script>
 
-  <script src="script.js"></script>
   <script src="calendar.js"></script>
 </body>
 

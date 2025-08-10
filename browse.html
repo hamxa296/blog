@@ -22,165 +22,276 @@
 <body class="text-gray-800">
     <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
-            <a href="index.html" class="flex flex-col items-center">
-                <img src="logo.png" alt="GIKI Chronicles Logo" class="h-16 w-auto">
-                <span class="text-lg font-bold text-gray-800 mt-1">GIKI Chronicles</span>
-              </a>
-            <div class="flex items-center space-x-6">
-                <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a>
-                <a href="posts.html" class="text-gray-600 hover:text-blue-600 transition duration-300">All Posts</a>
-                <a href="calendar.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Calendar</a>
-                <a href="gallery.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Gallery</a>
-                <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a>
+        <nav class="container mx-auto px-6 py-4 flex items-center">
+            <!-- Left side: Hamburger + Logo -->
+            <div class="flex items-center space-x-4">
+                <!-- Hamburger Menu Button -->
+                <button id="sidebar-toggle" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+
+                <a href="index.html" class="flex flex-col items-center">
+                    <img src="logo.png" alt="GIKI Chronicles Logo" class="h-16 w-auto">
+                    <span class="text-lg font-bold text-gray-800 mt-1">GIKI Chronicles</span>
+                </a>
+            </div>
+
+            <!-- Right side: Navigation -->
+            <div class="hidden md:flex items-center space-x-6 ml-auto">
                 <a href="about.html" class="text-gray-600 hover:text-blue-600 transition duration-300">About</a>
-                <div id="auth-buttons">
-                    <a href="login.html" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">Sign In</a>
+                <a href="gallery.html"
+                    class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+                    <span class="relative z-10">Gallery</span>
+                </a>
+
+                <a href="guide.html"
+                    class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+                    <span class="relative z-10">Freshmen Guide</span>
+                </a>
+
+                <!-- Calendar Dropdown -->
+                <div class="relative group">
+                    <button class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full flex items-center">
+                        <span class="relative z-10">Calendar</span>
+                        <svg class="relative z-10 w-4 h-4 ml-2 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <!-- Dropdown Menu -->
+                    <div class="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <div class="py-2">
+                            <a href="calendar.html" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition duration-200 flex items-center">
+                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                Calendar View
+                            </a>
+                            <a href="calendar.html#events" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition duration-200 flex items-center">
+                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                                </svg>
+                                View Events
+                            </a>
+                            <a href="calendar.html#submit" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition duration-200 flex items-center">
+                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                Submit Event
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- GUEST NAVIGATION (DESKTOP) -->
+                <div id="guest-nav" class="flex items-center space-x-6">
+                    <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
+                </div>
+
+                <!-- USER NAVIGATION (DESKTOP) -->
+                <div id="user-nav" class="hidden md:flex items-center space-x-6">
                 </div>
             </div>
         </nav>
     </header>
 
     <!-- Sidebar -->
-    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out">
-      <div class="flex items-center justify-between p-6 border-b">
-        <h2 class="text-xl font-bold text-gray-800">Menu</h2>
-        <button id="sidebar-close" class="text-gray-600 hover:text-blue-600 focus:outline-none">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
-      </div>
-      
-      <nav class="p-6">
-        <div class="space-y-4">
-          <!-- Main Navigation -->
-          <div>
-            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Main</h3>
-            <div class="space-y-2">
-              <a href="index.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+    <div id="sidebar"
+        class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+        <div class="flex items-center justify-between p-6 border-b">
+            <h2 class="text-xl font-bold text-gray-800">Menu</h2>
+            <button id="sidebar-close" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
-                Home
-              </a>
-              <a href="browse.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
-                </svg>
-                All Posts
-              </a>
-              <a href="about.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                About
-              </a>
-              <a href="contact.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
-                Contact
-              </a>
-              <a href="gallery.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                </svg>
-                Gallery
-              </a>
-            </div>
-          </div>
-
-          <!-- Resources -->
-          <div>
-            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Resources</h3>
-            <div class="space-y-2">
-              <a href="guide.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                </svg>
-                Freshman Guide
-              </a>
-              <a href="calendar.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                </svg>
-                Calendar
-              </a>
-            </div>
-          </div>
-
-          <!-- Theme Settings -->
-          <div>
-            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Theme</h3>
-            <div class="space-y-2">
-              <div class="px-3 py-2">
-                <label for="theme-select" class="block text-sm font-medium text-gray-700 mb-2">Choose Theme</label>
-                <select id="theme-select" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-700">
-                  <option value="basic-light">Basic Light</option>
-                  <option value="basic-dark">Basic Dark</option>
-                  <option value="giki">GIKI Palette</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- User Section -->
-          <div id="sidebar-guest-nav">
-            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Account</h3>
-            <div class="space-y-2">
-              <a href="login.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                </svg>
-                Login
-              </a>
-            </div>
-          </div>
-
-          <div id="sidebar-user-nav" class="hidden">
-            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">My Account</h3>
-            <div class="space-y-2">
-              <a href="profile.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                </svg>
-                My Profile
-              </a>
-              <a href="write.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                </svg>
-                Write Post
-              </a>
-              <button id="sidebar-admin-access-btn" class="hidden w-full flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                </svg>
-                🔐 Admin Portal
-              </button>
-              <button id="sidebar-logout-button" class="w-full flex items-center px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition duration-200">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                </svg>
-                Logout
-              </button>
-            </div>
-          </div>
+            </button>
         </div>
-      </nav>
+
+        <nav class="p-6 flex-1 overflow-y-auto">
+            <div class="space-y-4">
+                <!-- Main Navigation -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Main</h3>
+                    <div class="space-y-2">
+                        <a href="index.html"
+                            class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                                </path>
+                            </svg>
+                            Home
+                        </a>
+                        <a href="browse.html"
+                            class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
+                                </path>
+                            </svg>
+                            All Posts
+                        </a>
+                        <a href="about.html"
+                            class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            About
+                        </a>
+                        <a href="contact.html"
+                            class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            Contact
+                        </a>
+                        <a href="gallery.html"
+                            class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            Gallery
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Resources -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Resources</h3>
+                    <div class="space-y-2">
+                        <a href="guide.html"
+                            class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                </path>
+                            </svg>
+                            Freshman Guide
+                        </a>
+                        <!-- Calendar Dropdown for Mobile -->
+                        <div class="relative">
+                            <button id="sidebar-calendar-dropdown-toggle" class="w-full flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                Calendar
+                                <svg class="w-4 h-4 ml-auto transition-transform duration-200" id="sidebar-calendar-dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            
+                            <!-- Mobile Calendar Dropdown Menu -->
+                            <div id="sidebar-calendar-dropdown" class="hidden pl-8 mt-2 space-y-1">
+                                <a href="calendar.html" class="block px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200 flex items-center">
+                                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    Calendar View
+                                </a>
+                                <a href="calendar.html#events" class="block px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200 flex items-center">
+                                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                                    </svg>
+                                    View Events
+                                </a>
+                                <a href="calendar.html#submit" class="block px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200 flex items-center">
+                                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                    Submit Event
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme Settings -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Theme</h3>
+                    <div class="space-y-2">
+                        <div class="px-3 py-2">
+                            <label for="theme-select" class="block text-sm font-medium text-gray-700 mb-2">Choose Theme</label>
+                            <select id="theme-select"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-700">
+                                <option value="basic-dark">Basic Dark</option>
+                                <option value="basic-light">Basic Light</option>
+                                <option value="giki">GIKI Palette</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Section -->
+                <div id="sidebar-guest-nav">
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Account</h3>
+                    <div class="space-y-2">
+                        <a href="login.html"
+                            class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1">
+                                </path>
+                            </svg>
+                            Login
+                        </a>
+                    </div>
+                </div>
+
+                <div id="sidebar-user-nav" class="hidden">
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">My Account</h3>
+                    <div class="space-y-2">
+                        <a href="profile.html"
+                            class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            My Profile
+                        </a>
+                        <a href="write.html"
+                            class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                </path>
+                            </svg>
+                            Write Post
+                        </a>
+                        <button id="sidebar-admin-access-btn"
+                            class="hidden w-full flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                                </path>
+                            </svg>
+                            🔐 Admin Portal
+                        </button>
+                        <button id="sidebar-logout-button"
+                            class="w-full flex items-center px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition duration-200">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                                </path>
+                            </svg>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
     </div>
 
-    <!-- Mobile menu button -->
-    <button id="mobile-menu-btn" class="fixed top-4 left-4 z-50 lg:hidden bg-white p-2 rounded-lg shadow-lg">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-    </button>
+    <!-- Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
 
-    <main class="min-h-screen bg-gray-50 lg:ml-64">
-        <!-- Sidebar Overlay -->
-        <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+    <main class="min-h-screen lg:ml-64">
         <div class="px-4 py-12 lg:px-8">
             <!-- Page Header -->
             <div class="text-center mb-12">
@@ -191,13 +302,14 @@
             </div>
 
             <!-- Filters and Sorting -->
-            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 mb-8 theme-card">
                 <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                     <div class="flex flex-col sm:flex-row gap-4">
                         <div>
                             <label for="genre-filter" class="block text-sm font-medium text-gray-700 mb-2">Genre</label>
                             <select id="genre-filter" class="w-full sm:w-48 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                 <option value="">All Genres</option>
+                                <option value="featured">⭐ Featured Posts</option>
                                 <option value="General">General</option>
                                 <option value="Engineering">Engineering</option>
                                 <option value="Campus Life">Campus Life</option>
@@ -227,7 +339,7 @@
                 <!-- Loading skeleton -->
                 <div class="animate-pulse">
                     <div class="bg-gray-300 h-48 rounded-t-xl"></div>
-                    <div class="bg-white p-6 rounded-b-xl">
+                    <div class="bg-white/80 backdrop-blur-sm p-6 rounded-b-xl theme-card">
                         <div class="bg-gray-300 h-4 w-1/4 mb-2 rounded"></div>
                         <div class="bg-gray-300 h-6 w-3/4 mb-3 rounded"></div>
                         <div class="bg-gray-300 h-4 w-full mb-2 rounded"></div>
@@ -236,7 +348,7 @@
                 </div>
                 <div class="animate-pulse">
                     <div class="bg-gray-300 h-48 rounded-t-xl"></div>
-                    <div class="bg-white p-6 rounded-b-xl">
+                    <div class="bg-white/80 backdrop-blur-sm p-6 rounded-b-xl">
                         <div class="bg-gray-300 h-4 w-1/4 mb-2 rounded"></div>
                         <div class="bg-gray-300 h-6 w-3/4 mb-3 rounded"></div>
                         <div class="bg-gray-300 h-4 w-full mb-2 rounded"></div>
@@ -245,7 +357,7 @@
                 </div>
                 <div class="animate-pulse">
                     <div class="bg-gray-300 h-48 rounded-t-xl"></div>
-                    <div class="bg-white p-6 rounded-b-xl">
+                    <div class="bg-white/80 backdrop-blur-sm p-6 rounded-b-xl">
                         <div class="bg-gray-300 h-4 w-1/4 mb-2 rounded"></div>
                         <div class="bg-gray-300 h-6 w-3/4 mb-3 rounded"></div>
                         <div class="bg-gray-300 h-4 w-full mb-2 rounded"></div>
@@ -285,23 +397,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Mobile menu functionality
-            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-            const sidebar = document.getElementById('sidebar');
-            const closeSidebar = document.getElementById('sidebar-close');
-
-            if (mobileMenuBtn && sidebar) {
-                mobileMenuBtn.addEventListener('click', () => {
-                    sidebar.classList.remove('-translate-x-full');
-                });
-            }
-
-            if (closeSidebar && sidebar) {
-                closeSidebar.addEventListener('click', () => {
-                    sidebar.classList.add('-translate-x-full');
-                });
-            }
-
             // Browse functionality
             const genreFilter = document.getElementById('genre-filter');
             const sortOrder = document.getElementById('sort-order');
@@ -317,7 +412,7 @@
             const loadAllPosts = async () => {
                 const result = await getApprovedPosts();
                 if (result.success) {
-                    allPosts = result.posts.filter(post => !post.isFeatured); // Exclude featured posts
+                    allPosts = result.posts; // Include all posts including featured
                     filteredPosts = [...allPosts];
                     renderPosts();
                 } else {
@@ -340,10 +435,11 @@
 
                 filteredPosts.forEach(post => {
                     const postCard = document.createElement('div');
-                    postCard.className = 'bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300';
+                    postCard.className = 'bg-white/80 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 theme-card';
                     
                     const postDate = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : 'N/A';
-                    const genreBadge = post.genre ? `<span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mb-2">${post.genre}</span>` : '';
+                    const genreBadge = post.genre ? `<span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full whitespace-nowrap overflow-hidden text-ellipsis max-w-20">${post.genre}</span>` : '';
+                    const featuredBadge = post.isFeatured ? `<span class="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full whitespace-nowrap">⭐ Featured</span>` : '';
                     
                     postCard.innerHTML = `
                         <a href="post.html?id=${post.id}">
@@ -352,7 +448,10 @@
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-2">
                                 <p class="text-sm text-gray-500">${postDate} • by <a href="profile.html?user=${post.authorId}" class="text-blue-600 hover:text-blue-800 font-medium">${post.authorName}</a></p>
-                                ${genreBadge}
+                                <div class="flex gap-1 flex-shrink-0">
+                                    ${featuredBadge}
+                                    ${genreBadge}
+                                </div>
                             </div>
                             <h4 class="text-xl font-semibold mb-3">${post.title}</h4>
                             <p class="text-gray-600 text-sm mb-4">${post.description || ''}</p>
@@ -368,9 +467,10 @@
                 const selectedGenre = genreFilter.value;
                 const selectedSort = sortOrder.value;
 
-                // Filter by genre
+                // Filter by genre or featured status
                 filteredPosts = allPosts.filter(post => {
                     if (!selectedGenre) return true;
+                    if (selectedGenre === 'featured') return post.isFeatured;
                     return post.genre === selectedGenre;
                 });
 
