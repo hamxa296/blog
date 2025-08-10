@@ -47,27 +47,32 @@
 
     <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-4 flex items-center">
-            <div class="flex items-center space-x-4">
-                <button id="sidebar-toggle" class="text-gray-600 hover:text-blue-600 focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                    </svg>
-                </button>
-                        <a href="index.html" class="flex flex-col items-center">
-          <img src="logo.png" alt="GIKI Chronicles Logo" class="h-16 w-auto">
-          <span class="text-lg font-bold text-gray-800 mt-1">GIKI Chronicles</span>
-        </a>
-            </div>
-            <div class="hidden md:flex items-center space-x-6 ml-auto">
-                <a href="about.html" class="text-gray-600 hover:text-blue-600 transition duration-300">About</a>
-                <a href="gallery.html" class="font-semibold text-blue-600 transition duration-300">Gallery</a>
-                <a href="guide.html" class="bg-gradient-to-r from-green-500 to-blue-600 text-white px-4 py-2 rounded-full hover:from-green-600 hover:to-blue-700 transition duration-300 font-semibold shadow-lg">🎓 Freshmen Guide</a>
-                <a href="calendar.html" class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-4 py-2 rounded-full hover:from-purple-600 hover:to-pink-700 transition duration-300 font-semibold shadow-lg">📅 Calendar</a>
-                <div id="guest-nav" class="flex items-center space-x-6">
-                    <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Left side: Logo and Mobile Menu Button -->
+                <div class="flex items-center space-x-4">
+                    <button id="sidebar-toggle" class="md:hidden text-gray-600 hover:text-blue-600 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
+                    <a href="index.html" class="flex flex-col items-center">
+                        <img src="logo.png" alt="GIKI Chronicles Logo" class="h-12 md:h-16 w-auto">
+                        <span class="text-sm md:text-lg font-bold text-gray-800 mt-1">GIKI Chronicles</span>
+                    </a>
                 </div>
-                <div id="user-nav" class="hidden md:flex items-center space-x-6"></div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-4 ml-auto">
+                    <a href="about.html" class="text-gray-600 hover:text-blue-600 transition duration-300">About</a>
+                    <a href="gallery.html" class="font-semibold text-blue-600 transition duration-300">Gallery</a>
+                    <a href="guide.html" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-2 rounded-full hover:from-blue-600 hover:to-blue-700 transition duration-300 font-semibold shadow-lg text-sm">🎓 Guide</a>
+                    <a href="calendar.html" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-2 rounded-full hover:from-blue-600 hover:to-blue-700 transition duration-300 font-semibold shadow-lg text-sm">📅 Calendar</a>
+                    <div id="guest-nav" class="flex items-center space-x-4">
+                        <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
+                    </div>
+                    <div id="user-nav" class="hidden md:flex items-center space-x-4"></div>
+                </div>
             </div>
         </nav>
     </header>
@@ -184,7 +189,7 @@
                 </svg>
                 Write Post
               </a>
-              <button id="sidebar-admin-access-btn" class="hidden w-full flex items center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+              <button id="sidebar-admin-access-btn" class="hidden md:flex w-full items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                 </svg>
@@ -230,7 +235,7 @@
                 </select>
                 
                 <!-- Admin Photo Management Tabs -->
-                <div id="admin-photo-tabs" class="hidden flex items-center space-x-2">
+                <div id="admin-photo-tabs" class="hidden md:flex items-center space-x-2">
                     <button id="tab-approved" class="px-4 py-2 rounded-lg bg-green-100 text-green-800 hover:bg-green-200 transition-colors">
                         Approved
                     </button>
@@ -249,7 +254,7 @@
                 </button>
                 
                 <!-- Admin Stats -->
-                <div id="admin-stats" class="hidden text-sm text-gray-600">
+                <div id="admin-stats" class="hidden md:block text-sm text-gray-600">
                     <span id="stats-approved" class="mr-4">Approved: 0</span>
                     <span id="stats-pending" class="mr-4">Pending: 0</span>
                     <span id="stats-rejected">Rejected: 0</span>
