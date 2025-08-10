@@ -15,58 +15,15 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-    <!-- Navigation Header -->
-    <header class="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
-        <nav class="container mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <!-- Left side: Logo -->
-                <div class="flex items-center">
-                    <a href="index.html" class="flex flex-col items-center">
-                        <img src="logo.png" alt="GIKI Chronicles Logo" class="h-12 w-auto">
-                        <span class="text-lg font-bold text-gray-800 mt-1">GIKI Chronicles</span>
-                    </a>
-                </div>
-                
-                <!-- Right side: Navigation -->
-                <div class="hidden md:flex items-center space-x-6 ml-auto">
-                    <!-- <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a> -->
-                    <a href="about.html" class="text-gray-600 hover:text-blue-600 transition duration-300">About</a>
-                    <!-- <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a> -->
-                    <a href="gallery.html"
-                      class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
-                      <span class="relative z-10">Gallery</span>
-                    </a>
-
-                    <a href="guide.html"
-                      class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
-                      <span class="relative z-10">Freshmen Guide</span>
-                    </a>
-
-                    <a href="calendar.html"
-                      class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
-                      <span class="relative z-10">Calendar</span>
-                    </a>
-                    <!-- GUEST NAVIGATION (DESKTOP) -->
-                    <div id="guest-nav" class="flex items-center space-x-6">
-                      <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
-                      <!-- <a href="signup.html"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">Sign Up</a> -->
-                    </div>
-
-                    <!-- USER NAVIGATION (DESKTOP) -->
-                    <div id="user-nav" class="hidden md:flex items-center space-x-6">
-                      <!-- <a href="profile.html" class="text-gray-600 hover:text-blue-600">My Profile</a> -->
-                      <!-- <a href="gallery.html" class="text-gray-600 hover:text-blue-600">Gallery</a> -->
-                      <!-- <a href="contact.html" class="text-gray-600 hover:text-blue-600">Contact</a> -->
-                      <!-- <button id="logout-button"
-                                    class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300">Logout</button> -->
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+        <!-- Logo -->
+        <div class="text-center mb-6">
+            <a href="index.html" class="inline-flex flex-col items-center">
+                <img src="logo.png" alt="GIKI Chronicles Logo" class="h-16 w-auto mb-2">
+                <span class="text-xl font-bold text-gray-800">GIKI Chronicles</span>
+            </a>
+        </div>
         <h2 class="text-2xl font-bold text-center mb-2">Login to Your Account</h2>
         <p class="text-center text-gray-500 mb-6">Welcome back!</p>
 
@@ -125,6 +82,9 @@
     <!-- Admin configuration - must be loaded before auth.js -->
     <script src="admin-config.js"></script>
     <script src="theme-manager.js"></script>
+    <script src="tour-manager.js"></script>
+    <script src="firebase-error-handler.js"></script>
+    <script src="tour-test.js"></script>
     <script src="auth.js"></script>
     <script src="app.js"></script>
 </body>
