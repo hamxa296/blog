@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-basic-dark">
 
 <head>
     <meta charset="UTF-8">
@@ -1020,34 +1020,9 @@
     
 
     
+    <script src="theme-manager.js"></script>
     <script>
-        // --- Theme Management ---
-        const themeSelect = document.getElementById('theme-select');
-        if (themeSelect) {
-            // Load saved theme from localStorage
-            const savedTheme = localStorage.getItem('selected-theme') || 'basic-dark';
-            themeSelect.value = savedTheme;
-            applyTheme(savedTheme);
-
-            // Add event listener for theme changes
-            themeSelect.addEventListener('change', (e) => {
-                const selectedTheme = e.target.value;
-                localStorage.setItem('selected-theme', selectedTheme);
-                applyTheme(selectedTheme);
-            });
-        }
-
-        // Function to apply theme
-        function applyTheme(themeName) {
-            // Remove all existing theme classes
-            document.body.classList.remove('theme-basic-light', 'theme-basic-dark', 'theme-giki');
-            
-            // Add the selected theme class
-            document.body.classList.add(`theme-${themeName}`);
-            
-            // Save the theme to localStorage
-            localStorage.setItem('selected-theme', themeName);
-        }
+        // Theme management is now handled by theme-manager.js
     </script>
     
 </body>

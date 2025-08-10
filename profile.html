@@ -71,20 +71,37 @@
             
             <!-- Right side: Navigation -->
             <div class="hidden md:flex items-center space-x-6 ml-auto">
-                <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a>
+                <!-- <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a> -->
                 <a href="about.html" class="text-gray-600 hover:text-blue-600 transition duration-300">About</a>
-                <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a>
-                <a href="gallery.html" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-full hover:from-blue-600 hover:to-blue-700 transition duration-300 font-semibold shadow-lg">Gallery</a>
-                <a href="guide.html" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-full hover:from-blue-600 hover:to-blue-700 transition duration-300 font-semibold shadow-lg">🎓 Freshmen Guide</a>
-                <a href="calendar.html" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-full hover:from-blue-600 hover:to-blue-700 transition duration-300 font-semibold shadow-lg">📅 Calendar</a>
+                <!-- <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a> -->
+                <a href="gallery.html"
+                  class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+                  <span class="relative z-10">Gallery</span>
+                </a>
 
+                <a href="guide.html"
+                  class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+                  <span class="relative z-10">Freshmen Guide</span>
+                </a>
+
+                <a href="calendar.html"
+                  class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+                  <span class="relative z-10">Calendar</span>
+                </a>
                 <!-- GUEST NAVIGATION (DESKTOP) -->
                 <div id="guest-nav" class="flex items-center space-x-6">
-                    <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
+                  <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
+                  <!-- <a href="signup.html"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">Sign Up</a> -->
                 </div>
 
                 <!-- USER NAVIGATION (DESKTOP) -->
                 <div id="user-nav" class="hidden md:flex items-center space-x-6">
+                  <!-- <a href="profile.html" class="text-gray-600 hover:text-blue-600">My Profile</a> -->
+                  <!-- <a href="gallery.html" class="text-gray-600 hover:text-blue-600">Gallery</a> -->
+                  <!-- <a href="contact.html" class="text-gray-600 hover:text-blue-600">Contact</a> -->
+                  <!-- <button id="logout-button"
+                                class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300">Logout</button> -->
                 </div>
             </div>
         </nav>

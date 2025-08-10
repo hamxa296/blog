@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-basic-dark">
 
 <head>
   <meta charset="UTF-8">
@@ -63,39 +63,10 @@
           <span class="relative z-10">Freshmen Guide</span>
         </a>
 
-        <!-- Calendar Dropdown -->
-        <div class="relative group">
-          <button class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full flex items-center">
-            <span class="relative z-10">Calendar</span>
-            <svg class="relative z-10 w-4 h-4 ml-2 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </button>
-          
-          <!-- Dropdown Menu -->
-          <div class="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-            <div class="py-2">
-              <a href="calendar.html" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition duration-200 flex items-center">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                </svg>
-                Calendar View
-              </a>
-              <a href="calendar.html#events" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition duration-200 flex items-center">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
-                </svg>
-                View Events
-              </a>
-              <a href="calendar.html#submit" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition duration-200 flex items-center">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
-                Submit Event
-              </a>
-            </div>
-          </div>
-        </div>
+        <a href="calendar.html"
+          class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+          <span class="relative z-10">Calendar</span>
+        </a>
         <!-- GUEST NAVIGATION (DESKTOP) -->
         <div id="guest-nav" class="flex items-center space-x-6">
           <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
