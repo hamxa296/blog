@@ -66,22 +66,7 @@ body {
     --bg-image: url('bg-black.png');
 }
 
-/* GIKI Palette Theme */
-.theme-giki {
-    --primary-color: #332D56; /* Deep Purple */
-    --primary-hover: #4E6688; /* Blue */
-    --secondary-color: #4E6688; /* Blue */
-    --accent-color: #71C0BB; /* Teal */
-    --highlight-color: #E3EEB2; /* Lime */
-    --bg-color: #f8f9fa;
-    --text-color: #1f2937;
-    --text-muted: #6b7280;
-    --sidebar-bg: #ffffff;
-    --card-bg: #ffffff;
-    --border-color: #e5e7eb;
-    --hover-bg: #f3f4f6;
-    --bg-image: url('bg-light.png');
-}
+
 
 
 /* Apply theme variables */
@@ -126,20 +111,7 @@ body.theme-basic-dark ::-moz-selection,
     color: var(--bg-color, #282a29) !important;
 }
 
-/* GIKI Theme Text Selection - Using theme's primary color */
-html.theme-giki ::selection,
-body.theme-giki ::selection,
-.theme-giki ::selection {
-    background-color: var(--primary-color, #332D56) !important;
-    color: white !important;
-}
 
-html.theme-giki ::-moz-selection,
-body.theme-giki ::-moz-selection,
-.theme-giki ::-moz-selection {
-    background-color: var(--primary-color, #332D56) !important;
-    color: white !important;
-}
 
 /* Header - transparent to inherit body background */
 header {
@@ -152,18 +124,13 @@ header {
 }
 
 /* Theme-specific button styles */
-.theme-basic-light .bg-blue-600,
-.theme-giki .bg-blue-600 {
+.theme-basic-light .bg-blue-600 {
     background-color: var(--primary-color) !important;
 }
 
-.theme-basic-light .hover\:bg-blue-700:hover,
-.theme-giki .hover\:bg-blue-700:hover {
+.theme-basic-light .hover\:bg-blue-700:hover {
     background-color: var(--primary-hover) !important;
 }
-
-/* Text color overrides */
-.theme-giki .text-blue-600 { color: var(--primary-color) !important; }
 
 /* Dark theme specific overrides */
 .theme-basic-dark {
@@ -615,12 +582,3 @@ html.theme-basic-dark *::-moz-selection {
     color: var(--bg-color, #282a29) !important;
 }
 
-html.theme-giki *::selection {
-    background-color: var(--primary-color, #332D56) !important;
-    color: white !important;
-}
-
-html.theme-giki *::-moz-selection {
-    background-color: var(--primary-color, #332D56) !important;
-    color: white !important;
-}

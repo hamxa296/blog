@@ -66,7 +66,7 @@ class WebsiteTour {
             {
                 id: 'theme-selector',
                 title: 'Theme Customization',
-                content: 'Choose your preferred theme - Dark, Light, or GIKI colors. Your choice is saved automatically.',
+                content: 'Choose your preferred theme - Dark or Light. Your choice is saved automatically.',
                 target: '#theme-select',
                 position: 'left'
             },
@@ -126,7 +126,7 @@ class WebsiteTour {
             {
                 id: 'theme-selector',
                 title: 'Theme Customization',
-                content: 'Choose your preferred theme - Dark, Light, or GIKI colors. Your choice is saved automatically.',
+                content: 'Choose your preferred theme - Dark or Light. Your choice is saved automatically.',
                 target: '#theme-select',
                 position: 'left'
             },

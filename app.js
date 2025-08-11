@@ -668,7 +668,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (isDarkTheme) {
                     // Apply dark theme styles - use CSS classes instead of inline styles
                     element.classList.add('theme-basic-dark');
-                    element.classList.remove('theme-basic-light', 'theme-giki');
+                    element.classList.remove('theme-basic-light');
                     
                     // Special handling for links
                     if (element.tagName === 'A') {
@@ -695,7 +695,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 } else {
                     // Apply light theme styles - use CSS classes instead of inline styles
                     element.classList.add('theme-basic-light');
-                    element.classList.remove('theme-basic-dark', 'theme-giki');
+                    element.classList.remove('theme-basic-dark');
                     
                     // Special handling for links
                     if (element.tagName === 'A') {

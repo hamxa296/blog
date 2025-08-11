@@ -726,7 +726,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const body = document.body;
         
         // Remove all existing theme classes
-        body.classList.remove('theme-basic-light', 'theme-basic-dark', 'theme-giki');
+        body.classList.remove('theme-basic-light', 'theme-basic-dark');
         
         // Add the selected theme class
         body.classList.add(`theme-${savedTheme}`);

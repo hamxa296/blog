@@ -17,8 +17,8 @@
         console.log('Applying theme:', themeName);
         
         // Remove all existing theme classes from both html and body
-        document.documentElement.classList.remove('theme-basic-light', 'theme-basic-dark', 'theme-giki');
-        document.body.classList.remove('theme-basic-light', 'theme-basic-dark', 'theme-giki');
+        document.documentElement.classList.remove('theme-basic-light', 'theme-basic-dark');
+        document.body.classList.remove('theme-basic-light', 'theme-basic-dark');
         
         // Add the selected theme class to both html and body
         document.documentElement.classList.add(`theme-${themeName}`);

@@ -24,19 +24,19 @@ class WelcomePopup {
         popup.id = 'welcome-popup';
         popup.className = 'fixed inset-0 bg-black bg-opacity-50 z-[10000] flex items-center justify-center p-4';
         popup.innerHTML = `
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full transform transition-all duration-300 scale-95 opacity-0">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full transform transition-all duration-300 scale-95 opacity-0">
                 <div class="p-6">
                     <div class="flex items-center mb-4">
                         <div class="flex-shrink-0">
                             <img src="logo.png" alt="GIKI Chronicles" class="h-12 w-auto">
                         </div>
                         <div class="ml-4">
-                            <h2 class="text-xl font-bold text-gray-900">Welcome to GIKI Chronicles! 👋</h2>
-                            <p class="text-sm text-gray-600">Your campus community blog</p>
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Welcome to GIKI Chronicles! 👋</h2>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Your campus community blog</p>
                         </div>
                     </div>
                     
-                    <p class="text-gray-700 mb-6">
+                    <p class="text-gray-700 dark:text-gray-300 mb-6">
                         Welcome to GIKI Chronicles! We're excited to have you here. 
                         Would you like to take a quick tour to learn about all the features?
                     </p>
@@ -47,7 +47,7 @@ class WelcomePopup {
                             Take a Quick Tour
                         </button>
                         <button id="welcome-skip-tour" 
-                                class="flex-1 bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors duration-200">
+                                class="flex-1 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors duration-200">
                             Skip for Now
                         </button>
                     </div>
@@ -59,7 +59,7 @@ class WelcomePopup {
         
         // Animate popup in
         setTimeout(() => {
-            const popupContent = popup.querySelector('.bg-white');
+            const popupContent = popup.querySelector('.bg-white, .dark\\:bg-gray-800');
             popupContent.classList.remove('scale-95', 'opacity-0');
             popupContent.classList.add('scale-100', 'opacity-100');
         }, 100);
@@ -94,7 +94,7 @@ class WelcomePopup {
     closePopup() {
         const popup = document.getElementById('welcome-popup');
         if (popup) {
-            const popupContent = popup.querySelector('.bg-white');
+            const popupContent = popup.querySelector('.bg-white, .dark\\:bg-gray-800');
             popupContent.classList.add('scale-95', 'opacity-0');
             popupContent.classList.remove('scale-100', 'opacity-100');
             
