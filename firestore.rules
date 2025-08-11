@@ -1,163 +1,19 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Helper function to check if user is authenticated
-    function isAuthenticated() {
-      return request.auth != null;
-    }
-    
-    // Helper function to check if user is not suspended
-    function isActiveUser() {
-      return isAuthenticated() && 
-             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isSuspended != true;
-    }
-    
-    // Helper function to check if user is the author of a post
-    function isPostAuthor(postData) {
-      return isAuthenticated() && postData.authorId == request.auth.uid;
-    }
-    
-    // Users collection - users can read/write their own profile
-    match /users/{userId} {
-      allow read: if isAuthenticated() && request.auth.uid == userId;
-      allow create: if isAuthenticated() && request.auth.uid == userId;
-      allow update: if isAuthenticated() && request.auth.uid == userId;
-      allow delete: if false; // No one can delete user accounts for now
-    }
-    
-    // Posts collection - complex rules for different operations
-    match /posts/{postId} {
-      // Anyone can read approved posts
-      allow read: if resource.data.status == "approved";
-      
-      // Authenticated users can create posts
-      allow create: if isActiveUser() && 
-                      request.resource.data.authorId == request.auth.uid &&
-                      request.resource.data.status == "pending";
-      
-      // Authors can update their own pending posts
-      allow update: if isActiveUser() && 
-                      isPostAuthor(resource.data) && 
-                      resource.data.status == "pending" &&
-                      request.resource.data.status == "pending";
-      
-      // Allow admin operations (will be checked client-side)
-      allow update: if isActiveUser();
-      
-      // Only admins can delete posts (will be checked client-side)
-      allow delete: if isActiveUser();
-    }
-    
-    // Admin audit log - allow authenticated users to write (admin check done client-side)
-    match /admin_audit_log/{logId} {
-      allow read, write: if isAuthenticated();
-    }
-    
-    // Gallery photos with approval system
-    match /galleryPhotos/{photoId} {
-      // Anyone can read approved photos
-      allow read: if resource.data.status == "approved";
-      
-      // Authenticated users can submit photos for review
-      allow create: if isActiveUser() &&
-                    request.resource.data.uploaderId == request.auth.uid &&
-                    request.resource.data.status == "pending";
-      
-      // Only admins update/delete (checked client-side too)
-      allow update: if isActiveUser();
-      allow delete: if isActiveUser();
-    }
-    
-    // Events collection - similar to posts with approval system
-    match /events/{eventId} {
-      // Anyone can read approved events
-      allow read: if resource.data.status == "approved";
-      
-      // Authenticated users can create events
-      allow create: if isActiveUser() && 
-                      request.resource.data.submittedBy == request.auth.uid &&
-                      request.resource.data.status == "pending";
-      
-      // Allow admin operations (will be checked client-side)
-      allow update: if isActiveUser();
-      
-      // Only admins can delete events (will be checked client-side)
-      allow delete: if isActiveUser();
-    }
-    
-    // Comments collection - users can comment on approved posts
-    match /comments/{commentId} {
-      // Anyone can read approved comments
-      allow read: if resource.data.status == "approved";
-      
-      // Authenticated users can create comments
-      allow create: if isActiveUser() && 
-                      request.resource.data.authorId == request.auth.uid &&
-                      request.resource.data.status == "approved";
-      
-      // Users can update their own comments, admins can update any
-      allow update: if isActiveUser() && 
-                      (resource.data.authorId == request.auth.uid || true); // Admin check done client-side
-      
-      // Users can delete their own comments, admins can delete any
-      allow delete: if isActiveUser() && 
-                      (resource.data.authorId == request.auth.uid || true); // Admin check done client-side
-    }
-    
-    // Reactions collection - users can react to approved posts
-    match /reactions/{reactionId} {
-      // Anyone can read reactions (for counting)
-      allow read: if true;
-      
-      // Authenticated users can create reactions
-      allow create: if isActiveUser() && 
-                      request.resource.data.userId == request.auth.uid;
-      
-      // Users can only delete their own reactions
-      allow delete: if isActiveUser() && 
-                      resource.data.userId == request.auth.uid;
-      
-      // No updates needed for reactions (create/delete only)
-      allow update: if false;
-    }
-    
-    // Bookmarks collection - users can bookmark posts
-    match /bookmarks/{bookmarkId} {
-      // Users can only read their own bookmarks
-      allow read: if isActiveUser() && 
-                     resource.data.userId == request.auth.uid;
-      
-      // Authenticated users can create bookmarks
-      allow create: if isActiveUser() && 
-                      request.resource.data.userId == request.auth.uid;
-      
-      // Users can only delete their own bookmarks
-      allow delete: if isActiveUser() && 
-                      resource.data.userId == request.auth.uid;
-      
-      // No updates needed for bookmarks (create/delete only)
-      allow update: if false;
-    }
-    
-    // User profiles collection - users can manage their own profiles
-    match /userProfiles/{userId} {
-      // Users can read their own profile, admins can read any
-      allow read: if isActiveUser() && 
-                     (userId == request.auth.uid || true); // Admin check done client-side
-      
-      // Users can create/update their own profile
-      allow create, update: if isActiveUser() && 
-                               userId == request.auth.uid;
-      
-      // No profile deletion allowed
-      allow delete: if false;
-    }
-    
-    // Deny all other access
+
+    // This rule allows anyone with your Firestore database reference to view, edit,
+    // and delete all data in your Firestore database. It is useful for getting
+    // started, but it is configured to expire after 30 days because it
+    // leaves your app open to attackers. At that time, all client
+    // requests to your Firestore database will be denied.
+    //
+    // Make sure to write security rules for your app before that time, or else
+    // all client requests to your Firestore database will be denied until you Update
+    // your rules
     match /{document=**} {
-      allow read, write: if false;
+      allow read, write: if request.time < timestamp.date(2025, 9, 1);
     }
   }
-} 
+}

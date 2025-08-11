@@ -1033,7 +1033,7 @@ function updateSidebarAuth(user) {
         }
 
         // Add logout functionality to sidebar
-        if (sidebarLogoutButton) {
+        if (sidebarLogoutButton && sidebarLogoutButton.parentNode) {
             // Remove existing event listeners to prevent duplication
             const newSidebarLogoutButton = sidebarLogoutButton.cloneNode(true);
             sidebarLogoutButton.parentNode.replaceChild(newSidebarLogoutButton, sidebarLogoutButton);
@@ -1050,23 +1050,27 @@ function updateSidebarAuth(user) {
         }
 
         // Check if user is admin and show admin access button
-        if (sidebarAdminAccessBtn) {
+        if (sidebarAdminAccessBtn && sidebarAdminAccessBtn.parentNode) {
             isUserAdmin().then(isAdmin => {
                 if (isAdmin) {
                     sidebarAdminAccessBtn.classList.remove('hidden');
                     // Remove existing event listeners to prevent duplication
                     const newAdminAccessBtn = sidebarAdminAccessBtn.cloneNode(true);
-                    sidebarAdminAccessBtn.parentNode.replaceChild(newAdminAccessBtn, sidebarAdminAccessBtn);
-                    
-                    newAdminAccessBtn.addEventListener('click', () => {
-                        window.location.href = 'admin-access.html';
-                    });
+                    if (sidebarAdminAccessBtn.parentNode) {
+                        sidebarAdminAccessBtn.parentNode.replaceChild(newAdminAccessBtn, sidebarAdminAccessBtn);
+                        
+                        newAdminAccessBtn.addEventListener('click', () => {
+                            window.location.href = 'admin-access.html';
+                        });
+                    }
                 } else {
                     sidebarAdminAccessBtn.classList.add('hidden');
                 }
             }).catch(error => {
                 console.error('Error checking admin status:', error);
-                sidebarAdminAccessBtn.classList.add('hidden');
+                if (sidebarAdminAccessBtn) {
+                    sidebarAdminAccessBtn.classList.add('hidden');
+                }
             });
         }
 
