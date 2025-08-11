@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="styleS.css">
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -449,32 +449,8 @@
         let currentUserId = null;
 
         // --- Theme Management ---
-        const themeSelect = document.getElementById('theme-select');
-        if (themeSelect) {
-            // Load saved theme from localStorage
-            const savedTheme = localStorage.getItem('selected-theme') || 'basic-dark';
-            themeSelect.value = savedTheme;
-            applyTheme(savedTheme);
-
-            // Add event listener for theme changes
-            themeSelect.addEventListener('change', (e) => {
-                const selectedTheme = e.target.value;
-                localStorage.setItem('selected-theme', selectedTheme);
-                applyTheme(selectedTheme);
-            });
-        }
-
-        // Function to apply theme
-        function applyTheme(themeName) {
-            // Remove all existing theme classes
-            document.body.classList.remove('theme-basic-light', 'theme-basic-dark', 'theme-giki');
-            
-            // Add the selected theme class
-            document.body.classList.add(`theme-${themeName}`);
-            
-            // Save the theme to localStorage
-            localStorage.setItem('selected-theme', themeName);
-        }
+        // Theme is handled by theme-manager.js globally
+        // No need for duplicate theme management code here
 
         // --- Tab Management ---
         function initializeTabs() {
