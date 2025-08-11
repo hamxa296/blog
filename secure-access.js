@@ -4,7 +4,7 @@
  */
 
 // Secret hash for admin access (change this to your own secret)
-const ADMIN_SECRET_HASH = "1234567890";
+const ADMIN_SECRET_HASH = "GIKI_Chronicles_2024_Secure_Admin_Access_Key_9X7Y2Z1A";
 
 // Function to generate a secure hash
 function generateHash(input) {

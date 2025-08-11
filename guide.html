@@ -258,6 +258,45 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
+        // Essential items from packinglist.txt
+        const essentialItems = [
+            "Bedsheets",
+            "Pillow Cover", 
+            "Blanket/Chadar",
+            "Toiletries",
+            "Towels",
+            "Water Bottle",
+            "Bug Spray",
+            "Umbrella",
+            "Cleaning Cloth",
+            "Laptop",
+            "Phone Charger",
+            "Backpack (for classes)",
+            "Handcarry suitcase (for weekend travel, depends)",
+            "Laundry Basket",
+            "Nail cutter",
+            "Stapler",
+            "Hangers",
+            "Tissues",
+            "Snacks",
+            "Prayer Mat",
+            "Plates, Cup, Glass, Utensils, Bowl",
+            "Deodorant, Body Spray or Perfume",
+            "Sewing Kit",
+            "Washing powder",
+            "Dishwashing Items",
+            "CNIC and Registration Info",
+            "Scissors",
+            "Knife",
+            "Slippers",
+            "Clothes (casual + formal for presentations)",
+            "Mirror",
+            "Calculator",
+            "Kettle",
+            "Iron",
+            "Medicines"
+        ];
+
         // Hardcoded societies and teams data to be used if Firestore is empty.
         const societiesData = {
             academic: {
@@ -304,7 +343,7 @@
         // Placeholder data for the guide sections.
         const guidePlaceholderData = [
             { id: "important-contacts", tag: "Important Contacts", shortDescription: "Key people and departments to know on campus.", fullContent: [{ contact: "Hostel Warden", department: "Hostel Administration", purpose: "Primary contact for all hostel-related issues." }, { contact: "Class Representatives (CRs)", department: "Student Body", purpose: "Reach out for academic matters and class-related issues." }, { contact: "IT Cell", department: "Information Technology", purpose: "For network, internet, and technical issues on campus." }, { contact: "Health Center", department: "Medical Services", purpose: "Available for medical emergencies and health consultations." }, { contact: "Transport Help", department: "Transport Office", purpose: "Assistance with campus transport and bus services." }], faqs: [{ question: "Where is the Health Center located?", answer: "The Health Center is located near the main administration building." }, { question: "How do I contact my CR?", answer: "Your CRs will be introduced in the first few days of orientation. You will have a class group chat where you can contact them." }], warnings: ["Do not hesitate to reach out for help. The GIKI administration and student body are there to support you."] },
-            { id: "what-to-pack", tag: "What to Pack", shortDescription: "Essential things to bring for your hostel stay.", fullContent: "For a comfortable stay in your dorm, be sure to bring essential items:\n- Bed sheets, a pillow, and a blanket.\n- A desk lamp.\n- A plug extension is crucial as outlets can be limited.\n- Your toiletries and a towel.\n- Comfortable shoes (you'll be surprised how much you have to walk here).\n- Casual clothes for daily wear and one or two formal outfits for events.", faqs: [{ question: "Can I bring an electric kettle?", answer: "Yes, electric kettles are generally allowed in the hostels, but check with your hostel warden for any specific restrictions." }, { question: "Should I bring a locker?", answer: "You will be provided with a cupboard for your belongings. A padlock is highly recommended for security." }], warnings: ["Avoid overpacking unnecessary items. Space is limited in the dorm rooms."] },
+            { id: "what-to-pack", tag: "What to Pack", shortDescription: "Get your personalized packing list with all essentials.", fullContent: "Packing for university can be overwhelming, but we've got you covered! Use our interactive tool below to get a complete packing list tailored to your specific needs and lifestyle. The list will include both personalized recommendations based on your situation and all the essential items every GIKI student needs.", faqs: [{ question: "Can I bring an electric kettle?", answer: "Yes, electric kettles are generally allowed in the hostels, but check with your hostel warden for any specific restrictions." }, { question: "Should I bring a locker?", answer: "You will be provided with a cupboard for your belongings. A padlock is highly recommended for security." }], warnings: ["Avoid overpacking unnecessary items. Space is limited in the dorm rooms."] },
             { id: "finances", tag: "Finances", shortDescription: "Managing your money on campus and a guide to expenses.", fullContent: `Managing your finances is an essential part of university life. GIKI's fee structure includes tuition and hostel charges, which are managed through the GIKI portal. Beyond fees, you will have to manage your daily expenses for food, transportation, and recreation.\n\nFee Payment and GIKI Portal:\n\nAll fee details and payment deadlines are available on your official GIKI portal. You will receive an official email from the administration with a step-by-step guide on how to pay your fees. Remember to check the portal regularly to avoid missing any deadlines.\n\nLiving Expenses:\n\nYour primary expenses will include mess charges (if you opt-in), transportation, and tuck shop purchases. The mess charges are billed semester-wise, and you will be notified of the cost beforehand. Carpooling with friends and using the GIKI shuttle service are great ways to save money on travel.\n\nBudgeting Tips:\n\n- Track your spending. You can use a notebook or a budgeting app to keep a record of all your expenses.\n- Differentiate between wants and needs. Prioritize your needs and try to minimize spending on non-essential items.\n- Take advantage of campus facilities. Instead of spending on food outside, utilize the mess and other affordable eateries on campus.`, faqs: [{ question: "How do I pay my fees?", answer: "Fee payments are made through specific bank challan forms provided by the GIKI administration and can be accessed via the GIKI portal. You'll receive an email with instructions at the start of each semester." }, { question: "What are the typical monthly expenses?", answer: "Aside from tuition and hostel fees, a typical month's expenses can vary widely. It generally includes mess charges, tuck shop food, and shuttle services, which can range from Rs. 5,000 to Rs. 15,000 depending on your lifestyle." }], warnings: ["Avoid overspending in your first few months. It's easy to get carried away, but a consistent budget is crucial for a stress-free semester."] },
             { id: "dorm-room-info", tag: "Dorm & Room Info", shortDescription: "Everything you need to know about your new room.", fullContent: "Rooms are allotted by the administration during your orientation week. You will be assigned a roommate and a dorm. Each room comes with basic furniture including a bed, a study table, and a cupboard. Hostel culture is a big part of GIKI life, and respecting your roommate and neighbors is key to a great experience.", faqs: [{ question: "Can I change my room or roommate?", answer: "Room and roommate changes are subject to approval from the hostel administration and are typically only considered in special circumstances." }, { question: "What is the hostel mess like?", answer: "Each hostel has its own mess, providing a convenient and communal dining experience." }], warnings: ["Respect your roommate's personal space and belongings. Communication is key to a healthy living environment."] },
             { id: "weekend-travel", tag: "Weekend Travel", shortDescription: "How to go home and travel from GIKI.", fullContent: `GIKI is located a bit away from major cities, so planning your weekend travel is important. There are GIKI-sponsored buses that run to Rawalpindi/Islamabad, Peshawar, and Abbottabad every Friday and return on Sunday. You can also find ride-sharing options with seniors or other students via hostel or batch group chats — a common and convenient carpooling system.\n\nAll those who wish to avail the shuttle service should note the following:\n\nTicket Booking: Tickets become available every Thursday at the transport office located behind the laundry shop.\nPayment: Only cash is accepted.\nRs. 350 for Islamabad, Rawalpindi, and Peshawar\nRs. 400 for Abbottabad\nTip: Get in line early — the queue can get long and seats are limited!\n\nShuttle Schedule (Every Friday, 4:00 PM Departure from GIKI)\nTo Rawalpindi/Islamabad\n\nDeparture Point: GH / Hostel-9\nArrival Point: Road Master Adda / G-9/4, Peshawar Morr\nTo Peshawar\n\nDeparture Point: GH / Hostel-9\nArrival Point: Bagh-e-Naran, Hayatabad\nTo Abbottabad\n\nDeparture Point: GH / Hostel-9\nArrival Point: GO Petroleum Filling Station`, faqs: [{ question: "Can I book shuttle tickets online?", answer: "No, shuttle tickets are only available in person at the transport office behind the laundry shop. Make sure to bring cash as digital payments are not accepted." }, { question: "What happens if I miss the shuttle?", answer: "If you miss the shuttle, your best bet is to arrange a ride-share with other students. Many carpools are coordinated through hostel WhatsApp groups or batch chats, especially on weekends." }, { question: "Are there any travel restrictions for hostel students?", answer: "Yes. All students must inform their warden and sign the departure register before leaving campus. For female students, it's mandatory to get a gate pass signed by their warden before exiting GIKI premises." }], warnings: ["Always travel in groups, especially at night, and avoid unofficial transport services."] },
@@ -323,6 +362,75 @@
                 console.log("Document successfully updated!");
             } catch (e) {
                 console.error("Error updating document: ", e);
+            }
+        };
+
+        // Helper functions for packing list management using localStorage (temporary until database is set up)
+        const savePackingList = async (userId, packingListData) => {
+            try {
+                // For now, save to localStorage. In production, this would be a database call
+                const storageKey = `packingList_${userId}`;
+                const dataToSave = {
+                    ...packingListData,
+                    lastUpdated: new Date().toISOString()
+                };
+                
+                localStorage.setItem(storageKey, JSON.stringify(dataToSave));
+                console.log("Packing list saved successfully to localStorage!");
+                return true;
+            } catch (e) {
+                console.error("Error saving packing list: ", e);
+                return false;
+            }
+        };
+
+        const loadPackingList = async (userId) => {
+            try {
+                // For now, load from localStorage. In production, this would be a database call
+                const storageKey = `packingList_${userId}`;
+                const savedData = localStorage.getItem(storageKey);
+                
+                if (savedData) {
+                    return JSON.parse(savedData);
+                }
+                return null;
+            } catch (e) {
+                console.error("Error loading packing list: ", e);
+                return null;
+            }
+        };
+
+        const updateCheckedItems = async (userId, checkedItems) => {
+            try {
+                // For now, update localStorage. In production, this would be a database call
+                const storageKey = `packingList_${userId}`;
+                const savedData = localStorage.getItem(storageKey);
+                
+                if (savedData) {
+                    const currentData = JSON.parse(savedData);
+                    currentData.checkedItems = checkedItems;
+                    currentData.lastUpdated = new Date().toISOString();
+                    localStorage.setItem(storageKey, JSON.stringify(currentData));
+                    console.log("Checked items updated successfully in localStorage!");
+                    return true;
+                }
+                return false;
+            } catch (e) {
+                console.error("Error updating checked items: ", e);
+                return false;
+            }
+        };
+
+        const deletePackingList = async (userId) => {
+            try {
+                // For now, delete from localStorage. In production, this would be a database call
+                const storageKey = `packingList_${userId}`;
+                localStorage.removeItem(storageKey);
+                console.log("Packing list deleted successfully from localStorage!");
+                return true;
+            } catch (e) {
+                console.error("Error deleting packing list: ", e);
+                return false;
             }
         };
 
@@ -348,6 +456,10 @@
             const [personalizedList, setPersonalizedList] = useState(null);
             const [isGenerating, setIsGenerating] = useState(false);
             const [generationError, setGenerationError] = useState(null);
+            const [savedPackingList, setSavedPackingList] = useState(null);
+            const [checkedItems, setCheckedItems] = useState({});
+            const [isLoadingSavedList, setIsLoadingSavedList] = useState(false);
+            const [firebaseConnectionStatus, setFirebaseConnectionStatus] = useState('connecting');
 
             useEffect(() => {
                 const initFirebase = async () => {
@@ -377,52 +489,130 @@
                                     console.error("Guide: Error checking admin status:", error);
                                     setIsAdmin(false);
                                 }
+
+                                // Load saved packing list if user is authenticated
+                                setIsLoadingSavedList(true);
+                                try {
+                                    const savedList = await loadPackingList(user.uid);
+                                    if (savedList) {
+                                        setSavedPackingList(savedList);
+                                        setCheckedItems(savedList.checkedItems || {});
+                                    }
+                                } catch (error) {
+                                    console.error("Error loading packing list:", error);
+                                } finally {
+                                    setIsLoadingSavedList(false);
+                                }
                             } else {
                                 setIsAdmin(false);
+                                // Clear saved packing list when user logs out
+                                setSavedPackingList(null);
+                                setCheckedItems({});
                             }
                             
                             setIsAuthReady(true);
                         });
 
-                        // Set up Firestore listener for guide data
-                        const freshmanGuideRef = firestore.collection('artifacts').doc(appId).collection('public').doc('data').collection('freshmanGuide');
+                        // Set up Firestore listener for guide data with error handling
+                        const setupFirestoreListener = () => {
+                            try {
+                                const freshmanGuideRef = firestore.collection('artifacts').doc(appId).collection('public').doc('data').collection('freshmanGuide');
 
-                        const unsubscribe = freshmanGuideRef.onSnapshot(async (querySnapshot) => {
-                            if (querySnapshot.empty) {
-                                // If collection is empty, add all placeholder data
-                                const promises = guidePlaceholderData.map(async (data) => {
-                                    const docRef = freshmanGuideRef.doc(data.id);
-                                    await docRef.set(data);
-                                    return data;
-                                });
-                                Promise.all(promises).then(data => setGuideSections(data));
-                            } else {
-                                // If collection has data, check for missing sections and add them
-                                const fetchedData = [];
-                                querySnapshot.forEach(doc => fetchedData.push({ id: doc.id, ...doc.data() }));
+                                const unsubscribe = freshmanGuideRef.onSnapshot(
+                                    async (querySnapshot) => {
+                                        try {
+                                            setFirebaseConnectionStatus('connected');
+                                            if (querySnapshot.empty) {
+                                                // If collection is empty, add all placeholder data
+                                                const promises = guidePlaceholderData.map(async (data) => {
+                                                    const docRef = freshmanGuideRef.doc(data.id);
+                                                    await docRef.set(data);
+                                                    return data;
+                                                });
+                                                Promise.all(promises).then(data => setGuideSections(data));
+                                            } else {
+                                                // If collection has data, check for missing sections and add them
+                                                const fetchedData = [];
+                                                querySnapshot.forEach(doc => fetchedData.push({ id: doc.id, ...doc.data() }));
+                                                
+                                                // Check which sections from guidePlaceholderData are missing
+                                                const existingIds = fetchedData.map(section => section.id);
+                                                const missingSections = guidePlaceholderData.filter(section => !existingIds.includes(section.id));
+                                                
+                                                if (missingSections.length > 0) {
+                                                    console.log("Adding missing sections:", missingSections.map(s => s.id));
+                                                    const promises = missingSections.map(async (data) => {
+                                                        const docRef = freshmanGuideRef.doc(data.id);
+                                                        await docRef.set(data);
+                                                        return data;
+                                                    });
+                                                    await Promise.all(promises);
+                                                    // The onSnapshot will trigger again with the updated data
+                                                } else {
+                                                    setGuideSections(fetchedData);
+                                                }
+                                            }
+                                        } catch (error) {
+                                            console.error("Error in Firestore snapshot handler:", error);
+                                            setFirebaseConnectionStatus('error');
+                                            // Fallback to placeholder data if Firestore fails
+                                            setGuideSections(guidePlaceholderData);
+                                        }
+                                    },
+                                    (error) => {
+                                        console.error("Firestore listener error:", error);
+                                        setFirebaseConnectionStatus('error');
+                                        // Fallback to placeholder data if listener fails
+                                        setGuideSections(guidePlaceholderData);
+                                    }
+                                );
                                 
-                                // Check which sections from guidePlaceholderData are missing
-                                const existingIds = fetchedData.map(section => section.id);
-                                const missingSections = guidePlaceholderData.filter(section => !existingIds.includes(section.id));
-                                
-                                if (missingSections.length > 0) {
-                                    console.log("Adding missing sections:", missingSections.map(s => s.id));
-                                    const promises = missingSections.map(async (data) => {
-                                        const docRef = freshmanGuideRef.doc(data.id);
-                                        await docRef.set(data);
-                                        return data;
-                                    });
-                                    await Promise.all(promises);
-                                    // The onSnapshot will trigger again with the updated data
-                                } else {
-                                    setGuideSections(fetchedData);
+                                return unsubscribe;
+                            } catch (error) {
+                                console.error("Error setting up Firestore listener:", error);
+                                // Fallback to placeholder data if setup fails
+                                setGuideSections(guidePlaceholderData);
+                                return () => {}; // Return empty cleanup function
+                            }
+                        };
+
+                        // Initialize Firestore listener with retry logic
+                        let unsubscribe = setupFirestoreListener();
+                        
+                        // Retry mechanism for connection issues
+                        const retryConnection = () => {
+                            console.log("Retrying Firestore connection...");
+                            if (unsubscribe) {
+                                unsubscribe();
+                            }
+                            unsubscribe = setupFirestoreListener();
+                        };
+
+                        // Set up periodic connection health check
+                        const healthCheckInterval = setInterval(() => {
+                            if (firestore && firestore.app) {
+                                // Check if Firestore is still connected
+                                try {
+                                    firestore.enableNetwork();
+                                } catch (error) {
+                                    console.warn("Firestore connection issue detected, retrying...");
+                                    retryConnection();
                                 }
                             }
-                        });
-                        
-                        return () => unsubscribe();
+                        }, 30000); // Check every 30 seconds
+
+                        return () => {
+                            if (unsubscribe) {
+                                unsubscribe();
+                            }
+                            if (healthCheckInterval) {
+                                clearInterval(healthCheckInterval);
+                            }
+                        };
                     } catch (e) {
                         console.error("Error initializing Firebase or fetching data: ", e);
+                        // Fallback to placeholder data if Firebase fails completely
+                        setGuideSections(guidePlaceholderData);
                         setIsAuthReady(true);
                     }
                 };
@@ -498,6 +688,35 @@
             const handleAddWarning = () => setEditForm(prev => ({ ...prev, warnings: [...prev.warnings, ''] }));
             const handleRemoveWarning = (index) => setEditForm(prev => ({ ...prev, warnings: editForm.warnings.filter((_, i) => i !== index) }));
 
+            const handleCheckboxChange = async (itemId, isChecked) => {
+                const newCheckedItems = { ...checkedItems, [itemId]: isChecked };
+                setCheckedItems(newCheckedItems);
+                
+                // Save to database if user is authenticated
+                if (currentUser) {
+                    await updateCheckedItems(currentUser.uid, newCheckedItems);
+                }
+            };
+
+            const handleRegenerateList = () => {
+                setPersonalizedList(null);
+                setSavedPackingList(null);
+                setCheckedItems({});
+                setPersonalizedInput('');
+            };
+
+            const handleDeleteList = async () => {
+                if (currentUser) {
+                    const deleted = await deletePackingList(currentUser.uid);
+                    if (deleted) {
+                        setSavedPackingList(null);
+                        setPersonalizedList(null);
+                        setCheckedItems({});
+                        setPersonalizedInput('');
+                    }
+                }
+            };
+
             const generatePersonalizedList = async () => {
                 setIsGenerating(true);
                 setGenerationError(null);
@@ -507,7 +726,7 @@
 
                 const chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
                 const payload = { contents: chatHistory };
-                const apiKey = "";
+                const apiKey = "AIzaSyCEGRkeCvvymQU565qi7pp02BUt4wl3i_I";
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
                 let retries = 0;
@@ -537,7 +756,28 @@
                             const listTitle = lines.length > 0 ? lines[0] : 'Your Custom Packing List';
                             const listItems = lines.slice(1).map(line => line.replace(/^[\s\d\-\*\#\.]+/, '').trim()).filter(item => item);
 
-                            setPersonalizedList({ title: listTitle, items: listItems });
+                            // Combine personalized items with essential items
+                            const combinedList = {
+                                title: listTitle,
+                                personalizedItems: listItems,
+                                essentialItems: essentialItems,
+                                userInput: personalizedInput,
+                                timestamp: new Date().toISOString()
+                            };
+
+                            setPersonalizedList(combinedList);
+
+                            // Save to database if user is authenticated
+                            if (currentUser) {
+                                const saved = await savePackingList(currentUser.uid, {
+                                    ...combinedList,
+                                    checkedItems: {}
+                                });
+                                if (saved) {
+                                    setSavedPackingList(combinedList);
+                                    setCheckedItems({});
+                                }
+                            }
                         } else {
                             setGenerationError("Could not get a response from the model. Please try again.");
                         }
@@ -573,6 +813,30 @@
                         <p className="mt-2 text-lg text-gray-200">Your ultimate resource for a smooth start at GIKI.</p>
                     </div>
                     <div className="max-w-5xl mx-auto chronicle-container bg-gray-800 p-6 sm:p-10 rounded-2xl shadow-xl border border-gray-700">
+                        {/* Connection Status Indicator */}
+                        {firebaseConnectionStatus === 'connecting' && (
+                            <div className="mb-4 p-3 bg-blue-900 border border-blue-600 rounded-lg">
+                                <div className="flex items-center justify-center">
+                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    <span className="text-blue-300 text-sm">Connecting to database...</span>
+                                </div>
+                            </div>
+                        )}
+                        
+                        {firebaseConnectionStatus === 'error' && (
+                            <div className="mb-4 p-3 bg-yellow-900 border border-yellow-600 rounded-lg">
+                                <div className="flex items-center justify-center">
+                                    <svg className="w-5 h-5 text-yellow-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                    </svg>
+                                    <span className="text-yellow-300 text-sm">Using offline mode - some features may be limited</span>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="text-center mb-10">
                             <h2 className="text-2xl sm:text-3xl font-bold font-lora text-blue-400">Welcome to GIKI!</h2>
                             <p className="mt-4 text-lg text-gray-300 max-w-2xl mx-auto">
@@ -663,47 +927,275 @@
                                             )}
                                             {section.id === "what-to-pack" && (
                                                 <div className="mt-8 p-6 rounded-xl bg-blue-900 border border-blue-700">
-                                                    <h3 className="text-2xl font-semibold font-lora text-blue-300">Need a Personalized List?</h3>
-                                                    <p className="mt-2 text-sm text-gray-300">Tell us a bit about yourself to get a custom packing list. For example, "I'm a computer science student" or "I get cold easily."</p>
-                                                    <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                                                        <input 
-                                                            type="text" 
-                                                            value={personalizedInput}
-                                                            onChange={(e) => setPersonalizedInput(e.target.value)}
-                                                            placeholder="e.g., 'I am an engineering student who loves to play badminton'" 
-                                                            className="flex-grow p-3 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-gray-100" 
-                                                        />
-                                                        <button 
-                                                            onClick={generatePersonalizedList}
-                                                            disabled={isGenerating || !personalizedInput.trim()}
-                                                            className={`flex items-center justify-center px-6 py-3 rounded-lg font-bold text-white transition-colors shadow-md ${isGenerating || !personalizedInput.trim() ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
-                                                        >
-                                                            {isGenerating ? (
-                                                                <div className="flex items-center">
-                                                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                                    </svg>
-                                                                    Generating...
-                                                                </div>
-                                                            ) : 'Generate List'}
-                                                        </button>
-                                                    </div>
-                                                    {personalizedList && personalizedList.items.length > 0 && (
-                                                        <div className="mt-6 p-4 bg-gray-700 rounded-lg border border-blue-600">
-                                                            <h4 className="text-xl font-semibold font-lora text-blue-300 mb-2">{personalizedList.title}</h4>
-                                                            <ul className="list-disc list-inside space-y-3">
-                                                                {personalizedList.items.map((item, index) => (
-                                                                    <li key={index} className="text-gray-300">
-                                                                        <strong>{item.split(':')[0].trim()}:</strong> {item.split(':').slice(1).join(':').trim()}
-                                                                    </li>
-                                                                ))}
-                                                            </ul>
+                                                    <h3 className="text-2xl font-semibold font-lora text-blue-300">Get Your Complete Packing List</h3>
+                                                    <p className="mt-2 text-sm text-gray-300">Tell us a bit about yourself to get a personalized packing list that includes both your specific needs and all the essentials for GIKI.</p>
+                                                    
+                                                    {/* Loading saved list */}
+                                                    {isLoadingSavedList && (
+                                                        <div className="mt-4 p-4 bg-gray-700 rounded-lg border border-blue-600">
+                                                            <div className="flex items-center justify-center">
+                                                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                                </svg>
+                                                                <span className="text-gray-300">Loading your saved packing list...</span>
+                                                            </div>
                                                         </div>
                                                     )}
+
+                                                    {/* Show saved list if available */}
+                                                    {!isLoadingSavedList && savedPackingList && (
+                                                        <div className="mt-6 p-4 bg-gray-700 rounded-lg border border-blue-600">
+                                                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                                                                <h4 className="text-xl font-semibold font-lora text-blue-300">{savedPackingList.title}</h4>
+                                                                <div className="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                                                                    <button 
+                                                                        onClick={handleRegenerateList}
+                                                                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-semibold"
+                                                                    >
+                                                                        Regenerate
+                                                                    </button>
+                                                                    <button 
+                                                                        onClick={handleDeleteList}
+                                                                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-semibold"
+                                                                    >
+                                                                        Delete List
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            {/* Personalized Items Section */}
+                                                            {savedPackingList.personalizedItems && savedPackingList.personalizedItems.length > 0 && (
+                                                                <div className="mb-6">
+                                                                    <h5 className="text-lg font-semibold text-green-400 mb-3 border-b border-green-600 pb-1">Personalized for You</h5>
+                                                                    <div className="space-y-2">
+                                                                        {savedPackingList.personalizedItems.map((item, index) => {
+                                                                            const itemId = `personalized-${index}`;
+                                                                            const itemName = item.split(':')[0].trim();
+                                                                            const itemDesc = item.split(':').slice(1).join(':').trim();
+                                                                            return (
+                                                                                <label key={index} className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-600 transition-colors cursor-pointer">
+                                                                                    <input
+                                                                                        type="checkbox"
+                                                                                        checked={checkedItems[itemId] || false}
+                                                                                        onChange={(e) => handleCheckboxChange(itemId, e.target.checked)}
+                                                                                        className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                                                                    />
+                                                                                    <div className="flex-1">
+                                                                                        <span className="font-semibold text-gray-100">{itemName}</span>
+                                                                                        {itemDesc && <span className="text-gray-300 ml-2">- {itemDesc}</span>}
+                                                                                    </div>
+                                                                                </label>
+                                                                            );
+                                                                        })}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+
+                                                            {/* Essential Items Section */}
+                                                            <div>
+                                                                <h5 className="text-lg font-semibold text-blue-400 mb-3 border-b border-blue-600 pb-1">Essential Items for GIKI</h5>
+                                                                <div className="space-y-2">
+                                                                    {savedPackingList.essentialItems.map((item, index) => {
+                                                                        const itemId = `essential-${index}`;
+                                                                        return (
+                                                                            <label key={index} className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-600 transition-colors cursor-pointer">
+                                                                                <input
+                                                                                    type="checkbox"
+                                                                                    checked={checkedItems[itemId] || false}
+                                                                                    onChange={(e) => handleCheckboxChange(itemId, e.target.checked)}
+                                                                                    className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                                                                />
+                                                                                <span className="text-gray-300">{item}</span>
+                                                                            </label>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Progress indicator */}
+                                                            <div className="mt-6 p-3 bg-gray-600 rounded-lg">
+                                                                <div className="flex justify-between items-center mb-2">
+                                                                    <span className="text-sm font-medium text-gray-300">Packing Progress</span>
+                                                                    <span className="text-sm text-gray-300">
+                                                                        {Object.values(checkedItems).filter(Boolean).length} / {savedPackingList.personalizedItems.length + savedPackingList.essentialItems.length} items
+                                                                    </span>
+                                                                </div>
+                                                                <div className="w-full bg-gray-700 rounded-full h-2">
+                                                                    <div 
+                                                                        className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                                                        style={{ 
+                                                                            width: `${((Object.values(checkedItems).filter(Boolean).length) / (savedPackingList.personalizedItems.length + savedPackingList.essentialItems.length)) * 100}%` 
+                                                                        }}
+                                                                    ></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Generate new list form */}
+                                                    {!isLoadingSavedList && !savedPackingList && (
+                                                        <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                                                            <input 
+                                                                type="text" 
+                                                                value={personalizedInput}
+                                                                onChange={(e) => setPersonalizedInput(e.target.value)}
+                                                                placeholder="e.g., 'I am an engineering student who loves to play badminton'" 
+                                                                className="flex-grow p-3 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-gray-100" 
+                                                            />
+                                                            <button 
+                                                                onClick={generatePersonalizedList}
+                                                                disabled={isGenerating || !personalizedInput.trim()}
+                                                                className={`flex items-center justify-center px-6 py-3 rounded-lg font-bold text-white transition-colors shadow-md ${isGenerating || !personalizedInput.trim() ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
+                                                            >
+                                                                {isGenerating ? (
+                                                                    <div className="flex items-center">
+                                                                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                                        </svg>
+                                                                        Generating...
+                                                                    </div>
+                                                                ) : 'Generate Complete List'}
+                                                            </button>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Show newly generated list */}
+                                                    {personalizedList && !savedPackingList && (
+                                                        <div className="mt-6 p-4 bg-gray-700 rounded-lg border border-blue-600">
+                                                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                                                                <h4 className="text-xl font-semibold font-lora text-blue-300">{personalizedList.title}</h4>
+                                                                <div className="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                                                                    <button 
+                                                                        onClick={handleRegenerateList}
+                                                                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-semibold"
+                                                                    >
+                                                                        Regenerate
+                                                                    </button>
+                                                                    {currentUser && (
+                                                                        <button 
+                                                                            onClick={async () => {
+                                                                                if (currentUser) {
+                                                                                    const saved = await savePackingList(currentUser.uid, {
+                                                                                        ...personalizedList,
+                                                                                        checkedItems: {}
+                                                                                    });
+                                                                                    if (saved) {
+                                                                                        setSavedPackingList(personalizedList);
+                                                                                        setCheckedItems({});
+                                                                                    }
+                                                                                }
+                                                                            }}
+                                                                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold"
+                                                                        >
+                                                                            Save List
+                                                                        </button>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            {/* Personalized Items Section */}
+                                                            {personalizedList.personalizedItems && personalizedList.personalizedItems.length > 0 && (
+                                                                <div className="mb-6">
+                                                                    <h5 className="text-lg font-semibold text-green-400 mb-3 border-b border-green-600 pb-1">Personalized for You</h5>
+                                                                    <div className="space-y-2">
+                                                                        {personalizedList.personalizedItems.map((item, index) => {
+                                                                            const itemId = `personalized-${index}`;
+                                                                            const itemName = item.split(':')[0].trim();
+                                                                            const itemDesc = item.split(':').slice(1).join(':').trim();
+                                                                            return (
+                                                                                <label key={index} className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-600 transition-colors cursor-pointer">
+                                                                                    <input
+                                                                                        type="checkbox"
+                                                                                        checked={checkedItems[itemId] || false}
+                                                                                        onChange={(e) => handleCheckboxChange(itemId, e.target.checked)}
+                                                                                        className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                                                                    />
+                                                                                    <div className="flex-1">
+                                                                                        <span className="font-semibold text-gray-100">{itemName}</span>
+                                                                                        {itemDesc && <span className="text-gray-300 ml-2">- {itemDesc}</span>}
+                                                                                    </div>
+                                                                                </label>
+                                                                            );
+                                                                        })}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+
+                                                            {/* Essential Items Section */}
+                                                            <div>
+                                                                <h5 className="text-lg font-semibold text-blue-400 mb-3 border-b border-blue-600 pb-1">Essential Items for GIKI</h5>
+                                                                <div className="space-y-2">
+                                                                    {personalizedList.essentialItems.map((item, index) => {
+                                                                        const itemId = `essential-${index}`;
+                                                                        return (
+                                                                            <label key={index} className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-600 transition-colors cursor-pointer">
+                                                                                <input
+                                                                                    type="checkbox"
+                                                                                    checked={checkedItems[itemId] || false}
+                                                                                    onChange={(e) => handleCheckboxChange(itemId, e.target.checked)}
+                                                                                    className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                                                                />
+                                                                                <span className="text-gray-300">{item}</span>
+                                                                            </label>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Progress indicator */}
+                                                            <div className="mt-6 p-3 bg-gray-600 rounded-lg">
+                                                                <div className="flex justify-between items-center mb-2">
+                                                                    <span className="text-sm font-medium text-gray-300">Packing Progress</span>
+                                                                    <span className="text-sm text-gray-300">
+                                                                        {Object.values(checkedItems).filter(Boolean).length} / {personalizedList.personalizedItems.length + personalizedList.essentialItems.length} items
+                                                                    </span>
+                                                                </div>
+                                                                <div className="w-full bg-gray-700 rounded-full h-2">
+                                                                    <div 
+                                                                        className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                                                        style={{ 
+                                                                            width: `${((Object.values(checkedItems).filter(Boolean).length) / (personalizedList.personalizedItems.length + personalizedList.essentialItems.length)) * 100}%` 
+                                                                        }}
+                                                                    ></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
                                                     {generationError && (
                                                         <div className="mt-6 p-4 bg-red-900 text-red-200 rounded-lg border-l-4 border-red-500">
                                                             {generationError}
+                                                        </div>
+                                                    )}
+
+                                                    {/* Login prompt for non-authenticated users */}
+                                                    {!currentUser && (
+                                                        <div className="mt-6 p-6 bg-gradient-to-r from-yellow-900 to-orange-900 border-2 border-yellow-600 rounded-lg text-center">
+                                                            <div className="mb-4">
+                                                                <svg className="w-12 h-12 text-yellow-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                                                </svg>
+                                                                <h4 className="text-lg font-semibold text-yellow-200 mb-2">Login Required</h4>
+                                                                <p className="text-yellow-100 text-sm mb-4">
+                                                                    To save your packing list and track your progress across sessions, please login to your account. Your data will be stored securely and synced across devices.
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                                                                <a href="login.html" className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                                                                    Login Now
+                                                                </a>
+                                                                <a href="signup.html" className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold">
+                                                                    Create Account
+                                                                </a>
+                                                            </div>
+                                                            <p className="text-yellow-200 text-xs mt-3">
+                                                                💡 Your packing list will be automatically saved and you can continue where you left off!
+                                                            </p>
+                                                            <p className="text-yellow-200 text-xs mt-2">
+                                                                🔒 Currently using local storage. Database integration coming soon for cross-device sync.
+                                                            </p>
                                                         </div>
                                                     )}
                                                 </div>
