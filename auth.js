@@ -207,6 +207,20 @@ async function isUserAdmin() {
         console.log("User data:", userData);
         console.log("isAdmin value:", userData.isAdmin);
         
+        // Check if user should be admin but isn't marked as such
+        if (typeof isAdminUID === 'function' && isAdminUID(user.uid) && userData.isAdmin !== true) {
+            console.log("User is in admin list but not marked as admin in document. Updating...");
+            try {
+                await db.collection('users').doc(user.uid).update({
+                    isAdmin: true
+                });
+                console.log("Successfully updated user to admin status");
+                return true;
+            } catch (updateError) {
+                console.error("Error updating user to admin status:", updateError);
+            }
+        }
+        
         const isAdmin = userData.isAdmin === true; // Explicitly check for true
         console.log("Final admin result:", isAdmin);
         return isAdmin;
