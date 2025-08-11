@@ -6,7 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 
-// Files to combine in order
+// Files to combine for production
 const filesToCombine = [
     'firebase-init.js',
     'admin-config.js',
@@ -15,71 +15,103 @@ const filesToCombine = [
     'gallery-admin.js',
     'script.js',
     'app.js',
-    'theme-manager.js',
-    'posts.js',
-    'users.js',
-    'comments.js',
-    'security.js',
-    'submissions.js',
-    'database-optimization.js',
-    'image-optimizer.js',
-    'request-optimizer.js',
-    'performance-monitor.js'
+    'theme-manager.js'
 ];
 
-// Minification function (basic)
-function minifyJS(code) {
-    // Temporarily disable minification to avoid template literal issues
-    // This will be re-enabled once we fix the template literal processing
-    return code;
+// Function to remove console.log statements and debug code
+function removeDebugCode(content) {
+    // Remove console.log statements
+    content = content.replace(/console\.log\([^)]*\);?\s*/g, '');
+    
+    // Remove debug comments
+    content = content.replace(/\/\/\s*DEBUG.*$/gm, '');
+    content = content.replace(/\/\/\s*Debug.*$/gm, '');
+    
+    // Remove temporary debugging functions
+    content = content.replace(/\/\/\s*Temporary debugging function.*?}/gs, '');
+    
+    // Remove debug function definitions
+    content = content.replace(/window\.debug\w*\s*=\s*function.*?};?\s*/gs, '');
+    
+    // Clean up multiple empty lines
+    content = content.replace(/\n\s*\n\s*\n/g, '\n\n');
+    
+    return content;
 }
 
-// Combine files
+// Function to minify JavaScript (basic minification)
+function minifyJS(content) {
+    // Remove comments (except license headers)
+    content = content.replace(/\/\*[\s\S]*?\*\//g, '');
+    content = content.replace(/\/\/.*$/gm, '');
+    
+    // Remove extra whitespace
+    content = content.replace(/\s+/g, ' ');
+    content = content.replace(/\s*{\s*/g, '{');
+    content = content.replace(/\s*}\s*/g, '}');
+    content = content.replace(/\s*;\s*/g, ';');
+    content = content.replace(/\s*,\s*/g, ',');
+    content = content.replace(/\s*=\s*/g, '=');
+    content = content.replace(/\s*\+\s*/g, '+');
+    content = content.replace(/\s*-\s*/g, '-');
+    content = content.replace(/\s*\*\s*/g, '*');
+    content = content.replace(/\s*\/\s*/g, '/');
+    
+    // Remove trailing semicolons and spaces
+    content = content.trim();
+    
+    return content;
+}
+
+// Function to combine files
 function combineFiles() {
-    let combinedCode = '';
+    console.log('🚀 Starting production build process...\n');
+    
+    let combinedContent = '';
+    let originalSize = 0;
     
     filesToCombine.forEach(file => {
-        try {
-            const filePath = path.join(__dirname, file);
-            if (fs.existsSync(filePath)) {
-                const content = fs.readFileSync(filePath, 'utf8');
-                combinedCode += `\n// ${file}\n${content}\n`;
-                console.log(`✓ Added ${file}`);
-            } else {
-                console.log(`⚠ File not found: ${file}`);
-            }
-        } catch (error) {
-            console.error(`✗ Error reading ${file}:`, error.message);
+        const filePath = path.join(__dirname, file);
+        if (fs.existsSync(filePath)) {
+            const content = fs.readFileSync(filePath, 'utf8');
+            originalSize += content.length;
+            
+            // Remove debug code
+            const cleanedContent = removeDebugCode(content);
+            
+            combinedContent += `\n// ${file}\n${cleanedContent}\n`;
+            console.log(`✓ Added ${file}`);
+        } else {
+            console.log(`⚠ File not found: ${file}`);
         }
     });
     
-    return combinedCode;
-}
-
-// Main build process
-function build() {
-    console.log('🚀 Starting build process...\n');
+    // Add production header
+    const productionHeader = `/**
+ * GIKI Chronicles - Production Build
+ * Combined and optimized for production
+ * Build Date: ${new Date().toISOString()}
+ */\n\n`;
     
-    // Combine files
-    const combinedCode = combineFiles();
-    
-    // Minify
-    const minifiedCode = minifyJS(combinedCode);
+    combinedContent = productionHeader + combinedContent;
     
     // Write combined file
-    fs.writeFileSync('combined.min.js', minifiedCode);
+    fs.writeFileSync('combined.min.js', combinedContent);
     
-    // Calculate size reduction
-    const originalSize = combinedCode.length;
-    const minifiedSize = minifiedCode.length;
-    const reduction = ((originalSize - minifiedSize) / originalSize * 100).toFixed(1);
+    // Create minified version
+    const minifiedContent = minifyJS(combinedContent);
+    fs.writeFileSync('combined.min.js', minifiedContent);
     
-    console.log('\n📊 Build Results:');
+    const minifiedSize = minifiedContent.length;
+    const reduction = Math.round(((originalSize - minifiedSize) / originalSize) * 100);
+    
+    console.log('\n📊 Production Build Results:');
     console.log(`Original size: ${(originalSize / 1024).toFixed(1)} KB`);
     console.log(`Minified size: ${(minifiedSize / 1024).toFixed(1)} KB`);
     console.log(`Size reduction: ${reduction}%`);
-    console.log('\n✅ Build complete! Use combined.min.js in your HTML files.');
+    console.log(`Debug code removed: ✓`);
+    console.log('\n✅ Production build complete! Use combined.min.js in your HTML files.');
 }
 
-// Run build
-build();
+// Run the build
+combineFiles();

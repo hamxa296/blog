@@ -6,27 +6,36 @@ service cloud.firestore {
     // Helper functions
     function isAdmin() {
       return request.auth != null && 
-             exists(/databases/$(database)/documents/userProfiles/$(request.auth.uid)) &&
-             get(/databases/$(database)/documents/userProfiles/$(request.auth.uid)).data.isAdmin == true;
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
 
-    function isActiveUser() {
-      return request.auth != null && 
-             exists(/databases/$(database)/documents/userProfiles/$(request.auth.uid)) &&
-             !get(/databases/$(database)/documents/userProfiles/$(request.auth.uid)).data.isBlocked;
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow write: if isAuthenticated() && (isOwner(userId) || isAdmin());
+    }
+
+    // User profiles (for backward compatibility)
+    match /userProfiles/{userId} {
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow write: if isAuthenticated() && (isOwner(userId) || isAdmin());
     }
 
     // Posts collection
     match /posts/{postId} {
       allow read: if true;
-      allow create: if isActiveUser();
-      allow update, delete: if isAdmin();
-    }
-
-    // User profiles
-    match /userProfiles/{userId} {
-      allow read: if isActiveUser() && (userId == request.auth.uid || isAdmin());
-      allow write: if isActiveUser() && (userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (resource.data.authorId == request.auth.uid || isAdmin());
+      allow delete: if isAdmin();
     }
 
     // Contact form submissions
@@ -43,30 +52,46 @@ service cloud.firestore {
     // Gallery photos
     match /galleryPhotos/{photoId} {
       allow read: if true;
+      allow create: if isAuthenticated();
       allow update, delete: if isAdmin();
     }
 
     // Events
     match /events/{eventId} {
       allow read: if true;
+      allow create: if isAuthenticated();
       allow update, delete: if isAdmin();
     }
 
     // Comments
     match /comments/{commentId} {
       allow read: if true;
-      allow create: if isActiveUser();
-      allow update, delete: if isActiveUser() && (resource.data.authorId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && (resource.data.authorId == request.auth.uid || isAdmin());
     }
 
-    // Freshman guide data
-    match /artifacts/{appId}/public/data/freshmanGuide/{sectionId} {
-      allow read, write: if isAdmin();
+    // Reactions
+    match /reactions/{reactionId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    // Bookmarks
+    match /bookmarks/{bookmarkId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
     }
 
     // User checklists for packing lists
     match /userChecklists/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if isOwner(userId);
+    }
+
+    // Allow authenticated users to access their own data
+    match /{document=**} {
+      allow read, write: if isAuthenticated() && request.auth.uid == document;
     }
   }
 }

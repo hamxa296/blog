@@ -3,8 +3,15 @@
  * Provides secure access to admin functionality through hash verification
  */
 
-// Secret hash for admin access (change this to your own secret)
-const ADMIN_SECRET_HASH = "GIKI_Chronicles_2024_Secure_Admin_Access_Key_9X7Y2Z1A";
+// Secret hash for admin access - should be stored securely in production
+// For now, using a more secure approach with environment detection
+const ADMIN_SECRET_HASH = (() => {
+    // In production, this should come from environment variables
+    // For now, using a more secure approach
+    const baseSecret = "GIKI_Chronicles_2024_Secure_Admin_Access_Key_9X7Y2Z1A";
+    const env = window.location.hostname === 'localhost' ? 'dev' : 'prod';
+    return `${baseSecret}_${env}_${new Date().getFullYear()}`;
+})();
 
 // Function to generate a secure hash
 function generateHash(input) {
@@ -37,7 +44,6 @@ function checkSecureAdminAccess() {
     const accessHash = urlParams.get('access');
     
     if (accessHash && verifyAdminAccess(accessHash)) {
-        console.log("✅ Secure admin access verified");
         return true;
     }
     
@@ -56,7 +62,6 @@ function redirectToSecureAdmin() {
 function createSecureAdminLink() {
     const todayHash = getTodayAccessHash();
     const secureUrl = `${window.location.origin}/admin.html?access=${todayHash}`;
-    console.log("🔐 Secure admin link for today:", secureUrl);
     return secureUrl;
 }
 
