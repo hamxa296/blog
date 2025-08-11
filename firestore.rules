@@ -18,6 +18,18 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == userId;
     }
 
+    // Artifacts collection (for guide data and other public content)
+    match /artifacts/{artifactId} {
+      allow read: if true; // Public read access
+      allow write: if isAdmin(); // Only admins can write
+      
+      // Nested collections under artifacts
+      match /{document=**} {
+        allow read: if true; // Public read access to all nested documents
+        allow write: if isAdmin(); // Only admins can write
+      }
+    }
+
     // Users collection
     match /users/{userId} {
       allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
