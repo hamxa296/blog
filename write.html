@@ -73,6 +73,47 @@
         .preview-image {
             transition: opacity 0.3s ease;
         }
+        
+        /* Theme-aware button styling */
+        .theme-aware-button {
+            transition: all 0.3s ease;
+        }
+        
+        /* Light theme */
+        .theme-basic-light .theme-aware-button {
+            background-color: #f3f4f6;
+            color: #374151;
+            border-color: #d1d5db;
+        }
+        
+        .theme-basic-light .theme-aware-button:hover {
+            background-color: #e5e7eb;
+            border-color: #9ca3af;
+        }
+        
+        /* Dark theme */
+        .theme-basic-dark .theme-aware-button {
+            background-color: #374151;
+            color: #f9fafb;
+            border-color: #4b5563;
+        }
+        
+        .theme-basic-dark .theme-aware-button:hover {
+            background-color: #4b5563;
+            border-color: #6b7280;
+        }
+        
+        /* GIKI theme */
+        .theme-giki .theme-aware-button {
+            background-color: #1e40af;
+            color: #ffffff;
+            border-color: #1d4ed8;
+        }
+        
+        .theme-giki .theme-aware-button:hover {
+            background-color: #1d4ed8;
+            border-color: #2563eb;
+        }
     </style>
 </head>
 
@@ -260,13 +301,13 @@
                     </div>
 
                     <div class="flex flex-col gap-4">
-                        <div id="form-message" class="text-center h-5"></div>
+                        <div id="form-message" class="text-center min-h-[1.25rem] py-2 px-3 rounded-lg transition-all duration-300"></div>
                         <button type="submit" id="submit-post-button"
                             class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full transition duration-300 text-lg">
                             Submit for Review
                         </button>
                         <button type="button" id="preview-post-button"
-                            class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full transition duration-300">
+                            class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-full transition duration-300 border border-gray-300 theme-aware-button">
                             Preview
                         </button>
                     </div>
@@ -487,6 +528,7 @@
     <script src="users.js"></script>
     <script src="script.js"></script>
     <script src="theme-manager.js"></script>
+    <script src="tour-manager.js"></script>
     <script src="app.js"></script>
 
 </body>

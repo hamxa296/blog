@@ -95,6 +95,52 @@ html, body {
     color: var(--text-color, #f9fafb);
 }
 
+/* Dynamic Text Selection Styles - Adapts to current theme */
+/* Light Theme Text Selection - Using theme's primary color */
+html.theme-basic-light ::selection,
+body.theme-basic-light ::selection,
+.theme-basic-light ::selection {
+    background-color: var(--primary-color, #3b82f6) !important;
+    color: white !important;
+}
+
+html.theme-basic-light ::-moz-selection,
+body.theme-basic-light ::-moz-selection,
+.theme-basic-light ::-moz-selection {
+    background-color: var(--primary-color, #3b82f6) !important;
+    color: white !important;
+}
+
+/* Dark Theme Text Selection - Using theme's primary color */
+html.theme-basic-dark ::selection,
+body.theme-basic-dark ::selection,
+.theme-basic-dark ::selection {
+    background-color: var(--primary-color, #60a5fa) !important;
+    color: var(--bg-color, #282a29) !important;
+}
+
+html.theme-basic-dark ::-moz-selection,
+body.theme-basic-dark ::-moz-selection,
+.theme-basic-dark ::-moz-selection {
+    background-color: var(--primary-color, #60a5fa) !important;
+    color: var(--bg-color, #282a29) !important;
+}
+
+/* GIKI Theme Text Selection - Using theme's primary color */
+html.theme-giki ::selection,
+body.theme-giki ::selection,
+.theme-giki ::selection {
+    background-color: var(--primary-color, #332D56) !important;
+    color: white !important;
+}
+
+html.theme-giki ::-moz-selection,
+body.theme-giki ::-moz-selection,
+.theme-giki ::-moz-selection {
+    background-color: var(--primary-color, #332D56) !important;
+    color: white !important;
+}
+
 /* Header - transparent to inherit body background */
 header {
     background: transparent !important;
@@ -546,4 +592,35 @@ main {
 .container {
     overflow-x: hidden;
     max-width: 100%;
+}
+
+/* Final override for text selection - highest priority */
+html.theme-basic-light *::selection {
+    background-color: var(--primary-color, #3b82f6) !important;
+    color: white !important;
+}
+
+html.theme-basic-light *::-moz-selection {
+    background-color: var(--primary-color, #3b82f6) !important;
+    color: white !important;
+}
+
+html.theme-basic-dark *::selection {
+    background-color: var(--primary-color, #60a5fa) !important;
+    color: var(--bg-color, #282a29) !important;
+}
+
+html.theme-basic-dark *::-moz-selection {
+    background-color: var(--primary-color, #60a5fa) !important;
+    color: var(--bg-color, #282a29) !important;
+}
+
+html.theme-giki *::selection {
+    background-color: var(--primary-color, #332D56) !important;
+    color: white !important;
+}
+
+html.theme-giki *::-moz-selection {
+    background-color: var(--primary-color, #332D56) !important;
+    color: white !important;
 }

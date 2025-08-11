@@ -56,6 +56,25 @@ async function signInWithGoogle() {
         const result = await auth.signInWithPopup(provider);
         const user = result.user;
 
+        // Check if user is blocked
+        try {
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                if (userData.isBlocked) {
+                    // Sign out the user immediately if they're blocked
+                    await auth.signOut();
+                    return { 
+                        success: false, 
+                        error: "Your account has been blocked. Please contact an administrator for assistance." 
+                    };
+                }
+            }
+        } catch (firestoreError) {
+            console.error("Error checking user status:", firestoreError);
+            // Continue with login even if Firestore fails
+        }
+
         // Create or update the user document in the 'users' collection
         const userData = {
             uid: user.uid,
@@ -87,6 +106,25 @@ async function loginUser(email, password) {
     try {
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
         const user = userCredential.user;
+        
+        // Check if user is blocked
+        try {
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                if (userData.isBlocked) {
+                    // Sign out the user immediately if they're blocked
+                    await auth.signOut();
+                    return { 
+                        success: false, 
+                        error: "Your account has been blocked. Please contact an administrator for assistance." 
+                    };
+                }
+            }
+        } catch (firestoreError) {
+            console.error("Error checking user status:", firestoreError);
+            // Continue with login even if Firestore fails
+        }
         
         // Ensure user document exists in Firestore
         try {

@@ -3,7 +3,10 @@ class WebsiteTour {
     constructor() {
         this.currentStep = 0;
         this.isActive = false;
-        this.tourSteps = [
+        this.isMobile = window.innerWidth < 768; // Check if mobile device
+        
+        // Desktop tour steps
+        this.desktopTourSteps = [
             {
                 id: 'welcome',
                 title: 'Welcome to GIKI Chronicles! 👋',
@@ -23,13 +26,6 @@ class WebsiteTour {
                 title: 'GIKI Chronicles Logo',
                 content: 'Click the logo anytime to return to the home page.',
                 target: 'header a[href="index.html"]',
-                position: 'bottom'
-            },
-            {
-                id: 'sidebar-toggle',
-                title: 'Mobile Menu',
-                content: 'On mobile devices, tap this hamburger menu to open the sidebar with all navigation options.',
-                target: '#sidebar-toggle',
                 position: 'bottom'
             },
             {
@@ -82,6 +78,69 @@ class WebsiteTour {
                 position: 'center'
             }
         ];
+
+        // Mobile tour steps
+        this.mobileTourSteps = [
+            {
+                id: 'welcome',
+                title: 'Welcome to GIKI Chronicles! 👋',
+                content: 'Let\'s take a quick tour to help you navigate our blog on mobile. Click "Next" to continue.',
+                target: null,
+                position: 'center'
+            },
+            {
+                id: 'mobile-header',
+                title: 'Mobile Header',
+                content: 'This is your mobile navigation area. The hamburger menu gives you access to all pages.',
+                target: 'header',
+                position: 'bottom'
+            },
+            {
+                id: 'logo',
+                title: 'GIKI Chronicles Logo',
+                content: 'Click the logo anytime to return to the home page.',
+                target: 'header a[href="index.html"]',
+                position: 'bottom'
+            },
+            {
+                id: 'sidebar-toggle',
+                title: 'Mobile Menu',
+                content: 'Tap this hamburger menu to open the sidebar with all navigation options.',
+                target: '#sidebar-toggle',
+                position: 'bottom'
+            },
+            {
+                id: 'sidebar',
+                title: 'Sidebar Menu',
+                content: 'The sidebar contains quick access to all pages, theme settings, and user options.',
+                target: '#sidebar',
+                position: 'right'
+            },
+            {
+                id: 'mobile-navigation',
+                title: 'Mobile Navigation',
+                content: 'Here you\'ll find links to Gallery, Freshmen Guide, Calendar, and other important pages.',
+                target: '#sidebar nav',
+                position: 'right'
+            },
+            {
+                id: 'theme-selector',
+                title: 'Theme Customization',
+                content: 'Choose your preferred theme - Dark, Light, or GIKI colors. Your choice is saved automatically.',
+                target: '#theme-select',
+                position: 'left'
+            },
+            {
+                id: 'footer',
+                title: 'Tour Complete! 🎉',
+                content: 'You\'re all set! You can restart this tour anytime by clicking the tour button in the sidebar. Enjoy exploring GIKI Chronicles!',
+                target: null,
+                position: 'center'
+            }
+        ];
+
+        // Set tour steps based on device type
+        this.tourSteps = this.isMobile ? this.mobileTourSteps : this.desktopTourSteps;
         
         this.init();
     }
@@ -104,28 +163,28 @@ class WebsiteTour {
         // Create tour tooltip
         const tooltip = document.createElement('div');
         tooltip.id = 'tour-tooltip';
-        tooltip.className = 'fixed z-[10000] bg-white rounded-lg shadow-xl border border-gray-200 max-w-sm hidden transform transition-all duration-300 scale-95 opacity-0';
+        tooltip.className = 'fixed z-[10000] bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-600 max-w-sm md:max-w-sm w-[90vw] md:w-auto mx-4 hidden transform transition-all duration-300 scale-95 opacity-0';
         tooltip.innerHTML = `
-            <div class="p-4">
+            <div class="p-4 md:p-4">
                 <div class="flex items-center justify-between mb-3">
-                    <h3 id="tour-title" class="text-lg font-semibold text-gray-800"></h3>
-                    <button id="tour-close" class="text-gray-400 hover:text-gray-600 transition-colors duration-200">
+                    <h3 id="tour-title" class="text-lg md:text-lg font-semibold text-gray-800 dark:text-white"></h3>
+                    <button id="tour-close" class="text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-100 transition-colors duration-200 p-1">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 </div>
-                <p id="tour-content" class="text-gray-600 mb-4"></p>
-                <div class="flex justify-between items-center">
-                    <div class="flex space-x-2">
-                        <button id="tour-prev" class="px-3 py-1 text-sm text-gray-600 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+                <p id="tour-content" class="text-gray-600 dark:text-gray-300 mb-4 text-sm md:text-base leading-relaxed"></p>
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0">
+                    <div class="flex space-x-2 w-full md:w-auto">
+                        <button id="tour-prev" class="flex-1 md:flex-none px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 rounded-md border border-gray-300 dark:border-gray-600">
                             Previous
                         </button>
-                        <button id="tour-next" class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-200">
+                        <button id="tour-next" class="flex-1 md:flex-none px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 border border-blue-600">
                             Next
                         </button>
                     </div>
-                    <span id="tour-progress" class="text-sm text-gray-500"></span>
+                    <span id="tour-progress" class="text-sm text-gray-500 dark:text-gray-400 text-center md:text-right w-full md:w-auto"></span>
                 </div>
             </div>
         `;
@@ -216,6 +275,23 @@ class WebsiteTour {
             } else if (e.key === 'ArrowLeft') {
                 e.preventDefault();
                 this.prevStep();
+            }
+        });
+
+        // Handle window resize to update tour steps
+        window.addEventListener('resize', () => {
+            const wasMobile = this.isMobile;
+            this.isMobile = window.innerWidth < 768;
+            
+            // If device type changed, update tour steps
+            if (wasMobile !== this.isMobile) {
+                this.tourSteps = this.isMobile ? this.mobileTourSteps : this.desktopTourSteps;
+                
+                // If tour is active, restart with new steps
+                if (this.isActive) {
+                    this.currentStep = 0;
+                    this.showStep();
+                }
             }
         });
     }
@@ -359,13 +435,33 @@ class WebsiteTour {
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
         
-        if (left < 10) left = 10;
-        if (left + tooltipRect.width > viewportWidth - 10) {
-            left = viewportWidth - tooltipRect.width - 10;
-        }
-        if (top < 10) top = 10;
-        if (top + tooltipRect.height > viewportHeight - 10) {
-            top = viewportHeight - tooltipRect.height - 10;
+        // Mobile-specific positioning adjustments
+        if (this.isMobile) {
+            // On mobile, center the tooltip horizontally if it's too wide
+            if (tooltipRect.width > viewportWidth - 20) {
+                left = 10;
+            } else {
+                if (left < 10) left = 10;
+                if (left + tooltipRect.width > viewportWidth - 10) {
+                    left = viewportWidth - tooltipRect.width - 10;
+                }
+            }
+            
+            // Ensure vertical positioning works well on mobile
+            if (top < 10) top = 10;
+            if (top + tooltipRect.height > viewportHeight - 10) {
+                top = viewportHeight - tooltipRect.height - 10;
+            }
+        } else {
+            // Desktop positioning
+            if (left < 10) left = 10;
+            if (left + tooltipRect.width > viewportWidth - 10) {
+                left = viewportWidth - tooltipRect.width - 10;
+            }
+            if (top < 10) top = 10;
+            if (top + tooltipRect.height > viewportHeight - 10) {
+                top = viewportHeight - tooltipRect.height - 10;
+            }
         }
         
         tooltip.style.top = `${top}px`;
@@ -432,13 +528,13 @@ class WebsiteTour {
     showCompletionMessage() {
         // Create a temporary completion message
         const message = document.createElement('div');
-        message.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[10000] transform transition-all duration-300 translate-x-full';
+        message.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[10000] transform transition-all duration-300 translate-x-full border border-green-600';
         message.innerHTML = `
             <div class="flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
-                Tour completed! You can restart it anytime from the sidebar.
+                <span class="font-medium">Tour completed! You can restart it anytime from the sidebar.</span>
             </div>
         `;
         
@@ -469,6 +565,7 @@ class WebsiteTour {
     // Debug method to test tour functionality
     debugTour() {
         console.log('Tour Debug Info:');
+        console.log('- Device Type:', this.isMobile ? 'Mobile' : 'Desktop');
         console.log('- Current Step:', this.currentStep);
         console.log('- Is Active:', this.isActive);
         console.log('- Total Steps:', this.tourSteps.length);

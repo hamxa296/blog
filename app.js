@@ -79,8 +79,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         const clearFormMessage = () => {
             const formMessage = document.getElementById('form-message');
             if (formMessage && formMessage.textContent.includes('submitted successfully')) {
+                // Don't clear success messages immediately - let them stay visible
+                return;
+            }
+            if (formMessage && formMessage.textContent) {
                 formMessage.textContent = '';
-                formMessage.className = 'text-center h-5';
+                formMessage.className = 'text-center min-h-[1.25rem] py-2 px-3 rounded-lg transition-all duration-300';
             }
         };
         
@@ -292,7 +296,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
             formMessage.textContent = 'Submitting...';
-            formMessage.className = 'text-center h-5 text-blue-600 font-medium';
+            formMessage.className = 'text-center min-h-[1.25rem] py-2 px-3 rounded-lg transition-all duration-300 text-blue-600 font-medium bg-blue-50 border border-blue-200';
             
             // Get photo URL from either URL input or uploaded image
             let photoUrl = '';
@@ -319,37 +323,121 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             if (result.success) {
                 formMessage.textContent = '✅ Your post has been submitted successfully! It will be reviewed and approved if it matches our guidelines.';
-                formMessage.className = 'text-center h-5 text-green-600 font-medium';
-                // Clear the form for a new post
-                document.getElementById('post-title').value = '';
-                document.getElementById('post-description').value = '';
-                document.getElementById('post-photo-url').value = '';
-                document.getElementById('post-genre').value = 'General';
-                document.getElementById('post-tags').value = '';
-                quill.setText('');
+                formMessage.className = 'text-center min-h-[1.25rem] py-2 px-3 rounded-lg transition-all duration-300 text-green-600 font-medium bg-green-50 border border-green-200';
                 
-                // Clear uploaded image
-                uploadedImageUrl = null;
-                if (fileInput) fileInput.value = '';
-                if (uploadPreview) uploadPreview.classList.add('hidden');
-                if (uploadProgress) uploadProgress.classList.add('hidden');
-                
-                // Reset to URL tab
-                if (urlTab && uploadTab) {
-                    urlTab.click();
-                }
-                // Clear the hidden post ID if it was set
-                document.getElementById('post-id').value = '';
-                // Reset button text
-                document.getElementById('submit-post-button').textContent = 'Submit for Review';
-                // Reset page title and subtitle
-                document.getElementById('page-title').textContent = 'Blog Editor';
-                document.getElementById('page-subtitle').textContent = 'Your one-stop hub for student life, engineering marvels, and campus tales at GIKI Institute.';
+                // Delay clearing the form to let user see the success message
+                setTimeout(() => {
+                    // Clear the form for a new post
+                    document.getElementById('post-title').value = '';
+                    document.getElementById('post-description').value = '';
+                    document.getElementById('post-photo-url').value = '';
+                    document.getElementById('post-genre').value = 'General';
+                    document.getElementById('post-tags').value = '';
+                    quill.setText('');
+                    
+                    // Clear uploaded image
+                    uploadedImageUrl = null;
+                    if (fileInput) fileInput.value = '';
+                    if (uploadPreview) uploadPreview.classList.add('hidden');
+                    if (uploadProgress) uploadProgress.classList.add('hidden');
+                    
+                    // Reset to URL tab
+                    if (urlTab && uploadTab) {
+                        urlTab.click();
+                    }
+                    // Clear the hidden post ID if it was set
+                    document.getElementById('post-id').value = '';
+                    // Reset button text
+                    document.getElementById('submit-post-button').textContent = 'Submit for Review';
+                    // Reset page title and subtitle
+                    document.getElementById('page-title').textContent = 'Blog Editor';
+                    document.getElementById('page-subtitle').textContent = 'Your one-stop hub for student life, engineering marvels, and campus tales at GIKI Institute.';
+                    
+                    // Clear the success message after form is cleared
+                    setTimeout(() => {
+                        formMessage.textContent = '';
+                        formMessage.className = 'text-center min-h-[1.25rem] py-2 px-3 rounded-lg transition-all duration-300';
+                    }, 2000); // Keep message visible for 2 more seconds after form clear
+                }, 3000); // Wait 3 seconds before clearing form
             } else {
                 formMessage.textContent = result.error;
-                formMessage.className = 'text-center h-5 text-red-600 font-medium';
+                formMessage.className = 'text-center min-h-[1.25rem] py-2 px-3 rounded-lg transition-all duration-300 text-red-600 font-medium bg-red-50 border border-red-200';
             }
         });
+
+        // --- Preview Button Functionality ---
+        const previewButton = document.getElementById('preview-post-button');
+        if (previewButton) {
+            previewButton.addEventListener('click', () => {
+                // Get current form data
+                const title = document.getElementById('post-title').value || 'Untitled Post';
+                const description = document.getElementById('post-description').value || 'No description provided';
+                const content = quill ? quill.root.innerHTML : '<p>No content yet...</p>';
+                
+                // Get photo URL from either URL input or uploaded image
+                let photoUrl = '';
+                if (uploadedImageUrl) {
+                    photoUrl = uploadedImageUrl;
+                } else {
+                    photoUrl = document.getElementById('post-photo-url').value;
+                }
+                
+                const genre = document.getElementById('post-genre').value || 'General';
+                const tags = document.getElementById('post-tags').value || '';
+                
+                // Create preview HTML
+                const previewHTML = `
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Preview: ${title}</title>
+                        <script src="https://cdn.tailwindcss.com"></script>
+                        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+                        <style>
+                            body { font-family: 'Inter', sans-serif; }
+                            .ql-editor { font-size: 1.125rem; line-height: 1.75; }
+                            .ql-editor h1, .ql-editor h2, .ql-editor h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; }
+                            .ql-editor p { margin-bottom: 1rem; }
+                            .ql-editor ul, .ql-editor ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+                            .ql-editor blockquote { border-left: 4px solid #e5e7eb; padding-left: 1rem; margin: 1rem 0; }
+                        </style>
+                    </head>
+                    <body class="bg-gray-50">
+                        <div class="container mx-auto px-4 py-8 max-w-4xl">
+                            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                                ${photoUrl ? `<img src="${photoUrl}" alt="Featured Image" class="w-full h-64 object-cover">` : ''}
+                                <div class="p-8">
+                                    <div class="mb-6">
+                                        <h1 class="text-4xl font-bold text-gray-800 mb-4">${title}</h1>
+                                        <p class="text-lg text-gray-600 mb-4">${description}</p>
+                                        <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">${genre}</span>
+                                            ${tags ? `<span class="text-gray-600">Tags: ${tags}</span>` : ''}
+                                        </div>
+                                    </div>
+                                    <div class="prose max-w-none">
+                                        <div class="ql-editor">${content}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-8 text-center">
+                                <button onclick="window.close()" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                                    Close Preview
+                                </button>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                `;
+                
+                // Open preview in new window
+                const previewWindow = window.open('', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+                previewWindow.document.write(previewHTML);
+                previewWindow.document.close();
+            });
+        }
     }
 
     // --- Profile Page Logic ---
@@ -578,8 +666,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
                 
                 if (isDarkTheme) {
-                    // Apply dark theme styles
-                    element.style.color = '#f9fafb'; // Light text for dark theme
+                    // Apply dark theme styles - use CSS classes instead of inline styles
+                    element.classList.add('theme-basic-dark');
+                    element.classList.remove('theme-basic-light', 'theme-giki');
                     
                     // Special handling for links
                     if (element.tagName === 'A') {
@@ -604,8 +693,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                         element.style.borderLeftColor = '#4b5563';
                     }
                 } else {
-                    // Apply light theme styles
-                    element.style.color = '#1f2937'; // Dark text for light theme
+                    // Apply light theme styles - use CSS classes instead of inline styles
+                    element.classList.add('theme-basic-light');
+                    element.classList.remove('theme-basic-dark', 'theme-giki');
                     
                     // Special handling for links
                     if (element.tagName === 'A') {
