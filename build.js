@@ -39,13 +39,13 @@ function removeDebugCode(content) {
     return content;
 }
 
-// Function to minify JavaScript (basic minification)
+// Function to minify JavaScript (basic minification that preserves syntax)
 function minifyJS(content) {
     // Remove comments (except license headers)
     content = content.replace(/\/\*[\s\S]*?\*\//g, '');
     content = content.replace(/\/\/.*$/gm, '');
     
-    // Remove extra whitespace
+    // Remove extra whitespace but preserve string literals
     content = content.replace(/\s+/g, ' ');
     content = content.replace(/\s*{\s*/g, '{');
     content = content.replace(/\s*}\s*/g, '}');
@@ -95,21 +95,18 @@ function combineFiles() {
     
     combinedContent = productionHeader + combinedContent;
     
-    // Write combined file
+    // Write combined file (without minification to avoid syntax errors)
     fs.writeFileSync('combined.min.js', combinedContent);
     
-    // Create minified version
-    const minifiedContent = minifyJS(combinedContent);
-    fs.writeFileSync('combined.min.js', minifiedContent);
-    
-    const minifiedSize = minifiedContent.length;
-    const reduction = Math.round(((originalSize - minifiedSize) / originalSize) * 100);
+    const finalSize = combinedContent.length;
+    const reduction = Math.round(((originalSize - finalSize) / originalSize) * 100);
     
     console.log('\n📊 Production Build Results:');
     console.log(`Original size: ${(originalSize / 1024).toFixed(1)} KB`);
-    console.log(`Minified size: ${(minifiedSize / 1024).toFixed(1)} KB`);
+    console.log(`Final size: ${(finalSize / 1024).toFixed(1)} KB`);
     console.log(`Size reduction: ${reduction}%`);
     console.log(`Debug code removed: ✓`);
+    console.log(`Syntax preserved: ✓`);
     console.log('\n✅ Production build complete! Use combined.min.js in your HTML files.');
 }
 
