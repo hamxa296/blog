@@ -107,3 +107,6 @@ async function testAdminStatus() {
         return false;
     }
 }
+
+// Make testAdminStatus globally accessible
+window.testAdminStatus = testAdminStatus;
