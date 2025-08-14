@@ -745,9 +745,22 @@
                                     },
                                     (error) => {
                                         console.error("Firestore listener error:", error);
-                                        setFirebaseConnectionStatus('error');
-                                        // Fallback to placeholder data if listener fails
-                                        setGuideSections(guidePlaceholderData.map(s => s.id === "what-to-pack" ? { ...s, tag: "Ready, Set, Pack!" } : s));
+                                        
+                                        // Handle specific network errors more gracefully
+                                        if (error.code === 'unavailable' || error.code === 'deadline-exceeded' || 
+                                            error.message.includes('QUIC') || error.message.includes('network')) {
+                                            console.warn("Network connectivity issue detected, using offline mode");
+                                            setFirebaseConnectionStatus('error');
+                                            setGuideSections(guidePlaceholderData.map(s => s.id === "what-to-pack" ? { ...s, tag: "Ready, Set, Pack!" } : s));
+                                        } else {
+                                            // For other errors, try to reconnect
+                                            console.error("Firestore error, attempting to reconnect:", error);
+                                            setFirebaseConnectionStatus('error');
+                                            setTimeout(() => {
+                                                console.log("Attempting to reconnect to Firestore...");
+                                                setupFirestoreListener();
+                                            }, 5000); // Retry after 5 seconds
+                                        }
                                     }
                                 );
                                 
@@ -755,7 +768,7 @@
                             } catch (error) {
                                 console.error("Error setting up Firestore listener:", error);
                                 // Fallback to placeholder data if setup fails
-                                        setGuideSections(guidePlaceholderData.map(s => s.id === "what-to-pack" ? { ...s, tag: "Ready, Set, Pack!" } : s));
+                                setGuideSections(guidePlaceholderData.map(s => s.id === "what-to-pack" ? { ...s, tag: "Ready, Set, Pack!" } : s));
                                 return () => {}; // Return empty cleanup function
                             }
                         };
@@ -777,10 +790,18 @@
                             if (firestore && firestore.app) {
                                 // Check if Firestore is still connected
                                 try {
+                                    // Test connection with a simple operation
                                     firestore.enableNetwork();
+                                    
+                                    // If we're in error state, try to reconnect
+                                    if (firebaseConnectionStatus === 'error') {
+                                        console.log("Attempting to reconnect after health check...");
+                                        setupFirestoreListener();
+                                    }
                                 } catch (error) {
-                                    console.warn("Firestore connection issue detected, retrying...");
-                                    retryConnection();
+                                    console.warn("Firestore connection issue detected during health check:", error);
+                                    setFirebaseConnectionStatus('error');
+                                    // Don't retry immediately to avoid spam
                                 }
                             }
                         }, 30000); // Check every 30 seconds
@@ -1005,12 +1026,12 @@
             }, [guideSections]);
 
             return (
-                <div className="bg-gray-900 min-h-screen font-inter text-gray-100 pt-20 p-4 sm:p-8">
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 sm:p-8 mb-8 rounded-xl shadow-lg text-center">
-                        <h1 className="text-3xl sm:text-4xl font-bold font-lora">GIKI Freshman Guide</h1>
-                        <p className="mt-2 text-lg text-gray-200">Your ultimate resource for a smooth start at GIKI.</p>
+                <div className="bg-gray-900 min-h-screen font-inter text-gray-100 pt-20 p-2 sm:p-8">
+                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 sm:p-8 mb-4 sm:mb-8 rounded-xl shadow-lg text-center">
+                        <h1 className="text-2xl sm:text-4xl font-bold font-lora">GIKI Freshman Guide</h1>
+                        <p className="mt-2 text-base sm:text-lg text-gray-200">Your ultimate resource for a smooth start at GIKI.</p>
                     </div>
-                    <div className="max-w-5xl mx-auto chronicle-container bg-gray-800 p-6 sm:p-10 rounded-2xl shadow-xl border border-gray-700">
+                    <div className="max-w-5xl mx-auto chronicle-container bg-gray-800 p-3 sm:p-6 lg:p-10 rounded-xl sm:rounded-2xl shadow-xl border border-gray-700">
                         {/* Connection Status Indicator */}
                         {firebaseConnectionStatus === 'connecting' && (
                             <div className="mb-4 p-3 bg-blue-900 border border-blue-600 rounded-lg">
@@ -1035,19 +1056,19 @@
                             </div>
                         )}
 
-                        <div className="text-center mb-10">
-                            <h2 className="text-2xl sm:text-3xl font-bold font-lora text-blue-400">Welcome to GIKI!</h2>
-                            <p className="mt-4 text-lg text-gray-300 max-w-2xl mx-auto">
+                        <div className="text-center mb-6 sm:mb-10">
+                            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold font-lora text-blue-400">Welcome to GIKI!</h2>
+                            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-gray-300 max-w-2xl mx-auto px-2">
                                 Welcome to your new home! This guide is designed to help you navigate your first few weeks here. We've compiled essential information, tips, and resources to make your transition as smooth as possible.
                             </p>
                         </div>
                         <main>
                             {expandedSection === null && (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6">
                                     {guideSections.length > 0 ? (
                                         guideSections.map(section => (
-                                            <div key={section.id} className="p-6 bg-gray-700 rounded-xl cursor-pointer shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg border border-gray-600" onClick={() => handleTagClick(section.id)} title={section.shortDescription}>
-                                                <h3 className="text-xl font-semibold font-lora text-blue-400">{section.tag}</h3>
+                                            <div key={section.id} className="p-4 sm:p-6 bg-gray-700 rounded-xl cursor-pointer shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg border border-gray-600" onClick={() => handleTagClick(section.id)} title={section.shortDescription}>
+                                                <h3 className="text-lg sm:text-xl font-semibold font-lora text-blue-400">{section.tag}</h3>
                                                 <p className="mt-2 text-sm text-gray-300">{section.shortDescription}</p>
                                             </div>
                                         ))
@@ -1059,52 +1080,52 @@
                             {guideSections.map(section => (
                                 <div key={section.id}>
                                     {expandedSection === section.id && (
-                                        <div id={section.id} className="mt-12 p-8 bg-gray-700 rounded-xl shadow-inner border border-gray-600 transition-all duration-500 ease-in-out">
-                                            <div className="flex justify-between items-start mb-4">
-                                                <h2 className="text-3xl font-bold font-lora text-blue-400">{section.tag}</h2>
+                                        <div id={section.id} className="mt-6 sm:mt-12 p-4 sm:p-8 bg-gray-700 rounded-xl shadow-inner border border-gray-600 transition-all duration-500 ease-in-out">
+                                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 gap-3">
+                                                <h2 className="text-2xl sm:text-3xl font-bold font-lora text-blue-400">{section.tag}</h2>
                                                 {isAdmin && (
-                                                    <button onClick={() => handleEditClick(section.id)} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md">Edit</button>
+                                                    <button onClick={() => handleEditClick(section.id)} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md self-start">Edit</button>
                                                 )}
                                             </div>
                                             {section.id === "societies-events" && societySubCategories ? (
-                                                <div className="flex flex-col sm:flex-col gap-6">
-                                                    <nav className="flex flex-wrap gap-2 mb-6">
+                                                <div className="flex flex-col gap-4 sm:gap-6">
+                                                    <nav className="flex flex-wrap gap-2 mb-4 sm:mb-6">
                                                         {Object.keys(societySubCategories).map((key) => (
-                                                            <button key={key} onClick={() => setSelectedSocietySubTag(key)} className={`px-6 py-2 rounded-full font-semibold transition-colors duration-200 ${selectedSocietySubTag === key ? 'bg-blue-600 text-white shadow-md' : 'text-gray-300 bg-gray-600 hover:bg-gray-500'}`}>
+                                                            <button key={key} onClick={() => setSelectedSocietySubTag(key)} className={`px-3 sm:px-6 py-2 rounded-full font-semibold transition-colors duration-200 text-sm sm:text-base ${selectedSocietySubTag === key ? 'bg-blue-600 text-white shadow-md' : 'text-gray-300 bg-gray-600 hover:bg-gray-500'}`}>
                                                                 <span>{societySubCategories[key].title}</span>
                                                             </button>
                                                         ))}
                                                     </nav>
-                                                    <div className="sm:flex-grow">
+                                                    <div className="flex-grow">
                                                         {selectedSocietySubTag ? (
                                                             societySubCategories[selectedSocietySubTag]?.societies?.map((item, index) => (
-                                                                <div key={index} className="p-4 bg-gray-600 rounded-lg mb-4 shadow-sm border border-gray-500">
-                                                                    <h4 className="text-xl font-semibold text-gray-100">{item.name}</h4>
-                                                                    <p className="mt-1 text-gray-300 text-sm">{item.description}</p>
+                                                                <div key={index} className="p-3 sm:p-4 bg-gray-600 rounded-lg mb-3 sm:mb-4 shadow-sm border border-gray-500">
+                                                                    <h4 className="text-lg sm:text-xl font-semibold text-gray-100">{item.name}</h4>
+                                                                    <p className="mt-1 text-sm text-gray-300">{item.description}</p>
                                                                 </div>
                                                             ))
                                                         ) : (
-                                                            <div className="text-center p-8 text-gray-400 bg-gray-600 rounded-lg border border-gray-500"><p className="text-lg">Please select a society category to view the details.</p></div>
+                                                            <div className="text-center p-6 sm:p-8 text-gray-400 bg-gray-600 rounded-lg border border-gray-500"><p className="text-base sm:text-lg">Please select a society category to view the details.</p></div>
                                                         )}
                                                     </div>
                                                 </div>
                                             ) : (
                                                 Array.isArray(section.fullContent) && section.id === "important-contacts" ? (
                                                     <div className="overflow-x-auto">
-                                                        <table className="w-full text-left table-auto border-collapse">
+                                                        <table className="w-full text-left table-auto border-collapse text-sm sm:text-base">
                                                             <thead className="text-gray-100 bg-gray-600">
                                                                 <tr>
-                                                                    <th className="py-3 px-4 border-b border-gray-500 font-semibold">Contact</th>
-                                                                    <th className="py-3 px-4 border-b border-gray-500 font-semibold">Department</th>
-                                                                    <th className="py-3 px-4 border-b border-gray-500 font-semibold">Purpose</th>
+                                                                    <th className="py-2 sm:py-3 px-2 sm:px-4 border-b border-gray-500 font-semibold">Contact</th>
+                                                                    <th className="py-2 sm:py-3 px-2 sm:px-4 border-b border-gray-500 font-semibold">Department</th>
+                                                                    <th className="py-2 sm:py-3 px-2 sm:px-4 border-b border-gray-500 font-semibold">Purpose</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 {section.fullContent.map((item, index) => (
                                                                     <tr key={index} className="border-b border-gray-600 last:border-b-0">
-                                                                        <td className="py-3 px-4 text-gray-100">{item.contact}</td>
-                                                                        <td className="py-3 px-4 text-gray-300">{item.department}</td>
-                                                                        <td className="py-3 px-4 text-gray-300">{item.purpose}</td>
+                                                                        <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-100">{item.contact}</td>
+                                                                        <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-300">{item.department}</td>
+                                                                        <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-300">{item.purpose}</td>
                                                                     </tr>
                                                                 ))}
                                                             </tbody>
@@ -1124,34 +1145,32 @@
                                                 )
                                             )}
                                             {section.id === "campus-map" && (
-                                                <div className="mt-8 p-4 bg-gray-700 rounded-xl border border-gray-600">
-                                                    <div id="leaflet-map" className="w-full h-96 rounded-lg overflow-hidden border border-gray-500"></div>
-                                                    <p className="text-sm text-gray-300 mt-3 text-center">Tip: Scroll to zoom, drag to move. Tap the pins for details.</p>
+                                                <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-gray-700 rounded-xl border border-gray-600">
+                                                    <div id="leaflet-map" className="w-full h-64 sm:h-96 rounded-lg overflow-hidden border border-gray-500"></div>
+                                                    <p className="text-xs sm:text-sm text-gray-300 mt-2 sm:mt-3 text-center">Tip: Scroll to zoom, drag to move. Tap the pins for details.</p>
                                                 </div>
                                             )}
                                             {section.id === "what-to-pack" && (
-                                                <div className="mt-8 p-6 rounded-xl bg-blue-900 border border-blue-700">
-                                                    <h3 className="text-2xl font-semibold font-lora text-blue-300">Your Essential Packing Checklist</h3>
-                                                    <p className="mt-2 text-sm text-gray-300">Check items as you pack. Your progress is saved automatically{currentUser ? ' to your account' : ' on this device'}.</p>
+                                                <div className="mt-4">
+                                                    <h3 className="text-xl sm:text-2xl font-semibold font-lora text-blue-300 mb-2">Your Essential Packing Checklist</h3>
+                                                    <p className="text-sm text-gray-300 mb-4">Check items as you pack. Your progress is saved automatically{currentUser ? ' to your account' : ' on this device'}.</p>
                                                     
                                                     {/* Loading saved list */}
                                                     {isLoadingSavedList && (
-                                                        <div className="mt-4 p-4 bg-gray-700 rounded-lg border border-blue-600">
-                                                            <div className="flex items-center justify-center">
-                                                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                                </svg>
-                                                                <span className="text-gray-300">Loading your saved packing list...</span>
-                                                            </div>
+                                                        <div className="flex items-center justify-center py-4">
+                                                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                            </svg>
+                                                            <span className="text-gray-300 text-sm">Loading your saved packing list...</span>
                                                         </div>
                                                     )}
 
                                                     {/* Show consolidated checklist */}
                                                     {!isLoadingSavedList && (
-                                                        <div className="mt-6 p-4 bg-gray-700 rounded-lg border border-blue-600">
+                                                        <>
                                                             {/* Add custom item */}
-                                                            <div className="mb-6 p-3 bg-gray-600 rounded-lg border border-gray-500">
+                                                            <div className="mb-4">
                                                                 <form
                                                                     onSubmit={(e) => {
                                                                         e.preventDefault();
@@ -1171,19 +1190,19 @@
                                                                             console.error('Failed to save custom item:', err);
                                                                         }
                                                                     }}
-                                                                    className="flex flex-col sm:flex-row gap-3"
+                                                                    className="flex flex-col sm:flex-row gap-2"
                                                                 >
-                                                                                    <input
+                                                                    <input
                                                                         name="newItem"
                                                                         type="text"
                                                                         placeholder="Add a custom item (saved only for you)"
-                                                                        className="flex-grow p-3 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-gray-100"
+                                                                        className="flex-grow p-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-gray-700 text-gray-100 text-sm"
                                                                     />
-                                                                    <button type="submit" className="px-5 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold" onClick={() => setCustomItemsRevision(v => v + 1)}>
+                                                                    <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-semibold text-sm" onClick={() => setCustomItemsRevision(v => v + 1)}>
                                                                         Add Item
                                                                     </button>
                                                                 </form>
-                                                                                    </div>
+                                                            </div>
                                                             {(() => {
                                                                 const deduped = getDedupedPackingData();
                                                                 const baseSet = new Set([
@@ -1217,7 +1236,7 @@
 
                                                                 return (
                                                                     <>
-                                                                        <div className="space-y-4">
+                                                                        <div className="space-y-2">
                                                                             {[
                                                                                 { key: 'clothing', title: 'Clothing & Personal Items', items: deduped.clothing },
                                                                                 { key: 'bedding', title: 'Bedding & Room Essentials', items: deduped.bedding },
@@ -1226,164 +1245,155 @@
                                                                             ].map((section) => {
                                                                                 const checkedCount = section.items.filter((it) => checkedItems[buildItemId(section.key, it)]).length;
                                                                                 return (
-                                                                                    <div key={section.key} className="bg-gray-600 rounded-lg border border-gray-500 overflow-hidden">
-                                                            <button 
-                                                                                            type="button"
+                                                                                    <div key={section.key} className="bg-gray-600 rounded overflow-hidden">
+                                                                                        <div 
+                                                                                            className="w-full flex items-center justify-between px-3 py-2 hover:bg-gray-500 cursor-pointer"
                                                                                             onClick={() => setOpenSections(prev => ({ ...prev, [section.key]: !prev[section.key] }))}
-                                                                                            className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-500"
                                                                                         >
-                                                                                            <div className="flex items-center gap-3">
-                                                                                                <span className="font-semibold text-gray-100">{section.title}</span>
-                                                                                                <span className="text-xs px-2 py-0.5 rounded-full bg-gray-500 text-gray-100">{checkedCount}/{section.items.length}</span>
-                                                                    </div>
                                                                                             <div className="flex items-center gap-2">
-                                                                    <button 
+                                                                                                <span className="font-semibold text-gray-100 text-sm">{section.title}</span>
+                                                                                                <span className="text-xs px-1.5 py-0.5 rounded-full bg-gray-500 text-gray-100">{checkedCount}/{section.items.length}</span>
+                                                                                            </div>
+                                                                                            <div className="flex items-center gap-1">
+                                                                                                <button 
                                                                                                     type="button"
                                                                                                     onClick={(e) => { e.stopPropagation(); handleSelectAllIn(section.key, section.items); }}
                                                                                                     className="text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-                                                                    >
-                                                                                                    Select all
-                                                                    </button>
-                                                                        <button 
+                                                                                                >
+                                                                                                    All
+                                                                                                </button>
+                                                                                                <button 
                                                                                                     type="button"
                                                                                                     onClick={(e) => { e.stopPropagation(); handleClearIn(section.key, section.items); }}
                                                                                                     className="text-xs px-2 py-1 bg-gray-700 text-gray-200 rounded hover:bg-gray-800"
                                                                                                 >
                                                                                                     Clear
-                                                                        </button>
+                                                                                                </button>
                                                                                                 <svg className={`w-4 h-4 text-gray-200 transition-transform ${openSections[section.key] ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 9l6 6 6-6"></path></svg>
-                                                                </div>
-                                                                                        </button>
+                                                                                            </div>
+                                                                                        </div>
                                                                                         {openSections[section.key] && (
-                                                                                            <div className="px-4 pb-3 pt-1 grid grid-cols-1 sm:grid-cols-2 gap-x-6">
-                                                                                                {section.items.map((item) => {
-                                                                                                    const itemId = buildItemId(section.key, item);
-                                                                            return (
-                                                                                                        <label key={itemId} className="flex items-start space-x-3 p-2 rounded hover:bg-gray-500/50 cursor-pointer">
-                                                                                    <input
-                                                                                        type="checkbox"
-                                                                                        checked={checkedItems[itemId] || false}
-                                                                                        onChange={(e) => handleCheckboxChange(itemId, e.target.checked)}
-                                                                                        className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                                                                                    />
-                                                                                                            <span className="text-gray-200 text-sm leading-6">{item}</span>
-                                                                                </label>
-                                                                            );
-                                                                        })}
-                                                                </div>
-                                                            )}
+                                                                                            <div className="px-3 pb-2 pt-1">
+                                                                                                <div className="space-y-1">
+                                                                                                    {section.items.map((item) => {
+                                                                                                        const itemId = buildItemId(section.key, item);
+                                                                                                        return (
+                                                                                                            <label key={itemId} className="flex items-start space-x-2 p-1 rounded hover:bg-gray-500/30 cursor-pointer">
+                                                                                                                <input
+                                                                                                                    type="checkbox"
+                                                                                                                    checked={checkedItems[itemId] || false}
+                                                                                                                    onChange={(e) => handleCheckboxChange(itemId, e.target.checked)}
+                                                                                                                    className="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                                                                                                />
+                                                                                                                <span className="text-gray-200 text-sm leading-5">{item}</span>
+                                                                                                            </label>
+                                                                                                        );
+                                                                                                    })}
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        )}
                                                                                     </div>
                                                                                 );
                                                                             })}
                                                                         </div>
 
-                                                                        {/* Removed separate essentials section per user's request */}
-
                                                                         {/* User custom items */}
-                                                                        <div className="mt-6 bg-gray-600 rounded-lg border border-gray-500 overflow-hidden">
-                                                                            <button
-                                                                                type="button"
-                                                                                onClick={() => setOpenSections(prev => ({ ...prev, custom: !prev.custom }))}
-                                                                                className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-500"
-                                                                            >
-                                                                                <div className="flex items-center gap-3">
-                                                                                    <span className="font-semibold text-gray-100">Your Added Items</span>
+                                                                        {customFiltered.length > 0 && (
+                                                                            <div className="mt-4 bg-gray-600 rounded overflow-hidden">
+                                                                                <div 
+                                                                                    className="w-full flex items-center justify-between px-3 py-2 hover:bg-gray-500 cursor-pointer"
+                                                                                    onClick={() => setOpenSections(prev => ({ ...prev, custom: !prev.custom }))}
+                                                                                >
+                                                                                    <span className="font-semibold text-gray-100 text-sm">Your Added Items</span>
+                                                                                    <svg className={`w-4 h-4 text-gray-200 transition-transform ${openSections.custom ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 9l6 6 6-6"></path></svg>
                                                                                 </div>
-                                                                                <svg className={`w-4 h-4 text-gray-200 transition-transform ${openSections.custom ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 9l6 6 6-6"></path></svg>
-                                                                            </button>
-                                                                            {openSections.custom && (
-                                                                                <div className="px-4 pb-3 pt-1">
-                                                                <div className="space-y-2">
-                                                                                {customFiltered.length === 0 ? (
-                                                                                    <p className="text-gray-400 text-sm">No custom items yet.</p>
-                                                                                ) : (
-                                                                                    customFiltered.map((item) => {
-                                                                                        const id = `custom-${slugify(item)}`;
-                                                                                        return (
-                                                                                            <div key={id} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-600">
-                                                                                                <label className="flex items-start space-x-3 cursor-pointer">
-                                                                                                    <input
-                                                                                                        type="checkbox"
-                                                                                                        checked={checkedItems[id] || false}
-                                                                                                        onChange={(e) => handleCheckboxChange(id, e.target.checked)}
-                                                                                                        className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                                                                                                    />
-                                                                                                    <span className="text-gray-300">{item}</span>
-                                                                                                </label>
-                                                                                                <button type="button" onClick={() => handleDeleteCustomItem(item)} className="text-xs px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700">
-                                                                                                    Delete
-                                                                                                </button>
-                                                                                            </div>
-                                                                                        );
-                                                                                    })
+                                                                                {openSections.custom && (
+                                                                                    <div className="px-3 pb-2 pt-1">
+                                                                                        <div className="space-y-1">
+                                                                                            {customFiltered.map((item) => {
+                                                                                                const id = `custom-${slugify(item)}`;
+                                                                                                return (
+                                                                                                    <div key={id} className="flex items-center justify-between p-1 rounded hover:bg-gray-500/30">
+                                                                                                        <label className="flex items-start space-x-2 cursor-pointer">
+                                                                                                            <input
+                                                                                                                type="checkbox"
+                                                                                                                checked={checkedItems[id] || false}
+                                                                                                                onChange={(e) => handleCheckboxChange(id, e.target.checked)}
+                                                                                                                className="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                                                                                            />
+                                                                                                            <span className="text-gray-300 text-sm">{item}</span>
+                                                                                                        </label>
+                                                                                                        <button type="button" onClick={() => handleDeleteCustomItem(item)} className="text-xs px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700">
+                                                                                                            Delete
+                                                                                                        </button>
+                                                                                                    </div>
+                                                                                                );
+                                                                                            })}
+                                                                                        </div>
+                                                                                    </div>
                                                                                 )}
-                                                                </div>
-                                                                                </div>
-                                                                            )}
-                                                            </div>
+                                                                            </div>
+                                                                        )}
 
-                                                            {/* Progress indicator */}
-                                                            <div className="mt-6 p-3 bg-gray-600 rounded-lg">
-                                                                <div className="flex justify-between items-center mb-2">
-                                                                    <span className="text-sm font-medium text-gray-300">Packing Progress</span>
+                                                                        {/* Progress indicator */}
+                                                                        <div className="mt-4 p-3 bg-gray-600 rounded">
+                                                                            <div className="flex justify-between items-center mb-2">
+                                                                                <span className="text-sm font-medium text-gray-300">Packing Progress</span>
                                                                                 <span className="text-sm text-gray-300">{`${done} / ${total} items`}</span>
-                                                                </div>
-                                                                <div className="w-full bg-gray-700 rounded-full h-2">
-                                                                    <div 
-                                                                        className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                                                            </div>
+                                                                            <div className="w-full bg-gray-700 rounded-full h-2">
+                                                                                <div 
+                                                                                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                                                                                     style={{ width: `${total === 0 ? 0 : (done / total) * 100}%` }}
-                                                                    ></div>
+                                                                                ></div>
                                                                             </div>
                                                                         </div>
                                                                         {total > 0 && done === total && (
-                                                                            <div className="mt-4 p-4 bg-green-900/70 border border-green-600 rounded-lg text-green-100">
+                                                                            <div className="mt-4 p-3 bg-green-900/70 border border-green-600 rounded text-green-100">
                                                                                 <div className="flex items-start">
-                                                                                    <svg className="w-6 h-6 text-green-300 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                                                    <svg className="w-5 h-5 text-green-300 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                                                                     <div>
-                                                                                        <h4 className="font-semibold">All set! 🎉</h4>
-                                                                                        <p className="text-sm mt-1">You’ve checked everything on your list. Safe travels and welcome to GIKI!</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    )}
+                                                                                        <h4 className="font-semibold text-sm">All set! 🎉</h4>
+                                                                                        <p className="text-xs mt-1">You've checked everything on your list. Safe travels and welcome to GIKI!</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        )}
                                                                     </>
                                                                 );
                                                             })()}
-                                                        </div>
+                                                        </>
                                                     )}
                                                     {/* Removed personalized generation UI; using static categories instead */}
 
                                                     {generationError && (
-                                                        <div className="mt-6 p-4 bg-red-900 text-red-200 rounded-lg border-l-4 border-red-500">
+                                                        <div className="mt-4 p-3 bg-red-900 text-red-200 rounded border-l-4 border-red-500">
                                                             {generationError}
                                                         </div>
                                                     )}
 
                                                     {/* Login prompt for non-authenticated users */}
                                                     {!currentUser && (
-                                                        <div className="mt-6 p-6 bg-gradient-to-r from-yellow-900 to-orange-900 border-2 border-yellow-600 rounded-lg text-center">
-                                                            <div className="mb-4">
-                                                                <svg className="w-12 h-12 text-yellow-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <div className="mt-4 p-4 bg-gradient-to-r from-yellow-900 to-orange-900 border border-yellow-600 rounded text-center">
+                                                            <div className="mb-3">
+                                                                <svg className="w-8 h-8 text-yellow-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                                                                 </svg>
-                                                                <h4 className="text-lg font-semibold text-yellow-200 mb-2">Login Required</h4>
-                                                                <p className="text-yellow-100 text-sm mb-4">
-                                                                    To save your packing list and track your progress across sessions, please login to your account. Your data will be stored securely and synced across devices.
+                                                                <h4 className="text-base font-semibold text-yellow-200 mb-1">Login Required</h4>
+                                                                <p className="text-yellow-100 text-xs mb-3">
+                                                                    To save your packing list and track your progress across sessions, please login to your account.
                                                                 </p>
                                                             </div>
-                                                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                                                                <a href="login.html" className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                                                            <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                                                                <a href="login.html" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-semibold text-sm">
                                                                     Login Now
                                                                 </a>
-                                                                <a href="signup.html" className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold">
+                                                                <a href="signup.html" className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors font-semibold text-sm">
                                                                     Create Account
                                                                 </a>
                                                             </div>
-                                                            <p className="text-yellow-200 text-xs mt-3">
-                                                                💡 Your packing list will be automatically saved and you can continue where you left off!
-                                                            </p>
                                                             <p className="text-yellow-200 text-xs mt-2">
-                                                                🔒 Currently using local storage. Database integration coming soon for cross-device sync.
+                                                                💡 Your packing list will be automatically saved and you can continue where you left off!
                                                             </p>
                                                         </div>
                                                     )}
