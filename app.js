@@ -905,23 +905,53 @@ document.addEventListener('DOMContentLoaded', async () => {
     const logoutButton = document.getElementById('logout-button');
     if (logoutButton) {
         logoutButton.addEventListener('click', async () => {
-            await logoutUser();
-            window.location.href = 'index.html';
+            try {
+                if (window.packingProgress && window.packingProgress.hasUnsaved) {
+                    const confirmSave = confirm('You have packing progress. Save before logging out?');
+                    if (confirmSave) {
+                        try { await window.packingProgress.save(); } catch (e) { console.warn('Save on logout failed:', e); }
+                    }
+                }
+                await logoutUser();
+                window.location.href = 'index.html';
+            } catch (e) {
+                console.error('Error during logout flow:', e);
+            }
         });
     }
     const mobileLogoutButton = document.getElementById('mobile-logout-button');
     if (mobileLogoutButton) {
         mobileLogoutButton.addEventListener('click', async () => {
-            await logoutUser();
-            window.location.href = 'index.html';
+            try {
+                if (window.packingProgress && window.packingProgress.hasUnsaved) {
+                    const confirmSave = confirm('You have packing progress. Save before logging out?');
+                    if (confirmSave) {
+                        try { await window.packingProgress.save(); } catch (e) { console.warn('Save on logout failed:', e); }
+                    }
+                }
+                await logoutUser();
+                window.location.href = 'index.html';
+            } catch (e) {
+                console.error('Error during logout flow:', e);
+            }
         });
     }
 
     const sidebarLogoutButton = document.getElementById('sidebar-logout-button');
     if (sidebarLogoutButton) {
         sidebarLogoutButton.addEventListener('click', async () => {
-            await logoutUser();
-            window.location.href = 'index.html';
+            try {
+                if (window.packingProgress && window.packingProgress.hasUnsaved) {
+                    const confirmSave = confirm('You have packing progress. Save before logging out?');
+                    if (confirmSave) {
+                        try { await window.packingProgress.save(); } catch (e) { console.warn('Save on logout failed:', e); }
+                    }
+                }
+                await logoutUser();
+                window.location.href = 'index.html';
+            } catch (e) {
+                console.error('Error during logout flow:', e);
+            }
         });
     }
     // --- Gallery Page Logic ---

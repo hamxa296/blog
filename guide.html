@@ -100,12 +100,12 @@
           <span class="relative z-10">Gallery</span>
         </a>
 
-        <a href="guide.html"
+        <a href="guide.html" data-nav
           class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
           <span class="relative z-10">Freshmen Guide</span>
         </a>
 
-        <a href="calendar.html"
+        <a href="calendar.html" data-nav
           class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
           <span class="relative z-10">Calendar</span>
         </a>
@@ -176,13 +176,13 @@
         <div>
                               <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Resources</h3>
                     <div class="space-y-2">
-                      <a href="guide.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                      <a href="guide.html" data-nav class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                         </svg>
                         Freshman Guide
                       </a>
-                      <a href="calendar.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                      <a href="calendar.html" data-nav class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
@@ -414,6 +414,8 @@
                 .replace(/\s+/g, '-')
                 .replace(/-+/g, '-');
 
+        // Normalize function removed during revert
+
         // Hardcoded societies and teams data to be used if Firestore is empty.
         const societiesData = {
             academic: {
@@ -483,71 +485,56 @@
             }
         };
 
-        // Helper functions for packing list management using localStorage (temporary until database is set up)
+        // Firestore helpers for cross-device packing list persistence (per-user)
+        const userPackingDoc = (uid) => firebase.firestore().collection('users').doc(uid).collection('packing').doc('list');
+
         const savePackingList = async (userId, packingListData) => {
             try {
-                // For now, save to localStorage. In production, this would be a database call
-                const storageKey = `packingList_${userId}`;
-                const dataToSave = {
-                    ...packingListData,
-                    lastUpdated: new Date().toISOString()
-                };
-                
-                localStorage.setItem(storageKey, JSON.stringify(dataToSave));
-                console.log("Packing list saved successfully to localStorage!");
+                const docRef = userPackingDoc(userId);
+                const dataToSave = { ...packingListData, lastUpdated: new Date().toISOString() };
+                await docRef.set(dataToSave, { merge: true });
+                console.log("Packing list saved successfully to Firestore!");
                 return true;
             } catch (e) {
-                console.error("Error saving packing list: ", e);
+                console.error("Error saving packing list to Firestore: ", e);
                 return false;
             }
         };
 
         const loadPackingList = async (userId) => {
             try {
-                // For now, load from localStorage. In production, this would be a database call
-                const storageKey = `packingList_${userId}`;
-                const savedData = localStorage.getItem(storageKey);
-                
-                if (savedData) {
-                    return JSON.parse(savedData);
+                const docRef = userPackingDoc(userId);
+                const snapshot = await docRef.get();
+                if (snapshot.exists) {
+                    return snapshot.data();
                 }
                 return null;
             } catch (e) {
-                console.error("Error loading packing list: ", e);
+                console.error("Error loading packing list from Firestore: ", e);
                 return null;
             }
         };
 
         const updateCheckedItems = async (userId, checkedItems) => {
             try {
-                // For now, update localStorage. In production, this would be a database call
-                const storageKey = `packingList_${userId}`;
-                const savedData = localStorage.getItem(storageKey);
-                
-                if (savedData) {
-                    const currentData = JSON.parse(savedData);
-                    currentData.checkedItems = checkedItems;
-                    currentData.lastUpdated = new Date().toISOString();
-                    localStorage.setItem(storageKey, JSON.stringify(currentData));
-                    console.log("Checked items updated successfully in localStorage!");
-                    return true;
-                }
-                return false;
+                const docRef = userPackingDoc(userId);
+                await docRef.set({ checkedItems, lastUpdated: new Date().toISOString() }, { merge: true });
+                console.log("Checked items updated successfully in Firestore!");
+                return true;
             } catch (e) {
-                console.error("Error updating checked items: ", e);
+                console.error("Error updating checked items in Firestore: ", e);
                 return false;
             }
         };
 
         const deletePackingList = async (userId) => {
             try {
-                // For now, delete from localStorage. In production, this would be a database call
-                const storageKey = `packingList_${userId}`;
-                localStorage.removeItem(storageKey);
-                console.log("Packing list deleted successfully from localStorage!");
+                const docRef = userPackingDoc(userId);
+                await docRef.delete();
+                console.log("Packing list deleted successfully from Firestore!");
                 return true;
             } catch (e) {
-                console.error("Error deleting packing list: ", e);
+                console.error("Error deleting packing list from Firestore: ", e);
                 return false;
             }
         };
@@ -578,21 +565,54 @@
             const [checkedItems, setCheckedItems] = useState({});
             const [customItemsRevision, setCustomItemsRevision] = useState(0);
             const [openSections, setOpenSections] = useState({ clothing: true, bedding: false, academics: false, misc: false, custom: false });
+            const packingUnsubRef = useRef(null);
+            const [unsavedChanges, setUnsavedChanges] = useState(false);
+            const [hasSessionChanges, setHasSessionChanges] = useState(false);
+            const [showExitModal, setShowExitModal] = useState(false);
+            const [pendingHref, setPendingHref] = useState(null);
+            const [isSaving, setIsSaving] = useState(false);
+            const [showGuestSavePrompt, setShowGuestSavePrompt] = useState(false);
 
             const buildItemId = (categoryKey, itemLabel) => `${categoryKey}-${slugify(itemLabel)}`;
 
             const persistChecked = async (newChecked) => {
                 setCheckedItems(newChecked);
+                setUnsavedChanges(true);
+                setHasSessionChanges(true);
                 if (currentUser) {
-                    await updateCheckedItems(currentUser.uid, newChecked);
+                    // Defer saving until explicit prompt on exit, but also auto-save in background occasionally
+                    try {
+                        await updateCheckedItems(currentUser.uid, newChecked);
+                        // keep unsaved flag so we can still prompt on exit
+                    } catch (e) {
+                        // Keep unsavedChanges true so user can be prompted
+                        console.warn('Deferred save failed; will prompt on exit.', e);
+                    }
                 } else {
                     try {
                         localStorage.setItem('packing_progress_guest', JSON.stringify(newChecked));
+                        // Show prompt encouraging login for cross-device save
+                        setShowGuestSavePrompt(true);
                     } catch (e) {
                         console.error('Failed to save guest packing progress:', e);
                     }
                 }
             };
+
+            // Expose packing progress status and a save method globally for logout handlers
+            useEffect(() => {
+                try {
+                    window.packingProgress = {
+                        hasUnsaved: Boolean(currentUser && hasSessionChanges),
+                        save: async () => {
+                            if (!currentUser) return;
+                            await updateCheckedItems(currentUser.uid, checkedItems);
+                        }
+                    };
+                } catch (e) {
+                    console.warn('Unable to expose packingProgress globally:', e);
+                }
+            }, [currentUser, hasSessionChanges, checkedItems]);
 
             const handleSelectAllIn = async (categoryKey, items) => {
                 const updated = { ...checkedItems };
@@ -663,23 +683,58 @@
                                     setIsAdmin(false);
                                 }
 
-                                // Load saved packing list if user is authenticated
-                                setIsLoadingSavedList(true);
+                                // Migrate any guest progress to Firestore and subscribe for real-time sync
                                 try {
-                                    const savedList = await loadPackingList(user.uid);
-                                    if (savedList) {
-                                        setSavedPackingList(savedList);
-                                        setCheckedItems(savedList.checkedItems || {});
+                                    setIsLoadingSavedList(true);
+                                    // Load any guest progress and merge with existing Firestore data
+                                    let guestChecked = {};
+                                    try {
+                                        const guestRaw = localStorage.getItem('packing_progress_guest');
+                                        guestChecked = guestRaw ? JSON.parse(guestRaw) : {};
+                                    } catch {}
+
+                                    const existing = await loadPackingList(user.uid);
+                                    if (existing && existing.checkedItems) {
+                                        const merged = { ...existing.checkedItems, ...guestChecked };
+                                        await updateCheckedItems(user.uid, merged);
+                                        try { localStorage.removeItem('packing_progress_guest'); } catch {}
+                                        setSavedPackingList({ ...existing, checkedItems: merged });
+                                        setCheckedItems(merged);
+                                    } else if (guestChecked && Object.keys(guestChecked).length > 0) {
+                                        await updateCheckedItems(user.uid, guestChecked);
+                                        try { localStorage.removeItem('packing_progress_guest'); } catch {}
+                                        setSavedPackingList({ checkedItems: guestChecked, lastUpdated: new Date().toISOString() });
+                                        setCheckedItems(guestChecked);
                                     }
+
+                                    if (packingUnsubRef.current) {
+                                        packingUnsubRef.current();
+                                        packingUnsubRef.current = null;
+                                    }
+                                    packingUnsubRef.current = userPackingDoc(user.uid).onSnapshot(
+                                        (snapshot) => {
+                                            const data = snapshot.exists ? snapshot.data() : {};
+                                            setSavedPackingList(data || null);
+                                            setCheckedItems(data?.checkedItems || {});
+                                            setIsLoadingSavedList(false);
+                                        },
+                                        (err) => {
+                                            console.error('Packing list listener error:', err);
+                                            setIsLoadingSavedList(false);
+                                        }
+                                    );
                                 } catch (error) {
-                                    console.error("Error loading packing list:", error);
-                                } finally {
+                                    console.error("Error subscribing/migrating packing list:", error);
                                     setIsLoadingSavedList(false);
                                 }
                             } else {
                                 setIsAdmin(false);
                                 // Clear saved packing list when user logs out
                                 setSavedPackingList(null);
+                                if (packingUnsubRef.current) {
+                                    packingUnsubRef.current();
+                                    packingUnsubRef.current = null;
+                                }
                                 // Load guest progress from localStorage if available
                                 try {
                                     const guestProgressRaw = localStorage.getItem('packing_progress_guest');
@@ -823,6 +878,52 @@
                 };
                 initFirebase();
             }, []);
+
+            // Prompt to save on exit for authenticated users with unsaved changes
+            useEffect(() => {
+                const beforeUnload = (e) => {
+                    if (currentUser && hasSessionChanges) {
+                        const message = 'You have unsaved packing progress. Save before exiting?';
+                        e.preventDefault();
+                        e.returnValue = message;
+                        return message;
+                    }
+                };
+                window.addEventListener('beforeunload', beforeUnload);
+                return () => window.removeEventListener('beforeunload', beforeUnload);
+            }, [currentUser, hasSessionChanges]);
+
+            const handleConfirmSaveAndExit = async () => {
+                if (!currentUser) return;
+                try {
+                    setIsSaving(true);
+                    await updateCheckedItems(currentUser.uid, checkedItems);
+                    setUnsavedChanges(false);
+                    setHasSessionChanges(false);
+                    if (pendingHref) {
+                        const href = pendingHref;
+                        setPendingHref(null);
+                        window.location.href = href;
+                    }
+                } finally {
+                    setIsSaving(false);
+                }
+            };
+
+            // Intercept in-page navigations for styled confirmation when there are session changes
+            useEffect(() => {
+                const clickHandler = (e) => {
+                    const anchor = e.target.closest && e.target.closest('a[data-nav]');
+                    if (!anchor) return;
+                    if (currentUser && hasSessionChanges) {
+                        e.preventDefault();
+                        setPendingHref(anchor.href);
+                        setShowExitModal(true);
+                    }
+                };
+                document.addEventListener('click', clickHandler);
+                return () => document.removeEventListener('click', clickHandler);
+            }, [currentUser, hasSessionChanges]);
 
             useEffect(() => {
                 // Initialize interactive map when Campus Map section is opened
@@ -987,19 +1088,13 @@
             const handleRemoveWarning = (index) => setEditForm(prev => ({ ...prev, warnings: editForm.warnings.filter((_, i) => i !== index) }));
 
             const handleCheckboxChange = async (itemId, isChecked) => {
-                const newCheckedItems = { ...checkedItems, [itemId]: isChecked };
-                setCheckedItems(newCheckedItems);
-                
-                // Persist progress for authenticated users or guests
-                if (currentUser) {
-                    await updateCheckedItems(currentUser.uid, newCheckedItems);
-                } else {
-                    try {
-                        localStorage.setItem('packing_progress_guest', JSON.stringify(newCheckedItems));
-                    } catch (e) {
-                        console.error('Failed to save guest packing progress:', e);
-                    }
+                if (!currentUser) {
+                    setShowGuestSavePrompt(true);
+                    alert('Please login to track and sync your packing progress across devices.');
+                    return;
                 }
+                const newCheckedItems = { ...checkedItems, [itemId]: isChecked };
+                await persistChecked(newCheckedItems);
             };
 
             const handleRegenerateList = () => {
@@ -1347,6 +1442,18 @@
                                                                                     style={{ width: `${total === 0 ? 0 : (done / total) * 100}%` }}
                                                                                 ></div>
                                                                             </div>
+                                                                            {currentUser && hasSessionChanges && (
+                                                                                <div className="mt-3 flex items-center justify-between">
+                                                                                    <span className="text-xs text-gray-300">You have unsaved changes.</span>
+                                                                                    <button
+                                                                                        onClick={handleConfirmSaveAndExit}
+                                                                                        className="text-xs px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                                                                                        disabled={isSaving}
+                                                                                    >
+                                                                                        {isSaving ? 'Saving…' : 'Save now'}
+                                                                                    </button>
+                                                                                </div>
+                                                                            )}
                                                                         </div>
                                                                         {total > 0 && done === total && (
                                                                             <div className="mt-4 p-3 bg-green-900/70 border border-green-600 rounded text-green-100">
@@ -1374,7 +1481,7 @@
 
                                                     {/* Login prompt for non-authenticated users */}
                                                     {!currentUser && (
-                                                        <div className="mt-4 p-4 bg-gradient-to-r from-yellow-900 to-orange-900 border border-yellow-600 rounded text-center">
+                                                        <div className="mt-4 p-4 bg-gradient-to-r from-yellow-900 to-orange-900 border border-yellow-600 rounded text-center relative">
                                                             <div className="mb-3">
                                                                 <svg className="w-8 h-8 text-yellow-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
@@ -1395,6 +1502,11 @@
                                                             <p className="text-yellow-200 text-xs mt-2">
                                                                 💡 Your packing list will be automatically saved and you can continue where you left off!
                                                             </p>
+                                                            {showGuestSavePrompt && (
+                                                                <div className="mt-3 p-2 bg-yellow-800/70 border border-yellow-600 rounded text-yellow-100">
+                                                                    <span className="text-xs">Progress is saved only on this device. Login to sync across devices.</span>
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     )}
                                                 </div>
@@ -1418,11 +1530,11 @@
                                             )}
                                             {section.warnings && section.warnings.length > 0 && (
                                                 <div className="mt-8">
-                                                    <h3 className="text-2xl font-semibold font-lora text-red-400 border-b-2 pb-2 mb-4 border-gray-500">What Not to Do</h3>
+                                                    <h3 className="text-2xl font-semibold font-lora text-cyan-300 border-b-2 pb-2 mb-4 border-gray-500">Helpful reminders</h3>
                                                     <div className="space-y-4">
                                                         {section.warnings.map((warning, index) => (
-                                                            <div key={index} className="flex items-start p-4 bg-red-900 border-l-4 border-red-500 text-red-200 rounded-md">
-                                                                <span className="text-2xl mr-3 flex-shrink-0">⚠️</span>
+                                                            <div key={index} className="flex items-start p-4 bg-cyan-900 border-l-4 border-cyan-500 text-cyan-200 rounded-md">
+                                                                <span className="text-2xl mr-3 flex-shrink-0">💡</span>
                                                                 <p>{warning}</p>
                                                             </div>
                                                         ))}
@@ -1434,12 +1546,25 @@
                                 </div>
                             ))}
                             {expandedSection !== null && (
-                                <div className="text-center mt-12">
-                                    <button onClick={handleBackClick} className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors shadow-md">&larr; Back to all sections</button>
+                                <div className="text-center mt-6 sm:mt-12">
+                                    <button onClick={handleBackClick} className="bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors shadow-md">&larr; Back to all sections</button>
                                 </div>
                             )}
                         </main>
                     </div>
+                    {showExitModal && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+                            <div className="bg-gray-800 border border-gray-600 rounded-lg p-5 w-[90%] max-w-md shadow-xl">
+                                <h4 className="text-lg font-semibold text-gray-100 mb-2">Save your progress?</h4>
+                                <p className="text-sm text-gray-300 mb-4">You have changes in your packing list. Would you like to save before leaving?</p>
+                                <div className="flex gap-2 justify-end">
+                                    <button onClick={() => { setShowExitModal(false); setPendingHref(null); }} className="px-3 py-2 text-sm bg-gray-700 text-gray-200 rounded hover:bg-gray-600">Stay</button>
+                                    <button onClick={async () => { await handleConfirmSaveAndExit(); setShowExitModal(false); }} className="px-3 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700" disabled={isSaving}>{isSaving ? 'Saving…' : 'Save & Leave'}</button>
+                                    <button onClick={() => { const href = pendingHref; setShowExitModal(false); setPendingHref(null); window.location.href = href; }} className="px-3 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700">Leave without saving</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                     {editingSection && (
                         <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 z-50">
                             <div className="bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full p-6 sm:p-8 max-h-[90vh] overflow-y-auto border border-gray-600">

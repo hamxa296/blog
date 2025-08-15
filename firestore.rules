@@ -34,6 +34,11 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
       allow write: if isAuthenticated() && (isOwner(userId) || isAdmin());
+
+      // Allow user-owned subcollections (e.g., packing lists)
+      match /{subcollection=**}/{docId} {
+        allow read, write: if isOwner(userId);
+      }
     }
 
     // User profiles (for backward compatibility)
@@ -101,9 +106,6 @@ service cloud.firestore {
       allow read, write: if isOwner(userId);
     }
 
-    // Allow authenticated users to access their own data
-    match /{document=**} {
-      allow read, write: if isAuthenticated() && request.auth.uid == document;
-    }
+    // Remove overly strict catch-all; define explicit matches instead of comparing full path to uid
   }
 }

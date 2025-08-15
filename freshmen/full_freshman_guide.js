@@ -1641,14 +1641,14 @@ const App = () => {
                     </div>
                   )}
 
-                  {/* Warnings Section - Redesigned with custom borders and background */}
+                  {/* Warnings Section - Softer tone and colors */}
                   {section.warnings && section.warnings.length > 0 && (
                     <div className="mt-8">
-                      <h3 className="text-2xl font-semibold font-lora text-red-700 border-b-2 pb-2 mb-4 border-gray-200">What Not to Do</h3>
+                      <h3 className="text-2xl font-semibold font-lora text-amber-800 border-b-2 pb-2 mb-4 border-gray-200">Helpful reminders</h3>
                       <div className="space-y-4">
                         {section.warnings.map((warning, index) => (
-                          <div key={index} className="flex items-start p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-md">
-                            <span className="text-2xl mr-3 flex-shrink-0">⚠️</span>
+                          <div key={index} className="flex items-start p-4 bg-amber-50 border-l-4 border-amber-300 text-amber-800 rounded-md">
+                            <span className="text-2xl mr-3 flex-shrink-0">💡</span>
                             <p>{warning}</p>
                           </div>
                         ))}
