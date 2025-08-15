@@ -504,27 +504,29 @@
     </div>
   </footer>
 
-  <!-- Custom JavaScript -->
-  <script src="calendar.js"></script>
-  <script src="script.js"></script>
-  <script src="theme-manager.js"></script>
-  <!-- Firebase SDKs -->
+  <!-- Firebase SDKs (Load First) -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-  <!-- Your custom scripts -->
+  <!-- Core Firebase Initialization (Load Second) -->
   <script src="firebase-init.js"></script>
+  
+  <!-- Admin Configuration (Load Third) -->
   <script src="admin-config.js"></script>
-  <!-- Secure access script -->
-  <script src="secure-access.js"></script>
+  
+  <!-- Core Application Scripts (Load Fourth) -->
   <script src="auth.js"></script>
   <script src="users.js"></script>
-  <script src="posts.js"></script> <!-- Load this before app.js -->
+  <script src="posts.js"></script>
   <script src="app.js"></script>
+  
+  <!-- Feature Scripts (Load Last) -->
+  <script src="calendar.js"></script>
+  <script src="script.js"></script>
+  <script src="theme-manager.js"></script>
   <script src="tour-manager.js"></script>
   <script src="welcome-popup.js"></script>
-  <script src="firebase-error-handler.js"></script>
   <script src="tour-test.js"></script>
 
 

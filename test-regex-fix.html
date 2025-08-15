@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regex Fix Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">Regex Fix Test</h1>
+        
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Test Results</h2>
+            <div id="test-results" class="space-y-4">
+                <p class="text-gray-500">Running tests...</p>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-semibold mb-4">Test Controls</h2>
+            <div class="space-y-4">
+                <button onclick="testErrorHandler()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Test Error Handler
+                </button>
+                <button onclick="testContentSanitizer()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                    Test Content Sanitizer
+                </button>
+                <button onclick="testLongContent()" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+                    Test Long Content
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load the scripts -->
+    <script src="error-handler.js"></script>
+    <script src="secure-content-sanitizer.js"></script>
+    
+    <script>
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('test-results');
+            const div = document.createElement('div');
+            div.className = `p-3 rounded ${type === 'error' ? 'bg-red-100 text-red-800' : type === 'success' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            results.appendChild(div);
+        }
+
+        function testErrorHandler() {
+            try {
+                addResult('Testing error handler with sensitive data...');
+                
+                // Test with sensitive data that should be redacted
+                const testError = new Error('API key: "AIzaSyC1Q9tIEHLqAKZj6IjJN8aPiQCAPYbsi7I" and password: "secret123"');
+                
+                // This should trigger the error handler
+                if (window.errorHandler) {
+                    window.errorHandler.handleError(testError, { source: 'test' });
+                    addResult('✅ Error handler processed sensitive data without crashing', 'success');
+                } else {
+                    addResult('❌ Error handler not available', 'error');
+                }
+                
+            } catch (error) {
+                addResult(`❌ Error handler test failed: ${error.message}`, 'error');
+            }
+        }
+
+        function testContentSanitizer() {
+            try {
+                addResult('Testing content sanitizer...');
+                
+                const testHTML = '<p>Safe content</p><script>alert("dangerous")</script>';
+                
+                if (window.ContentSanitizer) {
+                    const sanitized = ContentSanitizer.sanitizeHTML(testHTML);
+                    
+                    if (sanitized.includes('<script>')) {
+                        addResult('❌ Content sanitizer failed - script tag not removed', 'error');
+                    } else {
+                        addResult('✅ Content sanitizer working correctly', 'success');
+                    }
+                } else {
+                    addResult('❌ Content sanitizer not available', 'error');
+                }
+                
+            } catch (error) {
+                addResult(`❌ Content sanitizer test failed: ${error.message}`, 'error');
+            }
+        }
+
+        function testLongContent() {
+            try {
+                addResult('Testing long content handling...');
+                
+                // Create very long content that might cause regex issues
+                let longContent = '';
+                for (let i = 0; i < 1000; i++) {
+                    longContent += `api_key="${'x'.repeat(50)}" password="${'y'.repeat(50)}" `;
+                }
+                
+                if (window.errorHandler) {
+                    const testError = new Error(longContent);
+                    window.errorHandler.handleError(testError, { source: 'test' });
+                    addResult('✅ Long content processed without regex stack overflow', 'success');
+                } else {
+                    addResult('❌ Error handler not available', 'error');
+                }
+                
+            } catch (error) {
+                addResult(`❌ Long content test failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-run tests on load
+        window.addEventListener('load', () => {
+            addResult('Regex fix test page loaded');
+            addResult('Running automatic tests...');
+            
+            setTimeout(() => {
+                testErrorHandler();
+                testContentSanitizer();
+                testLongContent();
+                addResult('All tests completed. Check results above.');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

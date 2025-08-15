@@ -68,6 +68,25 @@
         body.noscroll { overflow: hidden; }
     </style>
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Basic error handling -->
+    <script>
+        // Simple error handler to prevent console spam
+        window.addEventListener('error', function(e) {
+            if (e.message && e.message.includes('Content Security Policy')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Prevent unhandled promise rejections from spamming console
+        window.addEventListener('unhandledrejection', function(e) {
+            if (e.reason && e.reason.message && e.reason.message.includes('offline')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
 </head>
 
 <body class="text-gray-800 theme-basic-dark">
@@ -287,6 +306,19 @@
         // Use the global firebaseConfig from firebase-init.js
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        
+        // Add error handling for Firebase
+        const safeFirebaseCall = (callback) => {
+            try {
+                if (typeof firebase !== 'undefined' && firebase.firestore) {
+                    return callback();
+                }
+                return null;
+            } catch (error) {
+                console.warn('Firebase not available:', error);
+                return null;
+            }
+        };
 
         // Essential items from packinglist.txt
         const essentialItems = [
@@ -657,6 +689,15 @@
             useEffect(() => {
                 const initFirebase = async () => {
                     try {
+                        // Check if Firebase is available
+                        if (typeof firebase === 'undefined') {
+                            console.warn('Firebase not loaded, using offline mode');
+                            setFirebaseConnectionStatus('error');
+                            setGuideSections(guidePlaceholderData.map(s => s.id === "what-to-pack" ? { ...s, tag: "Ready, Set, Pack!" } : s));
+                            setIsAuthReady(true);
+                            return;
+                        }
+                        
                         // Use the global Firebase instance from firebase-init.js
                         const firestore = firebase.firestore();
                         const auth = firebase.auth();
@@ -679,7 +720,7 @@
                                         setIsAdmin(false);
                                     }
                                 } catch (error) {
-                                    console.error("Guide: Error checking admin status:", error);
+                                    console.warn("Guide: Error checking admin status:", error);
                                     setIsAdmin(false);
                                 }
 
@@ -744,7 +785,7 @@
                                 setCheckedItems({});
                                     }
                                 } catch (e) {
-                                    console.error('Failed to load guest packing progress:', e);
+                                    console.warn('Failed to load guest packing progress:', e);
                                     setCheckedItems({});
                                 }
                             }
@@ -755,10 +796,26 @@
                         // Set up Firestore listener for guide data with error handling
                         const setupFirestoreListener = () => {
                             try {
+                                // Check if Firestore is available
+                                if (!firestore || !firestore.collection) {
+                                    console.warn('Firestore not available, using offline mode');
+                                    setFirebaseConnectionStatus('error');
+                                    setGuideSections(guidePlaceholderData.map(s => s.id === "what-to-pack" ? { ...s, tag: "Ready, Set, Pack!" } : s));
+                                    return () => {};
+                                }
+                                
                                 const freshmanGuideRef = firestore.collection('artifacts').doc(appId).collection('public').doc('data').collection('freshmanGuide');
 
+                                // Add timeout for Firestore connection
+                                const timeoutId = setTimeout(() => {
+                                    console.warn('Firestore connection timeout, using offline mode');
+                                    setFirebaseConnectionStatus('error');
+                                    setGuideSections(guidePlaceholderData.map(s => s.id === "what-to-pack" ? { ...s, tag: "Ready, Set, Pack!" } : s));
+                                }, 10000); // 10 second timeout
+                                
                                 const unsubscribe = freshmanGuideRef.onSnapshot(
                                     async (querySnapshot) => {
+                                        clearTimeout(timeoutId); // Clear timeout on successful connection
                                         try {
                                             setFirebaseConnectionStatus('connected');
                                             if (querySnapshot.empty) {
@@ -792,14 +849,14 @@
                                                 }
                                             }
                                         } catch (error) {
-                                            console.error("Error in Firestore snapshot handler:", error);
+                                            console.warn("Error in Firestore snapshot handler:", error);
                                             setFirebaseConnectionStatus('error');
                                             // Fallback to placeholder data if Firestore fails
-                                            setGuideSections(guidePlaceholderData);
+                                            setGuideSections(guidePlaceholderData.map(s => s.id === "what-to-pack" ? { ...s, tag: "Ready, Set, Pack!" } : s));
                                         }
                                     },
                                     (error) => {
-                                        console.error("Firestore listener error:", error);
+                                        console.warn("Firestore listener error:", error);
                                         
                                         // Handle specific network errors more gracefully
                                         if (error.code === 'unavailable' || error.code === 'deadline-exceeded' || 
@@ -808,20 +865,17 @@
                                             setFirebaseConnectionStatus('error');
                                             setGuideSections(guidePlaceholderData.map(s => s.id === "what-to-pack" ? { ...s, tag: "Ready, Set, Pack!" } : s));
                                         } else {
-                                            // For other errors, try to reconnect
-                                            console.error("Firestore error, attempting to reconnect:", error);
+                                            // For other errors, use offline mode
+                                            console.warn("Firestore error, using offline mode:", error);
                                             setFirebaseConnectionStatus('error');
-                                            setTimeout(() => {
-                                                console.log("Attempting to reconnect to Firestore...");
-                                                setupFirestoreListener();
-                                            }, 5000); // Retry after 5 seconds
+                                            setGuideSections(guidePlaceholderData.map(s => s.id === "what-to-pack" ? { ...s, tag: "Ready, Set, Pack!" } : s));
                                         }
                                     }
                                 );
                                 
                                 return unsubscribe;
                             } catch (error) {
-                                console.error("Error setting up Firestore listener:", error);
+                                console.warn("Error setting up Firestore listener:", error);
                                 // Fallback to placeholder data if setup fails
                                 setGuideSections(guidePlaceholderData.map(s => s.id === "what-to-pack" ? { ...s, tag: "Ready, Set, Pack!" } : s));
                                 return () => {}; // Return empty cleanup function
@@ -847,16 +901,9 @@
                                 try {
                                     // Test connection with a simple operation
                                     firestore.enableNetwork();
-                                    
-                                    // If we're in error state, try to reconnect
-                                    if (firebaseConnectionStatus === 'error') {
-                                        console.log("Attempting to reconnect after health check...");
-                                        setupFirestoreListener();
-                                    }
                                 } catch (error) {
                                     console.warn("Firestore connection issue detected during health check:", error);
                                     setFirebaseConnectionStatus('error');
-                                    // Don't retry immediately to avoid spam
                                 }
                             }
                         }, 30000); // Check every 30 seconds
@@ -870,9 +917,9 @@
                             }
                         };
                     } catch (e) {
-                        console.error("Error initializing Firebase or fetching data: ", e);
+                        console.warn("Error initializing Firebase or fetching data: ", e);
                         // Fallback to placeholder data if Firebase fails completely
-                                setGuideSections(guidePlaceholderData.map(s => s.id === "what-to-pack" ? { ...s, tag: "Ready, Set, Pack!" } : s));
+                        setGuideSections(guidePlaceholderData.map(s => s.id === "what-to-pack" ? { ...s, tag: "Ready, Set, Pack!" } : s));
                         setIsAuthReady(true);
                     }
                 };
@@ -928,7 +975,7 @@
             useEffect(() => {
                 // Initialize interactive map when Campus Map section is opened
                 try {
-                    if (expandedSection === 'campus-map') {
+                    if (expandedSection === 'campus-map' && typeof L !== 'undefined') {
                         const container = document.getElementById('leaflet-map');
                         if (container && !container._leaflet_id) {
                             const map = L.map('leaflet-map', { zoomControl: true });
@@ -1622,14 +1669,64 @@
             );
         };
 
+        // Error Boundary Component
+        const ErrorBoundary = ({ children }) => {
+            const [hasError, setHasError] = React.useState(false);
+            const [error, setError] = React.useState(null);
+
+            React.useEffect(() => {
+                const handleError = (error, errorInfo) => {
+                    setHasError(true);
+                    setError(error);
+                    console.warn('React error boundary caught error:', error);
+                };
+
+                // Add global error handler for React
+                window.addEventListener('error', handleError);
+                window.addEventListener('unhandledrejection', (event) => handleError(event.reason));
+
+                return () => {
+                    window.removeEventListener('error', handleError);
+                    window.removeEventListener('unhandledrejection', handleError);
+                };
+            }, []);
+
+            if (hasError) {
+                return (
+                    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
+                        <div className="bg-gray-800 rounded-lg shadow-xl p-8 max-w-md w-full border border-gray-600">
+                            <div className="text-center">
+                                <div className="text-6xl mb-4">⚠️</div>
+                                <h2 className="text-2xl font-bold text-red-400 mb-4">Something went wrong</h2>
+                                <p className="text-gray-300 mb-6">
+                                    We encountered an unexpected error. Please refresh the page or contact support if the problem persists.
+                                </p>
+                                <button 
+                                    onClick={() => window.location.reload()} 
+                                    className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors shadow-md"
+                                >
+                                    Refresh Page
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            return children;
+        };
+
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        root.render(
+            <ErrorBoundary>
+                <App />
+            </ErrorBoundary>
+        );
     </script>
+    <!-- Theme and UI scripts -->
     <script src="theme-manager.js"></script>
     <script src="tour-manager.js"></script>
     <script src="welcome-popup.js"></script>
-    <script src="firebase-error-handler.js"></script>
-    <script src="tour-test.js"></script>
 </body>
 
 </html>

@@ -51,6 +51,7 @@ async function createPost(postData) {
         console.log("Prepared post data:", newPost);
         console.log("Attempting to add to Firestore...");
 
+        await checkFirebaseInitialized();
         const docRef = await db.collection("posts").add(newPost);
         console.log("Post created successfully with ID:", docRef.id);
         
@@ -67,10 +68,35 @@ async function createPost(postData) {
 }
 
 /**
+ * Helper function to check if Firebase is initialized
+ */
+function checkFirebaseInitialized() {
+    if (typeof db === 'undefined' || !db) {
+        // Wait for Firebase to be ready
+        return new Promise((resolve, reject) => {
+            if (window.firebaseReady && window.db) {
+                resolve();
+            } else {
+                const timeout = setTimeout(() => {
+                    reject(new Error('Firebase initialization timeout'));
+                }, 5000);
+                
+                window.addEventListener('firebaseReady', () => {
+                    clearTimeout(timeout);
+                    resolve();
+                }, { once: true });
+            }
+        });
+    }
+    return Promise.resolve();
+}
+
+/**
  * Fetches all blog posts from Firestore that have been approved.
  */
 async function getApprovedPosts() {
     try {
+        await checkFirebaseInitialized();
         const snapshot = await db.collection("posts")
             .where("status", "==", "approved")
             .orderBy("createdAt", "desc") // Show the newest posts first
@@ -99,6 +125,7 @@ async function getApprovedPosts() {
  */
 async function getPostById(postId) {
     try {
+        await checkFirebaseInitialized();
         const docRef = db.collection("posts").doc(postId);
         const docSnap = await docRef.get();
 
@@ -120,6 +147,7 @@ async function getPostById(postId) {
  */
 async function getFeaturedPost() {
     try {
+        await checkFirebaseInitialized();
         const snapshot = await db.collection("posts")
             .where("isFeatured", "==", true)
             .where("status", "==", "approved")
@@ -146,6 +174,7 @@ async function getFeaturedPost() {
  */
 async function getPostsByAuthor(authorId) {
     try {
+        await checkFirebaseInitialized();
         const snapshot = await db.collection("posts")
             .where("authorId", "==", authorId)
             .orderBy("createdAt", "desc")
@@ -165,34 +194,24 @@ async function getPostsByAuthor(authorId) {
  * @returns {Promise<object>}
  */
 async function getPostForEditing(postId) {
-    console.log("getPostForEditing called with postId:", postId); // DEBUG
-
     const user = auth.currentUser;
-    console.log("Current user in getPostForEditing:", user ? user.uid : "Not logged in"); // DEBUG
 
     if (!user) return { success: false, error: "Authentication required." };
 
     try {
-        console.log("Attempting to fetch document from Firestore..."); // DEBUG
+        await checkFirebaseInitialized();
         const docRef = db.collection("posts").doc(postId);
         const docSnap = await docRef.get();
-
-        console.log("Document exists:", docSnap.exists); // DEBUG
 
         if (!docSnap.exists) return { success: false, error: "Post not found." };
 
         const post = docSnap.data();
-        console.log("Post data retrieved:", post); // DEBUG
-        console.log("Post authorId:", post.authorId); // DEBUG
-        console.log("Current user UID:", user.uid); // DEBUG
 
         // Security check: ensure the person editing is the original author.
         if (post.authorId !== user.uid) {
-            console.log("Authorization failed - user not the author"); // DEBUG
             return { success: false, error: "You are not authorized to edit this post." };
         }
 
-        console.log("Authorization successful, returning post data"); // DEBUG
         return { success: true, post: { id: docSnap.id, ...post } };
     } catch (error) {
         console.error("Error fetching post for editing:", error);
@@ -211,6 +230,7 @@ async function updatePost(postId, postData) {
     if (!user) return { success: false, error: "Authentication required." };
 
     try {
+        await checkFirebaseInitialized();
         const tagsArray = postData.tags ? postData.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
 
         const updatedPost = {
@@ -251,6 +271,7 @@ async function savePostAsDraft(postData, postId = null) {
             status: "draft" // Set status to draft
         };
 
+        await checkFirebaseInitialized();
         if (postId) {
             // Update the existing draft
             const docRef = db.collection("posts").doc(postId);
@@ -290,6 +311,7 @@ async function getPendingPosts() {
             return { success: false, error: "Admin privileges required." };
         }
 
+        await checkFirebaseInitialized();
         console.log("Admin verified, fetching pending posts...");
         const snapshot = await db.collection("posts")
             .where("status", "==", "pending")
@@ -326,6 +348,7 @@ async function updatePostStatus(postId, newStatus) {
             return { success: false, error: "Admin privileges required." };
         }
 
+        await checkFirebaseInitialized();
         const docRef = db.collection("posts").doc(postId);
         await docRef.update({ 
             status: newStatus,
@@ -359,6 +382,7 @@ async function toggleFeaturedStatus(postId, isFeatured) {
             return { success: false, error: "Admin privileges required." };
         }
 
+        await checkFirebaseInitialized();
         const docRef = db.collection("posts").doc(postId);
         await docRef.update({ 
             isFeatured: isFeatured,
@@ -391,6 +415,7 @@ async function getAllPosts(status = "all") {
             return { success: false, error: "Admin privileges required." };
         }
 
+        await checkFirebaseInitialized();
         let query = db.collection("posts").orderBy("createdAt", "desc");
         
         // Apply status filter if specified
@@ -437,6 +462,7 @@ async function deletePostPermanently(postId) {
             return { success: false, error: "Admin privileges required." };
         }
 
+        await checkFirebaseInitialized();
         // Delete the post document
         await db.collection("posts").doc(postId).delete();
         

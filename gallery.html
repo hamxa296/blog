@@ -286,18 +286,18 @@
                     <option value="General">General</option>
                 </select>
                 
-                <!-- Admin Photo Management Tabs -->
-                <div id="admin-photo-tabs" class="hidden md:flex items-center space-x-2">
-                    <button id="tab-approved" class="px-4 py-2 rounded-lg bg-green-100 text-green-800 hover:bg-green-200 transition-colors">
-                        Approved
-                    </button>
-                    <button id="tab-pending" class="px-4 py-2 rounded-lg bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition-colors">
-                        Pending
-                    </button>
-                    <button id="tab-rejected" class="px-4 py-2 rounded-lg bg-red-100 text-red-800 hover:bg-red-200 transition-colors">
-                        Rejected
-                    </button>
-                </div>
+                                 <!-- Admin Photo Management Tabs -->
+                 <div id="admin-photo-tabs" class="hidden items-center space-x-2">
+                     <button id="tab-approved" class="px-4 py-2 rounded-lg bg-green-100 text-green-800 hover:bg-green-200 transition-colors">
+                         Approved
+                     </button>
+                     <button id="tab-pending" class="px-4 py-2 rounded-lg bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition-colors">
+                         Pending
+                     </button>
+                     <button id="tab-rejected" class="px-4 py-2 rounded-lg bg-red-100 text-red-800 hover:bg-red-200 transition-colors">
+                         Rejected
+                     </button>
+                 </div>
             </div>
             
             <div class="flex items-center space-x-4">
@@ -305,12 +305,12 @@
                     Get Featured
                 </button>
                 
-                <!-- Admin Stats -->
-                <div id="admin-stats" class="hidden md:block text-sm text-gray-600">
-                    <span id="stats-approved" class="mr-4">Approved: 0</span>
-                    <span id="stats-pending" class="mr-4">Pending: 0</span>
-                    <span id="stats-rejected">Rejected: 0</span>
-                </div>
+                                 <!-- Admin Stats -->
+                 <div id="admin-stats" class="hidden text-sm text-gray-600">
+                     <span id="stats-approved" class="mr-4">Approved: 0</span>
+                     <span id="stats-pending" class="mr-4">Pending: 0</span>
+                     <span id="stats-rejected">Rejected: 0</span>
+                 </div>
             </div>
         </section>
 
@@ -418,12 +418,220 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <!-- Optimized combined JavaScript -->
+    
+    <!-- Optimized combined JavaScript (includes firebase-init.js and admin-config.js) -->
     <script src="combined.min.js"></script>
+    <script src="file-upload-security.js"></script>
     <script src="theme-manager.js"></script>
     <script src="tour-manager.js"></script>
     <script src="script.js"></script>
+    
+         <!-- Gallery-specific admin authentication -->
+     <script>
+         // Admin authentication for gallery
+         let galleryIsAdmin = false;
+         let galleryCurrentUser = null;
+         
+         // Immediately hide admin elements - run this immediately
+         (function() {
+             const adminElements = [
+                 'sidebar-admin-access-btn',
+                 'admin-photo-tabs',
+                 'admin-stats'
+             ];
+             
+             adminElements.forEach(elementId => {
+                 const element = document.getElementById(elementId);
+                 if (element) {
+                     element.classList.add('hidden');
+                     element.style.display = 'none'; // Force hide
+                 }
+             });
+         })();
+         
+         // Also hide on DOMContentLoaded as backup
+         document.addEventListener('DOMContentLoaded', function() {
+             const adminElements = [
+                 'sidebar-admin-access-btn',
+                 'admin-photo-tabs',
+                 'admin-stats'
+             ];
+             
+             adminElements.forEach(elementId => {
+                 const element = document.getElementById(elementId);
+                 if (element) {
+                     element.classList.add('hidden');
+                     element.style.display = 'none'; // Force hide
+                 }
+             });
+         });
+        
+        // Check admin status when auth state changes
+        firebase.auth().onAuthStateChanged(async (user) => {
+            galleryCurrentUser = user;
+            
+            if (user) {
+                try {
+                    // Check if user is admin
+                    if (typeof checkUserAdminStatus === 'function') {
+                        galleryIsAdmin = await checkUserAdminStatus();
+                    } else if (typeof isAdminUID === 'function') {
+                        galleryIsAdmin = isAdminUID(user.uid);
+                    }
+                    
+                    console.log('Gallery: User admin status:', galleryIsAdmin);
+                    
+                    // Update UI based on admin status
+                    updateAdminUI();
+                } catch (error) {
+                    console.warn('Gallery: Error checking admin status:', error);
+                    galleryIsAdmin = false;
+                    updateAdminUI();
+                }
+            } else {
+                galleryIsAdmin = false;
+                galleryCurrentUser = null;
+                updateAdminUI();
+            }
+        });
+        
+                 // Function to update admin UI elements
+         function updateAdminUI() {
+             const adminElements = [
+                 'sidebar-admin-access-btn',
+                 'admin-photo-tabs',
+                 'admin-stats'
+             ];
+             
+             adminElements.forEach(elementId => {
+                 const element = document.getElementById(elementId);
+                 if (element) {
+                     if (galleryIsAdmin) {
+                         element.classList.remove('hidden');
+                         element.style.display = ''; // Reset display style
+                     } else {
+                         element.classList.add('hidden');
+                         element.style.display = 'none'; // Force hide
+                     }
+                 }
+             });
+             
+             // Update sidebar admin button specifically
+             const sidebarAdminBtn = document.getElementById('sidebar-admin-access-btn');
+             if (sidebarAdminBtn) {
+                 if (galleryIsAdmin) {
+                     sidebarAdminBtn.classList.remove('hidden');
+                     sidebarAdminBtn.style.display = ''; // Reset display style
+                 } else {
+                     sidebarAdminBtn.classList.add('hidden');
+                     sidebarAdminBtn.style.display = 'none'; // Force hide
+                 }
+             }
+             
+             console.log('Gallery: Admin UI updated. Admin status:', galleryIsAdmin);
+         }
+        
+        // Check admin status function (fallback)
+        async function checkUserAdminStatus() {
+            if (!galleryCurrentUser) return false;
+            
+            try {
+                if (typeof isAdminUID === 'function') {
+                    return isAdminUID(galleryCurrentUser.uid);
+                }
+                
+                // Fallback: check Firestore
+                const userDoc = await firebase.firestore().collection('users').doc(galleryCurrentUser.uid).get();
+                if (userDoc.exists) {
+                    return userDoc.data().isAdmin === true;
+                }
+                
+                return false;
+            } catch (error) {
+                console.warn('Error checking admin status:', error);
+                return false;
+            }
+        }
+        
+        // Admin security check function
+        function requireAdmin(callback) {
+            if (!galleryIsAdmin) {
+                console.warn('Admin access denied');
+                alert('Admin access required');
+                return false;
+            }
+            return callback();
+        }
+        
+        // Override admin modal functions to require admin access
+        document.addEventListener('DOMContentLoaded', function() {
+            // Protect admin review modal
+            const adminReviewModal = document.getElementById('admin-review-modal');
+            if (adminReviewModal) {
+                const originalShow = adminReviewModal.style.display;
+                Object.defineProperty(adminReviewModal.style, 'display', {
+                    set: function(value) {
+                        if (value === 'flex' && !galleryIsAdmin) {
+                            console.warn('Unauthorized access to admin modal blocked');
+                            return;
+                        }
+                        originalShow = value;
+                    },
+                    get: function() {
+                        return originalShow;
+                    }
+                });
+            }
+            
+            // Protect admin buttons
+            const adminButtons = ['approve-photo-btn', 'reject-photo-btn', 'confirm-delete'];
+            adminButtons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    btn.addEventListener('click', function(e) {
+                        if (!galleryIsAdmin) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.warn('Admin action blocked');
+                            alert('Admin access required');
+                            return false;
+                        }
+                    });
+                }
+            });
+            
+            // Protect admin tabs
+            const adminTabs = ['tab-approved', 'tab-pending', 'tab-rejected'];
+            adminTabs.forEach(tabId => {
+                const tab = document.getElementById(tabId);
+                if (tab) {
+                    tab.addEventListener('click', function(e) {
+                        if (!galleryIsAdmin) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.warn('Admin tab access blocked');
+                            alert('Admin access required');
+                            return false;
+                        }
+                    });
+                }
+            });
+            
+            // Protect sidebar admin button
+            const sidebarAdminBtn = document.getElementById('sidebar-admin-access-btn');
+            if (sidebarAdminBtn) {
+                sidebarAdminBtn.addEventListener('click', function(e) {
+                    if (!galleryIsAdmin) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.warn('Admin portal access blocked');
+                        alert('Admin access required');
+                        return false;
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html> 

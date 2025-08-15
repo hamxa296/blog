@@ -19,7 +19,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 await window.ensureUserDataLoaded();
             }
         } catch (error) {
-            console.error("App.js: Error ensuring user data loaded on page load:", error);
+            if (window.errorHandler) {
+                window.errorHandler.handleError(error, {
+                    source: 'user-data-load',
+                    functionName: 'ensureUserDataLoaded'
+                });
+            } else {
+                console.error("App.js: Error ensuring user data loaded on page load:", error);
+            }
         }
     }
     
@@ -481,6 +488,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const file = e.target.files[0];
                 const user = auth.currentUser;
                 if (file && user) {
+                    formMessage.textContent = 'Validating...';
+                    
+                    // Secure file validation
+                    if (window.FileUploadSecurity) {
+                        const secureUpload = await window.FileUploadSecurity.secureFileUpload(file);
+                        if (!secureUpload.success) {
+                            formMessage.textContent = secureUpload.error;
+                            return;
+                        }
+                        // Use the sanitized file
+                        file = secureUpload.file;
+                    }
+                    
                     formMessage.textContent = 'Uploading...';
                     const uploadResult = await uploadProfilePicture(user.uid, file);
                     if (uploadResult.success) {
@@ -598,8 +618,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 recentPostsGrid.innerHTML = '<p class="text-gray-500">No posts have been approved yet.</p>';
             }
         };
-        displayFeaturedPost();
-        displayApprovedPosts();
+        // Wait for Firebase to be available before loading posts
+        const waitForFirebase = () => {
+            if (typeof window.db !== 'undefined' && window.db) {
+                displayFeaturedPost();
+                displayApprovedPosts();
+            } else {
+                console.log('Waiting for Firebase to initialize...');
+                setTimeout(waitForFirebase, 100);
+            }
+        };
+        waitForFirebase();
     }
 
     // --- Single Post Page Logic ---
@@ -808,77 +837,86 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // --- Dynamic Navigation Bar & Logout Logic ---
-    onAuthStateChange(async user => {
-        console.log("App.js: Auth state changed, user:", user ? user.uid : "No user");
-        
-        const userNav = document.getElementById('user-nav');
-        const guestNav = document.getElementById('guest-nav');
-        const mobileUserNav = document.getElementById('mobile-user-nav');
-        const mobileGuestNav = document.getElementById('mobile-guest-nav');
-        const adminAccessBtn = document.getElementById('admin-access-btn');
-        const mobileAdminAccessBtn = document.getElementById('mobile-admin-access-btn');
-        
-        if (user) {
-            // Ensure user data is properly loaded
-            if (typeof window.ensureUserDataLoaded === 'function') {
-                try {
-                    const dataLoaded = await window.ensureUserDataLoaded();
-                    console.log("App.js: User data loaded:", dataLoaded);
-                } catch (error) {
-                    console.error("App.js: Error ensuring user data loaded:", error);
-                }
-            }
-            
-            if (userNav) userNav.style.display = 'flex';
-            if (guestNav) guestNav.style.display = 'none';
-            if (mobileUserNav) mobileUserNav.style.display = 'block';
-            if (mobileGuestNav) mobileGuestNav.style.display = 'none';
-            
-            // Show user navigation in sidebar
-            const sidebarUserNav = document.getElementById('sidebar-user-nav');
-            const sidebarGuestNav = document.getElementById('sidebar-guest-nav');
-            if (sidebarUserNav) sidebarUserNav.style.display = 'block';
-            if (sidebarGuestNav) sidebarGuestNav.style.display = 'none';
-            
-            // Check if user is admin and show admin access button
-            if (typeof checkUserAdminStatus === 'function') {
-                try {
-                    const isAdmin = await checkUserAdminStatus();
-                    console.log("App.js: Admin status check result:", isAdmin);
-                    if (isAdmin && adminAccessBtn) {
-                        adminAccessBtn.style.display = 'inline-block';
+    // Wait for Firebase to be available before setting up auth state listener
+    const waitForAuth = () => {
+        if (typeof window.auth !== 'undefined' && window.auth) {
+            onAuthStateChange(async user => {
+                console.log("App.js: Auth state changed, user:", user ? user.uid : "No user");
+                
+                const userNav = document.getElementById('user-nav');
+                const guestNav = document.getElementById('guest-nav');
+                const mobileUserNav = document.getElementById('mobile-user-nav');
+                const mobileGuestNav = document.getElementById('mobile-guest-nav');
+                const adminAccessBtn = document.getElementById('admin-access-btn');
+                const mobileAdminAccessBtn = document.getElementById('mobile-admin-access-btn');
+                
+                if (user) {
+                    // Ensure user data is properly loaded
+                    if (typeof window.ensureUserDataLoaded === 'function') {
+                        try {
+                            const dataLoaded = await window.ensureUserDataLoaded();
+                            console.log("App.js: User data loaded:", dataLoaded);
+                        } catch (error) {
+                            console.error("App.js: Error ensuring user data loaded:", error);
+                        }
                     }
-                    if (isAdmin && mobileAdminAccessBtn) {
-                        mobileAdminAccessBtn.style.display = 'block';
+                    
+                    if (userNav) userNav.style.display = 'flex';
+                    if (guestNav) guestNav.style.display = 'none';
+                    if (mobileUserNav) mobileUserNav.style.display = 'block';
+                    if (mobileGuestNav) mobileGuestNav.style.display = 'none';
+                    
+                    // Show user navigation in sidebar
+                    const sidebarUserNav = document.getElementById('sidebar-user-nav');
+                    const sidebarGuestNav = document.getElementById('sidebar-guest-nav');
+                    if (sidebarUserNav) sidebarUserNav.style.display = 'block';
+                    if (sidebarGuestNav) sidebarGuestNav.style.display = 'none';
+                    
+                    // Check if user is admin and show admin access button
+                    if (typeof checkUserAdminStatus === 'function') {
+                        try {
+                            const isAdmin = await checkUserAdminStatus();
+                            console.log("App.js: Admin status check result:", isAdmin);
+                            if (isAdmin && adminAccessBtn) {
+                                adminAccessBtn.style.display = 'inline-block';
+                            }
+                            if (isAdmin && mobileAdminAccessBtn) {
+                                mobileAdminAccessBtn.style.display = 'block';
+                            }
+                            // Show sidebar admin button
+                            const sidebarAdminBtn = document.getElementById('sidebar-admin-access-btn');
+                            if (isAdmin && sidebarAdminBtn) {
+                                sidebarAdminBtn.style.display = 'flex';
+                            }
+                        } catch (error) {
+                            console.error("App.js: Error checking admin status:", error);
+                        }
                     }
-                    // Show sidebar admin button
+                } else {
+                    if (userNav) userNav.style.display = 'none';
+                    if (guestNav) guestNav.style.display = 'flex';
+                    if (mobileUserNav) mobileUserNav.style.display = 'none';
+                    if (mobileGuestNav) mobileGuestNav.style.display = 'block';
+                    if (adminAccessBtn) adminAccessBtn.style.display = 'none';
+                    if (mobileAdminAccessBtn) mobileAdminAccessBtn.style.display = 'none';
+                    
+                    // Show guest navigation in sidebar
+                    const sidebarUserNav = document.getElementById('sidebar-user-nav');
+                    const sidebarGuestNav = document.getElementById('sidebar-guest-nav');
+                    if (sidebarUserNav) sidebarUserNav.style.display = 'none';
+                    if (sidebarGuestNav) sidebarGuestNav.style.display = 'block';
+                    
+                    // Hide sidebar admin button
                     const sidebarAdminBtn = document.getElementById('sidebar-admin-access-btn');
-                    if (isAdmin && sidebarAdminBtn) {
-                        sidebarAdminBtn.style.display = 'flex';
-                    }
-                } catch (error) {
-                    console.error("App.js: Error checking admin status:", error);
+                    if (sidebarAdminBtn) sidebarAdminBtn.style.display = 'none';
                 }
-            }
+            });
         } else {
-            if (userNav) userNav.style.display = 'none';
-            if (guestNav) guestNav.style.display = 'flex';
-            if (mobileUserNav) mobileUserNav.style.display = 'none';
-            if (mobileGuestNav) mobileGuestNav.style.display = 'block';
-            if (adminAccessBtn) adminAccessBtn.style.display = 'none';
-            if (mobileAdminAccessBtn) mobileAdminAccessBtn.style.display = 'none';
-            
-            // Show guest navigation in sidebar
-            const sidebarUserNav = document.getElementById('sidebar-user-nav');
-            const sidebarGuestNav = document.getElementById('sidebar-guest-nav');
-            if (sidebarUserNav) sidebarUserNav.style.display = 'none';
-            if (sidebarGuestNav) sidebarGuestNav.style.display = 'block';
-            
-            // Hide sidebar admin button
-            const sidebarAdminBtn = document.getElementById('sidebar-admin-access-btn');
-            if (sidebarAdminBtn) sidebarAdminBtn.style.display = 'none';
+            console.log('Waiting for Firebase auth to initialize...');
+            setTimeout(waitForAuth, 100);
         }
-    });
+    };
+    waitForAuth();
 
     // Admin access button click handlers
     const adminAccessBtn = document.getElementById('admin-access-btn');
@@ -1122,13 +1160,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
-            // Check file size (10MB limit)
-            const maxSize = 10 * 1024 * 1024; // 10MB in bytes
-            if (file.size > maxSize) {
-                formMessage.textContent = 'File is too large. Please select an image under 10MB.';
-                submitButton.disabled = false;
-                submitButton.textContent = originalButtonText;
-                return;
+            // Secure file validation using our security module
+            if (window.FileUploadSecurity) {
+                const secureUpload = await window.FileUploadSecurity.secureFileUpload(file);
+                if (!secureUpload.success) {
+                    formMessage.textContent = secureUpload.error;
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalButtonText;
+                    return;
+                }
+                // Use the sanitized file
+                file = secureUpload.file;
+            } else {
+                // Fallback validation
+                const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+                if (file.size > maxSize) {
+                    formMessage.textContent = 'File is too large. Please select an image under 10MB.';
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalButtonText;
+                    return;
+                }
             }
 
             try {
@@ -1150,7 +1201,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     submitButton.textContent = originalButtonText;
                 }
             } catch (error) {
-                console.error('Upload error:', error);
+                if (window.errorHandler) {
+                    window.errorHandler.handleError(error, {
+                        source: 'gallery-upload',
+                        functionName: 'submitPhoto'
+                    });
+                } else {
+                    console.error('Upload error:', error);
+                }
                 formMessage.textContent = 'Upload failed. Please try again.';
                 submitButton.disabled = false;
                 submitButton.textContent = originalButtonText;
