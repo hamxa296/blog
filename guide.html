@@ -30,6 +30,10 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
 
+    <!-- Leaflet MarkerCluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -45,11 +49,18 @@
             left: 0;
             right: 0;
             bottom: 0;
+            right: 0;
+            bottom: 0;
             width: 100vw !important;
             height: 100vh !important;
             width: 100dvw !important;
             height: 100dvh !important;
+            width: 100dvw !important;
+            height: 100dvh !important;
             z-index: 1000;
+            background: #000;
+            border: 0 !important;
+            border-radius: 0 !important;
             background: #000;
             border: 0 !important;
             border-radius: 0 !important;
@@ -73,6 +84,13 @@
             padding: 6px 8px;
             font-size: 12px;
         }
+        /* Responsive, mobile-friendly map height and containment */
+        #leaflet-map { height: 50vh !important; width: 100% !important; max-width: 100% !important; position: relative; z-index: 0; }
+        .leaflet-container { max-width: 100% !important; background: #000 !important; }
+        /* Avoid blurry scaling of the campus overlay by letting Leaflet handle zoom levels */
+        .campus-overlay { image-rendering: auto; }
+        @media (min-width: 768px) { #leaflet-map { height: 60vh !important; } }
+        @media (min-width: 1280px) { #leaflet-map { height: 65vh !important; } }
 
         /* Responsive, mobile-friendly map height and containment */
         #leaflet-map {
@@ -130,6 +148,9 @@
             }
         });
     </script>
+    <!-- Leaflet and MarkerCluster JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <!-- Leaflet and MarkerCluster JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
@@ -896,6 +917,7 @@
                                     setGuideSections(guidePlaceholderData.map(s => s.id === "what-to-pack" ? { ...s, tag: "Ready, Set, Pack!" } : s));
                                 }, 10000); // 10 second timeout
 
+
                                 const unsubscribe = freshmanGuideRef.onSnapshot(
                                     async (querySnapshot) => {
                                         clearTimeout(timeoutId); // Clear timeout on successful connection
@@ -1002,7 +1024,7 @@
                     } catch (e) {
                         console.warn("Error initializing Firebase or fetching data: ", e);
                         // Fallback to placeholder data if Firebase fails completely
-                        setGuideSections(guidePlaceholderData.map(s => s.id === "what-to-pack" ? { ...s, tag: "Ready, Set, Pack!" } : s));
+                                setGuideSections(guidePlaceholderData.map(s => s.id === "what-to-pack" ? { ...s, tag: "Ready, Set, Pack!" } : s));
                         setIsAuthReady(true);
                     }
                 };
@@ -1061,6 +1083,328 @@
                     if (expandedSection === 'campus-map' && typeof L !== 'undefined') {
                         const container = document.getElementById('leaflet-map');
                         if (container && !container._leaflet_id) {
+                            const map = L.map('leaflet-map', { zoomControl: true, maxBoundsViscosity: 1.0, worldCopyJump: false });
+                            // ====== Interactive Enhancements: POIs, Layer Toggles, Search, Reset View ======
+                            // Guard: ensure Leaflet CSS applied and container has non-zero size
+                            setTimeout(() => { map.invalidateSize(); }, 50);
+                            setTimeout(() => { map.invalidateSize(); }, 250);
+                            // Editable POI data: persisted in localStorage to allow custom edits without backend
+                            const defaultPoiData = [
+                                { id: 'dept-admin', name: 'Administration Building', category: 'Departments', lat: 34.0609, lng: 72.6442, description: 'Main admin block for official matters.' },
+                                { id: 'dept-library', name: 'Library', category: 'Departments', lat: 34.0615, lng: 72.6451, description: 'Central library and study area.' },
+                                { id: 'dept-auditorium', name: 'Auditorium', category: 'Departments', lat: 34.0606, lng: 72.6466, description: 'Events, orientations, and large gatherings.' },
+                                { id: 'svc-sports', name: 'Sports Complex', category: 'Services', lat: 34.0597, lng: 72.6450, description: 'Gym and sports facilities.' },
+                                { id: 'svc-health', name: 'Health Center', category: 'Services', lat: 34.0599, lng: 72.6460, description: 'Medical and emergency services.' },
+                                { id: 'hstl-9', name: 'Hostel-9 (GH)', category: 'Hostels', lat: 34.0589, lng: 72.6439, description: 'On-campus hostel.' },
+                                { id: 'hstl-3', name: 'Hostel-3', category: 'Hostels', lat: 34.0596, lng: 72.6473, description: 'On-campus hostel.' },
+                            ];
+                            const loadPois = () => {
+                                try {
+                                    const raw = localStorage.getItem('campusPois');
+                                    if (!raw) return defaultPoiData;
+                                    const parsed = JSON.parse(raw);
+                                    if (Array.isArray(parsed)) return parsed;
+                                } catch (e) {}
+                                return defaultPoiData;
+                            };
+                            const savePois = (pois) => {
+                                try { localStorage.setItem('campusPois', JSON.stringify(pois)); } catch (e) {}
+                            };
+                            let poiData = loadPois();
+                            // Use clusters for each category for better readability
+                            const categoryToGroup = {
+                                Hostels: L.markerClusterGroup({ showCoverageOnHover: false, spiderfyDistanceMultiplier: 1.2 }).addTo(map),
+                                Departments: L.markerClusterGroup({ showCoverageOnHover: false, spiderfyDistanceMultiplier: 1.2 }).addTo(map),
+                                Services: L.markerClusterGroup({ showCoverageOnHover: false, spiderfyDistanceMultiplier: 1.2 }).addTo(map),
+                            };
+                            const overlayMaps = {
+                                Hostels: categoryToGroup.Hostels,
+                                Departments: categoryToGroup.Departments,
+                                Services: categoryToGroup.Services,
+                            };
+                            let poiEditLocked = false;
+                            let editorCtrlRef = null;
+                            const allMarkers = [];
+                            const rebuildMarkers = () => {
+                                try { Object.values(categoryToGroup).forEach(g => g.clearLayers()); } catch (e) {}
+                                allMarkers.length = 0;
+                                (poiData || []).forEach((poi) => {
+                                    const targetGroup = categoryToGroup[poi.category] || categoryToGroup.Services;
+                                    const popupHtml = `<div style=\"min-width:180px\"><div class=\"font-semibold\">${poi.name}</div><div class=\"text-xs mt-1\">${poi.description || ''}</div></div>`;
+                                    const marker = L.marker([poi.lat, poi.lng]).bindPopup(popupHtml);
+                                    marker.addTo(targetGroup);
+                                    allMarkers.push({ marker, ...poi });
+                                });
+                            };
+                            rebuildMarkers();
+
+                            // Load POIs and lock state from Firestore if available
+                            let campusDocRef = null;
+                            try {
+                                campusDocRef = firebase.firestore().collection('artifacts').doc(appId).collection('public').doc('data').collection('freshmanGuide').doc('campus-map');
+                                campusDocRef.get().then((doc) => {
+                                    if (doc && doc.exists) {
+                                        const data = doc.data() || {};
+                                        if (Array.isArray(data.poiData)) {
+                                            poiData = data.poiData;
+                                            rebuildMarkers();
+                                        }
+                                        if (data.poiEditLocked === true) {
+                                            poiEditLocked = true;
+                                            if (editorCtrlRef) { try { map.removeControl(editorCtrlRef); } catch (e) {} }
+                                        }
+                                    }
+                                }).catch(() => {});
+                            } catch (e) {}
+                            L.control.layers({}, overlayMaps, { collapsed: true }).addTo(map);
+
+                            // Filter Chips UI (Hostels, Departments, Services)
+                            const Chips = L.Control.extend({
+                                onAdd: function() {
+                                    const wrap = L.DomUtil.create('div', 'leaflet-control custom-panel');
+                                    wrap.style.display = 'flex';
+                                    wrap.style.gap = '6px';
+                                    const cats = Object.keys(overlayMaps);
+                                    const state = { Hostels: true, Departments: true, Services: true };
+                                    const makeChip = (label) => {
+                                        const chip = L.DomUtil.create('button', 'leaflet-control custom-btn', wrap);
+                                        chip.innerText = label;
+                                        chip.style.opacity = '1';
+                                        L.DomEvent.on(chip, 'click', (e) => {
+                                            L.DomEvent.stopPropagation(e);
+                                            state[label] = !state[label];
+                                            chip.style.opacity = state[label] ? '1' : '0.5';
+                                            const grp = categoryToGroup[label];
+                                            if (!grp) return;
+                                            if (state[label]) { map.addLayer(grp); } else { map.removeLayer(grp); }
+                                        });
+                                        return chip;
+                                    };
+                                    cats.forEach(makeChip);
+                                    L.DomEvent.disableClickPropagation(wrap);
+                                    return wrap;
+                                },
+                                onRemove: function() {}
+                            });
+                            const chipsCtrl = new Chips({ position: 'topright' }).addTo(map);
+
+                            // Simple Search Control for POIs + Directions panel
+                            const SearchControl = L.Control.extend({
+                                onAdd: function() {
+                                    const wrap = L.DomUtil.create('div', 'leaflet-control custom-panel');
+                                    const input = L.DomUtil.create('input', '', wrap);
+                                    input.type = 'text';
+                                    input.placeholder = 'Search places...';
+                                    input.style.minWidth = '180px';
+                                    input.style.background = 'transparent';
+                                    input.style.border = '1px solid #4b5563';
+                                    input.style.borderRadius = '6px';
+                                    input.style.padding = '6px 8px';
+                                    input.style.color = '#e5e7eb';
+                                    const list = L.DomUtil.create('div', '', wrap);
+                                    list.style.marginTop = '6px';
+                                    list.style.maxHeight = '180px';
+                                    list.style.overflowY = 'auto';
+
+                                    const dirWrap = L.DomUtil.create('div', '', wrap);
+                                    dirWrap.style.marginTop = '8px';
+                                    const fromSel = L.DomUtil.create('select', '', dirWrap);
+                                    const toSel = L.DomUtil.create('select', '', dirWrap);
+                                    const goBtn = L.DomUtil.create('button', 'leaflet-control custom-btn mt-1', dirWrap);
+                                    goBtn.innerText = 'Show Route';
+                                    const addOptions = (sel) => {
+                                        sel.style.marginRight = '4px';
+                                        sel.style.background = 'transparent';
+                                        sel.style.border = '1px solid #4b5563';
+                                        sel.style.color = '#e5e7eb';
+                                        sel.style.borderRadius = '6px';
+                                        sel.style.padding = '6px 8px';
+                                        const def = document.createElement('option');
+                                        def.value = '';
+                                        def.textContent = sel === fromSel ? 'From…' : 'To…';
+                                        sel.appendChild(def);
+                                        poiData.forEach(p => {
+                                            const o = document.createElement('option');
+                                            o.value = `${p.lat},${p.lng}`;
+                                            o.textContent = p.name;
+                                            sel.appendChild(o);
+                                        });
+                                    };
+                                    addOptions(fromSel);
+                                    addOptions(toSel);
+                                    let routeLayer = null;
+                                    goBtn.onclick = (e) => {
+                                        L.DomEvent.stopPropagation(e);
+                                        if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
+                                        if (fromSel.value && toSel.value) {
+                                            const [flat, flng] = fromSel.value.split(',').map(Number);
+                                            const [tlat, tlng] = toSel.value.split(',').map(Number);
+                                            routeLayer = L.layerGroup().addTo(map);
+                                            L.marker([flat, flng]).addTo(routeLayer);
+                                            L.marker([tlat, tlng]).addTo(routeLayer);
+                                            const line = L.polyline([[flat, flng], [tlat, tlng]], { color: '#34d399', weight: 4, opacity: 0.9 }).addTo(routeLayer);
+                                            map.fitBounds(line.getBounds(), { padding: [40, 40] });
+                                        }
+                                    };
+
+                                    const updateList = (value) => {
+                                        list.innerHTML = '';
+                                        if (!value || value.trim().length < 1) return;
+                                        const q = value.toLowerCase();
+                                        const matches = allMarkers.filter(m => m.name.toLowerCase().includes(q)).slice(0, 6);
+                                        matches.forEach(m => {
+                                            const item = L.DomUtil.create('div', '', list);
+                                            item.textContent = `${m.name} · ${m.category}`;
+                                            item.style.cursor = 'pointer';
+                                            item.style.padding = '4px 6px';
+                                            item.style.borderRadius = '4px';
+                                            item.onmouseenter = () => item.style.background = 'rgba(75,85,99,0.35)';
+                                            item.onmouseleave = () => item.style.background = 'transparent';
+                                            item.onclick = (e) => {
+                                                L.DomEvent.stopPropagation(e);
+                                                map.setView([m.lat, m.lng], 18);
+                                                setTimeout(() => m.marker.openPopup(), 150);
+                                            };
+                                        });
+                                    };
+                                    input.oninput = (e) => updateList(e.target.value);
+                                    // Prevent gestures from affecting page scroll
+                                    L.DomEvent.disableClickPropagation(wrap);
+                                    return wrap;
+                                },
+                                onRemove: function() {}
+                            });
+                            const searchCtrl = new SearchControl({ position: 'topright' }).addTo(map);
+
+                            // ===== POI Editor (admin + Firestore, one-time lock) =====
+                            const Editor = L.Control.extend({
+                                onAdd: function() {
+                                    const wrap = L.DomUtil.create('div', 'leaflet-control custom-panel');
+                                    const title = L.DomUtil.create('div', '', wrap);
+                                    title.textContent = 'Edit Pins';
+                                    title.style.fontWeight = '600';
+                                    title.style.marginBottom = '6px';
+                                    const addBtn = L.DomUtil.create('button', 'leaflet-control custom-btn', wrap);
+                                    addBtn.textContent = 'Add Pin';
+                                    const editBtn = L.DomUtil.create('button', 'leaflet-control custom-btn mt-1', wrap);
+                                    editBtn.textContent = 'Edit Selected';
+                                    const delBtn = L.DomUtil.create('button', 'leaflet-control custom-btn mt-1', wrap);
+                                    delBtn.textContent = 'Delete Selected';
+                                    const lockBtn = L.DomUtil.create('button', 'leaflet-control custom-btn mt-2', wrap);
+                                    lockBtn.textContent = 'Lock Editing';
+
+                                    let selected = null;
+                                    const selectMarker = (m) => { selected = m; };
+                                    allMarkers.forEach(m => {
+                                        m.marker.on('click', () => selectMarker(m));
+                                    });
+
+                                    L.DomEvent.on(addBtn, 'click', (e) => {
+                                        L.DomEvent.stopPropagation(e);
+                                        if (poiEditLocked) { alert('Editing locked.'); return; }
+                                        if (!isAdmin) { alert('Admin only.'); return; }
+                                        const cat = prompt('Category (Hostels, Departments, Services):', 'Hostels');
+                                        if (!cat) return;
+                                        const name = prompt('Name:');
+                                        if (!name) return;
+                                        const desc = prompt('Description:', '');
+                                        alert('Click on the map to place the new pin.');
+                                        const once = (ev) => {
+                                            const latlng = ev.latlng;
+                                            const newPoi = { id: `${Date.now()}`, name, category: cat, lat: latlng.lat, lng: latlng.lng, description: desc };
+                                            poiData.push(newPoi);
+                                            const grp = categoryToGroup[newPoi.category] || categoryToGroup.Services;
+                                            const popupHtml = `<div style=\"min-width:180px\"><div class=\"font-semibold\">${newPoi.name}</div><div class=\"text-xs mt-1\">${newPoi.description || ''}</div></div>`;
+                                            const mk = L.marker([newPoi.lat, newPoi.lng]).bindPopup(popupHtml).addTo(grp);
+                                            const mrec = { marker: mk, ...newPoi };
+                                            allMarkers.push(mrec);
+                                            mk.on('click', () => { selected = mrec; });
+                                            map.off('click', once);
+                                            try { if (campusDocRef) campusDocRef.set({ poiData }, { merge: true }); } catch (e) {}
+                                        };
+                                        map.on('click', once);
+                                    });
+
+                                    L.DomEvent.on(editBtn, 'click', (e) => {
+                                        L.DomEvent.stopPropagation(e);
+                                        if (poiEditLocked) { alert('Editing locked.'); return; }
+                                        if (!isAdmin) { alert('Admin only.'); return; }
+                                        if (!selected) { alert('Select a pin by tapping it first.'); return; }
+                                        const name = prompt('Name:', selected.name);
+                                        if (!name) return;
+                                        const desc = prompt('Description:', selected.description || '');
+                                        const cat = prompt('Category (Hostels, Departments, Services):', selected.category);
+                                        selected.name = name; selected.description = desc; selected.category = cat;
+                                        try { Object.values(categoryToGroup).forEach(g => g.removeLayer(selected.marker)); } catch (e) {}
+                                        const grp = categoryToGroup[selected.category] || categoryToGroup.Services;
+                                        grp.addLayer(selected.marker);
+                                        selected.marker.bindPopup(`<div style=\"min-width:180px\"><div class=\"font-semibold\">${name}</div><div class=\"text-xs mt-1\">${desc}</div></div>`);
+                                        poiData = poiData.map(p => p.id === selected.id ? { ...p, name, description: desc, category: selected.category } : p);
+                                        try { if (campusDocRef) campusDocRef.set({ poiData }, { merge: true }); } catch (e) {}
+                                    });
+
+                                    L.DomEvent.on(delBtn, 'click', (e) => {
+                                        L.DomEvent.stopPropagation(e);
+                                        if (poiEditLocked) { alert('Editing locked.'); return; }
+                                        if (!isAdmin) { alert('Admin only.'); return; }
+                                        if (!selected) { alert('Select a pin by tapping it first.'); return; }
+                                        if (!confirm(`Delete ${selected.name}?`)) return;
+                                        try { Object.values(categoryToGroup).forEach(g => g.removeLayer(selected.marker)); } catch (e) {}
+                                        poiData = poiData.filter(p => p.id !== selected.id);
+                                        try { if (campusDocRef) campusDocRef.set({ poiData }, { merge: true }); } catch (e) {}
+                                        const idx = allMarkers.findIndex(m => m.id === selected.id);
+                                        if (idx >= 0) allMarkers.splice(idx, 1);
+                                        selected = null;
+                                    });
+
+                                    L.DomEvent.on(lockBtn, 'click', async (e) => {
+                                        L.DomEvent.stopPropagation(e);
+                                        if (!isAdmin) { alert('Admin only.'); return; }
+                                        if (poiEditLocked) { alert('Already locked.'); return; }
+                                        if (!confirm('Lock editing? This will disable the editor for everyone.')) return;
+                                        try {
+                                            await campusDocRef.set({ poiEditLocked: true }, { merge: true });
+                                            poiEditLocked = true;
+                                            alert('Editing locked.');
+                                            try { map.removeControl(editorCtrl); } catch (e) {}
+                                        } catch (err) {
+                                            alert('Failed to lock. Try again.');
+                                        }
+                                    });
+
+                                    L.DomEvent.disableClickPropagation(wrap);
+                                    return wrap;
+                                },
+                                onRemove: function() {}
+                            });
+                            // Show editor only if admin and not locked
+                            let editorCtrl = null;
+                            if (isAdmin && !poiEditLocked) {
+                                editorCtrl = new Editor({ position: 'bottomright' });
+                                map.addControl(editorCtrl);
+                            }
+
+                            // Reset View button
+                            const ResetView = L.Control.extend({
+                                onAdd: function() {
+                                    const btn = L.DomUtil.create('button', 'leaflet-control custom-btn');
+                                    btn.title = 'Reset to campus view';
+                                    btn.innerText = 'Reset View';
+                                    L.DomEvent.on(btn, 'click', (e) => {
+                                        L.DomEvent.stopPropagation(e);
+                                        try {
+                                            const bounds = [[34.0578, 72.6408], [34.0635, 72.6485]];
+                                            map.fitBounds(bounds);
+                                        } catch (err) {}
+                                    });
+                                    return btn;
+                                },
+                                onRemove: function() {}
+                            });
+                            const resetCtrl = new ResetView({ position: 'topleft' }).addTo(map);
+                            // ====== End Enhancements ======
+                            // Store instance for later reuse when re-opening section
+                            container._leafletInstance = map;
                             const map = L.map('leaflet-map', { zoomControl: true, maxBoundsViscosity: 1.0, worldCopyJump: false });
                             // ====== Interactive Enhancements: POIs, Layer Toggles, Search, Reset View ======
                             // Guard: ensure Leaflet CSS applied and container has non-zero size
@@ -1411,11 +1755,25 @@
                                                 try {
                                                     const imageBounds = [[34.0578, 72.6408], [34.0635, 72.6485]];
                                                     map.fitBounds(imageBounds);
+                                                } catch (e) {}
+                                            }, 150);
+                                            setTimeout(() => {
+                                                map.invalidateSize();
+                                                try {
+                                                    const imageBounds = [[34.0578, 72.6408], [34.0635, 72.6485]];
+                                                    map.fitBounds(imageBounds);
                                                 } catch (e) { }
                                             }, 150);
                                         } else {
                                             el.classList.add('leaflet-fullscreen-custom');
                                             document.body.classList.add('noscroll');
+                                            setTimeout(() => {
+                                                map.invalidateSize();
+                                                try {
+                                                    const imageBounds = [[34.0578, 72.6408], [34.0635, 72.6485]];
+                                                    map.fitBounds(imageBounds);
+                                                } catch (e) {}
+                                            }, 150);
                                             setTimeout(() => {
                                                 map.invalidateSize();
                                                 try {
@@ -1443,6 +1801,11 @@
                                         backBtn.title = 'Back to campus view';
                                         backBtn.innerText = 'Back to Campus';
                                         backBtn.style.display = 'none';
+                                        const followToggle = L.DomUtil.create('button', 'leaflet-control custom-btn mt-1', wrap);
+                                        followToggle.title = 'Follow my location';
+                                        followToggle.innerText = 'Follow: Off';
+                                        let watchId = null;
+                                        const stopWatch = () => { if (watchId) { navigator.geolocation.clearWatch(watchId); watchId = null; } };
                                         const followToggle = L.DomUtil.create('button', 'leaflet-control custom-btn mt-1', wrap);
                                         followToggle.title = 'Follow my location';
                                         followToggle.innerText = 'Follow: Off';
@@ -1491,10 +1854,42 @@
                                             }, { enableHighAccuracy: true, maximumAge: 0 });
                                             followToggle.innerText = 'Follow: On';
                                         });
+                                        L.DomEvent.on(followToggle, 'click', (e) => {
+                                            L.DomEvent.stopPropagation(e);
+                                            if (watchId) {
+                                                stopWatch();
+                                                followToggle.innerText = 'Follow: Off';
+                                                return;
+                                            }
+                                            watchId = navigator.geolocation.watchPosition((pos) => {
+                                                const { latitude, longitude, accuracy } = pos.coords;
+                                                const latlng = [latitude, longitude];
+                                                if (!wrap._accuracyCircle) {
+                                                    wrap._accuracyCircle = L.circle(latlng, { radius: accuracy, color: '#60a5fa', fillColor: '#60a5fa', fillOpacity: 0.15 }).addTo(map);
+                                                } else {
+                                                    wrap._accuracyCircle.setLatLng(latlng);
+                                                    wrap._accuracyCircle.setRadius(accuracy);
+                                                }
+                                                if (!wrap._meMarker) {
+                                                    wrap._meMarker = L.circleMarker(latlng, { radius: 6, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 1 }).addTo(map);
+                                                } else {
+                                                    wrap._meMarker.setLatLng(latlng);
+                                                }
+                                                map.setView(latlng, Math.max(map.getZoom(), 17));
+                                            }, (err) => {
+                                                console.warn('Watch position error:', err);
+                                                alert('Unable to follow your location.');
+                                                stopWatch();
+                                                followToggle.innerText = 'Follow: Off';
+                                            }, { enableHighAccuracy: true, maximumAge: 0 });
+                                            followToggle.innerText = 'Follow: On';
+                                        });
                                         L.DomEvent.on(backBtn, 'click', (e) => {
                                             L.DomEvent.stopPropagation(e);
                                             map.setView([34.0607, 72.6446], 16);
                                             backBtn.style.display = 'none';
+                                            stopWatch();
+                                            followToggle.innerText = 'Follow: Off';
                                             stopWatch();
                                             followToggle.innerText = 'Follow: Off';
                                         });
@@ -1508,6 +1903,44 @@
                             // Optional: overlay campus schematic image (map.png) as an image overlay
                             try {
                                 const imageBounds = [[34.0578, 72.6408], [34.0635, 72.6485]]; // approximate SW/NE bounds
+                                // Base layer to avoid blank screen with fallback chain
+                                const addBase = (url, options = {}) => L.tileLayer(url, Object.assign({ maxZoom: 19 }, options));
+                                let baseLayer = null;
+                                if (window.CAMPUS_TILE_URL) {
+                                    baseLayer = addBase(window.CAMPUS_TILE_URL, { minZoom: 14, maxZoom: 20, attribution: 'Campus Map' }).addTo(map);
+                                } else {
+                                    baseLayer = addBase('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+                                }
+                                if (baseLayer) {
+                                    baseLayer.on('tileerror', () => {
+                                        try { if (baseLayer) map.removeLayer(baseLayer); } catch (e) {}
+                                        // Try alternate providers if one fails
+                                        baseLayer = addBase('https://a.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap FR' }).addTo(map);
+                                        baseLayer.on('tileerror', () => {
+                                            try { if (baseLayer) map.removeLayer(baseLayer); } catch (e) {}
+                                            baseLayer = addBase('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '© CartoDB' }).addTo(map);
+                                        });
+                                    });
+                                }
+                                // Preload campus overlay; add only if it loads
+                                const img = new Image();
+                                img.onload = () => {
+                                    try {
+                                        const overlay = L.imageOverlay('map.png', imageBounds, { opacity: 1, interactive: false, className: 'campus-overlay' }).addTo(map);
+                                        // Once overlay is present, remove base tiles to avoid seeing a second map underneath
+                                        try { if (baseLayer) map.removeLayer(baseLayer); } catch (e) {}
+                                        // Constrain view to overlay bounds with a small padding for better fit
+                                        map.setMaxBounds(imageBounds);
+                                        const minZ = map.getBoundsZoom(imageBounds, true);
+                                        if (typeof map.setMinZoom === 'function') map.setMinZoom(minZ);
+                                        map.fitBounds(imageBounds, { padding: [16, 16] });
+                                    } catch (e) {}
+                                };
+                                img.onerror = () => {
+                                    console.warn('Campus overlay failed to load; continuing with base layer only');
+                                };
+                                img.src = 'map.png';
+
                                 // Base layer to avoid blank screen with fallback chain
                                 const addBase = (url, options = {}) => L.tileLayer(url, Object.assign({ maxZoom: 19 }, options));
                                 let baseLayer = null;
@@ -1551,6 +1984,23 @@
                                 if (map && map.options) {
                                     map.options.renderer = L.canvas();
                                 }
+                            } catch (e) {}
+                        } else if (container && container._leaflet_id) {
+                            // Already initialized: ensure it fits the visible box on re-open
+                            const map = container._leafletInstance;
+                            if (map && typeof map.invalidateSize === 'function') {
+                                setTimeout(() => {
+                                    map.invalidateSize();
+                                    try {
+                                        const imageBounds = [[34.0578, 72.6408], [34.0635, 72.6485]];
+                                        map.fitBounds(imageBounds);
+                                    } catch (e) {}
+                                }, 150);
+                            }
+                                // Prefer canvas renderer for crisper scaling without pixelation
+                                if (map && map.options) {
+                                    map.options.renderer = L.canvas();
+                                }
                             } catch (e) { }
                         } else if (container && container._leaflet_id) {
                             // Already initialized: ensure it fits the visible box on re-open
@@ -1575,6 +2025,12 @@
                 setExpandedSection(sectionId);
                 setSelectedSocietySubTag(null);
                 const element = document.getElementById(sectionId);
+                if (element) {
+                    const header = document.querySelector('header');
+                    const headerHeight = header ? header.offsetHeight : 0;
+                    const y = element.getBoundingClientRect().top + window.scrollY - headerHeight - 8;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                }
                 if (element) {
                     const header = document.querySelector('header');
                     const headerHeight = header ? header.offsetHeight : 0;
@@ -1693,6 +2149,7 @@
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
+                                    <span className="text-blue-300 text-sm">Connecting...</span>
                                     <span className="text-blue-300 text-sm">Connecting...</span>
                                 </div>
                             </div>
@@ -2042,16 +2499,21 @@
                                                     {/* Login prompt for non-authenticated users */}
                                                     {!currentUser && (
                                                         <div className="mt-4 p-4 bg-gradient-to-r from-cyan-900 to-blue-900 border border-cyan-600 rounded text-center relative">
+                                                        <div className="mt-4 p-4 bg-gradient-to-r from-cyan-900 to-blue-900 border border-cyan-600 rounded text-center relative">
                                                             <div className="mb-3">
+                                                                <svg className="w-8 h-8 text-cyan-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <svg className="w-8 h-8 text-cyan-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                                                                 </svg>
+                                                                <h4 className="text-base font-semibold text-cyan-200 mb-1">Login Required</h4>
+                                                                <p className="text-cyan-100 text-xs mb-3">
                                                                 <h4 className="text-base font-semibold text-cyan-200 mb-1">Login Required</h4>
                                                                 <p className="text-cyan-100 text-xs mb-3">
                                                                     To save your packing list and track your progress across sessions, please login to your account.
                                                                 </p>
                                                             </div>
                                                             <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                                                                <a href="login.html" className="px-4 py-2 bg-indigo-700 text-white rounded hover:bg-indigo-800 transition-colors font-semibold text-sm">
                                                                 <a href="login.html" className="px-4 py-2 bg-indigo-700 text-white rounded hover:bg-indigo-800 transition-colors font-semibold text-sm">
                                                                     Login Now
                                                                 </a>
@@ -2060,9 +2522,11 @@
                                                                 </a>
                                                             </div>
                                                             <p className="text-cyan-200 text-xs mt-2">
+                                                            <p className="text-cyan-200 text-xs mt-2">
                                                                 💡 Your packing list will be automatically saved and you can continue where you left off!
                                                             </p>
                                                             {showGuestSavePrompt && (
+                                                                <div className="mt-3 p-2 bg-cyan-800/70 border border-cyan-600 rounded text-cyan-100">
                                                                 <div className="mt-3 p-2 bg-cyan-800/70 border border-cyan-600 rounded text-cyan-100">
                                                                     <span className="text-xs">Progress is saved only on this device. Login to sync across devices.</span>
                                                                 </div>
@@ -2090,6 +2554,7 @@
                                             )}
                                             {section.warnings && section.warnings.length > 0 && (
                                                 <div className="mt-8">
+                                                    <h3 className="text-2xl font-semibold font-lora text-cyan-300 border-b-2 pb-2 mb-4 border-gray-500">Helpful Reminders</h3>
                                                     <h3 className="text-2xl font-semibold font-lora text-cyan-300 border-b-2 pb-2 mb-4 border-gray-500">Helpful Reminders</h3>
                                                     <div className="space-y-4">
                                                         {section.warnings.map((warning, index) => (
