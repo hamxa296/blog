@@ -177,48 +177,13 @@
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="firebase-init.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const slugify = (text) =>
-                text
-                    .toString()
-                    .toLowerCase()
-                    .trim()
-                    .replace(/[^a-z0-9\s-]/g, '')
-                    .replace(/\s+/g, '-')
-                    .replace(/-+/g, '-');
-
             const packingData = {
                 clothing: ["Everyday wear (shirts, trousers, shalwar kameez)", "Formal attire for presentations", "Sweaters/Jackets for winter", "Sleepwear", "Undergarments and socks", "Towels (at least 2)", "Sportswear for gym/sports", "Flip-flops/slippers"],
                 bedding: ["Bed sheets (at least 2 sets)", "Pillow and pillowcases", "Blanket or comforter", "Mattress protector (optional but recommended)"],
                 academics: ["Laptop and charger", "Backpack", "Stationery (pens, notebooks, etc.)", "Scientific calculator", "USB flash drive", "Extension cord/power strip"],
                 misc: ["Toiletries (soap, shampoo, toothpaste, etc.)", "Mug, plate, and spoon", "Water bottle", "Padlock for your cupboard", "Basic first-aid kit", "Any personal medications", "Prayer mat (if needed)"]
-            };
-
-            const userPackingDoc = (uid) => firebase.firestore().collection('users').doc(uid).collection('packing').doc('list');
-            const updateCheckedItems = async (userId, checkedItems) => {
-                try {
-                    await userPackingDoc(userId).set({ checkedItems, lastUpdated: new Date().toISOString() }, { merge: true });
-                } catch (e) {
-                    console.warn('Failed to save packing items to Firestore:', e);
-                }
-            };
-
-            const buildItemKey = (category, label) => `${category}-${slugify(label)}`;
-            let checked = {};
-
-            const persistChecked = async () => {
-                const user = firebase.auth().currentUser;
-                if (user) {
-                    try { await updateCheckedItems(user.uid, checked); } catch {}
-                    try { localStorage.setItem(`packing_progress_${user.uid}`, JSON.stringify(checked)); } catch {}
-                } else {
-                    try { localStorage.setItem('packing_progress_guest', JSON.stringify(checked)); } catch {}
-                }
             };
 
             function createChecklistItem(itemText, category) {
@@ -228,12 +193,7 @@
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.id = id;
-                checkbox.addEventListener('change', function () {
-                    label.classList.toggle('checked', this.checked);
-                    const key = buildItemKey(category, itemText);
-                    checked[key] = this.checked;
-                    persistChecked();
-                });
+                checkbox.addEventListener('change', function () { label.classList.toggle('checked', this.checked); });
                 const label = document.createElement('label');
                 label.htmlFor = id;
                 label.textContent = itemText;
@@ -252,66 +212,6 @@
             for (const category in packingData) {
                 packingData[category].forEach(item => lists[category].appendChild(createChecklistItem(item, category)));
             }
-
-            const applyCheckedToUI = () => {
-                Object.keys(packingData).forEach((category) => {
-                    packingData[category].forEach((item) => {
-                        const elId = `${category}-${item.replace(/\s+/g, '-').toLowerCase()}`;
-                        const key = buildItemKey(category, item);
-                        const input = document.getElementById(elId);
-                        const label = input ? input.nextElementSibling : null;
-                        if (input) {
-                            input.checked = Boolean(checked[key]);
-                            if (label) {
-                                label.classList.toggle('checked', input.checked);
-                            }
-                        }
-                    });
-                });
-            };
-
-            // Initialize from storage and Firestore
-            const initPersistence = () => {
-                const auth = firebase.auth();
-                auth.onAuthStateChanged(async (user) => {
-                    try {
-                        let guest = {};
-                        try {
-                            const raw = localStorage.getItem('packing_progress_guest');
-                            guest = raw ? JSON.parse(raw) : {};
-                        } catch {}
-
-                        let userCache = {};
-                        if (user) {
-                            try {
-                                const rawUser = localStorage.getItem(`packing_progress_${user.uid}`);
-                                userCache = rawUser ? JSON.parse(rawUser) : {};
-                            } catch {}
-                        }
-
-                        if (user) {
-                            // Load from Firestore and merge guest/user cache
-                            try {
-                                const snap = await userPackingDoc(user.uid).get();
-                                const cloud = snap.exists ? (snap.data().checkedItems || {}) : {};
-                                checked = { ...cloud, ...guest, ...userCache };
-                                await updateCheckedItems(user.uid, checked);
-                                try { localStorage.removeItem('packing_progress_guest'); } catch {}
-                                try { localStorage.setItem(`packing_progress_${user.uid}`, JSON.stringify(checked)); } catch {}
-                            } catch (e) {
-                                console.warn('Failed to load from Firestore, using local data only:', e);
-                                checked = { ...guest, ...userCache };
-                            }
-                        } else {
-                            checked = { ...guest };
-                        }
-                    } finally {
-                        applyCheckedToUI();
-                    }
-                });
-            };
-
-            initPersistence();
 
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
