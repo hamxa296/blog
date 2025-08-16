@@ -4,7 +4,7 @@
  * Firebase-related script loaded on any page.
  */
 
-// Firebase project configuration - Use hardcoded values for browser environment
+// Firebase project configuration
 const firebaseConfig = {
     apiKey: "AIzaSyC1Q9tIEHLqAKZj6IjJN8aPiQCAPYbsi7I",
     authDomain: "giki-chronicles.firebaseapp.com",
@@ -14,76 +14,12 @@ const firebaseConfig = {
     appId: "1:80968785263:web:666d2e69fef2ef6f5a5c9a"
 };
 
-// Security: Validate Firebase config before initialization
-function validateFirebaseConfig(config) {
-    const requiredFields = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
-    const missingFields = requiredFields.filter(field => !config[field]);
-    
-    if (missingFields.length > 0) {
-        console.error('Firebase configuration is missing required fields:', missingFields);
-        throw new Error('Invalid Firebase configuration');
-    }
-    
-    // Additional security checks
-    if (config.apiKey.length < 20) {
-        console.warn('Firebase API key appears to be invalid or too short');
-    }
-    
-    return true;
-}
-
-// Initialize Firebase with validation
-try {
-    validateFirebaseConfig(firebaseConfig);
-    firebase.initializeApp(firebaseConfig);
-    console.log('Firebase initialized successfully');
-} catch (error) {
-    console.error('Firebase initialization failed:', error);
-    // Fallback to a minimal config for development
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        console.warn('Using development fallback configuration');
-        firebase.initializeApp(firebaseConfig);
-    } else {
-        throw new Error('Firebase configuration error in production');
-    }
-}
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
 // Make auth and firestore services available globally
 const auth = firebase.auth();
 const db = firebase.firestore();
-
-// Make them available globally for other scripts
-window.auth = auth;
-window.db = db;
-
-// Create a global Firebase ready flag
-window.firebaseReady = true;
-
-console.log('Firebase services initialized:', { auth: !!auth, db: !!db });
-console.log('Global Firebase ready flag set:', window.firebaseReady);
-
-// Dispatch a custom event to notify other scripts that Firebase is ready
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM Content Loaded - dispatching firebaseReady event');
-    window.dispatchEvent(new CustomEvent('firebaseReady', {
-        detail: { auth, db }
-    }));
-});
-
-// Also dispatch immediately if DOM is already loaded
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log('DOM Content Loaded (delayed) - dispatching firebaseReady event');
-        window.dispatchEvent(new CustomEvent('firebaseReady', {
-            detail: { auth, db }
-        }));
-    });
-} else {
-    console.log('DOM already loaded - dispatching firebaseReady event immediately');
-    window.dispatchEvent(new CustomEvent('firebaseReady', {
-        detail: { auth, db }
-    }));
-}
 
 // Flag to prevent duplicate user creation during the same session
 let userDocumentCreated = false;

@@ -52,16 +52,6 @@ async function signUpUser(email, password) {
  */
 async function signInWithGoogle() {
     try {
-        if (typeof auth === 'undefined' || !auth) {
-            console.warn('Auth not available yet');
-            return { success: false, error: 'Authentication not initialized' };
-        }
-        
-        if (typeof db === 'undefined' || !db) {
-            console.warn('Database not available yet');
-            return { success: false, error: 'Database not initialized' };
-        }
-        
         const provider = new firebase.auth.GoogleAuthProvider();
         const result = await auth.signInWithPopup(provider);
         const user = result.user;
@@ -114,16 +104,6 @@ async function signInWithGoogle() {
  */
 async function loginUser(email, password) {
     try {
-        if (typeof auth === 'undefined' || !auth) {
-            console.warn('Auth not available yet');
-            return { success: false, error: 'Authentication not initialized' };
-        }
-        
-        if (typeof db === 'undefined' || !db) {
-            console.warn('Database not available yet');
-            return { success: false, error: 'Database not initialized' };
-        }
-        
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
         const user = userCredential.user;
         
@@ -183,10 +163,6 @@ async function loginUser(email, password) {
  */
 async function logoutUser() {
     try {
-        if (typeof auth === 'undefined' || !auth) {
-            console.warn('Auth not available yet');
-            return { success: false, error: 'Authentication not initialized' };
-        }
         await auth.signOut();
         return { success: true };
     } catch (error) {
@@ -199,23 +175,6 @@ async function logoutUser() {
  * Checks the current authentication state of the user.
  */
 function onAuthStateChange(callback) {
-    if (typeof auth === 'undefined' || !auth) {
-        // Wait for Firebase to be ready
-        return new Promise((resolve, reject) => {
-            if (window.firebaseReady && window.auth) {
-                resolve(auth.onAuthStateChanged(callback));
-            } else {
-                const timeout = setTimeout(() => {
-                    reject(new Error('Firebase auth initialization timeout'));
-                }, 5000);
-                
-                window.addEventListener('firebaseReady', () => {
-                    clearTimeout(timeout);
-                    resolve(auth.onAuthStateChanged(callback));
-                }, { once: true });
-            }
-        });
-    }
     return auth.onAuthStateChanged(callback);
 }
 
@@ -224,16 +183,6 @@ function onAuthStateChange(callback) {
  * @returns {Promise<boolean>}
  */
 async function isUserAdmin() {
-    if (typeof auth === 'undefined' || !auth) {
-        console.warn('Auth not available yet');
-        return false;
-    }
-    
-    if (typeof db === 'undefined' || !db) {
-        console.warn('Database not available yet');
-        return false;
-    }
-    
     const user = auth.currentUser;
     console.log("isUserAdmin called, current user:", user ? user.uid : "No user");
     

@@ -1106,23 +1106,6 @@ function updateSidebarAuth(user) {
  * Initialize authentication state listener
  */
 function initializeAuthStateListener() {
-    // Check if auth is available
-    if (typeof auth === 'undefined' || !auth) {
-        // Wait for Firebase to be ready
-        if (window.firebaseReady && window.auth) {
-            setupAuthListener();
-        } else {
-            window.addEventListener('firebaseReady', () => {
-                setupAuthListener();
-            }, { once: true });
-        }
-        return;
-    }
-    
-    setupAuthListener();
-}
-
-function setupAuthListener() {
     // Listen for auth state changes
     auth.onAuthStateChanged(async (user) => {
         console.log("Calendar page auth state changed:", user ? user.email : "No user");

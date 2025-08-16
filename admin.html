@@ -18,16 +18,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Security Headers -->
-    <script src="security-headers.js"></script>
-    <script src="input-sanitizer.js"></script>
-    <script src="security-monitor.js"></script>
-    <script src="error-handler.js"></script>
-    <script src="session-manager.js"></script>
-    <script src="api-security.js"></script>
-    <script src="database-security.js"></script>
-    
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -802,55 +792,59 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     
-    <!-- Initialize Firebase immediately -->
-    <script>
-        // Initialize Firebase immediately to prevent errors
-        const firebaseConfig = {
-            apiKey: "AIzaSyC1Q9tIEHLqAKZj6IjJN8aPiQCAPYbsi7I",
-            authDomain: "giki-chronicles.firebaseapp.com",
-            projectId: "giki-chronicles",
-            storageBucket: "giki-chronicles.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abcdef123456"
-        };
-        
-        // Initialize Firebase
-        if (typeof firebase !== 'undefined') {
-            firebase.initializeApp(firebaseConfig);
-            console.log('Firebase initialized successfully');
-        } else {
-            console.error('Firebase SDK not loaded');
-        }
-    </script>
-    
     <!-- Local scripts -->
     <script src="auth.js"></script>
 
     <!-- Your custom scripts -->
     <script>
-        console.log("Starting admin page initialization...");
-        
-        // Prevent page from hanging by setting a timeout
-        const pageLoadTimeout = setTimeout(() => {
-            console.warn('Page load timeout reached, forcing initialization');
-            if (typeof initializeAdminPageWithoutFirebase === 'function') {
-                initializeAdminPageWithoutFirebase();
-            }
-        }, 5000); // 5 second timeout
-        
+        console.log("All scripts loaded, checking for errors...");
         window.addEventListener('error', function(e) {
             console.error('Global error caught:', e.error);
         });
         
-        // Simplified authentication check for admin page
+        // Enhanced authentication check for admin page
         function checkAuthAndAdmin() {
-            // Skip authentication check to prevent hanging
-            console.log("Skipping authentication check to prevent hanging");
+            // Wait for Firebase to be available
+            if (typeof firebase === 'undefined' || !firebase.auth) {
+                console.log("Firebase not loaded yet, waiting...");
+                setTimeout(checkAuthAndAdmin, 100);
+                return;
+            }
+            
+            const user = firebase.auth().currentUser;
+            console.log("Current auth user:", user);
+            
+            if (!user) {
+                console.log("No authenticated user, checking localStorage...");
+                const storedUser = localStorage.getItem('currentUser');
+                if (storedUser) {
+                    console.log("Found stored user:", storedUser);
+                    // Try to restore the session
+                    return false; // Will be handled by auth state listener
+                } else {
+                    console.log("No stored user found, redirecting to login");
+                    window.location.href = 'login.html';
+                    return false;
+                }
+            }
+            
             return true;
         }
         
-        // Skip authentication check to prevent hanging
-        console.log("Skipping Firebase authentication check to prevent hanging");
+        // Check authentication after Firebase is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Dashboard page DOM loaded, waiting for Firebase...");
+            // Wait for Firebase to be available
+            const checkFirebase = () => {
+                if (typeof firebase !== 'undefined' && firebase.auth) {
+                    console.log("Firebase loaded, checking authentication...");
+                    checkAuthAndAdmin();
+                } else {
+                    setTimeout(checkFirebase, 100);
+                }
+            };
+            checkFirebase();
+        });
         
         // Temporary debugging function - remove this after fixing the issue
         window.debugAuth = function() {
@@ -1033,25 +1027,15 @@
         console.log("For quick fix, run: quickFix()");
         console.log("To force admin (any user), run: forceAdmin()");
         console.log("To check user document, run: checkUserDoc()");
-        console.log("To disable content sanitizer for debugging, run: ContentSanitizer.disableSanitizer()");
-        console.log("To enable content sanitizer, run: ContentSanitizer.enableSanitizer()");
-        
-        // Temporarily disable sanitizer if there are issues
-        if (window.location.search.includes('disable-sanitizer')) {
-            console.log('Temporarily disabling content sanitizer due to URL parameter');
-            if (typeof ContentSanitizer !== 'undefined' && ContentSanitizer.disableSanitizer) {
-                ContentSanitizer.disableSanitizer();
-            }
-        }
-        
-        // Content sanitizer is disabled to prevent infinite recursion
-        console.log('Content sanitizer disabled to prevent infinite recursion');
-        window._sanitizerDisabled = true;
     </script>
     
-    <!-- Load only essential scripts to prevent hanging -->
+    <!-- Optimized combined JavaScript -->
+    <script src="combined.min.js" onerror="console.error('Failed to load combined.min.js')" onload="console.log('combined.min.js loaded')"></script>
     <script src="posts.js" onerror="console.error('Failed to load posts.js')" onload="console.log('posts.js loaded')"></script>
+    <script src="secure-access.js" onerror="console.error('Failed to load secure-access.js')" onload="console.log('secure-access.js loaded')"></script>
+    <script src="calendar.js" onerror="console.error('Failed to load calendar.js')" onload="console.log('calendar.js loaded')"></script>
     <script src="users.js" onerror="console.error('Failed to load users.js')" onload="console.log('users.js loaded')"></script>
+    <script src="gallery.js" onerror="console.error('Failed to load gallery.js')" onload="console.log('gallery.js loaded')"></script>
     <script>
         // Fallback for when calendar.js fails to load
         if (typeof getEventStats === 'undefined') {
@@ -1207,45 +1191,25 @@
     </script>
     
     <script>
-        // Initialize admin page immediately without waiting for all scripts
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, starting admin initialization...');
+        // Wait for all scripts to load before running admin-specific code
+        window.addEventListener('load', function() {
+            console.log('All scripts loaded, initializing admin page...');
             
-            // Clear the timeout since we're starting initialization
-            clearTimeout(pageLoadTimeout);
+            // Wait for Firebase to be available
+            const waitForFirebase = () => {
+                if (typeof firebase !== 'undefined' && firebase.auth) {
+                    console.log('Firebase is available, initializing admin functionality...');
+                    initializeAdminPage();
+                } else {
+                    console.log('Firebase not ready yet, waiting...');
+                    setTimeout(waitForFirebase, 100);
+                }
+            };
             
-            // Show admin content immediately
-            const adminContent = document.getElementById('admin-content');
-            if (adminContent) {
-                adminContent.classList.remove('hidden');
-            }
-            
-            // Hide loading message
-            const loadingMessage = document.getElementById('loading-message');
-            if (loadingMessage) {
-                loadingMessage.classList.add('hidden');
-            }
-            
-            // Check if Firebase is already initialized
-            if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
-                console.log('Firebase is already initialized, starting admin functionality...');
-                initializeAdminPage();
-            } else {
-                console.log('Firebase not initialized, starting without Firebase...');
-                initializeAdminPageWithoutFirebase();
-            }
+            waitForFirebase();
         });
         
         function initializeAdminPage() {
-            console.log('Initializing admin page with Firebase...');
-            
-            // Check if admin content element exists
-            const adminContent = document.getElementById('admin-content');
-            if (!adminContent) {
-                console.error('Admin content element not found');
-                return;
-            }
-            
             // User Management Variables
             let allUsers = [];
             let filteredUsers = [];
@@ -1285,9 +1249,8 @@
                     filterAndDisplayUsers();
                 } catch (error) {
                     console.error('Error loading users:', error);
-                    const tbody = document.getElementById('users-table-body');
-                    const errorMessage = '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Error loading users</td></tr>';
-                    tbody.innerHTML = errorMessage;
+                    document.getElementById('users-table-body').innerHTML = 
+                        '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Error loading users</td></tr>';
                 }
             }
 
@@ -1670,24 +1633,8 @@
                     document.getElementById('user-action-modal').classList.add('hidden');
                 });
 
-                            // Load initial data with error handling
-            try {
-                if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
-                    loadAllUsers();
-                } else {
-                    console.log('Firebase not available, skipping user data load');
-                    const tbody = document.getElementById('users-table-body');
-                    if (tbody) {
-                        tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Firebase not available</td></tr>';
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading users:', error);
-                const tbody = document.getElementById('users-table-body');
-                if (tbody) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Error loading users</td></tr>';
-                }
-            }
+                // Load initial data
+                loadAllUsers();
             }
 
             // Event Management Functions
@@ -1765,7 +1712,7 @@
                         console.log('getUpcomingEvents available:', typeof getUpcomingEvents === 'function');
                         console.log('getPastEvents available:', typeof getPastEvents === 'function');
                         console.log('isUserAdmin available:', typeof isUserAdmin === 'function');
-                                        container.innerHTML = '<p class="text-gray-500">Calendar functions loading...</p>';
+                        container.innerHTML = '<p class="text-gray-500">Calendar functions loading...</p>';
                         return;
                     }
 
@@ -1775,7 +1722,7 @@
                     
                     if (!currentUser) {
                         console.log('No authenticated user, waiting for auth...');
-                                        container.innerHTML = '<p class="text-gray-500">Waiting for authentication...</p>';
+                        container.innerHTML = '<p class="text-gray-500">Waiting for authentication...</p>';
                         
                         // Wait for authentication
                         await new Promise((resolve) => {
@@ -1813,11 +1760,11 @@
                     } else {
                         const errorMsg = result ? result.error : 'Unknown error';
                         console.error(`Error loading ${status} events:`, errorMsg);
-                                        container.innerHTML = `<p class="text-red-500">Error: ${errorMsg}</p>`;
+                        container.innerHTML = `<p class="text-red-500">Error: ${errorMsg}</p>`;
                     }
                 } catch (error) {
                     console.error(`Error loading ${status} events:`, error);
-                                    container.innerHTML = '<p class="text-red-500">Failed to load events</p>';
+                    container.innerHTML = '<p class="text-red-500">Failed to load events</p>';
                 }
             }
 
@@ -2086,24 +2033,8 @@
                     }
                     
                     console.log('User authenticated, loading initial event data...');
-                    try {
-                        if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
-                            loadEventStats();
-                            loadEventsByStatus('pending');
-                        } else {
-                            console.log('Firebase not available, skipping event data load');
-                            const container = document.getElementById('pending-events-container');
-                            if (container) {
-                                container.innerHTML = '<p class="text-gray-500">Firebase not available</p>';
-                            }
-                        }
-                    } catch (error) {
-                        console.error('Error loading events:', error);
-                        const container = document.getElementById('pending-events-container');
-                        if (container) {
-                            container.innerHTML = '<p class="text-red-500">Error loading events</p>';
-                        }
-                    }
+                    loadEventStats();
+                    loadEventsByStatus('pending');
                 };
 
                 // Start loading data
@@ -2209,9 +2140,8 @@
                         console.log('No documents found in submissions collection');
                         console.log('Please check if the collection name is exactly "submissions"');
                         console.log('=== MESSAGES DEBUG END ===');
-                                            const errorContainer = document.getElementById('new-messages-container');
-                    const errorMessage = '<p class="text-yellow-600">No messages found in submissions collection. Please check the collection name.</p>';
-                    errorContainer.innerHTML = errorMessage;
+                        document.getElementById('new-messages-container').innerHTML = 
+                            '<p class="text-yellow-600">No messages found in submissions collection. Please check the collection name.</p>';
                         return;
                     }
                     
@@ -2234,9 +2164,8 @@
                 } catch (error) {
                     console.error('Error loading messages:', error);
                     console.error('=== MESSAGES DEBUG END WITH ERROR ===');
-                    const errorContainer = document.getElementById('new-messages-container');
-                    const errorMessage = '<p class="text-red-500">Error loading messages: ' + error.message + '</p>';
-                    errorContainer.innerHTML = errorMessage;
+                    document.getElementById('new-messages-container').innerHTML = 
+                        '<p class="text-red-500">Error loading messages: ' + error.message + '</p>';
                 }
             }
 
@@ -2300,8 +2229,7 @@
                 const container = document.getElementById(`${currentMessageTab}-messages-container`);
                 
                 if (messagesToShow.length === 0) {
-                    // Use safe innerHTML setter to avoid sanitization issues
-                container.innerHTML = '<p class="text-gray-500">No messages found</p>';
+                    container.innerHTML = '<p class="text-gray-500">No messages found</p>';
                     updateMessagePagination();
                     return;
                 }
@@ -2737,126 +2665,19 @@
                     }
                 });
 
-                            // Load initial data with error handling
-            try {
-                if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
-                    loadAllMessages();
-                } else {
-                    console.log('Firebase not available, skipping message data load');
-                    const container = document.getElementById('new-messages-container');
-                    if (container) {
-                        container.innerHTML = '<p class="text-gray-500">Firebase not available</p>';
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading messages:', error);
-                const container = document.getElementById('new-messages-container');
-                if (container) {
-                    container.innerHTML = '<p class="text-red-500">Error loading messages</p>';
-                }
-            }
+                // Load initial data
+                loadAllMessages();
             }
 
-            // Initialize only essential components to prevent hanging
-            try {
-                console.log('Initializing user management...');
-                initializeUserManagement();
-            } catch (error) {
-                console.error('Error initializing user management:', error);
-            }
-            
-            // Initialize other components with delays to prevent blocking
-            setTimeout(() => {
-                try {
-                    console.log('Loading gallery stats...');
-                    loadGalleryStats();
-                } catch (error) {
-                    console.error('Error loading gallery stats:', error);
-                }
-            }, 500);
-            
-            setTimeout(() => {
-                try {
-                    console.log('Initializing event management...');
-                    initializeEventManagement();
-                } catch (error) {
-                    console.error('Error initializing event management:', error);
-                }
-            }, 1000);
-            
-            setTimeout(() => {
-                try {
-                    console.log('Initializing message management...');
-                    initializeMessageManagement();
-                } catch (error) {
-                    console.error('Error initializing message management:', error);
-                }
-            }, 1500);
-            
-            console.log('Admin page initialization completed');
-        }
-        
-        // Function to initialize admin page without Firebase
-        function initializeAdminPageWithoutFirebase() {
-            console.log('Initializing admin page without Firebase...');
-            
-            // Check if admin content element exists
-            const adminContent = document.getElementById('admin-content');
-            if (!adminContent) {
-                console.error('Admin content element not found');
-                return;
-            }
-            
-            // Show admin content
-            adminContent.classList.remove('hidden');
-            
-            // Show message that Firebase is not available
-            const loadingMessage = document.getElementById('loading-message');
-            if (loadingMessage) {
-                loadingMessage.innerHTML = '<p class="text-yellow-600">Firebase not available. Some features may not work.</p>';
-            }
-            
-            // Initialize basic UI without Firebase functionality
-            try {
-                console.log('Initializing basic UI...');
-                initializeBasicUI();
-            } catch (error) {
-                console.error('Error initializing basic UI:', error);
-            }
-        }
-        
-        // Function to initialize basic UI without Firebase
-        function initializeBasicUI() {
-            // Add basic event listeners for UI elements
-            const logoutButton = document.getElementById('logout-button');
-            if (logoutButton) {
-                logoutButton.addEventListener('click', () => {
-                    alert('Firebase not available. Please refresh the page to logout.');
-                });
-            }
-            
-            // Add placeholder content
-            const postsContainer = document.getElementById('posts-container');
-            if (postsContainer) {
-                postsContainer.innerHTML = '<p class="text-gray-500">Firebase not available. Please refresh the page.</p>';
-            }
-            
-            const usersTableBody = document.getElementById('users-table-body');
-            if (usersTableBody) {
-                usersTableBody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Firebase not available</td></tr>';
-            }
-            
-            console.log('Basic UI initialized');
+            // Initialize everything
+            loadGalleryStats();
+            initializeEventManagement();
+            initializeUserManagement();
+            initializeMessageManagement();
         }
     </script>
     
 
-    
-    <!-- Security Scripts - Load only essential ones to prevent conflicts -->
-    <script src="secure-firebase-init.js"></script>
-    <script src="secure-admin-config.js"></script>
-    <!-- Disabled content sanitizer to prevent infinite recursion -->
-    <!-- <script src="secure-content-sanitizer.js"></script> -->
     
     <script src="theme-manager.js"></script>
     <script>

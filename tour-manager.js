@@ -219,11 +219,8 @@ class WebsiteTour {
                     <div class="space-y-2">
                     </div>
                 `;
-                const spaceY2 = tourSection.querySelector('.space-y-2');
-                if (spaceY2 && this.tourButton) {
-                    spaceY2.appendChild(this.tourButton);
-                    sidebarNav.appendChild(tourSection);
-                }
+                tourSection.querySelector('.space-y-2').appendChild(this.tourButton);
+                sidebarNav.appendChild(tourSection);
             }
         } else {
             // Fallback: try to find any sidebar container
@@ -236,11 +233,8 @@ class WebsiteTour {
                     <div class="space-y-2">
                     </div>
                 `;
-                const spaceY2 = tourSection.querySelector('.space-y-2');
-                if (spaceY2 && this.tourButton) {
-                    spaceY2.appendChild(this.tourButton);
-                    sidebar.appendChild(tourSection);
-                }
+                tourSection.querySelector('.space-y-2').appendChild(this.tourButton);
+                sidebar.appendChild(tourSection);
             }
         }
     }
@@ -265,12 +259,9 @@ class WebsiteTour {
         });
 
         // Close tour on overlay click
-        const tourOverlay = document.getElementById('tour-overlay');
-        if (tourOverlay) {
-            tourOverlay.addEventListener('click', () => {
-                this.endTour();
-            });
-        }
+        document.getElementById('tour-overlay').addEventListener('click', () => {
+            this.endTour();
+        });
 
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
@@ -311,23 +302,19 @@ class WebsiteTour {
         
         // Show overlay with fade in
         const overlay = document.getElementById('tour-overlay');
-        if (overlay) {
-            overlay.classList.remove('hidden');
-            overlay.style.opacity = '0';
-            setTimeout(() => {
-                overlay.style.opacity = '1';
-            }, 10);
-        }
+        overlay.classList.remove('hidden');
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+            overlay.style.opacity = '1';
+        }, 10);
         
         // Show tooltip with animation
         const tooltip = document.getElementById('tour-tooltip');
-        if (tooltip) {
-            tooltip.classList.remove('hidden');
-            setTimeout(() => {
-                tooltip.classList.remove('scale-95', 'opacity-0');
-                tooltip.classList.add('scale-100', 'opacity-100');
-            }, 100);
-        }
+        tooltip.classList.remove('hidden');
+        setTimeout(() => {
+            tooltip.classList.remove('scale-95', 'opacity-0');
+            tooltip.classList.add('scale-100', 'opacity-100');
+        }, 100);
         
         this.showStep();
         
@@ -575,25 +562,23 @@ class WebsiteTour {
         this.startTour();
     }
 
-    // Debug method to test tour functionality (development only)
+    // Debug method to test tour functionality
     debugTour() {
-        if (window.ProductionEnvironment && window.ProductionEnvironment.isDevelopment()) {
-            console.log('Tour Debug Info:');
-            console.log('- Device Type:', this.isMobile ? 'Mobile' : 'Desktop');
-            console.log('- Current Step:', this.currentStep);
-            console.log('- Is Active:', this.isActive);
-            console.log('- Total Steps:', this.tourSteps.length);
-            console.log('- Tour Completed:', localStorage.getItem('tour-completed'));
-            console.log('- Welcome Popup Shown:', localStorage.getItem('welcome-popup-shown'));
-            
-            // Test element targeting
-            this.tourSteps.forEach((step, index) => {
-                if (step.target) {
-                    const element = this.findTargetElement(step.target);
-                    console.log(`- Step ${index + 1} (${step.id}):`, element ? 'Found' : 'Not Found');
-                }
-            });
-        }
+        console.log('Tour Debug Info:');
+        console.log('- Device Type:', this.isMobile ? 'Mobile' : 'Desktop');
+        console.log('- Current Step:', this.currentStep);
+        console.log('- Is Active:', this.isActive);
+        console.log('- Total Steps:', this.tourSteps.length);
+        console.log('- Tour Completed:', localStorage.getItem('tour-completed'));
+        console.log('- Welcome Popup Shown:', localStorage.getItem('welcome-popup-shown'));
+        
+        // Test element targeting
+        this.tourSteps.forEach((step, index) => {
+            if (step.target) {
+                const element = this.findTargetElement(step.target);
+                console.log(`- Step ${index + 1} (${step.id}):`, element ? 'Found' : 'Not Found');
+            }
+        });
     }
 }
 
@@ -601,14 +586,12 @@ class WebsiteTour {
 document.addEventListener('DOMContentLoaded', () => {
     window.websiteTour = new WebsiteTour();
     
-    // Add debug function to window for testing (development only)
-    if (window.ProductionEnvironment && window.ProductionEnvironment.isDevelopment()) {
-        window.debugTour = () => {
-            if (window.websiteTour) {
-                window.websiteTour.debugTour();
-            }
-        };
-    }
+    // Add debug function to window for testing
+    window.debugTour = () => {
+        if (window.websiteTour) {
+            window.websiteTour.debugTour();
+        }
+    };
 });
 
 // Export for use in other scripts
