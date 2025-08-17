@@ -487,6 +487,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         popup.classList.remove('hidden');
+        // Prevent body scrolling when modal is open
+        document.body.classList.add('modal-open');
     }
 
     function hideEventPopup() {
@@ -495,6 +497,8 @@ document.addEventListener('DOMContentLoaded', () => {
             popup.classList.add('hidden');
         }
         document.querySelectorAll('.day').forEach(d => d.classList.remove('selected'));
+        // Re-enable body scrolling when modal is closed
+        document.body.classList.remove('modal-open');
     }
 
     function createEventCard(event) {
@@ -522,6 +526,8 @@ document.addEventListener('DOMContentLoaded', () => {
         eventListContainer.innerHTML = '';
         eventListContainer.appendChild(createEventDetailsCard(event));
         popup.classList.remove('hidden');
+        // Prevent body scrolling when modal is open
+        document.body.classList.add('modal-open');
     }
 
     function renderEventsPage() {
