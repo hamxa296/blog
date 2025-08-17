@@ -440,8 +440,53 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    // Define loadProfileData function globally so it can be called from anywhere
+    const loadProfileData = async (user) => {
+        if (!user) return;
+        
+        // Only run profile-specific code if we're on the profile page
+        const isProfilePage = document.getElementById('profile-form') !== null;
+        
+        // Early return if not on profile page to prevent unnecessary processing
+        if (!isProfilePage) {
+            console.log('loadProfileData: Not on profile page, skipping');
+            return;
+        }
+        
+        const result = await getUserProfile(user.uid);
+        if (result.success) {
+            const profile = result.profile;
+            
+            // Only update form elements if they exist (profile page)
+            if (isProfilePage) {
+                const displayNameInput = document.getElementById('display-name');
+                const userEmailInput = document.getElementById('user-email');
+                const userBioInput = document.getElementById('user-bio');
+                const profilePicImg = document.getElementById('profile-pic');
+                
+                if (displayNameInput) displayNameInput.value = profile.displayName || '';
+                if (userEmailInput) userEmailInput.value = profile.email || '';
+                if (userBioInput) userBioInput.value = profile.bio || '';
+                if (profile.photoURL && profilePicImg) {
+                    profilePicImg.src = profile.photoURL;
+                }
+            }
+        } else {
+            const newProfile = {
+                uid: user.uid,
+                email: user.email,
+                displayName: user.displayName || user.email.split('@')[0],
+                photoURL: user.photoURL || '',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            await db.collection('users').doc(user.uid).set(newProfile);
+            // Don't recursively call loadProfileData to avoid infinite loops
+        }
+    };
+
     // --- Profile Page Logic ---
     const profileForm = document.getElementById('profile-form');
+    
     if (profileForm) {
         const displayNameInput = document.getElementById('display-name');
         const userEmailInput = document.getElementById('user-email');
@@ -450,29 +495,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const photoUploadButton = document.querySelector('#profile-pic + button');
         const photoUploadInput = document.getElementById('photo-upload');
         const formMessage = document.getElementById('form-message');
-        const loadProfileData = async (user) => {
-            if (!user) return;
-            const result = await getUserProfile(user.uid);
-            if (result.success) {
-                const profile = result.profile;
-                displayNameInput.value = profile.displayName || '';
-                userEmailInput.value = profile.email || '';
-                userBioInput.value = profile.bio || '';
-                if (profile.photoURL) {
-                    profilePicImg.src = profile.photoURL;
-                }
-            } else {
-                const newProfile = {
-                    uid: user.uid,
-                    email: user.email,
-                    displayName: user.displayName || user.email.split('@')[0],
-                    photoURL: user.photoURL || '',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-                await db.collection('users').doc(user.uid).set(newProfile);
-                loadProfileData(user);
-            }
-        };
         if (photoUploadButton) {
             photoUploadButton.addEventListener('click', () => photoUploadInput.click());
         }
@@ -543,7 +565,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
         onAuthStateChange(user => {
             if (user) {
-                loadProfileData(user);
                 loadUserPosts(user);
             } else {
                 window.location.href = 'login.html';
@@ -819,6 +840,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const mobileAdminAccessBtn = document.getElementById('mobile-admin-access-btn');
         
         if (user) {
+            // Load profile data (only executes on profile page)
+            try {
+                await loadProfileData(user);
+            } catch (error) {
+                console.error("App.js: Error loading profile data:", error);
+            }
+            
             // Ensure user data is properly loaded
             if (typeof window.ensureUserDataLoaded === 'function') {
                 try {

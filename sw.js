@@ -14,11 +14,7 @@ const STATIC_FILES = [
     '/styles.css',
     '/combined.min.js',
     '/logo.png',
-    '/favicons/favicon.ico',
-    'https://cdn.tailwindcss.com',
-    'https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js',
-    'https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js',
-    'https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js'
+    '/favicons/favicon.ico'
 ];
 
 // Install event - cache static files
@@ -76,6 +72,11 @@ self.addEventListener('fetch', event => {
 
 // Cache first strategy for static assets
 async function cacheFirst(request) {
+    // Skip unsupported schemes (chrome-extension, etc.)
+    if (!request.url.startsWith('http')) {
+        return fetch(request);
+    }
+    
     const cachedResponse = await caches.match(request);
     if (cachedResponse) {
         return cachedResponse;
@@ -99,6 +100,11 @@ async function cacheFirst(request) {
 
 // Network first strategy for dynamic content
 async function networkFirst(request) {
+    // Skip unsupported schemes (chrome-extension, etc.)
+    if (!request.url.startsWith('http')) {
+        return fetch(request);
+    }
+    
     try {
         const networkResponse = await fetch(request);
         if (networkResponse.ok) {

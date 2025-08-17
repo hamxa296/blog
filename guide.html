@@ -368,19 +368,13 @@
 
     <div id="root"></div>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <!-- Firebase SDKs (required before combined.min.js) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-    <!-- Your custom scripts (order is important) -->
-    <script src="firebase-init.js"></script>
-    <!-- Admin configuration - must be loaded before auth.js -->
-    <script src="admin-config.js"></script>
-    <script src="auth.js"></script>
-    <script src="users.js"></script>
-    <script src="script.js"></script>
-    <script src="app.js"></script>
+  <!-- Optimized combined JavaScript (includes Firebase initialization) -->
+  <script src="combined.min.js"></script>
 
     <!-- Your React Component -->
     <script type="text/babel">
@@ -601,11 +595,21 @@
         };
 
         // Firestore helpers for cross-device packing list persistence (per-user)
-        const userPackingDoc = (uid) => firebase.firestore().collection('users').doc(uid).collection('packing').doc('list');
+        const userPackingDoc = (uid) => {
+            if (!uid) {
+                console.warn('No user ID provided to userPackingDoc');
+                return null;
+            }
+            return firebase.firestore().collection('users').doc(uid).collection('packing').doc('list');
+        };
 
         const savePackingList = async (userId, packingListData) => {
             try {
                 const docRef = userPackingDoc(userId);
+                if (!docRef) {
+                    console.warn('Cannot save packing list - no valid document reference');
+                    return false;
+                }
                 const dataToSave = { ...packingListData, lastUpdated: new Date().toISOString() };
                 await docRef.set(dataToSave, { merge: true });
                 console.log("Packing list saved successfully to Firestore!");
@@ -619,6 +623,10 @@
         const loadPackingList = async (userId) => {
             try {
                 const docRef = userPackingDoc(userId);
+                if (!docRef) {
+                    console.warn('Cannot load packing list - no valid document reference');
+                    return null;
+                }
                 const snapshot = await docRef.get();
                 if (snapshot.exists) {
                     return snapshot.data();
@@ -626,6 +634,10 @@
                 return null;
             } catch (e) {
                 console.error("Error loading packing list from Firestore: ", e);
+                // If it's a permissions error, log it but don't show to user
+                if (e.code === 'permission-denied') {
+                    console.warn("Packing list permissions issue - user may need to be authenticated");
+                }
                 return null;
             }
         };
@@ -633,11 +645,19 @@
         const updateCheckedItems = async (userId, checkedItems) => {
             try {
                 const docRef = userPackingDoc(userId);
+                if (!docRef) {
+                    console.warn('Cannot update checked items - no valid document reference');
+                    return false;
+                }
                 await docRef.set({ checkedItems, lastUpdated: new Date().toISOString() }, { merge: true });
                 console.log("Checked items updated successfully in Firestore!");
                 return true;
             } catch (e) {
                 console.error("Error updating checked items in Firestore: ", e);
+                // If it's a permissions error, log it but don't show to user
+                if (e.code === 'permission-denied') {
+                    console.warn("Packing list permissions issue - user may need to be authenticated");
+                }
                 return false;
             }
         };
@@ -645,6 +665,10 @@
         const deletePackingList = async (userId) => {
             try {
                 const docRef = userPackingDoc(userId);
+                if (!docRef) {
+                    console.warn('Cannot delete packing list - no valid document reference');
+                    return false;
+                }
                 await docRef.delete();
                 console.log("Packing list deleted successfully from Firestore!");
                 return true;
@@ -835,7 +859,9 @@
                                         packingUnsubRef.current();
                                         packingUnsubRef.current = null;
                                     }
-                                    packingUnsubRef.current = userPackingDoc(user.uid).onSnapshot(
+                                    const packingDocRef = userPackingDoc(user.uid);
+                                    if (packingDocRef) {
+                                        packingUnsubRef.current = packingDocRef.onSnapshot(
                                         (snapshot) => {
                                             const data = snapshot.exists ? snapshot.data() : {};
                                             setSavedPackingList(data || null);
@@ -844,9 +870,17 @@
                                         },
                                         (err) => {
                                             console.error('Packing list listener error:', err);
+                                            // If it's a permissions error, log it but don't show to user
+                                            if (err.code === 'permission-denied') {
+                                                console.warn("Packing list permissions issue - user may need to be authenticated");
+                                            }
                                             setIsLoadingSavedList(false);
                                         }
                                     );
+                                    } else {
+                                        console.warn('Cannot set up packing list listener - no valid document reference');
+                                        setIsLoadingSavedList(false);
+                                    }
                                 } catch (error) {
                                     console.error("Error subscribing/migrating packing list:", error);
                                     setIsLoadingSavedList(false);

@@ -582,7 +582,7 @@ async function deletePhoto(photoId, cloudinaryId) {
     }
 }
 
-// Initialize lazy loading
+// Initialize lazy loading - OPTIMIZED FOR SPEED
 function initializeLazyLoading() {
     const imageObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
@@ -594,8 +594,8 @@ function initializeLazyLoading() {
             }
         });
     }, {
-        rootMargin: '50px 0px',
-        threshold: 0.01
+        rootMargin: '300px 0px', // Much larger margin - start loading 300px before entering viewport
+        threshold: 0.1 // Higher threshold - trigger when 10% of image is visible
     });
 
     // Observe all lazy images

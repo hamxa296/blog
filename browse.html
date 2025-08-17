@@ -359,20 +359,29 @@
         </div>
     </main>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <!-- Firebase SDKs (required before combined.min.js) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-    <!-- Your custom scripts -->
-    <script src="firebase-init.js"></script>
-    <script src="admin-config.js"></script>
+  <!-- Optimized combined JavaScript (includes Firebase initialization) -->
+  <script src="combined.min.js"></script>
+    
+    <!-- Additional scripts not in bundle -->
     <script src="secure-access.js"></script>
-    <script src="auth.js"></script>
-    <script src="users.js"></script>
-    <script src="security.js"></script>
-    <script src="posts.js"></script>
-    <script src="app.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('Service Worker registered successfully:', registration);
+          })
+          .catch(error => {
+            console.log('Service Worker registration failed:', error);
+          });
+      }
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
