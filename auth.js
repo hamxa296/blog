@@ -163,6 +163,9 @@ async function loginUser(email, password) {
  */
 async function logoutUser() {
     try {
+        if (typeof auth === 'undefined') {
+            throw new Error('Auth object not initialized');
+        }
         await auth.signOut();
         return { success: true };
     } catch (error) {
@@ -175,6 +178,19 @@ async function logoutUser() {
  * Checks the current authentication state of the user.
  */
 function onAuthStateChange(callback) {
+    if (typeof auth === 'undefined') {
+        console.warn('Auth object not yet initialized, waiting for Firebase...');
+        // Wait for Firebase to be initialized
+        const checkAuth = () => {
+            if (typeof auth !== 'undefined') {
+                return auth.onAuthStateChanged(callback);
+            } else {
+                setTimeout(checkAuth, 100);
+            }
+        };
+        checkAuth();
+        return () => {}; // Return empty unsubscribe function
+    }
     return auth.onAuthStateChanged(callback);
 }
 
@@ -183,7 +199,7 @@ function onAuthStateChange(callback) {
  * @returns {Promise<boolean>}
  */
 async function isUserAdmin() {
-    const user = auth.currentUser;
+    const user = typeof auth !== 'undefined' ? auth.currentUser : null;
     console.log("isUserAdmin called, current user:", user ? user.uid : "No user");
     
     if (!user) return false;

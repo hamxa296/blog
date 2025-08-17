@@ -433,6 +433,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
     <!-- Your custom scripts (order is important) -->
+    <!-- Firebase initialization - must be loaded first -->
+    <script src="firebase-init.js"></script>
     <!-- Admin configuration - must be loaded before auth.js -->
     <script src="admin-config.js"></script>
     <script src="auth.js"></script>
@@ -490,7 +492,7 @@
 
         // --- Profile Management ---
         async function loadUserProfile() {
-            const user = auth.currentUser;
+            const user = typeof auth !== 'undefined' ? auth.currentUser : null;
             if (!user) return;
 
             currentUserId = user.uid;
@@ -694,7 +696,7 @@
             const refreshBtn = document.getElementById('refresh-stats-btn');
             if (refreshBtn) {
                 refreshBtn.addEventListener('click', async () => {
-                    const user = auth.currentUser;
+                    const user = typeof auth !== 'undefined' ? auth.currentUser : null;
                     if (!user) return;
                     
                     // Show loading state
@@ -796,7 +798,7 @@
 
         function isViewingOwnProfile() {
             const profileUserId = getProfileUserId();
-            const currentUser = auth.currentUser;
+            const currentUser = typeof auth !== 'undefined' ? auth.currentUser : null;
             return !profileUserId || (currentUser && profileUserId === currentUser.uid);
         }
 
@@ -872,32 +874,184 @@
             }
         }
 
+        // --- Navigation State Management ---
+        function updateNavigationState(user) {
+            const guestNav = document.getElementById('guest-nav');
+            const userNav = document.getElementById('user-nav');
+            const sidebarGuestNav = document.getElementById('sidebar-guest-nav');
+            const sidebarUserNav = document.getElementById('sidebar-user-nav');
+            const sidebarLogoutButton = document.getElementById('sidebar-logout-button');
+            const sidebarAdminAccessBtn = document.getElementById('sidebar-admin-access-btn');
+
+            if (user) {
+                // User is logged in
+                console.log("Updating navigation for logged in user:", user.email);
+                
+                // Update main header navigation
+                if (guestNav) guestNav.classList.add('hidden');
+                if (userNav) userNav.classList.remove('hidden');
+
+                // Update sidebar navigation
+                if (sidebarGuestNav) sidebarGuestNav.classList.add('hidden');
+                if (sidebarUserNav) sidebarUserNav.classList.remove('hidden');
+
+                // Add logout functionality to sidebar
+                if (sidebarLogoutButton) {
+                    // Remove existing event listeners to prevent duplication
+                    const newLogoutButton = sidebarLogoutButton.cloneNode(true);
+                    sidebarLogoutButton.parentNode.replaceChild(newLogoutButton, sidebarLogoutButton);
+                    
+                    newLogoutButton.addEventListener('click', async () => {
+                        try {
+                            await logoutUser();
+                            window.location.href = 'index.html';
+                        } catch (error) {
+                            console.error('Logout error:', error);
+                        }
+                    });
+                }
+
+                // Check if user is admin and show admin access button
+                if (sidebarAdminAccessBtn) {
+                    isUserAdmin().then(isAdmin => {
+                        if (isAdmin) {
+                            sidebarAdminAccessBtn.classList.remove('hidden');
+                            // Remove existing event listeners to prevent duplication
+                            const newAdminAccessBtn = sidebarAdminAccessBtn.cloneNode(true);
+                            if (sidebarAdminAccessBtn.parentNode) {
+                                sidebarAdminAccessBtn.parentNode.replaceChild(newAdminAccessBtn, sidebarAdminAccessBtn);
+                                
+                                newAdminAccessBtn.addEventListener('click', () => {
+                                    window.location.href = 'admin-access.html';
+                                });
+                            }
+                        } else {
+                            sidebarAdminAccessBtn.classList.add('hidden');
+                        }
+                    }).catch(error => {
+                        console.error('Error checking admin status:', error);
+                        if (sidebarAdminAccessBtn) {
+                            sidebarAdminAccessBtn.classList.add('hidden');
+                        }
+                    });
+                }
+
+            } else {
+                // User is not logged in
+                console.log("Updating navigation for guest user");
+                
+                // Update main header navigation
+                if (guestNav) guestNav.classList.remove('hidden');
+                if (userNav) userNav.classList.add('hidden');
+
+                // Update sidebar navigation
+                if (sidebarGuestNav) sidebarGuestNav.classList.remove('hidden');
+                if (sidebarUserNav) sidebarUserNav.classList.add('hidden');
+
+                // Hide admin access button
+                if (sidebarAdminAccessBtn) {
+                    sidebarAdminAccessBtn.classList.add('hidden');
+                }
+            }
+        }
+
+        // --- Sidebar Management ---
+        function initializeSidebar() {
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarClose = document.getElementById('sidebar-close');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', () => {
+                    sidebar.classList.remove('-translate-x-full');
+                    sidebarOverlay.classList.remove('hidden');
+                });
+            }
+
+            if (sidebarClose) {
+                sidebarClose.addEventListener('click', () => {
+                    sidebar.classList.add('-translate-x-full');
+                    sidebarOverlay.classList.add('hidden');
+                });
+            }
+
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', () => {
+                    sidebar.classList.add('-translate-x-full');
+                    sidebarOverlay.classList.add('hidden');
+                });
+            }
+
+            // Calendar dropdown functionality
+            const sidebarCalendarDropdownToggle = document.getElementById('sidebar-calendar-dropdown-toggle');
+            const sidebarCalendarDropdown = document.getElementById('sidebar-calendar-dropdown');
+            const sidebarCalendarDropdownArrow = document.getElementById('sidebar-calendar-dropdown-arrow');
+
+            if (sidebarCalendarDropdownToggle && sidebarCalendarDropdown && sidebarCalendarDropdownArrow) {
+                sidebarCalendarDropdownToggle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const isHidden = sidebarCalendarDropdown.classList.contains('hidden');
+                    
+                    if (isHidden) {
+                        sidebarCalendarDropdown.classList.remove('hidden');
+                        sidebarCalendarDropdownArrow.style.transform = 'rotate(180deg)';
+                    } else {
+                        sidebarCalendarDropdown.classList.add('hidden');
+                        sidebarCalendarDropdownArrow.style.transform = 'rotate(0deg)';
+                    }
+                });
+            }
+        }
+
         // --- Initialize Everything ---
         document.addEventListener('DOMContentLoaded', () => {
             initializeTabs();
             initializeModal();
             initializeProfileForm();
             initializeStatsRefresh();
+            initializeSidebar();
 
-            // Check if viewing a specific user's profile
-            const profileUserId = getProfileUserId();
-            
-            if (profileUserId) {
-                // Viewing someone else's profile - no auth required
-                loadPublicProfile(profileUserId);
-            } else {
-                // Viewing own profile - auth required
-                auth.onAuthStateChanged((user) => {
-                    if (user) {
-                        loadUserProfile();
-                    } else {
-                        window.location.href = 'login.html';
-                    }
-                });
-            }
-            
             // Initialize profile picture upload
             initializeProfilePictureUpload();
+
+            // Wait for Firebase auth to be initialized
+            const handleAuthStateChanged = (event) => {
+                if (event.detail.initialized) {
+                    // Update navigation state
+                    updateNavigationState(event.detail.user);
+                    
+                    // Check if viewing a specific user's profile
+                    const profileUserId = getProfileUserId();
+                    
+                    if (profileUserId) {
+                        // Viewing someone else's profile - no auth required
+                        loadPublicProfile(profileUserId);
+                    } else {
+                        // Viewing own profile - auth required
+                        const user = event.detail.user;
+                        if (user) {
+                            loadUserProfile();
+                        } else {
+                            window.location.href = 'login.html';
+                        }
+                    }
+                }
+            };
+
+            // Listen for auth state changes
+            window.addEventListener('authStateChanged', handleAuthStateChanged);
+
+            // If auth is already initialized, handle immediately
+            if (typeof auth !== 'undefined' && auth.currentUser !== null) {
+                updateNavigationState(auth.currentUser);
+                const profileUserId = getProfileUserId();
+                if (profileUserId) {
+                    loadPublicProfile(profileUserId);
+                } else {
+                    loadUserProfile();
+                }
+            }
         });
         
         // Profile Picture Upload Functionality
@@ -920,7 +1074,7 @@
         }
         
         async function uploadProfilePicture(file) {
-            const user = auth.currentUser;
+            const user = typeof auth !== 'undefined' ? auth.currentUser : null;
             if (!user) return;
             
             const uploadBtn = document.getElementById('upload-picture-btn');
