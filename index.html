@@ -16,6 +16,18 @@
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fallback to local Tailwind if CDN fails -->
+  <script>
+    // Check if Tailwind loaded successfully
+    if (typeof window.tailwind === 'undefined') {
+      console.warn('Tailwind CDN failed to load, using fallback styles');
+      // Load a minimal CSS fallback
+      const fallbackCSS = document.createElement('link');
+      fallbackCSS.rel = 'stylesheet';
+      fallbackCSS.href = 'tailwind-fallback.css';
+      document.head.appendChild(fallbackCSS);
+    }
+  </script>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -527,6 +539,24 @@
   <script src="firebase-error-handler.js"></script>
   <script src="tour-test.js"></script>
 
+  <!-- Service Worker Registration -->
+  <script>
+    // Register service worker with error handling
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('Service Worker registered successfully:', registration.scope);
+          })
+          .catch(error => {
+            console.warn('Service Worker registration failed:', error);
+            // Don't show error to user, just log it
+          });
+      });
+    } else {
+      console.log('Service Worker not supported in this browser');
+    }
+  </script>
 
 </body>
 
