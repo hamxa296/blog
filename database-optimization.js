@@ -13,7 +13,6 @@ async function getOptimizedGalleryPhotos(status = "approved", page = 0, limit = 
     const cached = queryCache.get(cacheKey);
     
     if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-        console.log('Serving from cache:', cacheKey);
         return cached.data;
     }
     
@@ -179,7 +178,6 @@ async function searchPhotos(query, status = "approved", limit = 20) {
 // Cache management
 function clearCache() {
     queryCache.clear();
-    console.log('Query cache cleared');
 }
 
 function getCacheStats() {

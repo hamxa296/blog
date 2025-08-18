@@ -171,7 +171,6 @@ function renderPhotoGrid(photos, status) {
     
     // Only proceed if we're on the gallery page
     if (!grid) {
-        console.log('Gallery grid not found - not on gallery page');
         return;
     }
     
@@ -210,7 +209,6 @@ function appendPhotoGrid(photos, status) {
     
     // Only proceed if we're on the gallery page
     if (!grid) {
-        console.log('Gallery grid not found - not on gallery page');
         return;
     }
     
@@ -240,7 +238,6 @@ function addLoadMoreButton() {
     
     // Only proceed if we're on the gallery page
     if (!grid) {
-        console.log('Gallery grid not found - not on gallery page');
         return;
     }
     
@@ -384,7 +381,6 @@ async function loadAdminStats() {
 async function openPhotoReview(photoId) {
     // Check if user is admin
     if (!isAdmin) {
-        console.log('Non-admin user attempted to access photo review');
         return;
     }
     
@@ -402,7 +398,6 @@ async function openPhotoReview(photoId) {
         
         // Only proceed if we're on the gallery page with the modal
         if (!modal || !content) {
-            console.log('Photo review modal not found - not on gallery page');
             return;
         }
         
@@ -461,7 +456,6 @@ async function openPhotoReview(photoId) {
 async function approvePhoto(photoId) {
     // Check if user is admin
     if (!isAdmin) {
-        console.log('Non-admin user attempted to approve photo');
         return;
     }
     
@@ -490,7 +484,6 @@ async function approvePhoto(photoId) {
 async function rejectPhoto(photoId) {
     // Check if user is admin
     if (!isAdmin) {
-        console.log('Non-admin user attempted to reject photo');
         return;
     }
     
@@ -498,7 +491,6 @@ async function rejectPhoto(photoId) {
     
     // Only proceed if we're on the gallery page with the modal
     if (!modal) {
-        console.log('Rejection modal not found - not on gallery page');
         return;
     }
     
@@ -544,7 +536,6 @@ async function rejectPhoto(photoId) {
 async function deletePhoto(photoId, cloudinaryId) {
     // Check if user is admin
     if (!isAdmin) {
-        console.log('Non-admin user attempted to delete photo');
         return;
     }
     
@@ -552,7 +543,6 @@ async function deletePhoto(photoId, cloudinaryId) {
     
     // Only proceed if we're on the gallery page with the modal
     if (!modal) {
-        console.log('Delete photo modal not found - not on gallery page');
         return;
     }
     
@@ -582,7 +572,7 @@ async function deletePhoto(photoId, cloudinaryId) {
     }
 }
 
-// Initialize lazy loading
+// Initialize lazy loading - OPTIMIZED FOR SPEED
 function initializeLazyLoading() {
     const imageObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
@@ -594,8 +584,8 @@ function initializeLazyLoading() {
             }
         });
     }, {
-        rootMargin: '50px 0px',
-        threshold: 0.01
+        rootMargin: '300px 0px', // Much larger margin - start loading 300px before entering viewport
+        threshold: 0.1 // Higher threshold - trigger when 10% of image is visible
     });
 
     // Observe all lazy images

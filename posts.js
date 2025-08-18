@@ -20,19 +20,15 @@
 */
 
 async function createPost(postData) {
-    console.log("createPost called with data:", postData);
     const user = auth.currentUser;
     if (!user) {
         console.error("No user is logged in.");
         return { success: false, error: "You must be logged in to create a post." };
     }
 
-    console.log("User authenticated:", user.uid, user.email);
-
     try {
         // Convert the comma-separated tags string into an array of strings.
         const tagsArray = postData.tags ? postData.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
-        console.log("Tags array:", tagsArray);
 
         const newPost = {
             title: postData.title,
@@ -48,11 +44,7 @@ async function createPost(postData) {
             isFeatured: false // Default to not featured
         };
 
-        console.log("Prepared post data:", newPost);
-        console.log("Attempting to add to Firestore...");
-
         const docRef = await db.collection("posts").add(newPost);
-        console.log("Post created successfully with ID:", docRef.id);
         
         // Note: Stats will be updated when the post is approved by admin
         // We don't update stats for pending posts to keep counts accurate
@@ -77,7 +69,6 @@ async function getApprovedPosts() {
             .get();
 
         if (snapshot.empty) {
-            console.log("No approved posts found.");
             return { success: true, posts: [] };
         }
 
@@ -165,34 +156,23 @@ async function getPostsByAuthor(authorId) {
  * @returns {Promise<object>}
  */
 async function getPostForEditing(postId) {
-    console.log("getPostForEditing called with postId:", postId); // DEBUG
-
     const user = auth.currentUser;
-    console.log("Current user in getPostForEditing:", user ? user.uid : "Not logged in"); // DEBUG
 
     if (!user) return { success: false, error: "Authentication required." };
 
     try {
-        console.log("Attempting to fetch document from Firestore..."); // DEBUG
         const docRef = db.collection("posts").doc(postId);
         const docSnap = await docRef.get();
-
-        console.log("Document exists:", docSnap.exists); // DEBUG
 
         if (!docSnap.exists) return { success: false, error: "Post not found." };
 
         const post = docSnap.data();
-        console.log("Post data retrieved:", post); // DEBUG
-        console.log("Post authorId:", post.authorId); // DEBUG
-        console.log("Current user UID:", user.uid); // DEBUG
 
         // Security check: ensure the person editing is the original author.
         if (post.authorId !== user.uid) {
-            console.log("Authorization failed - user not the author"); // DEBUG
             return { success: false, error: "You are not authorized to edit this post." };
         }
 
-        console.log("Authorization successful, returning post data"); // DEBUG
         return { success: true, post: { id: docSnap.id, ...post } };
     } catch (error) {
         console.error("Error fetching post for editing:", error);
@@ -273,31 +253,24 @@ async function savePostAsDraft(postData, postId = null) {
 async function getPendingPosts() {
     const user = auth.currentUser;
     if (!user) {
-        console.log("No authenticated user");
         return { success: false, error: "Authentication required." };
     }
 
-    console.log("Getting pending posts for user:", user.uid);
-
     // Verify admin status server-side
     try {
-        console.log("Checking admin status...");
         const isAdmin = await isUserAdmin();
-        console.log("Admin check result:", isAdmin);
         
         if (!isAdmin) {
             console.error("Unauthorized access attempt to fetch pending posts");
             return { success: false, error: "Admin privileges required." };
         }
 
-        console.log("Admin verified, fetching pending posts...");
         const snapshot = await db.collection("posts")
             .where("status", "==", "pending")
             .orderBy("createdAt", "asc") // Show oldest submissions first
             .get();
 
         const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        console.log("Found", posts.length, "pending posts");
         return { success: true, posts: posts };
 
     } catch (error) {
@@ -401,7 +374,6 @@ async function getAllPosts(status = "all") {
         const snapshot = await query.get();
 
         if (snapshot.empty) {
-            console.log("No posts found.");
             return { success: true, posts: [] };
         }
 
@@ -440,7 +412,6 @@ async function deletePostPermanently(postId) {
         // Delete the post document
         await db.collection("posts").doc(postId).delete();
         
-        console.log("Post deleted permanently:", postId);
         return { success: true };
 
     } catch (error) {

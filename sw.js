@@ -14,20 +14,14 @@ const STATIC_FILES = [
     '/styles.css',
     '/combined.min.js',
     '/logo.png',
-    '/favicons/favicon.ico',
-    'https://cdn.tailwindcss.com',
-    'https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js',
-    'https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js',
-    'https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js'
+    '/favicons/favicon.ico'
 ];
 
 // Install event - cache static files
 self.addEventListener('install', event => {
-    console.log('Service Worker: Installing...');
     event.waitUntil(
         caches.open(STATIC_CACHE)
             .then(cache => {
-                console.log('Service Worker: Caching static files');
                 return cache.addAll(STATIC_FILES);
             })
             .then(() => self.skipWaiting())
@@ -36,14 +30,12 @@ self.addEventListener('install', event => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', event => {
-    console.log('Service Worker: Activating...');
     event.waitUntil(
         caches.keys()
             .then(cacheNames => {
                 return Promise.all(
                     cacheNames.map(cacheName => {
                         if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
-                            console.log('Service Worker: Deleting old cache', cacheName);
                             return caches.delete(cacheName);
                         }
                     })
@@ -76,6 +68,11 @@ self.addEventListener('fetch', event => {
 
 // Cache first strategy for static assets
 async function cacheFirst(request) {
+    // Skip unsupported schemes (chrome-extension, etc.)
+    if (!request.url.startsWith('http')) {
+        return fetch(request);
+    }
+    
     const cachedResponse = await caches.match(request);
     if (cachedResponse) {
         return cachedResponse;
@@ -99,6 +96,11 @@ async function cacheFirst(request) {
 
 // Network first strategy for dynamic content
 async function networkFirst(request) {
+    // Skip unsupported schemes (chrome-extension, etc.)
+    if (!request.url.startsWith('http')) {
+        return fetch(request);
+    }
+    
     try {
         const networkResponse = await fetch(request);
         if (networkResponse.ok) {
@@ -136,7 +138,6 @@ self.addEventListener('sync', event => {
 
 async function doBackgroundSync() {
     // Sync offline data when connection is restored
-    console.log('Service Worker: Background sync triggered');
     // Implement offline data sync logic here
 }
 

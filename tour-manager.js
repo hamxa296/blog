@@ -18,14 +18,7 @@ class WebsiteTour {
                 id: 'navbar',
                 title: 'Navigation Bar',
                 content: 'This is your main navigation hub. You can access all major sections from here.',
-                target: 'header',
-                position: 'bottom'
-            },
-            {
-                id: 'logo',
-                title: 'GIKI Chronicles Logo',
-                content: 'Click the logo anytime to return to the home page.',
-                target: 'header a[href="index.html"]',
+                target: 'header nav',
                 position: 'bottom'
             },
             {
@@ -50,11 +43,12 @@ class WebsiteTour {
                 position: 'bottom'
             },
             {
-                id: 'login-btn',
-                title: 'Login',
-                content: 'Sign in to access your profile, write posts, and interact with the community.',
-                target: 'a[href="login.html"]',
-                position: 'bottom'
+                id: 'sidebar-toggle',
+                title: 'Sidebar Toggle',
+                content: 'Click this hamburger menu to open the sidebar with additional navigation options.',
+                target: '#sidebar-toggle',
+                position: 'bottom',
+                action: 'open-sidebar'
             },
             {
                 id: 'sidebar',
@@ -68,6 +62,13 @@ class WebsiteTour {
                 title: 'Theme Customization',
                 content: 'Choose your preferred theme - Dark or Light. Your choice is saved automatically.',
                 target: '#theme-select',
+                position: 'left'
+            },
+            {
+                id: 'tour-button',
+                title: 'Tour Button',
+                content: 'You can restart this tour anytime by clicking the "Take Website Tour" button at the bottom of the sidebar.',
+                target: '#sidebar-tour-btn',
                 position: 'left'
             },
             {
@@ -96,13 +97,6 @@ class WebsiteTour {
                 position: 'bottom'
             },
             {
-                id: 'logo',
-                title: 'GIKI Chronicles Logo',
-                content: 'Click the logo anytime to return to the home page.',
-                target: 'header a[href="index.html"]',
-                position: 'bottom'
-            },
-            {
                 id: 'sidebar-toggle',
                 title: 'Mobile Menu',
                 content: 'Tap this hamburger menu to open the sidebar with all navigation options.',
@@ -128,6 +122,13 @@ class WebsiteTour {
                 title: 'Theme Customization',
                 content: 'Choose your preferred theme - Dark or Light. Your choice is saved automatically.',
                 target: '#theme-select',
+                position: 'left'
+            },
+            {
+                id: 'tour-button',
+                title: 'Tour Button',
+                content: 'You can restart this tour anytime by clicking the "Take Website Tour" button in the sidebar.',
+                target: '#sidebar-tour-btn',
                 position: 'left'
             },
             {
@@ -253,7 +254,7 @@ class WebsiteTour {
                 this.nextStep();
             } else if (e.target.id === 'tour-prev') {
                 this.prevStep();
-            } else if (e.target.id === 'tour-close') {
+            } else if (e.target.id === 'tour-close' || e.target.closest('#tour-close')) {
                 this.endTour();
             }
         });
@@ -300,6 +301,30 @@ class WebsiteTour {
         this.isActive = true;
         this.currentStep = 0;
         
+        // Always scroll to top and close sidebar first
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Close sidebar if open (for both mobile and desktop)
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        if (sidebar && sidebar.classList.contains('translate-x-0')) {
+            sidebar.classList.remove('translate-x-0');
+            sidebar.classList.add('-translate-x-full');
+            if (sidebarOverlay) {
+                sidebarOverlay.classList.add('hidden');
+            }
+        }
+        
+        // Wait for scroll and sidebar close to complete
+        setTimeout(() => {
+            this.showTourUI();
+        }, 600);
+        
+        // Mark tour as started
+        localStorage.setItem('tour-started', 'true');
+    }
+    
+    showTourUI() {
         // Show overlay with fade in
         const overlay = document.getElementById('tour-overlay');
         overlay.classList.remove('hidden');
@@ -317,9 +342,6 @@ class WebsiteTour {
         }, 100);
         
         this.showStep();
-        
-        // Mark tour as started
-        localStorage.setItem('tour-started', 'true');
     }
 
     endTour() {
@@ -342,6 +364,19 @@ class WebsiteTour {
         
         // Remove highlight from current element
         this.removeHighlight();
+        
+        // For desktop tour, close sidebar if it was opened during the tour
+        if (!this.isMobile) {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            if (sidebar && sidebar.classList.contains('translate-x-0')) {
+                sidebar.classList.remove('translate-x-0');
+                sidebar.classList.add('-translate-x-full');
+                if (sidebarOverlay) {
+                    sidebarOverlay.classList.add('hidden');
+                }
+            }
+        }
         
         // Mark tour as completed
         localStorage.setItem('tour-completed', 'true');
@@ -371,6 +406,11 @@ class WebsiteTour {
         tooltip.classList.remove('scale-100', 'opacity-100');
         
         setTimeout(() => {
+            // Handle special actions for desktop tour
+            if (!this.isMobile && step.action) {
+                this.handleStepAction(step.action);
+            }
+            
             // Position tooltip
             this.positionTooltip(step);
             
@@ -468,6 +508,23 @@ class WebsiteTour {
         tooltip.style.left = `${left}px`;
         tooltip.style.transform = 'none';
     }
+    
+    handleStepAction(action) {
+        switch (action) {
+            case 'open-sidebar':
+                // Open sidebar for desktop tour
+                const sidebar = document.getElementById('sidebar');
+                const sidebarOverlay = document.getElementById('sidebar-overlay');
+                if (sidebar && sidebar.classList.contains('-translate-x-full')) {
+                    sidebar.classList.remove('-translate-x-full');
+                    sidebar.classList.add('translate-x-0');
+                    if (sidebarOverlay) {
+                        sidebarOverlay.classList.remove('hidden');
+                    }
+                }
+                break;
+        }
+    }
 
     findTargetElement(selector) {
         // Handle multiple selectors separated by commas
@@ -490,11 +547,31 @@ class WebsiteTour {
         
         const element = this.findTargetElement(selector);
         if (element) {
+            // Enhanced highlighting for better visibility
             element.style.position = 'relative';
             element.style.zIndex = '10001';
-            element.style.boxShadow = '0 0 0 4px rgba(59, 130, 246, 0.5)';
-            element.style.borderRadius = '4px';
+            element.style.boxShadow = '0 0 0 4px rgba(59, 130, 246, 0.6), 0 0 20px rgba(59, 130, 246, 0.3)';
+            element.style.borderRadius = '6px';
             element.style.transition = 'box-shadow 0.3s ease';
+            
+            // Add a subtle background highlight for better visibility
+            element.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+            
+            // For sidebar elements, ensure they're visible
+            if (selector.includes('#sidebar') && !this.isMobile) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar && sidebar.classList.contains('-translate-x-full')) {
+                    // If sidebar is closed, highlight the toggle button instead
+                    const toggleBtn = document.getElementById('sidebar-toggle');
+                    if (toggleBtn) {
+                        toggleBtn.style.position = 'relative';
+                        toggleBtn.style.zIndex = '10001';
+                        toggleBtn.style.boxShadow = '0 0 0 4px rgba(59, 130, 246, 0.6), 0 0 20px rgba(59, 130, 246, 0.3)';
+                        toggleBtn.style.borderRadius = '6px';
+                        toggleBtn.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                    }
+                }
+            }
         }
     }
 
@@ -506,6 +583,7 @@ class WebsiteTour {
             el.style.boxShadow = '';
             el.style.borderRadius = '';
             el.style.transition = '';
+            el.style.backgroundColor = '';
         });
     }
 
@@ -564,19 +642,12 @@ class WebsiteTour {
 
     // Debug method to test tour functionality
     debugTour() {
-        console.log('Tour Debug Info:');
-        console.log('- Device Type:', this.isMobile ? 'Mobile' : 'Desktop');
-        console.log('- Current Step:', this.currentStep);
-        console.log('- Is Active:', this.isActive);
-        console.log('- Total Steps:', this.tourSteps.length);
-        console.log('- Tour Completed:', localStorage.getItem('tour-completed'));
-        console.log('- Welcome Popup Shown:', localStorage.getItem('welcome-popup-shown'));
-        
+        // Debug info available but not logged to console
         // Test element targeting
         this.tourSteps.forEach((step, index) => {
             if (step.target) {
                 const element = this.findTargetElement(step.target);
-                console.log(`- Step ${index + 1} (${step.id}):`, element ? 'Found' : 'Not Found');
+                // Element found or not found
             }
         });
     }

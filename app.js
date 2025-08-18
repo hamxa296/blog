@@ -5,8 +5,6 @@
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log("App.js: DOM Content Loaded");
-    
     // Wait a bit for Firebase to initialize
     await new Promise(resolve => setTimeout(resolve, 100));
     
@@ -15,7 +13,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const currentUser = firebase.auth().currentUser;
             if (currentUser) {
-                console.log("App.js: Ensuring user data is loaded on page load");
                 await window.ensureUserDataLoaded();
             }
         } catch (error) {
@@ -440,8 +437,52 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    // Define loadProfileData function globally so it can be called from anywhere
+    const loadProfileData = async (user) => {
+        if (!user) return;
+        
+        // Only run profile-specific code if we're on the profile page
+        const isProfilePage = document.getElementById('profile-form') !== null;
+        
+        // Early return if not on profile page to prevent unnecessary processing
+        if (!isProfilePage) {
+            return;
+        }
+        
+        const result = await getUserProfile(user.uid);
+        if (result.success) {
+            const profile = result.profile;
+            
+            // Only update form elements if they exist (profile page)
+            if (isProfilePage) {
+                const displayNameInput = document.getElementById('display-name');
+                const userEmailInput = document.getElementById('user-email');
+                const userBioInput = document.getElementById('user-bio');
+                const profilePicImg = document.getElementById('profile-pic');
+                
+                if (displayNameInput) displayNameInput.value = profile.displayName || '';
+                if (userEmailInput) userEmailInput.value = profile.email || '';
+                if (userBioInput) userBioInput.value = profile.bio || '';
+                if (profile.photoURL && profilePicImg) {
+                    profilePicImg.src = profile.photoURL;
+                }
+            }
+        } else {
+            const newProfile = {
+                uid: user.uid,
+                email: user.email,
+                displayName: user.displayName || user.email.split('@')[0],
+                photoURL: user.photoURL || '',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            await db.collection('users').doc(user.uid).set(newProfile);
+            // Don't recursively call loadProfileData to avoid infinite loops
+        }
+    };
+
     // --- Profile Page Logic ---
     const profileForm = document.getElementById('profile-form');
+    
     if (profileForm) {
         const displayNameInput = document.getElementById('display-name');
         const userEmailInput = document.getElementById('user-email');
@@ -450,29 +491,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const photoUploadButton = document.querySelector('#profile-pic + button');
         const photoUploadInput = document.getElementById('photo-upload');
         const formMessage = document.getElementById('form-message');
-        const loadProfileData = async (user) => {
-            if (!user) return;
-            const result = await getUserProfile(user.uid);
-            if (result.success) {
-                const profile = result.profile;
-                displayNameInput.value = profile.displayName || '';
-                userEmailInput.value = profile.email || '';
-                userBioInput.value = profile.bio || '';
-                if (profile.photoURL) {
-                    profilePicImg.src = profile.photoURL;
-                }
-            } else {
-                const newProfile = {
-                    uid: user.uid,
-                    email: user.email,
-                    displayName: user.displayName || user.email.split('@')[0],
-                    photoURL: user.photoURL || '',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-                await db.collection('users').doc(user.uid).set(newProfile);
-                loadProfileData(user);
-            }
-        };
         if (photoUploadButton) {
             photoUploadButton.addEventListener('click', () => photoUploadInput.click());
         }
@@ -543,7 +561,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
         onAuthStateChange(user => {
             if (user) {
-                loadProfileData(user);
                 loadUserPosts(user);
             } else {
                 window.location.href = 'login.html';
@@ -792,7 +809,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Listen for custom auth state changed events (for cross-tab synchronization)
     window.addEventListener('authStateChanged', async (event) => {
-        console.log("App.js: Custom auth state changed event received:", event.detail);
         const { user, initialized } = event.detail;
         
         if (initialized && user) {
@@ -809,8 +825,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- Dynamic Navigation Bar & Logout Logic ---
     onAuthStateChange(async user => {
-        console.log("App.js: Auth state changed, user:", user ? user.uid : "No user");
-        
         const userNav = document.getElementById('user-nav');
         const guestNav = document.getElementById('guest-nav');
         const mobileUserNav = document.getElementById('mobile-user-nav');
@@ -819,11 +833,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         const mobileAdminAccessBtn = document.getElementById('mobile-admin-access-btn');
         
         if (user) {
+            // Load profile data (only executes on profile page)
+            try {
+                await loadProfileData(user);
+            } catch (error) {
+                console.error("App.js: Error loading profile data:", error);
+            }
+            
             // Ensure user data is properly loaded
             if (typeof window.ensureUserDataLoaded === 'function') {
                 try {
-                    const dataLoaded = await window.ensureUserDataLoaded();
-                    console.log("App.js: User data loaded:", dataLoaded);
+                    await window.ensureUserDataLoaded();
                 } catch (error) {
                     console.error("App.js: Error ensuring user data loaded:", error);
                 }
@@ -844,7 +864,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (typeof checkUserAdminStatus === 'function') {
                 try {
                     const isAdmin = await checkUserAdminStatus();
-                    console.log("App.js: Admin status check result:", isAdmin);
                     if (isAdmin && adminAccessBtn) {
                         adminAccessBtn.style.display = 'inline-block';
                     }
@@ -1222,21 +1241,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const displayPosts = async () => {
-            console.log("Fetching posts for tab:", currentTab);
             const result = await getAllPosts(currentTab);
-            console.log("Posts result:", result);
             
             if (postsContainer) {
                 postsContainer.innerHTML = ''; // Clear loader
 
                 if (result.success && result.posts.length > 0) {
-                    console.log("Displaying", result.posts.length, "posts");
                     result.posts.forEach(post => {
                         const postElement = createPostElement(post);
                         postsContainer.appendChild(postElement);
                     });
                 } else {
-                    console.log("No posts or error:", result.error);
                     const statusText = currentTab === 'all' ? 'posts' : currentTab + ' posts';
                     postsContainer.innerHTML = `<p class="text-gray-500">No ${statusText} found.</p>`;
                 }
@@ -1407,14 +1422,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const checkAdminAndLoad = async () => {
-            console.log("Checking admin status...");
-            
             // Check for secure access first
             const hasSecureAccess = checkSecureAdminAccess();
-            console.log("Secure access check:", hasSecureAccess);
             
             if (hasSecureAccess) {
-                console.log("✅ Secure admin access granted");
                 loadingMessage.style.display = 'none';
                 adminContent.style.display = 'block';
                 displayPosts();
@@ -1427,7 +1438,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const forceAdmin = false; // Set this to false to restore normal admin checking
             
             if (forceAdmin) {
-                console.log("🔧 TEMPORARY: Bypassing admin check for testing");
                 loadingMessage.style.display = 'none';
                 adminContent.style.display = 'block';
                 displayPosts();
@@ -1438,20 +1448,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             // Try the simple test first
             const testResult = await testAdminStatus();
-            console.log("Test admin result:", testResult);
             
             const isAdmin = typeof checkUserAdminStatus === 'function' ? await checkUserAdminStatus() : false;
-            console.log("Admin status result:", isAdmin);
             
             if (isAdmin) {
-                console.log("Admin access granted, loading dashboard...");
                 loadingMessage.style.display = 'none';
                 adminContent.style.display = 'block';
                 displayPosts();
                 displayPendingEvents();
                 displayPendingGalleryPhotos();
             } else {
-                console.log("Admin access denied");
                 loadingMessage.innerHTML = '<p class="text-lg text-red-500">Access Denied. You must be an administrator to view this page.</p>';
             }
         };
@@ -1562,7 +1568,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const displayPendingGalleryPhotos = async () => {
         const pendingGalleryContainer = document.getElementById('pending-gallery-container');
         if (!pendingGalleryContainer) {
-            console.log('Pending gallery container not found - not on admin page or element removed');
             return;
         }
 

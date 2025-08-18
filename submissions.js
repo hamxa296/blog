@@ -36,7 +36,6 @@ async function saveContactSubmission(submissionData) {
         };
 
         await db.collection("submissions").add(newSubmission);
-        console.log("Contact form submission saved successfully.");
         return { success: true };
 
     } catch (error) {

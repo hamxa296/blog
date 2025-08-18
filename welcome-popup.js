@@ -126,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('welcome-popup-shown');
         localStorage.removeItem('tour-completed');
         localStorage.removeItem('tour-started');
-        console.log('Welcome popup state reset. Refresh page to see it again.');
     };
 });
 

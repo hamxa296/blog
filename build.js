@@ -8,20 +8,25 @@ const path = require('path');
 
 // Files to combine for production
 const filesToCombine = [
-    'firebase-init.js',
+    'firebase-init.js',      // Firebase initialization must come first
     'admin-config.js',
     'auth.js',
+    'users.js',              // Added users functions
+    'posts.js',              // Added posts functions
     'gallery.js',
     'gallery-admin.js',
     'script.js',
     'app.js',
-    'theme-manager.js'
+    'theme-manager.js',
+    'security.js',           // Added security functions
+    'performance-monitor.js', // Added performance monitoring
+    'calendar.js'            // Added calendar functionality
 ];
 
 // Function to remove console.log statements and debug code
 function removeDebugCode(content) {
-    // Remove console.log statements
-    content = content.replace(/console\.log\([^)]*\);?\s*/g, '');
+    // Remove console.log statements and their entire lines
+    content = content.replace(/^\s*console\.log\([^)]*\);?\s*$/gm, '');
     
     // Remove debug comments
     content = content.replace(/\/\/\s*DEBUG.*$/gm, '');
@@ -39,23 +44,33 @@ function removeDebugCode(content) {
     return content;
 }
 
+// Function to remove Firebase initialization from non-init files
+function removeFirebaseInit(content, isFirebaseInitFile = false) {
+    if (isFirebaseInitFile) {
+        return content; // Keep Firebase init in firebase-init.js
+    }
+    
+    // Remove firebaseConfig declarations from other files
+    content = content.replace(/const\s+firebaseConfig\s*=\s*\{[\s\S]*?\};?\s*/g, '');
+    
+    // Remove firebase.initializeApp calls from other files
+    content = content.replace(/firebase\.initializeApp\(firebaseConfig\);/g, '');
+    
+    return content;
+}
+
 // Function to minify JavaScript (basic minification that preserves syntax)
 function minifyJS(content) {
     // Remove comments (except license headers)
     content = content.replace(/\/\*[\s\S]*?\*\//g, '');
     content = content.replace(/\/\/.*$/gm, '');
     
-    // Remove extra whitespace but preserve string literals
-    content = content.replace(/\s+/g, ' ');
-    content = content.replace(/\s*{\s*/g, '{');
-    content = content.replace(/\s*}\s*/g, '}');
-    content = content.replace(/\s*;\s*/g, ';');
-    content = content.replace(/\s*,\s*/g, ',');
-    content = content.replace(/\s*=\s*/g, '=');
-    content = content.replace(/\s*\+\s*/g, '+');
-    content = content.replace(/\s*-\s*/g, '-');
-    content = content.replace(/\s*\*\s*/g, '*');
-    content = content.replace(/\s*\/\s*/g, '/');
+    // Remove extra whitespace but preserve string literals and syntax
+    // Only remove multiple spaces and tabs, preserve newlines
+    content = content.replace(/[ \t]+/g, ' ');
+    
+    // Remove empty lines but preserve structure
+    content = content.replace(/\n\s*\n/g, '\n');
     
     // Remove trailing semicolons and spaces
     content = content.trim();
@@ -77,7 +92,11 @@ function combineFiles() {
             originalSize += content.length;
             
             // Remove debug code
-            const cleanedContent = removeDebugCode(content);
+            let cleanedContent = removeDebugCode(content);
+            
+            // Remove Firebase initialization from non-init files
+            const isFirebaseInitFile = file === 'firebase-init.js';
+            cleanedContent = removeFirebaseInit(cleanedContent, isFirebaseInitFile);
             
             combinedContent += `\n// ${file}\n${cleanedContent}\n`;
             console.log(`✓ Added ${file}`);
@@ -90,6 +109,7 @@ function combineFiles() {
     const productionHeader = `/**
  * GIKI Chronicles - Production Build
  * Combined and optimized for production
+ * Includes: Firebase, Security, Performance Monitoring
  * Build Date: ${new Date().toISOString()}
  */\n\n`;
     
@@ -107,7 +127,13 @@ function combineFiles() {
     console.log(`Size reduction: ${reduction}%`);
     console.log(`Debug code removed: ✓`);
     console.log(`Syntax preserved: ✓`);
+    console.log(`Security functions included: ✓`);
+    console.log(`Performance monitoring included: ✓`);
     console.log('\n✅ Production build complete! Use combined.min.js in your HTML files.');
+    console.log('\n📋 Next Steps:');
+    console.log('1. Update all HTML files to use combined.min.js');
+    console.log('2. Add service worker registration to all pages');
+    console.log('3. Test all functionality');
 }
 
 // Run the build

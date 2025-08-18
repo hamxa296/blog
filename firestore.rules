@@ -34,6 +34,11 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
       allow write: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      
+      // User subcollections (like packing lists)
+      match /{subcollection}/{document} {
+        allow read, write: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      }
     }
 
     // User profiles (for backward compatibility)

@@ -71,17 +71,9 @@ class PerformanceMonitor {
         
         // Calculate potential bandwidth savings
         const estimatedSavings = lazyImages.length * 100; // Assume 100KB per image
-        console.log(`Lazy loading enabled for ${lazyImages.length} images. Estimated bandwidth savings: ${estimatedSavings}KB`);
     }
     
     logMetrics() {
-        console.log('📊 Performance Metrics:');
-        console.log(`Page Load Time: ${this.metrics.pageLoadTime.toFixed(2)}ms`);
-        console.log(`DOM Content Loaded: ${this.metrics.domContentLoaded.toFixed(2)}ms`);
-        console.log(`First Contentful Paint: ${this.metrics.firstContentfulPaint.toFixed(2)}ms`);
-        console.log(`Images Loaded: ${this.metrics.imagesLoaded}/${this.metrics.totalImages}`);
-        console.log(`Lazy Loading Savings: ${this.metrics.lazyLoadSavings} images`);
-        
         // Send metrics to analytics (if available)
         this.sendMetrics();
     }
