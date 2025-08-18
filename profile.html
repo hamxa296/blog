@@ -18,10 +18,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="styles.css">
+    <script>
+        // Apply theme immediately to prevent flash
+        (function() {
+            const savedTheme = localStorage.getItem('selected-theme') || 'basic-dark';
+            
+            // Apply to documentElement immediately (always exists)
+            if (document.documentElement) {
+                document.documentElement.classList.add(`theme-${savedTheme}`);
+            }
+            
+            // Apply to body when it becomes available
+            if (document.body) {
+                document.body.classList.add(`theme-${savedTheme}`);
+            } else {
+                // Wait for body to be available
+                document.addEventListener('DOMContentLoaded', function() {
+                    if (document.body) {
+                        document.body.classList.add(`theme-${savedTheme}`);
+                    }
+                });
+            }
+        })();
+    </script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa;
         }
 
         /* Tab styling */
@@ -49,7 +71,7 @@
     </style>
 </head>
 
-<body class="text-gray-800 theme-basic-light">
+<body class="text-gray-800">
 
     <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">

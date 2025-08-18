@@ -24,6 +24,29 @@
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-dev.4/dist/quill.snow.css?v=2.0.0-dev.4" rel="stylesheet">
 
     <!-- Custom CSS -->
+         <script>
+         // Apply theme immediately to prevent flash
+         (function() {
+             const savedTheme = localStorage.getItem('selected-theme') || 'basic-dark';
+             
+             // Apply to documentElement immediately (always exists)
+             if (document.documentElement) {
+                 document.documentElement.classList.add(`theme-${savedTheme}`);
+             }
+             
+             // Apply to body when it becomes available
+             if (document.body) {
+                 document.body.classList.add(`theme-${savedTheme}`);
+             } else {
+                 // Wait for body to be available
+                 document.addEventListener('DOMContentLoaded', function() {
+                     if (document.body) {
+                         document.body.classList.add(`theme-${savedTheme}`);
+                     }
+                 });
+             }
+         })();
+     </script>
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
@@ -117,7 +140,7 @@
     </style>
 </head>
 
-<body class="text-gray-800 theme-basic-light">
+<body class="text-gray-800">
 
     <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">

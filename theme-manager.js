@@ -30,6 +30,9 @@
         if (themeSelect) {
             themeSelect.value = themeName;
         }
+        
+        // Dispatch a custom event to notify other scripts that theme has changed
+        window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: themeName } }));
     }
 
     // Function to initialize theme functionality
@@ -68,4 +71,11 @@
             applyTheme(savedTheme);
         }
     }, 100);
+    
+    // Final fallback to ensure theme is applied even if other scripts interfere
+    setTimeout(() => {
+        if (!document.body.classList.contains(`theme-${savedTheme}`)) {
+            applyTheme(savedTheme);
+        }
+    }, 500);
 })(); 
