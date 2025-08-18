@@ -642,19 +642,12 @@ class WebsiteTour {
 
     // Debug method to test tour functionality
     debugTour() {
-        console.log('Tour Debug Info:');
-        console.log('- Device Type:', this.isMobile ? 'Mobile' : 'Desktop');
-        console.log('- Current Step:', this.currentStep);
-        console.log('- Is Active:', this.isActive);
-        console.log('- Total Steps:', this.tourSteps.length);
-        console.log('- Tour Completed:', localStorage.getItem('tour-completed'));
-        console.log('- Welcome Popup Shown:', localStorage.getItem('welcome-popup-shown'));
-        
+        // Debug info available but not logged to console
         // Test element targeting
         this.tourSteps.forEach((step, index) => {
             if (step.target) {
                 const element = this.findTargetElement(step.target);
-                console.log(`- Step ${index + 1} (${step.id}):`, element ? 'Found' : 'Not Found');
+                // Element found or not found
             }
         });
     }

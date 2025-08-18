@@ -50,11 +50,11 @@ class FirebaseErrorHandler {
     handleNetworkErrors() {
         // Monitor network status
         window.addEventListener('online', () => {
-            console.log('Network connection restored');
+            // Network connection restored
         });
 
         window.addEventListener('offline', () => {
-            console.log('Network connection lost, continuing with offline functionality');
+            // Network connection lost, continuing with offline functionality
         });
 
         // Handle fetch errors

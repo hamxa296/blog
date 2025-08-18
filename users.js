@@ -74,9 +74,7 @@ async function uploadProfilePicture(userId, file) {
  * @returns {Promise<boolean>}
  */
 async function checkUserAdminStatus() {
-    console.log("checkUserAdminStatus called");
     const result = await isUserAdmin();
-    console.log("checkUserAdminStatus result:", result);
     return result;
 }
 
@@ -90,7 +88,6 @@ window.checkUserAdminStatus = checkUserAdminStatus;
 async function testAdminStatus() {
     const user = auth.currentUser;
     if (!user) {
-        console.log("No user logged in");
         return false;
     }
     
@@ -98,7 +95,6 @@ async function testAdminStatus() {
         const userDoc = await db.collection('users').doc(user.uid).get();
         if (userDoc.exists) {
             const userData = userDoc.data();
-            console.log("Test admin check - User data:", userData);
             return userData.isAdmin === true;
         }
         return false;

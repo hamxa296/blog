@@ -5,8 +5,6 @@
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log("App.js: DOM Content Loaded");
-    
     // Wait a bit for Firebase to initialize
     await new Promise(resolve => setTimeout(resolve, 100));
     
@@ -15,7 +13,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const currentUser = firebase.auth().currentUser;
             if (currentUser) {
-                console.log("App.js: Ensuring user data is loaded on page load");
                 await window.ensureUserDataLoaded();
             }
         } catch (error) {
@@ -449,7 +446,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Early return if not on profile page to prevent unnecessary processing
         if (!isProfilePage) {
-            console.log('loadProfileData: Not on profile page, skipping');
             return;
         }
         
@@ -813,7 +809,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Listen for custom auth state changed events (for cross-tab synchronization)
     window.addEventListener('authStateChanged', async (event) => {
-        console.log("App.js: Custom auth state changed event received:", event.detail);
         const { user, initialized } = event.detail;
         
         if (initialized && user) {
@@ -830,8 +825,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- Dynamic Navigation Bar & Logout Logic ---
     onAuthStateChange(async user => {
-        console.log("App.js: Auth state changed, user:", user ? user.uid : "No user");
-        
         const userNav = document.getElementById('user-nav');
         const guestNav = document.getElementById('guest-nav');
         const mobileUserNav = document.getElementById('mobile-user-nav');
@@ -850,8 +843,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Ensure user data is properly loaded
             if (typeof window.ensureUserDataLoaded === 'function') {
                 try {
-                    const dataLoaded = await window.ensureUserDataLoaded();
-                    console.log("App.js: User data loaded:", dataLoaded);
+                    await window.ensureUserDataLoaded();
                 } catch (error) {
                     console.error("App.js: Error ensuring user data loaded:", error);
                 }
@@ -872,7 +864,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (typeof checkUserAdminStatus === 'function') {
                 try {
                     const isAdmin = await checkUserAdminStatus();
-                    console.log("App.js: Admin status check result:", isAdmin);
                     if (isAdmin && adminAccessBtn) {
                         adminAccessBtn.style.display = 'inline-block';
                     }
@@ -1250,21 +1241,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const displayPosts = async () => {
-            console.log("Fetching posts for tab:", currentTab);
             const result = await getAllPosts(currentTab);
-            console.log("Posts result:", result);
             
             if (postsContainer) {
                 postsContainer.innerHTML = ''; // Clear loader
 
                 if (result.success && result.posts.length > 0) {
-                    console.log("Displaying", result.posts.length, "posts");
                     result.posts.forEach(post => {
                         const postElement = createPostElement(post);
                         postsContainer.appendChild(postElement);
                     });
                 } else {
-                    console.log("No posts or error:", result.error);
                     const statusText = currentTab === 'all' ? 'posts' : currentTab + ' posts';
                     postsContainer.innerHTML = `<p class="text-gray-500">No ${statusText} found.</p>`;
                 }
@@ -1435,14 +1422,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const checkAdminAndLoad = async () => {
-            console.log("Checking admin status...");
-            
             // Check for secure access first
             const hasSecureAccess = checkSecureAdminAccess();
-            console.log("Secure access check:", hasSecureAccess);
             
             if (hasSecureAccess) {
-                console.log("✅ Secure admin access granted");
                 loadingMessage.style.display = 'none';
                 adminContent.style.display = 'block';
                 displayPosts();
@@ -1455,7 +1438,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const forceAdmin = false; // Set this to false to restore normal admin checking
             
             if (forceAdmin) {
-                console.log("🔧 TEMPORARY: Bypassing admin check for testing");
                 loadingMessage.style.display = 'none';
                 adminContent.style.display = 'block';
                 displayPosts();
@@ -1466,20 +1448,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             // Try the simple test first
             const testResult = await testAdminStatus();
-            console.log("Test admin result:", testResult);
             
             const isAdmin = typeof checkUserAdminStatus === 'function' ? await checkUserAdminStatus() : false;
-            console.log("Admin status result:", isAdmin);
             
             if (isAdmin) {
-                console.log("Admin access granted, loading dashboard...");
                 loadingMessage.style.display = 'none';
                 adminContent.style.display = 'block';
                 displayPosts();
                 displayPendingEvents();
                 displayPendingGalleryPhotos();
             } else {
-                console.log("Admin access denied");
                 loadingMessage.innerHTML = '<p class="text-lg text-red-500">Access Denied. You must be an administrator to view this page.</p>';
             }
         };
@@ -1590,7 +1568,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const displayPendingGalleryPhotos = async () => {
         const pendingGalleryContainer = document.getElementById('pending-gallery-container');
         if (!pendingGalleryContainer) {
-            console.log('Pending gallery container not found - not on admin page or element removed');
             return;
         }
 

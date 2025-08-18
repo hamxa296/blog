@@ -130,7 +130,6 @@ async function loginUser(email, password) {
         try {
             const userDoc = await db.collection('users').doc(user.uid).get();
             if (!userDoc.exists) {
-                console.log("Creating missing user document for existing user");
                 const userData = {
                     uid: user.uid,
                     email: user.email || email,
@@ -200,7 +199,6 @@ function onAuthStateChange(callback) {
  */
 async function isUserAdmin() {
     const user = typeof auth !== 'undefined' ? auth.currentUser : null;
-    console.log("isUserAdmin called, current user:", user ? user.uid : "No user");
     
     if (!user) return false;
     
@@ -210,27 +208,20 @@ async function isUserAdmin() {
             await window.ensureUserDataLoaded();
         }
         
-        console.log("Fetching user document for:", user.uid);
         const userDoc = await db.collection('users').doc(user.uid).get();
-        console.log("User document exists:", userDoc.exists);
         
         if (!userDoc.exists) {
-            console.log("User document does not exist - this should be handled by auth state listener");
             return false;
         }
         
         const userData = userDoc.data();
-        console.log("User data:", userData);
-        console.log("isAdmin value:", userData.isAdmin);
         
         // Check if user should be admin but isn't marked as such
         if (typeof isAdminUID === 'function' && isAdminUID(user.uid) && userData.isAdmin !== true) {
-            console.log("User is in admin list but not marked as admin in document. Updating...");
             try {
                 await db.collection('users').doc(user.uid).update({
                     isAdmin: true
                 });
-                console.log("Successfully updated user to admin status");
                 return true;
             } catch (updateError) {
                 console.error("Error updating user to admin status:", updateError);
@@ -238,7 +229,6 @@ async function isUserAdmin() {
         }
         
         const isAdmin = userData.isAdmin === true; // Explicitly check for true
-        console.log("Final admin result:", isAdmin);
         return isAdmin;
     } catch (error) {
         console.error("Error checking admin status:", error);
