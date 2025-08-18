@@ -39,6 +39,16 @@
 // Current post ID (will be set when page loads)
 let currentPostId = null;
 
+// Ensure Firebase is initialized before using auth and db
+if (typeof firebase === 'undefined' || !firebase.auth || !firebase.firestore) {
+    console.error('Firebase not initialized. Comments functionality will not work.');
+}
+
+// Ensure auth and db are available
+if (typeof auth === 'undefined' || typeof db === 'undefined') {
+    console.error('Firebase auth or db not available. Comments functionality will not work.');
+}
+
 /**
  * Adds a comment or reply to a blog post
  */
@@ -520,12 +530,15 @@ async function refreshUserStats(userId) {
  * Displays comments for the current post with threading
  */
 async function displayComments(postId) {
+    console.log('Displaying comments for post:', postId);
+    
     const commentsLoading = document.getElementById('comments-loading');
     const commentsList = document.getElementById('comments-list');
     const noComments = document.getElementById('no-comments');
 
     // Check if elements exist before proceeding
     if (!commentsLoading || !commentsList || !noComments) {
+        console.error('Comment elements not found:', { commentsLoading: !!commentsLoading, commentsList: !!commentsList, noComments: !!noComments });
         return; // Silently return if elements don't exist
     }
 
@@ -696,6 +709,8 @@ function createReplyElement(reply) {
  * Displays reactions for the current post
  */
 async function displayReactions(postId) {
+    console.log('Displaying reactions for post:', postId);
+    
     try {
         const result = await getReactionsForPost(postId);
 
@@ -926,6 +941,13 @@ function updateBookmarkButton(isBookmarked) {
  * Initializes comments, reactions, and bookmarks for the current post
  */
 function initializeCommentsAndReactions(postId) {
+    console.log('Initializing comments and reactions for post:', postId);
+    
+    if (!postId) {
+        console.error('No post ID provided to initializeCommentsAndReactions');
+        return;
+    }
+    
     currentPostId = postId;
     
     // Set up comment form
@@ -964,6 +986,8 @@ function initializeCommentsAndReactions(postId) {
     const celebrateBtn = document.getElementById('celebrate-btn');
     const insightfulBtn = document.getElementById('insightful-btn');
 
+    console.log('Reaction buttons found:', { likeBtn: !!likeBtn, heartBtn: !!heartBtn, celebrateBtn: !!celebrateBtn, insightfulBtn: !!insightfulBtn });
+
     if (likeBtn) {
         likeBtn.addEventListener('click', () => handleReactionClick('like'));
     }
@@ -982,6 +1006,7 @@ function initializeCommentsAndReactions(postId) {
 
     // Set up bookmark button
     const bookmarkBtn = document.getElementById('bookmark-btn');
+    console.log('Bookmark button found:', !!bookmarkBtn);
     if (bookmarkBtn) {
         bookmarkBtn.addEventListener('click', handleBookmarkClick);
     }
@@ -1011,3 +1036,6 @@ window.handleBookmarkClick = handleBookmarkClick;
 window.toggleReplyForm = toggleReplyForm;
 window.displayComments = displayComments;
 window.displayReactions = displayReactions;
+
+// Log that comments.js has loaded successfully
+console.log('Comments.js loaded successfully. Available functions:', Object.keys(window).filter(key => key.includes('Comment') || key.includes('Reaction') || key.includes('Bookmark')));

@@ -655,9 +655,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Load comments and reactions much later (after user has seen the post content)
                 setTimeout(() => {
                     if (typeof initializeCommentsAndReactions === 'function') {
+                        console.log('Initializing comments and reactions for post:', postId);
                         initializeCommentsAndReactions(postId);
                     } else {
-                        console.warn('initializeCommentsAndReactions function not found');
+                        console.error('initializeCommentsAndReactions function not found. Available functions:', Object.keys(window).filter(key => key.includes('Comment') || key.includes('Reaction') || key.includes('Bookmark')));
                     }
                 }, 2000); // 2 second delay - user can read the post content first
             } else {
