@@ -121,7 +121,7 @@ class ImageOptimizer {
         return originalUrl;
     }
     
-    // Optimize existing images on page
+    // Optimize existing images on page - ENHANCED FOR SPEED
     optimizePageImages() {
         const images = document.querySelectorAll('img:not([data-optimized])');
         
@@ -132,7 +132,18 @@ class ImageOptimizer {
                     img.dataset.optimized = 'true';
                     return;
                 }
-                this.optimizeImage(img);
+                
+                // Check if image is above the fold for immediate loading
+                const rect = img.getBoundingClientRect();
+                const isAboveTheFold = rect.top < window.innerHeight;
+                
+                if (isAboveTheFold) {
+                    // Above-the-fold images get priority loading
+                    img.loading = 'eager';
+                    img.dataset.optimized = 'true';
+                } else {
+                    this.optimizeImage(img);
+                }
             }
         });
     }
@@ -151,14 +162,14 @@ class ImageOptimizer {
         optimizedImg.dataset.optimized = 'true';
     }
     
-    // Lazy load with intersection observer
+    // Lazy load with intersection observer - OPTIMIZED FOR SPEED
     setupLazyLoading() {
         const imageObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const img = entry.target;
                     
-                    // Load the actual image
+                    // Load the actual image immediately
                     if (img.dataset.src) {
                         img.src = img.dataset.src;
                         img.removeAttribute('data-src');
@@ -174,8 +185,8 @@ class ImageOptimizer {
                 }
             });
         }, {
-            rootMargin: '50px 0px',
-            threshold: 0.01
+            rootMargin: '300px 0px', // Much larger margin - start loading 300px before entering viewport
+            threshold: 0.1 // Higher threshold - trigger when 10% of image is visible
         });
         
         // Observe all lazy images
@@ -229,10 +240,33 @@ const imageOptimizer = new ImageOptimizer();
 // Export for use in other scripts
 window.imageOptimizer = imageOptimizer;
 
-// Auto-optimize images when DOM is ready
+// Auto-optimize images when DOM is ready - ENHANCED FOR SPEED
 document.addEventListener('DOMContentLoaded', () => {
+    // Preload critical images immediately
+    const criticalImages = document.querySelectorAll('img[data-critical="true"], .hero img, .header img, .logo');
+    criticalImages.forEach(img => {
+        img.loading = 'eager';
+        img.dataset.optimized = 'true';
+    });
+    
+    // Optimize remaining images
     imageOptimizer.optimizePageImages();
     imageOptimizer.setupLazyLoading();
+    
+    // Preload next batch of images for better perceived performance
+    setTimeout(() => {
+        const nextBatch = document.querySelectorAll('img[data-src]:not([data-preloaded])');
+        nextBatch.forEach((img, index) => {
+            if (index < 5) { // Preload first 5 lazy images
+                const preloadLink = document.createElement('link');
+                preloadLink.rel = 'preload';
+                preloadLink.as = 'image';
+                preloadLink.href = img.dataset.src;
+                document.head.appendChild(preloadLink);
+                img.dataset.preloaded = 'true';
+            }
+        });
+    }, 100);
 });
 
 // Optimize images added dynamically

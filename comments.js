@@ -84,7 +84,7 @@ async function addComment(postId, commentText, parentId = null) {
                 await updateUserStats(user.uid, currentStats.stats);
             }
         } catch (error) {
-            console.log("Note: Stats update failed, but comment was posted successfully");
+            // Stats update failed, but comment was posted successfully
         }
 
         return { success: true, message: parentId ? "Reply posted successfully!" : "Comment posted successfully!" };
@@ -852,7 +852,6 @@ async function handleReactionClick(reactionType) {
     if (result.success) {
         // Only refresh if there was an error or if we need to sync with server
         // For now, we'll trust our optimistic update
-        console.log(`Reaction ${result.action}: ${reactionType}`);
     } else {
         // Revert optimistic update on error
         if (isCurrentlyActive) {

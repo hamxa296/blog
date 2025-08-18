@@ -72,12 +72,8 @@
     </style>
     
     <script>
-        console.log("Dashboard page loaded - testing basic JavaScript");
-        
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("DOM loaded successfully");
-            console.log("Dashboard content element:", document.getElementById('admin-content'));
-            console.log("Loading message element:", document.getElementById('loading-message'));
+            // DOM loaded successfully
         });
     </script>
 </head>
@@ -787,11 +783,12 @@
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs (required before firebase-init.js) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    
+
+    <!-- Firebase initialization (required before combined.min.js) -->
     <!-- Local scripts -->
     <script src="auth.js"></script>
 
@@ -1033,7 +1030,20 @@
     <script src="combined.min.js" onerror="console.error('Failed to load combined.min.js')" onload="console.log('combined.min.js loaded')"></script>
     <script src="posts.js" onerror="console.error('Failed to load posts.js')" onload="console.log('posts.js loaded')"></script>
     <script src="secure-access.js" onerror="console.error('Failed to load secure-access.js')" onload="console.log('secure-access.js loaded')"></script>
-    <script src="calendar.js" onerror="console.error('Failed to load calendar.js')" onload="console.log('calendar.js loaded')"></script>
+
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('Service Worker registered successfully:', registration);
+          })
+          .catch(error => {
+            console.log('Service Worker registration failed:', error);
+          });
+      }
+    </script>
     <script>
         // Fallback for when calendar.js fails to load
         if (typeof getEventStats === 'undefined') {

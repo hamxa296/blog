@@ -14,8 +14,6 @@
 
     // Function to apply theme
     function applyTheme(themeName) {
-        console.log('Applying theme:', themeName);
-        
         // Remove all existing theme classes from both html and body
         document.documentElement.classList.remove('theme-basic-light', 'theme-basic-dark');
         document.body.classList.remove('theme-basic-light', 'theme-basic-dark');
@@ -33,7 +31,8 @@
             themeSelect.value = themeName;
         }
         
-        console.log('Theme applied successfully. Current classes:', document.body.className);
+        // Dispatch a custom event to notify other scripts that theme has changed
+        window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: themeName } }));
     }
 
     // Function to initialize theme functionality
@@ -72,4 +71,11 @@
             applyTheme(savedTheme);
         }
     }, 100);
+    
+    // Final fallback to ensure theme is applied even if other scripts interfere
+    setTimeout(() => {
+        if (!document.body.classList.contains(`theme-${savedTheme}`)) {
+            applyTheme(savedTheme);
+        }
+    }, 500);
 })(); 

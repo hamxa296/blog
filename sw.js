@@ -27,11 +27,9 @@ const EXTERNAL_RESOURCES = [
 
 // Install event - cache static files
 self.addEventListener('install', event => {
-    console.log('Service Worker: Installing...');
     event.waitUntil(
         caches.open(STATIC_CACHE)
             .then(cache => {
-                console.log('Service Worker: Caching static files');
                 // Cache local files first
                 return cache.addAll(STATIC_FILES);
             })
@@ -73,14 +71,12 @@ async function cacheExternalResources() {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', event => {
-    console.log('Service Worker: Activating...');
     event.waitUntil(
         caches.keys()
             .then(cacheNames => {
                 return Promise.all(
                     cacheNames.map(cacheName => {
                         if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
-                            console.log('Service Worker: Deleting old cache', cacheName);
                             return caches.delete(cacheName);
                         }
                     })
@@ -113,6 +109,11 @@ self.addEventListener('fetch', event => {
 
 // Cache first strategy for static assets
 async function cacheFirst(request) {
+    // Skip unsupported schemes (chrome-extension, etc.)
+    if (!request.url.startsWith('http')) {
+        return fetch(request);
+    }
+    
     const cachedResponse = await caches.match(request);
     if (cachedResponse) {
         return cachedResponse;
@@ -136,6 +137,11 @@ async function cacheFirst(request) {
 
 // Network first strategy for dynamic content
 async function networkFirst(request) {
+    // Skip unsupported schemes (chrome-extension, etc.)
+    if (!request.url.startsWith('http')) {
+        return fetch(request);
+    }
+    
     try {
         const networkResponse = await fetch(request);
         if (networkResponse.ok) {
@@ -173,7 +179,6 @@ self.addEventListener('sync', event => {
 
 async function doBackgroundSync() {
     // Sync offline data when connection is restored
-    console.log('Service Worker: Background sync triggered');
     // Implement offline data sync logic here
 }
 

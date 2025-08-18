@@ -130,7 +130,6 @@ async function loginUser(email, password) {
         try {
             const userDoc = await db.collection('users').doc(user.uid).get();
             if (!userDoc.exists) {
-                console.log("Creating missing user document for existing user");
                 const userData = {
                     uid: user.uid,
                     email: user.email || email,
@@ -163,6 +162,9 @@ async function loginUser(email, password) {
  */
 async function logoutUser() {
     try {
+        if (typeof auth === 'undefined') {
+            throw new Error('Auth object not initialized');
+        }
         await auth.signOut();
         return { success: true };
     } catch (error) {
@@ -175,6 +177,19 @@ async function logoutUser() {
  * Checks the current authentication state of the user.
  */
 function onAuthStateChange(callback) {
+    if (typeof auth === 'undefined') {
+        console.warn('Auth object not yet initialized, waiting for Firebase...');
+        // Wait for Firebase to be initialized
+        const checkAuth = () => {
+            if (typeof auth !== 'undefined') {
+                return auth.onAuthStateChanged(callback);
+            } else {
+                setTimeout(checkAuth, 100);
+            }
+        };
+        checkAuth();
+        return () => {}; // Return empty unsubscribe function
+    }
     return auth.onAuthStateChanged(callback);
 }
 
@@ -183,8 +198,7 @@ function onAuthStateChange(callback) {
  * @returns {Promise<boolean>}
  */
 async function isUserAdmin() {
-    const user = auth.currentUser;
-    console.log("isUserAdmin called, current user:", user ? user.uid : "No user");
+    const user = typeof auth !== 'undefined' ? auth.currentUser : null;
     
     if (!user) return false;
     
@@ -194,27 +208,20 @@ async function isUserAdmin() {
             await window.ensureUserDataLoaded();
         }
         
-        console.log("Fetching user document for:", user.uid);
         const userDoc = await db.collection('users').doc(user.uid).get();
-        console.log("User document exists:", userDoc.exists);
         
         if (!userDoc.exists) {
-            console.log("User document does not exist - this should be handled by auth state listener");
             return false;
         }
         
         const userData = userDoc.data();
-        console.log("User data:", userData);
-        console.log("isAdmin value:", userData.isAdmin);
         
         // Check if user should be admin but isn't marked as such
         if (typeof isAdminUID === 'function' && isAdminUID(user.uid) && userData.isAdmin !== true) {
-            console.log("User is in admin list but not marked as admin in document. Updating...");
             try {
                 await db.collection('users').doc(user.uid).update({
                     isAdmin: true
                 });
-                console.log("Successfully updated user to admin status");
                 return true;
             } catch (updateError) {
                 console.error("Error updating user to admin status:", updateError);
@@ -222,7 +229,6 @@ async function isUserAdmin() {
         }
         
         const isAdmin = userData.isAdmin === true; // Explicitly check for true
-        console.log("Final admin result:", isAdmin);
         return isAdmin;
     } catch (error) {
         console.error("Error checking admin status:", error);

@@ -1,0 +1,14 @@
+{
+  "port": 8080,
+  "host": "localhost",
+  "root": "./",
+  "open": true,
+  "file": "index.html",
+  "wait": 1000,
+  "mount": [],
+  "logLevel": 2,
+  "middleware": [],
+  "injectBody": false,
+  "injectHead": false
+}
+

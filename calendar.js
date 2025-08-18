@@ -754,24 +754,18 @@ document.addEventListener('DOMContentLoaded', () => {
 async function getPendingEvents() {
     const user = auth.currentUser;
     if (!user) {
-        console.log("No authenticated user");
         return { success: false, error: "Authentication required." };
     }
 
-    console.log("Getting pending events for user:", user.uid);
-
     // Verify admin status server-side
     try {
-        console.log("Checking admin status...");
         const isAdmin = await isUserAdmin();
-        console.log("Admin check result:", isAdmin);
         
         if (!isAdmin) {
             console.error("Unauthorized access attempt to fetch pending events");
             return { success: false, error: "Admin privileges required." };
         }
 
-        console.log("Admin verified, fetching pending events...");
         const snapshot = await db.collection("events")
             .where("status", "==", "pending")
             .get();
@@ -785,7 +779,6 @@ async function getPendingEvents() {
             return aTime - bTime;
         });
         
-        console.log("Found", events.length, "pending events");
         return { success: true, events: events };
 
     } catch (error) {
@@ -942,7 +935,6 @@ async function deleteEvent(eventId) {
         }
 
         await db.collection("events").doc(eventId).delete();
-        console.log("Event deleted successfully:", eventId);
         return { success: true, message: "Event deleted successfully." };
     } catch (error) {
         console.error("Error deleting event:", error);
@@ -1001,7 +993,6 @@ function updateSidebarAuth(user) {
 
     if (user) {
         // User is logged in
-        console.log("Updating sidebar for logged in user:", user.email);
         
         // Update main header auth buttons
         if (authButtons) {
@@ -1082,7 +1073,6 @@ function updateSidebarAuth(user) {
 
     } else {
         // User is not logged in
-        console.log("Updating sidebar for guest user");
         
         // Update main header auth buttons
         if (authButtons) {
@@ -1114,13 +1104,11 @@ function updateSidebarAuth(user) {
 function initializeAuthStateListener() {
     // Listen for auth state changes
     auth.onAuthStateChanged(async (user) => {
-        console.log("Calendar page auth state changed:", user ? user.email : "No user");
         updateSidebarAuth(user);
     });
 
     // Also listen for the custom auth state changed event from firebase-init.js
     window.addEventListener('authStateChanged', (event) => {
-        console.log("Calendar page received authStateChanged event:", event.detail);
         updateSidebarAuth(event.detail.user);
     });
 
