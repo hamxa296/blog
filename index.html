@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&family=Rock+Salt&family=Special+Elite&family=Indie+Flower&display=swap"
     rel="stylesheet">
 
      <!-- Apply theme immediately to prevent flash -->
@@ -49,6 +49,229 @@
    </script>
   <!-- Custom CSS -->
   <link rel="stylesheet" href="styles.css">
+  
+  <!-- Homepage-specific styles -->
+  <style>
+    /* Homepage color palette matching contact.html */
+    :root {
+      --c-navy: #0A1931;
+      --c-deep: #1A3D63;
+      --c-steel: #4A7FA7;
+      --c-light: #B3CFE5;
+      --c-snow: #F6FAFD;
+    }
+    
+    /* Full page background */
+    body {
+      background: url('background.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    
+    /* Background overlay for the entire page */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(10,25,49,0.3) 0%, rgba(26,61,99,0.25) 50%, rgba(10,25,49,0.3) 100%);
+      z-index: -1;
+    }
+    
+    /* Enhanced hero section with subtle animations */
+    .hero-section {
+      background-attachment: fixed;
+    }
+    
+    /* Faded gradient overlays for depth */
+    .gradient-overlay-1 {
+      background: linear-gradient(135deg, rgba(10,25,49,0.4), rgba(26,61,99,0.3));
+    }
+    
+    .gradient-overlay-2 {
+      background: linear-gradient(135deg, rgba(74,127,167,0.2), transparent);
+    }
+    
+    /* Enhanced section backgrounds with subtle patterns */
+    .section-bg-1 {
+      background: linear-gradient(135deg, var(--c-navy), var(--c-deep));
+      position: relative;
+    }
+    
+    .section-bg-1::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(74,127,167,0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(179,207,229,0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    
+    .section-bg-2 {
+      background: linear-gradient(135deg, var(--c-deep), var(--c-steel));
+      position: relative;
+    }
+    
+    .section-bg-2::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        radial-gradient(circle at 80% 80%, rgba(179,207,229,0.1) 0%, transparent 50%),
+        radial-gradient(circle at 20% 20%, rgba(74,127,167,0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    
+    /* Enhanced typography */
+    .hero-title {
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    
+    .section-number {
+      text-shadow: 0 2px 10px rgba(74,127,167,0.2);
+    }
+    
+    /* Smooth transitions */
+    .hover-lift {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    /* Enhanced sidebar styling */
+    .sidebar-item {
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .sidebar-item:hover {
+      background: rgba(255,255,255,0.2);
+      border-color: rgba(255,255,255,0.3);
+      transform: scale(1.05);
+    }
+    
+         /* Handwriting style for Stories from the Valley */
+     .handwriting-title {
+       font-family: 'Rock Salt', cursive;
+       font-weight: 400;
+       font-size: 3.5rem;
+       line-height: 1.1;
+       color: white;
+       text-shadow: 
+         4px 4px 0px rgba(74,127,167,0.8),
+         6px 6px 0px rgba(26,61,99,0.6);
+       transform: rotate(-2deg) skew(-1deg);
+       letter-spacing: 2px;
+       filter: contrast(1.2) saturate(1.3);
+       position: relative;
+     }
+     
+     .handwriting-title::before {
+       content: '';
+       position: absolute;
+       top: -2px;
+       left: -2px;
+       right: -2px;
+       bottom: -2px;
+       background: linear-gradient(45deg, transparent 30%, rgba(74,127,167,0.3) 50%, transparent 70%);
+       z-index: -1;
+       filter: blur(1px);
+     }
+     
+     /* Enhanced floating decorative elements */
+     .floating-circle {
+       animation: float 6s ease-in-out infinite;
+     }
+     
+     .floating-circle:nth-child(2) {
+       animation-delay: -2s;
+     }
+     
+     .floating-circle:nth-child(3) {
+       animation-delay: -4s;
+     }
+     
+     @keyframes float {
+       0%, 100% {
+         transform: translateY(0px) scale(1);
+       }
+       50% {
+         transform: translateY(-10px) scale(1.1);
+       }
+     }
+     
+     /* Enhanced post card hover effects */
+     .post-card-hover {
+       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+     }
+     
+     .post-card-hover:hover {
+       transform: translateY(-8px) scale(1.02);
+       box-shadow: 0 25px 50px rgba(74,127,167,0.3);
+     }
+     
+     /* Enhanced featured post hover */
+     .featured-post-hover {
+       transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+     }
+     
+     .featured-post-hover:hover {
+       transform: scale(1.02);
+       box-shadow: 0 30px 60px rgba(74,127,167,0.4);
+     }
+     
+     /* Enhanced sidebar navigation buttons */
+     .sidebar-item {
+       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+     }
+     
+     .sidebar-item:hover {
+       transform: scale(1.1);
+       box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+     }
+     
+     .sidebar-item:active {
+       transform: scale(0.95);
+     }
+     
+     /* Responsive adjustments */
+     @media (max-width: 1024px) {
+       .hero-title {
+         font-size: 3rem;
+       }
+       
+       .section-number {
+         font-size: 4rem;
+       }
+       
+       .handwriting-title {
+         font-size: 3.5rem;
+         transform: rotate(-1.5deg) skew(-0.8deg);
+       }
+     }
+     
+     @media (max-width: 768px) {
+       .hero-title {
+         font-size: 2.5rem;
+       }
+       
+       .section-number {
+         font-size: 3rem;
+       }
+       
+       .handwriting-title {
+         font-size: 3rem;
+         transform: rotate(-1deg) skew(-0.5deg);
+         letter-spacing: 1px;
+       }
+     }
+  </style>
 </head>
 
 <body class="text-gray-800">
@@ -59,7 +282,7 @@
       <!-- Left side: Hamburger + Logo -->
       <div class="flex items-center space-x-4">
         <!-- Hamburger Menu Button -->
-        <button id="sidebar-toggle" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+                 <button id="sidebar-toggle" class="text-gray-600 hover:text-[#4A7FA7] focus:outline-none">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
           </svg>
@@ -74,25 +297,25 @@
       <!-- Right side: Navigation -->
       <div class="hidden md:flex items-center space-x-6 ml-auto">
         <!-- <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a> -->
-        <a href="about.html" class="text-gray-600 hover:text-blue-600 transition duration-300">About</a>
+                 <a href="about.html" class="text-gray-600 hover:text-[#4A7FA7] transition duration-300">About</a>
         <!-- <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a> -->
         <a href="gallery.html"
-          class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
-          <span class="relative z-10">Gallery</span>
-        </a>
+           class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+           <span class="relative z-10">Gallery</span>
+         </a>
 
-        <a href="guide.html"
-          class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
-          <span class="relative z-10">Freshmen Guide</span>
-        </a>
+                 <a href="guide.html"
+           class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+           <span class="relative z-10">Freshmen Guide</span>
+         </a>
 
-        <a href="calendar.html"
-          class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
-          <span class="relative z-10">Calendar</span>
-        </a>
+                 <a href="calendar.html"
+           class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+           <span class="relative z-10">Calendar</span>
+         </a>
         <!-- GUEST NAVIGATION (DESKTOP) -->
         <div id="guest-nav" class="flex items-center space-x-6">
-          <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
+          <a href="login.html" class="text-gray-600 hover:text-[#4A7FA7] transition duration-300">Login</a>
           <!-- <a href="signup.html"
             class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">Sign Up</a> -->
         </div>
@@ -115,7 +338,7 @@
     class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
     <div class="flex items-center justify-between p-6 border-b">
       <h2 class="text-xl font-bold text-gray-800">Menu</h2>
-      <button id="sidebar-close" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+             <button id="sidebar-close" class="text-gray-600 hover:text-[#4A7FA7] focus:outline-none">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
@@ -128,8 +351,8 @@
         <div>
           <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Main</h3>
           <div class="space-y-2">
-            <a href="index.html"
-              class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                         <a href="index.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
@@ -137,8 +360,8 @@
               </svg>
               Home
             </a>
-            <a href="browse.html"
-              class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                         <a href="browse.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
@@ -146,16 +369,16 @@
               </svg>
               All Posts
             </a>
-            <a href="about.html"
-              class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                         <a href="about.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
               About
             </a>
-            <a href="contact.html"
-              class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                         <a href="contact.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
@@ -163,8 +386,8 @@
               </svg>
               Contact
             </a>
-            <a href="gallery.html"
-              class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                         <a href="gallery.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
@@ -179,8 +402,8 @@
         <div>
           <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Resources</h3>
           <div class="space-y-2">
-            <a href="guide.html"
-              class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                         <a href="guide.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
@@ -190,8 +413,8 @@
             </a>
             <!-- Calendar Dropdown for Mobile -->
             <div class="relative">
-              <button id="sidebar-calendar-dropdown-toggle"
-                class="w-full flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                             <button id="sidebar-calendar-dropdown-toggle"
+                 class="w-full flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -205,16 +428,16 @@
 
               <!-- Mobile Calendar Dropdown Menu -->
               <div id="sidebar-calendar-dropdown" class="hidden pl-8 mt-2 space-y-1">
-                <a href="calendar.html"
-                  class="block px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200 flex items-center">
+                                 <a href="calendar.html"
+                   class="block px-3 py-2 text-sm text-gray-600 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
                   <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                   </svg>
                   Calendar View
                 </a>
-                <a href="calendar.html#events"
-                  class="block px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200 flex items-center">
+                                 <a href="calendar.html#events"
+                   class="block px-3 py-2 text-sm text-gray-600 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
                   <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
@@ -222,8 +445,8 @@
                   </svg>
                   View Events
                 </a>
-                <a href="calendar.html#submit"
-                  class="block px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200 flex items-center">
+                                 <a href="calendar.html#submit"
+                   class="block px-3 py-2 text-sm text-gray-600 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
                   <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -241,8 +464,8 @@
           <div class="space-y-2">
             <div class="px-3 py-2">
               <label for="theme-select" class="block text-sm font-medium text-gray-700 mb-2">Choose Theme</label>
-              <select id="theme-select"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-700">
+                             <select id="theme-select"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A7FA7] focus:border-[#4A7FA7] bg-white text-gray-700">
                 <option value="basic-dark">Basic Dark</option>
                 <option value="basic-light">Basic Light</option>
               </select>
@@ -254,8 +477,8 @@
         <div id="sidebar-guest-nav">
           <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Account</h3>
           <div class="space-y-2">
-            <a href="login.html"
-              class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                         <a href="login.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1">
@@ -275,16 +498,16 @@
         <div id="sidebar-user-nav" class="hidden">
           <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">My Account</h3>
           <div class="space-y-2">
-            <a href="profile.html"
-              class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                         <a href="profile.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
               </svg>
               My Profile
             </a>
-            <a href="write.html"
-              class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                         <a href="write.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
@@ -292,8 +515,8 @@
               </svg>
               Write Post
             </a>
-            <button id="sidebar-admin-access-btn"
-              class="hidden w-full flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                       <button id="sidebar-admin-access-btn"
+             class="hidden w-full flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
@@ -319,87 +542,458 @@
   <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
 
   <!-- Main Content -->
-  <main class="container mx-auto px-6 py-12">
+  <main class="relative">
+         <!-- Hero Section -->
+     <section class="relative min-h-screen flex items-center justify-center overflow-hidden hero-section">
+       <!-- Background Overlay -->
+       <div class="absolute inset-0 z-0">
+         <div class="absolute inset-0 bg-gradient-to-br from-black/40 via-[#0A1931]/30 to-[#1A3D63]/30"></div>
+         <div class="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-[#4A7FA7]/20"></div>
+       </div>
 
-    <!-- Blog Content Section -->
-    <div id="blog-content">
-      <!-- Hero Section -->
-      <section class="text-center mb-16">
-        <h1 class="text-4xl md:text-6xl font-bold mb-4">Stories from the Valley</h1>
-        <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">Your one-stop hub for student life, engineering
-          marvels, and campus tales at GIK Institute.</p>
-      </section>
+      <!-- Left Sidebar - Follow Us -->
+      <div class="absolute left-8 top-1/2 transform -translate-y-1/2 z-10 hidden lg:block">
+        <div class="text-white text-center">
+          <p class="text-sm font-medium mb-4 tracking-wider">Follow us</p>
+          <div class="space-y-3">
+            <a href="#" class="block w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 sidebar-item">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+            </a>
 
-      <!-- Featured Post Skeleton -->
-      <section id="featured-post" class="mb-16">
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden lg:flex animate-pulse">
-          <div class="lg:w-1/2 bg-gray-300 h-64 lg:h-auto"></div>
-          <div class="p-8 lg:p-12 lg:w-1/2 flex flex-col justify-center">
-            <div class="h-4 bg-gray-300 rounded w-1/4 mb-4"></div>
-            <div class="h-8 bg-gray-300 rounded w-3/4 mb-4"></div>
-            <div class="space-y-3">
-              <div class="h-4 bg-gray-300 rounded"></div>
-              <div class="h-4 bg-gray-300 rounded w-5/6"></div>
-            </div>
-            <div class="flex items-center mt-6">
-              <div class="h-12 w-12 bg-gray-300 rounded-full mr-4"></div>
-              <div class="flex-1 space-y-2">
-                <div class="h-4 bg-gray-300 rounded w-1/3"></div>
-                <div class="h-4 bg-gray-300 rounded w-1/2"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Sidebar - Start -->
+      <div class="absolute right-8 top-1/2 transform -translate-y-1/2 z-10 hidden lg:block">
+        <div class="text-white text-center">
+          <p class="text-sm font-medium mb-4 tracking-wider">Start</p>
+          <div class="space-y-3">
+            <button onclick="scrollToSection('section-01')" class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-sm font-medium sidebar-item hover:bg-white/20 transition-all duration-300 cursor-pointer" title="Freshman Guide">01</button>
+            <button onclick="scrollToSection('section-02')" class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-sm font-medium sidebar-item hover:bg-white/20 transition-all duration-300 cursor-pointer" title="Campus Calendar">02</button>
+            <button onclick="scrollToSection('section-03')" class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-sm font-medium sidebar-item hover:bg-white/20 transition-all duration-300 cursor-pointer" title="Photo Gallery">03</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Hero Content -->
+      <div class="relative z-10 text-center text-white px-6">
+        <div class="mb-6">
+          <div class="flex items-center justify-center space-x-4 mb-4">
+            <div class="w-16 h-px bg-white/60"></div>
+            <span class="text-sm font-medium tracking-widest">A STUDENT BLOG</span>
+            <div class="w-16 h-px bg-white/60"></div>
+          </div>
+        </div>
+        
+        <h1 class="text-5xl md:text-7xl font-serif font-bold mb-8 leading-tight hero-title">
+          Be Prepared For The<br>
+          <span class="text-[#B3CFE5]">Valley & Beyond!</span>
+        </h1>
+        
+        <p class="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+          Your one-stop hub for student life, engineering marvels, and campus tales at GIK Institute.
+        </p>
+        
+        <div class="text-white/70 text-sm">
+          <span class="block">scroll down ↓</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Content Section 1: What level of student are you? -->
+    <section id="section-01" class="bg-[#0A1931] py-24 relative section-bg-1">
+      <div class="container mx-auto px-6">
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+          <!-- Left: Text Content -->
+          <div class="relative">
+            <div class="flex items-center mb-6">
+              <span class="text-8xl font-bold text-[#4A7FA7]/30 mr-6 section-number">01</span>
+              <div class="flex-1">
+                <div class="w-24 h-px bg-[#B3CFE5]/40 mb-2"></div>
+                <span class="text-sm font-medium text-[#B3CFE5] tracking-widest">GET STARTED</span>
               </div>
+            </div>
+            
+                         <h2 class="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
+               Your Complete Freshman Survival Guide
+             </h2>
+             
+             <p class="text-lg text-[#B3CFE5]/80 leading-relaxed mb-8">
+               From packing essentials to navigating campus life, our comprehensive guide covers everything you need 
+               to know as a new GIKI student. Discover hostel information, mess schedules, weekend travel options, 
+               and essential contacts to make your transition smooth and exciting.
+             </p>
+            
+                         <a href="guide.html" class="inline-flex items-center text-[#B3CFE5] hover:text-white transition-colors duration-300 group">
+               <span class="mr-2">explore the guide →</span>
+               <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+               </svg>
+             </a>
+          </div>
+          
+          <!-- Right: Image -->
+          <div class="relative">
+            <div class="rounded-2xl overflow-hidden shadow-2xl hover-lift">
+              <img src="fman.jpg" alt="Freshman student guide" class="w-full h-[500px] object-cover">
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- Recent Posts Skeleton -->
-      <section>
-        <h3 class="text-3xl font-bold mb-8 text-center md:text-left">Recent Posts</h3>
-        <div id="recent-posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <!-- Skeleton Card 1 -->
-          <div class="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse">
-            <div class="h-48 w-full bg-gray-300"></div>
-            <div class="p-6">
-              <div class="h-3 bg-gray-300 rounded w-1/4 mb-3"></div>
-              <div class="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
-              <div class="space-y-2">
-                <div class="h-3 bg-gray-300 rounded"></div>
-                <div class="h-3 bg-gray-300 rounded w-5/6"></div>
+         <!-- Content Section 2: Stay Updated with Campus Events -->
+     <section id="section-02" class="bg-[#1A3D63] py-24 relative section-bg-2">
+       <div class="container mx-auto px-6">
+                   <div class="grid lg:grid-cols-2 gap-16 items-center">
+            <!-- Left: Image -->
+            <div class="relative">
+              <div class="rounded-2xl overflow-hidden shadow-2xl hover-lift">
+                <img src="calendar.jfif" alt="Campus calendar and events" class="w-full h-[500px] object-cover">
               </div>
             </div>
-          </div>
-          <!-- Skeleton Card 2 -->
-          <div class="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse">
-            <div class="h-48 w-full bg-gray-300"></div>
-            <div class="p-6">
-              <div class="h-3 bg-gray-300 rounded w-1/4 mb-3"></div>
-              <div class="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
-              <div class="space-y-2">
-                <div class="h-3 bg-gray-300 rounded"></div>
-                <div class="h-3 bg-gray-300 rounded w-5/6"></div>
+            
+            <!-- Right: Text Content -->
+            <div class="relative">
+             <div class="flex items-center mb-6">
+               <span class="text-8xl font-bold text-[#4A7FA7]/30 mr-6 section-number">02</span>
+               <div class="flex-1">
+                 <div class="w-24 h-px bg-[#B3CFE5]/40 mb-2"></div>
+                 <span class="text-sm font-medium text-[#B3CFE5] tracking-widest">STAY CONNECTED</span>
+               </div>
+             </div>
+             
+             <h2 class="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
+               Stay Updated with Campus Events!
+             </h2>
+             
+             <p class="text-lg text-[#B3CFE5]/80 leading-relaxed mb-8">
+               Never miss important campus events, academic deadlines, or social gatherings. Our comprehensive 
+               calendar keeps you informed about everything happening at GIK Institute, from lectures and workshops 
+               to cultural festivals and sports competitions.
+             </p>
+             
+             <a href="calendar.html" class="inline-flex items-center text-[#B3CFE5] hover:text-white transition-colors duration-300 group">
+               <span class="mr-2">view calendar →</span>
+               <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+               </svg>
+             </a>
+           </div>
+         </div>
+       </div>
+     </section>
+
+     <!-- Content Section 3: Picking the right Campus Resources! -->
+     <section id="section-03" class="bg-[#0A1931] py-24 relative section-bg-1">
+       <div class="container mx-auto px-6">
+         <div class="grid lg:grid-cols-2 gap-16 items-center">
+           <!-- Left: Text Content -->
+           <div class="relative">
+             <div class="flex items-center mb-6">
+               <span class="text-8xl font-bold text-[#4A7FA7]/30 mr-6 section-number">03</span>
+               <div class="flex-1">
+                 <div class="w-24 h-px bg-[#B3CFE5]/40 mb-2"></div>
+                 <span class="text-sm font-medium text-[#B3CFE5] tracking-widest">CAMPUS ESSENTIALS</span>
+               </div>
+             </div>
+             
+             <h2 class="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
+               Explore Our Campus Through Photos!
+             </h2>
+             
+             <p class="text-lg text-[#B3CFE5]/80 leading-relaxed mb-8">
+               Discover the beauty and diversity of GIK Institute through our curated photo gallery. From academic 
+               blocks and hostel life to sports facilities and campus events, capture the essence of student life 
+               and share your own moments with the community.
+             </p>
+             
+             <a href="gallery.html" class="inline-flex items-center text-[#B3CFE5] hover:text-white transition-colors duration-300 group">
+               <span class="mr-2">browse gallery →</span>
+               <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+               </svg>
+             </a>
+           </div>
+           
+           <!-- Right: Image -->
+                       <div class="relative">
+              <div class="rounded-2xl overflow-hidden shadow-2xl hover-lift">
+                <img src="camera.jpeg" alt="Camera and photography" class="w-full h-full object-cover">
               </div>
             </div>
+         </div>
+       </div>
+     </section>
+
+                                               <!-- Blog Content Section -->
+        <section class="py-24 pb-32 relative overflow-hidden min-h-screen">
+               <div class="container mx-auto px-6 relative z-10">
+                                   <div class="text-center mb-16">
+                         <h2 class="handwriting-title mb-6">Stories from the Valley</h2>
+                         <p class="text-lg text-[#0A1931] max-w-3xl mx-auto">Discover the latest posts and insights from our community of students and contributors.</p>
           </div>
-          <!-- Skeleton Card 3 -->
-          <div class="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse">
-            <div class="h-48 w-full bg-gray-300"></div>
-            <div class="p-6">
-              <div class="h-3 bg-gray-300 rounded w-1/4 mb-3"></div>
-              <div class="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
-              <div class="space-y-2">
-                <div class="h-3 bg-gray-300 rounded"></div>
-                <div class="h-3 bg-gray-300 rounded w-5/6"></div>
-              </div>
+
+                                                       <!-- Featured Post - Creative Design -->
+           <div id="featured-post" class="mb-20">
+             <div class="relative group">
+               <!-- Main Featured Post Card -->
+               <div class="bg-gradient-to-br from-[#0A1931] via-[#1A3D63] to-[#4A7FA7] rounded-3xl overflow-hidden shadow-2xl featured-post-hover">
+                 <div class="lg:flex">
+                   <!-- Image Section with Overlay -->
+                   <div class="lg:w-1/2 relative overflow-hidden">
+                     <div class="h-64 lg:h-full bg-gradient-to-br from-[#4A7FA7] to-[#B3CFE5] flex items-center justify-center">
+                       <div class="text-center text-white">
+                         <svg class="w-20 h-20 mx-auto mb-4 opacity-80" fill="currentColor" viewBox="0 0 24 24">
+                           <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                         </svg>
+                         <p class="text-lg font-medium">Featured Story</p>
+                       </div>
+                     </div>
+                     <!-- Floating Badge -->
+                     <div class="absolute top-4 left-4 bg-[#B3CFE5] text-[#0A1931] px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                       FEATURED
+                     </div>
+                   </div>
+                   
+                   <!-- Content Section -->
+                   <div class="p-8 lg:p-12 lg:w-1/2 flex flex-col justify-center relative">
+                     <!-- Category Tag -->
+                     <div class="inline-flex items-center px-3 py-1 bg-[#4A7FA7]/20 text-[#B3CFE5] rounded-full text-sm font-medium mb-4 w-fit">
+                       <span class="w-2 h-2 bg-[#B3CFE5] rounded-full mr-2"></span>
+                       Campus Life
+                     </div>
+                     
+                     <!-- Title -->
+                     <h3 class="text-2xl lg:text-3xl font-bold text-white mb-4 leading-tight">
+                       The Valley's Hidden Gems: Student Life at GIKI
+                     </h3>
+                     
+                     <!-- Excerpt -->
+                     <p class="text-[#B3CFE5]/90 leading-relaxed mb-6">
+                       Discover the untold stories of campus life, from midnight study sessions to weekend adventures. Learn how students balance academics with unforgettable experiences in the heart of the valley.
+                     </p>
+                     
+                     <!-- Author Info -->
+                     <div class="flex items-center mb-6">
+                       <div class="w-12 h-12 bg-gradient-to-br from-[#4A7FA7] to-[#B3CFE5] rounded-full mr-4 flex items-center justify-center">
+                         <span class="text-white font-bold text-lg">G</span>
+                       </div>
+                       <div>
+                         <p class="text-white font-medium">GIKI Chronicles</p>
+                         <p class="text-[#B3CFE5]/70 text-sm">Student Blog Team</p>
+                       </div>
+                     </div>
+                     
+                     <!-- Action Button -->
+                     <button class="group/btn inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#4A7FA7] to-[#1A3D63] text-white font-semibold rounded-full hover:from-[#1A3D63] hover:to-[#4A7FA7] transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                       <span class="mr-2">Read Full Story</span>
+                       <svg class="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                       </svg>
+                     </button>
+                   </div>
+                 </div>
+               </div>
+               
+               <!-- Decorative Elements -->
+               <div class="absolute -top-4 -right-4 w-8 h-8 bg-[#B3CFE5] rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-500 floating-circle"></div>
+               <div class="absolute -bottom-2 -left-2 w-6 h-6 bg-[#4A7FA7] rounded-full opacity-30 group-hover:opacity-50 transition-opacity duration-500 floating-circle"></div>
+               <div class="absolute top-1/2 -right-8 w-4 h-4 bg-[#B3CFE5] rounded-full opacity-40 group-hover:opacity-60 transition-opacity duration-500 floating-circle"></div>
+               <div class="absolute -top-8 left-1/2 w-6 h-6 bg-[#4A7FA7] rounded-full opacity-30 group-hover:opacity-50 transition-opacity duration-500 floating-circle"></div>
+               <div class="absolute bottom-1/2 -left-6 w-5 h-5 bg-[#B3CFE5] rounded-full opacity-25 group-hover:opacity-45 transition-opacity duration-500 floating-circle"></div>
+             </div>
+           </div>
+
+                                   <!-- Recent Posts Grid - Creative Design -->
+          <div class="relative">
+            <!-- Section Header with Creative Elements -->
+            <div class="text-center mb-12 relative">
+              <h3 class="text-4xl font-bold text-white mb-4 relative z-10">Recent Stories</h3>
+              <div class="w-24 h-1 bg-gradient-to-r from-[#4A7FA7] to-[#B3CFE5] mx-auto mb-6"></div>
+
+              
+              <!-- Decorative Background Elements -->
+              <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-[#4A7FA7]/10 rounded-full blur-3xl"></div>
+              <div class="absolute bottom-0 left-1/4 w-20 h-20 bg-[#B3CFE5]/10 rounded-full blur-2xl"></div>
+              <div class="absolute top-1/2 right-1/4 w-16 h-16 bg-[#1A3D63]/20 rounded-full blur-xl"></div>
+            </div>
+            
+            <!-- Posts Grid with Creative Layout -->
+            <div id="recent-posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative">
+              
+                             <!-- Post Card 1 - Campus Life -->
+                               <div class="group relative">
+                                   <div class="bg-[#0A1931] rounded-2xl overflow-hidden shadow-xl border border-[#4A7FA7]/20 hover:border-[#4A7FA7]/40 h-80 relative post-card-hover">
+                                                           <!-- Background Image -->
+                    <div class="absolute inset-0 z-0">
+                      <img src="hostel-hallway.jpg" alt="GIKI Hostel Hallway" class="w-full h-full object-cover">
+                    </div>
+                    
+                    <!-- Content Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-transparent z-10"></div>
+                    
+                    <!-- Date Badge -->
+                    <div class="absolute top-4 left-4 bg-[#B3CFE5] text-[#0A1931] px-3 py-1 rounded-full text-xs font-bold z-20">
+                      8/11/2025
+                    </div>
+                    
+                    <!-- Content Section -->
+                    <div class="absolute inset-0 flex flex-col justify-end p-6 z-20">
+                      <h4 class="text-xl font-bold text-white mb-3 group-hover:text-[#B3CFE5] transition-colors duration-300">
+                        Hostel 101: My GIKI Life
+                      </h4>
+                      <p class="text-[#B3CFE5]/90 text-sm mb-4 leading-relaxed">
+                        A heartfelt peek into GIKI hostel life — the chaos, the heat and the friendships that make it home.
+                      </p>
+                     
+                     <!-- Meta Info -->
+                     <div class="flex items-center justify-between mb-4">
+                       <div class="flex items-center text-[#B3CFE5]/80 text-sm">
+                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                         </svg>
+                         <span>5 min read</span>
+                       </div>
+                       <div class="flex items-center text-[#B3CFE5]/80 text-sm">
+                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                         </svg>
+                         <span>24</span>
+                       </div>
+                     </div>
+                     
+                                            <!-- Action Button -->
+                       <button class="w-full py-3 px-4 bg-transparent border-2 border-[#B3CFE5] text-[#B3CFE5] font-semibold rounded-xl hover:bg-[#B3CFE5] hover:text-[#0A1931] transition-all duration-300 transform hover:scale-105 shadow-lg">
+                         Read More →
+                       </button>
+                   </div>
+                 </div>
+                 
+                 <!-- Floating Decorative Element -->
+                 <div class="absolute -top-2 -right-2 w-4 h-4 bg-[#B3CFE5] rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-300 floating-circle"></div>
+               </div>
+               
+                               <!-- Post Card 2 - Engineering -->
+                <div class="group relative">
+                  <div class="bg-[#0A1931] rounded-2xl overflow-hidden shadow-xl border border-[#4A7FA7]/20 hover:border-[#4A7FA7]/40 h-80 relative post-card-hover">
+                                                                                      <!-- Background Image -->
+                       <div class="absolute inset-0 z-0">
+                         <img src="cricket-field.jpg" alt="GIKI Cricket Field" class="w-full h-full object-cover">
+                       </div>
+                       
+                       <!-- Content Overlay -->
+                       <div class="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-transparent z-10"></div>
+                      
+                      <!-- Date Badge -->
+                      <div class="absolute top-4 left-4 bg-[#B3CFE5] text-[#0A1931] px-3 py-1 rounded-full text-xs font-bold z-20">
+                        8/11/2025
+                      </div>
+                      
+                      <!-- Content Section -->
+                      <div class="absolute inset-0 flex flex-col justify-end p-6 z-20">
+                        <h4 class="text-xl font-bold text-white mb-3 group-hover:text-[#B3CFE5] transition-colors duration-300">
+                          The Legacy of Hostel 12 Cricket
+                        </h4>
+                        <p class="text-[#B3CFE5]/90 text-sm mb-4 leading-relaxed">
+                          It all began the day an Outlook notification popped up: "No cars allowed inside the GIKI boundary." That one rule change left an entire parking lot behind our hostel empty. To anyone else, it was just a patch of rocky ground. To us, it was the perfect pitch.
+                        </p>
+                      
+                      <!-- Meta Info -->
+                      <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center text-[#B3CFE5]/80 text-sm">
+                          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                          </svg>
+                          <span>8 min read</span>
+                        </div>
+                        <div class="flex items-center text-[#B3CFE5]/80 text-sm">
+                          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                          </svg>
+                          <span>42</span>
+                        </div>
+                      </div>
+                      
+                      <!-- Action Button -->
+                      <button class="w-full py-3 px-4 bg-transparent border-2 border-[#B3CFE5] text-[#B3CFE5] font-semibold rounded-xl hover:bg-[#B3CFE5] hover:text-[#0A1931] transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        Read More →
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <!-- Floating Decorative Element -->
+                  <div class="absolute -top-2 -right-2 w-4 h-4 bg-[#B3CFE5] rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-300 floating-circle"></div>
+                </div>
+               
+                               <!-- Post Card 3 - Student Stories -->
+                <div class="group relative">
+                  <div class="bg-[#0A1931] rounded-2xl overflow-hidden shadow-xl border border-[#4A7FA7]/20 hover:border-[#4A7FA7]/40 h-80 relative post-card-hover">
+                                                                                      <!-- Background Image -->
+                       <div class="absolute inset-0 z-0">
+                         <img src="https://placehold.co/600x400/4A7FA7/FFFFFF?text=Campus+View" alt="GIKI Campus View" class="w-full h-full object-cover">
+                       </div>
+                       
+                                              <!-- Content Overlay -->
+                       <div class="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-transparent z-10"></div>
+                     
+                     <!-- Date Badge -->
+                     <div class="absolute top-4 left-4 bg-white text-[#0A1931] px-3 py-1 rounded-full text-xs font-bold z-20">
+                       8/8/2025
+                      </div>
+                     
+                     <!-- Content Section -->
+                     <div class="absolute inset-0 flex flex-col justify-end p-6 z-20">
+                       <h4 class="text-xl font-bold text-white mb-3 group-hover:text-[#B3CFE5] transition-colors duration-300">
+                         A Day in the Life at GIKI: From Morning Lectures to Midnight Chai
+                       </h4>
+                       <p class="text-[#B3CFE5]/90 text-sm mb-4 leading-relaxed">
+                         A peek into what an ordinary (but somehow never boring) day looks like at GIKI.
+                       </p>
+                      
+                      <!-- Meta Info -->
+                      <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center text-[#B3CFE5]/90 text-sm">
+                          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                          </svg>
+                                                   <span>12 min read</span>
+                        </div>
+                        <div class="flex items-center text-[#B3CFE5]/90 text-sm">
+                          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                          </svg>
+                          <span>67</span>
+                        </div>
+                      </div>
+                      
+                                             <!-- Action Button -->
+                       <button class="w-full py-3 px-4 bg-transparent border-2 border-[#B3CFE5] text-[#B3CFE5] font-semibold rounded-xl hover:bg-[#B3CFE5] hover:text-[#0A1931] transition-all duration-300 transform hover:scale-105 shadow-lg">
+                         Read More →
+                       </button>
+                    </div>
+                  </div>
+                  
+                  <!-- Floating Decorative Element -->
+                  <div class="absolute -top-2 -right-2 w-4 h-4 bg-white rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-300 floating-circle"></div>
+                </div>
+            </div>
+            
+            <!-- View All Posts Button -->
+            <div class="text-center mt-12">
+              <a href="posts.html" class="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-[#4A7FA7] to-[#1A3D63] text-white font-bold rounded-full hover:from-[#1A3D63] hover:to-[#4A7FA7] transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl">
+                <span class="mr-3">View All Posts</span>
+                <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </a>
             </div>
           </div>
-        </div>
-      </section>
-
-    </div>
-
-    </div>
-
-
+      </div>
+    </section>
   </main>
 
   <!-- Event Details Modal -->
@@ -411,14 +1005,14 @@
       <div class="flex justify-between items-center">
         <div class="flex space-x-2">
           <a id="google-calendar-link" href="#" target="_blank"
-            class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300 text-sm">Add
+            class="bg-[#4A7FA7] text-white px-4 py-2 rounded-full hover:bg-[#1A3D63] transition duration-300 text-sm">Add
             to Calendar</a>
           <button id="edit-event-button"
-            class="bg-gray-200 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-300 transition duration-300 text-sm">Edit</button>
+            class="bg-[#B3CFE5] text-[#0A1931] px-4 py-2 rounded-full hover:bg-[#4A7FA7] hover:text-white transition duration-300 text-sm">Edit</button>
           <button id="delete-event-button"
             class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300 text-sm">Delete</button>
         </div>
-        <button id="modal-close" class="text-gray-500 hover:text-gray-800">Close</button>
+        <button id="modal-close" class="text-[#4A7FA7] hover:text-[#0A1931]">Close</button>
       </div>
     </div>
   </div>
@@ -447,10 +1041,10 @@
         </div>
         <div class="flex items-center justify-between">
           <button type="submit"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline">
+            class="bg-[#4A7FA7] hover:bg-[#1A3D63] text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline">
             Save Event
           </button>
-          <button type="button" id="add-event-modal-close" class="text-gray-500 hover:text-gray-800">
+          <button type="button" id="add-event-modal-close" class="text-[#4A7FA7] hover:text-[#0A1931]">
             Cancel
           </button>
         </div>
@@ -483,10 +1077,10 @@
         </div>
         <div class="flex items-center justify-between">
           <button type="submit"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline">
+            class="bg-[#4A7FA7] hover:bg-[#1A3D63] text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline">
             Update Event
           </button>
-          <button type="button" id="edit-event-modal-close" class="text-gray-500 hover:text-gray-800">
+          <button type="button" id="edit-event-modal-close" class="text-[#4A7FA7] hover:text-[#0A1931]">
             Cancel
           </button>
         </div>
@@ -506,23 +1100,23 @@
           class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-full focus:outline-none focus:shadow-outline">
           Delete
         </button>
-        <button id="cancel-delete-button"
-          class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-full focus:outline-none focus:shadow-outline">
-          Cancel
-        </button>
+                 <button id="cancel-delete-button"
+           class="bg-[#B3CFE5] hover:bg-[#4A7FA7] text-[#0A1931] hover:text-white font-bold py-2 px-6 rounded-full focus:outline-none focus:shadow-outline">
+           Cancel
+         </button>
       </div>
     </div>
   </div>
 
 
-  <!-- Footer -->
-  <footer class="bg-gray-800 text-white mt-16">
+     <!-- Footer -->
+   <footer class="bg-[#0A1931] text-white mt-16">
     <div class="container mx-auto px-6 py-8">
       <div class="flex flex-col md:flex-row justify-between items-center">
         <p>&copy; 2025 GIKI Chronicles. All Rights Reserved.</p>
-        <div class="flex mt-4 md:mt-0 space-x-4">
-          <a href="#" class="text-gray-400 hover:text-white transition duration-300">Instagram</a>
-        </div>
+                 <div class="flex mt-4 md:mt-0 space-x-4">
+           <a href="#" class="text-[#B3CFE5] hover:text-white transition duration-300">Instagram</a>
+         </div>
       </div>
     </div>
   </footer>
@@ -540,6 +1134,53 @@
   <script src="tour-manager.js"></script>
   <script src="welcome-popup.js"></script>
   <script src="firebase-error-handler.js"></script>
+
+  <!-- Smooth Scrolling Function for Section Navigation -->
+  <script>
+    function scrollToSection(sectionId) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+        
+        // Update active button state
+        updateActiveButton(sectionId);
+      }
+    }
+    
+    function updateActiveButton(sectionId) {
+      // Remove active class from all buttons
+      document.querySelectorAll('.sidebar-item').forEach(btn => {
+        btn.classList.remove('bg-white/30', 'text-white');
+        btn.classList.add('bg-white/10');
+      });
+      
+      // Add active class to clicked button
+      const activeButton = document.querySelector(`[onclick="scrollToSection('${sectionId}')"]`);
+      if (activeButton) {
+        activeButton.classList.remove('bg-white/10');
+        activeButton.classList.add('bg-white/30', 'text-white');
+      }
+    }
+    
+    // Add scroll event listener to update active button based on current section
+    document.addEventListener('DOMContentLoaded', function() {
+      window.addEventListener('scroll', function() {
+        const sections = ['section-01', 'section-02', 'section-03'];
+        const scrollPosition = window.scrollY + window.innerHeight / 2;
+        
+        for (let i = sections.length - 1; i >= 0; i--) {
+          const section = document.getElementById(sections[i]);
+          if (section && scrollPosition >= section.offsetTop) {
+            updateActiveButton(sections[i]);
+            break;
+          }
+        }
+      });
+    });
+  </script>
 
   <!-- Service Worker Registration -->
   <script>

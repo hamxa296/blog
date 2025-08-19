@@ -18,21 +18,327 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&family=Architects+Daughter&family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="styles.css">
+  
+  <!-- Posts page specific styles -->
+  <style>
+    /* Color palette matching your specified scheme */
+    :root {
+      --c-navy: #0A1931;
+      --c-deep: #1A3D63;
+      --c-steel: #4A7FA7;
+      --c-light: #B3CFE5;
+      --c-snow: #F6FAFD;
+    }
+    
+    /* Contact page palette (scoped) */
+    .contact-theme {
+      --c-navy: #0A1931;
+      --c-deep: #1A3D63;
+      --c-steel: #4A7FA7;
+      --c-light: #B3CFE5;
+      --c-snow: #F6FAFD;
+    }
+    
+    /* Apply colors to body */
+    body {
+      background: 
+        linear-gradient(135deg, rgba(0,0,0,0.4), rgba(10,25,49,0.3)),
+        radial-gradient(circle at 30% 20%, rgba(74,127,167,0.2), transparent),
+        radial-gradient(circle at 70% 80%, rgba(26,61,99,0.3), transparent),
+        url('background.jpeg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: scroll;
+      background-repeat: no-repeat;
+      color: var(--c-navy);
+    }
+    
+    /* Override any conflicting background rules */
+    html body {
+      background: 
+        linear-gradient(135deg, rgba(0,0,0,0.4), rgba(10,25,49,0.3)),
+        radial-gradient(circle at 30% 20%, rgba(74,127,167,0.2), transparent),
+        radial-gradient(circle at 70% 80%, rgba(26,61,99,0.3), transparent),
+        url('background.jpeg') !important;
+      background-size: cover !important;
+      background-position: center !important;
+      background-attachment: fixed !important;
+      background-repeat: no-repeat !important;
+    }
+    
+    /* Header styling */
+    header {
+      background: linear-gradient(135deg, var(--c-navy), var(--c-deep));
+      color: white;
+    }
+    
+    /* Navigation links */
+    .nav-link {
+      color: var(--c-light);
+      transition: color 0.3s ease;
+    }
+    
+    .nav-link:hover {
+      color: white;
+    }
+    
+    /* Button styling */
+    .btn-primary {
+      background: linear-gradient(135deg, var(--c-steel), var(--c-deep));
+      color: white;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--c-deep), var(--c-navy));
+      transform: translateY(-2px);
+    }
+    
+    /* Card styling */
+    .post-card {
+      background: var(--c-deep);
+      border: 4px solid white;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .post-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    }
+    
+
+    
+    /* Text colors */
+    .text-primary {
+      color: var(--c-navy);
+    }
+    
+    .text-secondary {
+      color: var(--c-deep);
+    }
+    
+    .text-accent {
+      color: var(--c-steel);
+    }
+    
+    .text-muted {
+      color: var(--c-steel);
+    }
+    
+    /* Override any circles from external CSS */
+    *::before,
+    *::after {
+      background: none !important;
+    }
+    
+    /* Remove any radial gradients */
+    body::before,
+    body::after,
+    main::before,
+    main::after {
+      display: none !important;
+    }
+    
+    /* Ensure no decorative elements */
+    .collage-decoration,
+    [class*="circle"],
+    [class*="decoration"] {
+      display: none !important;
+    }
+    
+    /* Additional rules to hide all decorative elements */
+    [class*="bg-yellow-100"],
+    [class*="bg-blue-100"],
+    [class*="bg-green-100"],
+    [class*="bg-pink-100"],
+    [class*="bg-purple-100"],
+    [class*="bg-white"][class*="opacity"] {
+      display: none !important;
+    }
+    
+    /* Hide any elements with rounded-full and opacity classes */
+    [class*="rounded-full"][class*="opacity"] {
+      display: none !important;
+    }
+    
+    /* Remove any background decorations */
+    body,
+    main,
+    .container {
+      background-image: none !important;
+    }
+    
+    /* Fix scrolling issues */
+    html, body {
+      overflow-x: hidden !important;
+      scrollbar-width: thin !important;
+      scrollbar-color: var(--c-steel) transparent !important;
+    }
+    
+    /* Custom scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px !important;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: transparent !important;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--c-steel) !important;
+      border-radius: 4px !important;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--c-deep) !important;
+    }
+    
+    /* Force single scrollbar */
+    html {
+      scrollbar-width: thin !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+    }
+    
+    body {
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      scrollbar-width: thin !important;
+    }
+    
+    /* Override any external CSS that might be causing double scrollbars */
+    * {
+      scrollbar-width: thin !important;
+    }
+    
+    /* Ensure no element creates its own scrollbar */
+    main, .container, div, section {
+      overflow: visible !important;
+      scrollbar-width: none !important;
+    }
+    
+    /* Add contact page style accents */
+    .hero-accents {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    
+    .accent {
+      position: absolute;
+      filter: blur(42px);
+      opacity: 0.15;
+      border-radius: 9999px;
+    }
+    
+    .accent-1 {
+      width: 220px;
+      height: 220px;
+      left: -60px;
+      top: -40px;
+      background: radial-gradient(closest-side, var(--c-steel), transparent);
+    }
+    
+    .accent-2 {
+      width: 260px;
+      height: 260px;
+      right: -80px;
+      bottom: -60px;
+      background: radial-gradient(closest-side, var(--c-light), transparent);
+    }
+    
+    /* Ensure main element doesn't cause scrolling issues */
+    main {
+      overflow: visible !important;
+      position: relative !important;
+    }
+    
+    /* Fix container overflow */
+    .container {
+      overflow: visible !important;
+    }
+    
+    /* Aggressive scrollbar fix - eliminate all potential double scrollbars */
+    html, body, main, .container, #sidebar, #sidebar-overlay {
+      overflow-x: hidden !important;
+      scrollbar-width: thin !important;
+    }
+    
+    /* Force single scrollbar on body only */
+    body {
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      scrollbar-width: thin !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+    
+    /* Hide scrollbars on all other elements */
+    html, main, .container, #sidebar, #sidebar-overlay, div, section, article {
+      overflow-y: visible !important;
+      overflow-x: hidden !important;
+      scrollbar-width: none !important;
+    }
+    
+    /* WebKit specific - hide scrollbars on all elements except body */
+    html::-webkit-scrollbar,
+    main::-webkit-scrollbar,
+    .container::-webkit-scrollbar,
+    #sidebar::-webkit-scrollbar,
+    div::-webkit-scrollbar,
+    section::-webkit-scrollbar {
+      display: none !important;
+    }
+    
+    /* Sidebar specific fixes */
+    #sidebar {
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      scrollbar-width: thin !important;
+    }
+    
+    #sidebar::-webkit-scrollbar {
+      width: 6px !important;
+    }
+    
+    #sidebar::-webkit-scrollbar-track {
+      background: transparent !important;
+    }
+    
+    #sidebar::-webkit-scrollbar-thumb {
+      background: rgba(74, 127, 167, 0.3) !important;
+      border-radius: 3px !important;
+    }
+    
+    #sidebar::-webkit-scrollbar-thumb:hover {
+      background: rgba(74, 127, 167, 0.5) !important;
+    }
+    
+    /* Final aggressive fix - ensure only body has scrollbar */
+    *:not(body) {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+    
+    *:not(body)::-webkit-scrollbar {
+      display: none !important;
+    }
+  </style>
 </head>
 
 <body class="text-gray-800">
 
   <!-- Header -->
-  <header class="bg-white shadow-sm sticky top-0 z-50">
+  <header class="shadow-lg sticky top-0 z-50">
     <nav class="container mx-auto px-6 py-4 flex items-center">
       <!-- Left side: Hamburger + Logo -->
       <div class="flex items-center space-x-4">
         <!-- Hamburger Menu Button -->
-        <button id="sidebar-toggle" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+        <button id="sidebar-toggle" class="text-white hover:text-[#B3CFE5] focus:outline-none transition-colors duration-300">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
           </svg>
@@ -40,108 +346,163 @@
         
         <a href="index.html" class="flex flex-col items-center">
           <img src="logo.png" alt="GIKI Chronicles Logo" class="h-16 w-auto">
-          <span class="text-lg font-bold text-gray-800 mt-1">GIKI Chronicles</span>
+          <span class="text-lg font-bold text-white mt-1">GIKI Chronicles</span>
         </a>
       </div>
       
       <!-- Right side: Navigation -->
       <div class="hidden md:flex items-center space-x-6 ml-auto">
-        <!-- <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a> -->
-        <a href="about.html" class="text-gray-600 hover:text-blue-600 transition duration-300">About</a>
-        <!-- <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a> -->
+        <a href="about.html" class="text-[#B3CFE5] hover:text-white transition duration-300 nav-link">About</a>
         <a href="gallery.html"
-          class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+          class="relative px-6 py-2.5 text-[#B3CFE5] font-semibold border-2 border-[#B3CFE5] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#B3CFE5] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
           <span class="relative z-10">Gallery</span>
         </a>
 
         <a href="guide.html"
-          class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+          class="relative px-6 py-2.5 text-[#B3CFE5] font-semibold border-2 border-[#B3CFE5] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#B3CFE5] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
           <span class="relative z-10">Freshmen Guide</span>
         </a>
 
         <a href="calendar.html"
-          class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+          class="relative px-6 py-2.5 text-[#B3CFE5] font-semibold border-2 border-[#B3CFE5] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#B3CFE5] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
           <span class="relative z-10">Calendar</span>
         </a>
+        
         <!-- GUEST NAVIGATION (DESKTOP) -->
         <div id="guest-nav" class="flex items-center space-x-6">
-          <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
-          <!-- <a href="signup.html"
-            class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">Sign Up</a> -->
+          <a href="login.html" class="text-[#B3CFE5] hover:text-white transition duration-300 nav-link">Login</a>
         </div>
 
         <!-- USER NAVIGATION (DESKTOP) -->
         <div id="user-nav" class="hidden md:flex items-center space-x-6">
-          <!-- <a href="profile.html" class="text-gray-600 hover:text-blue-600">My Profile</a> -->
-          <!-- <a href="gallery.html" class="text-gray-600 hover:text-blue-600">Gallery</a> -->
-          <!-- <a href="contact.html" class="text-gray-600 hover:text-blue-600">Contact</a> -->
-          <!-- <button id="logout-button"
-                        class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300">Logout</button> -->
+          <!-- User actions will be populated by JavaScript -->
         </div>
       </div>
     </nav>
   </header>
 
   <!-- Sidebar -->
-  <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+  <div id="sidebar"
+    class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
     <div class="flex items-center justify-between p-6 border-b">
       <h2 class="text-xl font-bold text-gray-800">Menu</h2>
-      <button id="sidebar-close" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+             <button id="sidebar-close" class="text-gray-600 hover:text-[#4A7FA7] focus:outline-none">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
       </button>
     </div>
-    
+
     <nav class="p-6 flex-1 overflow-y-auto">
       <div class="space-y-4">
         <!-- Main Navigation -->
         <div>
           <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Main</h3>
           <div class="space-y-2">
-            <a href="index.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                         <a href="index.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                </path>
               </svg>
               Home
             </a>
-            <a href="about.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                         <a href="browse.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
+                </path>
+              </svg>
+              All Posts
+            </a>
+                         <a href="about.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
               About
             </a>
-            <a href="contact.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                         <a href="contact.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                </path>
               </svg>
               Contact
+            </a>
+                         <a href="gallery.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                </path>
+              </svg>
+              Gallery
             </a>
           </div>
         </div>
 
-        <!-- Features -->
+        <!-- Resources -->
         <div>
-          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Features</h3>
+          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Resources</h3>
           <div class="space-y-2">
-            <a href="gallery.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                         <a href="guide.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                </path>
               </svg>
-              Gallery
+              Freshman Guide
             </a>
-            <a href="guide.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-              </svg>
-              Freshmen Guide
-            </a>
-            <a href="calendar.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-              </svg>
-              Calendar
-            </a>
+            <!-- Calendar Dropdown for Mobile -->
+            <div class="relative">
+                             <button id="sidebar-calendar-dropdown-toggle"
+                 class="w-full flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                Calendar
+                <svg class="w-4 h-4 ml-auto transition-transform duration-200" id="sidebar-calendar-dropdown-arrow"
+                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+
+              <!-- Mobile Calendar Dropdown Menu -->
+              <div id="sidebar-calendar-dropdown" class="hidden pl-8 mt-2 space-y-1">
+                                 <a href="calendar.html"
+                   class="block px-3 py-2 text-sm text-gray-600 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
+                  <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  Calendar View
+                </a>
+                                 <a href="calendar.html#events"
+                   class="block px-3 py-2 text-sm text-gray-600 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
+                  <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
+                    </path>
+                  </svg>
+                  View Events
+                </a>
+                                 <a href="calendar.html#submit"
+                   class="block px-3 py-2 text-sm text-gray-600 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
+                  <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                  </svg>
+                  Submit Event
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -151,103 +512,104 @@
           <div class="space-y-2">
             <div class="px-3 py-2">
               <label for="theme-select" class="block text-sm font-medium text-gray-700 mb-2">Choose Theme</label>
-              <select id="theme-select" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-700">
-                <option value="basic-light">Basic Light</option>
+                             <select id="theme-select"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A7FA7] focus:border-[#4A7FA7] bg-white text-gray-700">
                 <option value="basic-dark">Basic Dark</option>
+                <option value="basic-light">Basic Light</option>
               </select>
             </div>
           </div>
         </div>
 
-        <!-- User Actions -->
-        <div id="sidebar-user-actions" class="hidden">
-          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Actions</h3>
-          <div class="space-y-2">
-            <a href="profile.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-              </svg>
-              My Profile
-            </a>
-            <a href="write.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
-              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-              </svg>
-              Write Post
-            </a>
-            <button id="sidebar-logout" class="flex items-center w-full px-3 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition duration-200">
-              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-              </svg>
-              Logout
-            </button>
-          </div>
-        </div>
-
-        <!-- Guest Actions -->
-        <div id="sidebar-guest-actions">
+        <!-- User Section -->
+        <div id="sidebar-guest-nav">
           <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Account</h3>
           <div class="space-y-2">
-            <a href="login.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
+                         <a href="login.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1">
+                </path>
               </svg>
               Login
             </a>
+            <!-- <a href="signup.html" class="flex items-center px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+              </svg>
+              Sign Up
+            </a> -->
+          </div>
+        </div>
+
+        <div id="sidebar-user-nav" class="hidden">
+          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">My Account</h3>
+          <div class="space-y-2">
+                         <a href="profile.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+              My Profile
+            </a>
+                         <a href="write.html"
+               class="flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                </path>
+              </svg>
+              Write Post
+            </a>
+                       <button id="sidebar-admin-access-btn"
+             class="hidden w-full flex items-center px-3 py-2 text-gray-700 hover:bg-[#B3CFE5]/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                </path>
+              </svg>
+              🔐 Admin Portal
+            </button>
+            <button id="sidebar-logout-button"
+              class="w-full flex items-center px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+              </svg>
+              Logout
+            </button>
           </div>
         </div>
       </div>
     </nav>
   </div>
 
+  <!-- Sidebar Overlay -->
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+
   <!-- Main Content -->
-  <main class="min-h-screen bg-gray-50">
+  <main class="min-h-screen relative">
+    <!-- Hero Accents -->
+    <div class="hero-accents">
+      <div class="accent accent-1"></div>
+      <div class="accent accent-2"></div>
+    </div>
+    
     <div class="container mx-auto px-4 py-12">
       
       <!-- Page Header -->
       <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-gray-800 mb-4">All Posts</h1>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        <h1 class="text-4xl font-bold text-white mb-4">All Posts</h1>
+        <p class="text-lg text-[#B3CFE5] max-w-2xl mx-auto">
           Discover all the latest stories, insights, and experiences from the GIKI community.
         </p>
       </div>
 
       <!-- Posts Grid -->
       <div id="all-posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Posts will be dynamically loaded here -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse">
-          <div class="h-48 w-full bg-gray-300"></div>
-          <div class="p-6">
-            <div class="h-3 bg-gray-300 rounded w-1/4 mb-3"></div>
-            <div class="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
-            <div class="space-y-2">
-              <div class="h-3 bg-gray-300 rounded"></div>
-              <div class="h-3 bg-gray-300 rounded w-5/6"></div>
-            </div>
-          </div>
-        </div>
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse">
-          <div class="h-48 w-full bg-gray-300"></div>
-          <div class="p-6">
-            <div class="h-3 bg-gray-300 rounded w-1/4 mb-3"></div>
-            <div class="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
-            <div class="space-y-2">
-              <div class="h-3 bg-gray-300 rounded"></div>
-              <div class="h-3 bg-gray-300 rounded w-5/6"></div>
-            </div>
-          </div>
-        </div>
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse">
-          <div class="h-48 w-full bg-gray-300"></div>
-          <div class="p-6">
-            <div class="h-3 bg-gray-300 rounded w-1/4 mb-3"></div>
-            <div class="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
-            <div class="space-y-2">
-              <div class="h-3 bg-gray-300 rounded"></div>
-              <div class="h-3 bg-gray-300 rounded w-5/6"></div>
-            </div>
-          </div>
-        </div>
+          <!-- Posts will be dynamically loaded here -->
       </div>
 
     </div>
@@ -259,14 +621,17 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <!-- Your custom scripts -->
+  <script src="firebase-init.js"></script>
   <script src="admin-config.js"></script>
   <script src="secure-access.js"></script>
   <script src="auth.js"></script>
   <script src="users.js"></script>
   <script src="security.js"></script>
-      <script src="posts.js"></script>
-    <script src="app.js"></script>
-    <script src="theme-manager.js"></script>
+  <script src="script.js"></script>
+  <script src="accessibility.js"></script>
+  <script src="posts.js"></script>
+  <script src="app.js"></script>
+  <script src="theme-manager.js"></script>
 
   <script>
     // Posts page specific logic
@@ -275,36 +640,53 @@
       
       // Function to display all approved posts
       const displayAllApprovedPosts = async () => {
+        try {
+          console.log('Attempting to fetch approved posts...');
+          
+                     // Check if Firebase is initialized
+           if (typeof db === 'undefined') {
+             console.error('Firebase not initialized. db object is undefined.');
+             allPostsGrid.innerHTML = '<p class="text-[#4A7FA7] col-span-full text-center">Firebase not initialized. Please refresh the page.</p>';
+             return;
+           }
+          
         const result = await getApprovedPosts();
+          console.log('getApprovedPosts result:', result);
+          
         allPostsGrid.innerHTML = '';
         
-        if (result.success && result.posts.length > 0) {
-          // Filter out featured posts and show all non-featured posts
-          const nonFeaturedPosts = result.posts.filter(post => !post.isFeatured);
-          
-          if (nonFeaturedPosts.length === 0) {
-            allPostsGrid.innerHTML = '<p class="text-gray-500 col-span-full text-center">No posts have been approved yet.</p>';
-            return;
-          }
-          
-          nonFeaturedPosts.forEach(post => {
-            const postCard = document.createElement('div');
-            postCard.className = 'bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300';
-            const postDate = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : 'N/A';
-            postCard.innerHTML = `
-              <a href="post.html?id=${post.id}"><img class="h-48 w-full object-cover" src="${post.photoUrl || 'https://placehold.co/600x400/E2E8F0/4A5568?text=GIKI+Blog'}" alt="${post.title}"></a>
-              <div class="p-6">
-                <p class="text-sm text-gray-500 mb-2">${postDate}</p>
-                <h4 class="text-xl font-semibold mb-3">${post.title}</h4>
-                <p class="text-gray-600 text-sm mb-4">${post.description || ''}</p>
-                <a href="post.html?id=${post.id}" class="font-semibold text-blue-600 hover:underline">Read More &rarr;</a>
-              </div>`;
-            allPostsGrid.appendChild(postCard);
-          });
-        } else if (result.success) {
-          allPostsGrid.innerHTML = '<p class="text-gray-500 col-span-full text-center">No posts have been approved yet.</p>';
-        } else {
-          allPostsGrid.innerHTML = '<p class="text-red-500 col-span-full text-center">Error loading posts. Please try again later.</p>';
+                   if (result.success && result.posts.length > 0) {
+             console.log(`Found ${result.posts.length} approved posts`);
+             result.posts.forEach((post) => {
+               const postCard = document.createElement('div');
+               postCard.className = 'bg-[#1A3D63] shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 border-4 border-white post-card';
+               
+               const postDate = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : 'N/A';
+               postCard.innerHTML = `
+                 <a href="post.html?id=${post.id}">
+                   <img class="h-48 w-full object-cover" src="${post.photoUrl || 'https://placehold.co/600x400/E2E8F0/4A5568?text=GIKI+Blog'}" alt="${post.title}">
+                 </a>
+                 <div class="p-6">
+                   <p class="text-sm text-[#B3CFE5] mb-2">${postDate}</p>
+                   <h4 class="text-xl font-semibold mb-3 text-white">${post.title}</h4>
+                   <p class="text-[#B3CFE5] text-sm mb-4 leading-relaxed">${post.description || ''}</p>
+                   <div class="flex items-center justify-between">
+                     <p class="text-sm text-[#B3CFE5]">By ${post.authorName}</p>
+                     <a href="post.html?id=${post.id}" class="font-semibold text-[#B3CFE5] hover:text-white transition duration-300">Read More →</a>
+                   </div>
+                 </div>`;
+               allPostsGrid.appendChild(postCard);
+             });
+           } else if (result.success) {
+             console.log('No approved posts found');
+             allPostsGrid.innerHTML = '<p class="text-[#4A7FA7] col-span-full text-center">No posts have been approved yet.</p>';
+           } else {
+             console.error('Error in getApprovedPosts result:', result.error);
+             allPostsGrid.innerHTML = `<p class="text-red-500 col-span-full text-center">Error loading posts: ${result.error || 'Unknown error'}</p>`;
+           }
+        } catch (error) {
+          console.error('Error in displayAllApprovedPosts:', error);
+          allPostsGrid.innerHTML = `<p class="text-red-500 col-span-full text-center">Unexpected error: ${error.message}</p>`;
         }
       };
 

@@ -113,10 +113,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     quill.root.innerHTML = post.content;
                     
                     // If there's a photo URL, show it in the URL tab
-                    if (post.photoUrl) {
-                        if (urlTab && uploadTab) {
-                            urlTab.click();
-                        }
+                    if (urlTab && uploadTab) {
+                        urlTab.click();
                     }
                 } else {
                     document.getElementById('form-message').textContent = result.error;
@@ -578,15 +576,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const featuredPostContainer = document.getElementById('featured-post');
                 if (featuredPostContainer) {
                     featuredPostContainer.innerHTML = `
-                        <div class="bg-white rounded-xl shadow-lg overflow-hidden lg:flex">
+                        <div class="bg-black text-white rounded-xl shadow-2xl overflow-hidden lg:flex transform rotate-[-1deg] hover:rotate-0 transition-all duration-500 relative">
+                            <!-- White Border Effect -->
+                            <div class="absolute inset-0 border-4 border-white rounded-xl transform translate-x-1 translate-y-1 -z-10"></div>
+                            
                             <div class="lg:w-1/2">
-                                <a href="post.html?id=${post.id}"><img class="h-64 lg:h-full w-full object-cover" src="${post.photoUrl || 'https://placehold.co/800x600/002347/FFFFFF?text=Campus+View'}" alt="${post.title}"></a>
+                                <a href="post.html?id=${post.id}"><img class="h-64 lg:h-full w-full object-cover" src="${post.photoUrl || 'https://placehold.co/800x600/1F2937/FFFFFF?text=Featured+Post'}" alt="${post.title}"></a>
                             </div>
                             <div class="p-8 lg:p-12 lg:w-1/2 flex flex-col justify-center">
-                                <p class="text-sm text-blue-500 font-semibold">Featured Article</p>
-                                <a href="post.html?id=${post.id}"><h2 class="text-3xl font-bold mt-2 mb-4 hover:text-blue-600">${post.title}</h2></a>
-                                <p class="text-gray-600 mb-6">${post.description || ''}</p>
-                                <div class="flex items-center"><p class="font-semibold">${post.authorName}</p></div>
+                                <p class="text-sm text-blue-400 font-semibold font-['Inter']">Featured Article</p>
+                                <a href="post.html?id=${post.id}"><h2 class="text-3xl font-bold mt-2 mb-4 hover:text-blue-300 font-handwritten leading-tight">${post.title}</h2></a>
+                                <p class="text-gray-300 mb-6 font-['Inter'] leading-relaxed">${post.description || ''}</p>
+                                <div class="flex items-center justify-between">
+                                    <p class="font-semibold text-gray-200 font-['Inter']">By ${post.authorName}</p>
+                                    <a href="post.html?id=${post.id}" class="font-semibold text-blue-400 hover:text-blue-300 transition duration-300 font-['Inter']">Read More &rarr;</a>
+                                </div>
                             </div>
                         </div>`;
                 }
@@ -596,18 +600,26 @@ document.addEventListener('DOMContentLoaded', async () => {
             const result = await getApprovedPosts();
             recentPostsGrid.innerHTML = '';
             if (result.success && result.posts.length > 0) {
-                result.posts.forEach(post => {
+                result.posts.forEach((post, index) => {
                     if (post.isFeatured) return;
                     const postCard = document.createElement('div');
-                    postCard.className = 'bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300';
+                    // Alternate rotation for collage effect
+                    const rotation = index % 3 === 0 ? 'rotate-1' : index % 3 === 1 ? '-rotate-1' : 'rotate-2';
+                    // Add sticky note effect for some posts
+                    const isStickyNote = index % 4 === 0;
+                    const cardClass = isStickyNote ? 'sticky-note' : 'paper-texture-enhanced';
+                    postCard.className = `rounded-xl shadow-lg overflow-hidden transform ${rotation} hover:rotate-0 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${cardClass}`;
                     const postDate = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : 'N/A';
                     postCard.innerHTML = `
                         <a href="post.html?id=${post.id}"><img class="h-48 w-full object-cover" src="${post.photoUrl || 'https://placehold.co/600x400/E2E8F0/4A5568?text=GIKI+Blog'}" alt="${post.title}"></a>
                         <div class="p-6">
-                            <p class="text-sm text-gray-500 mb-2">${postDate}</p>
-                            <h4 class="text-xl font-semibold mb-3">${post.title}</h4>
-                            <p class="text-gray-600 text-sm mb-4">${post.description || ''}</p>
-                            <a href="post.html?id=${post.id}" class="font-semibold text-blue-600 hover:underline">Read More &rarr;</a>
+                            <p class="text-sm text-gray-500 mb-2 font-['Inter']">${postDate}</p>
+                            <h4 class="text-xl font-semibold mb-3 font-handwritten text-gray-800">${post.title}</h4>
+                            <p class="text-gray-600 text-sm mb-4 font-['Inter'] leading-relaxed">${post.description || ''}</p>
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm text-gray-500 font-['Inter']">By ${post.authorName}</p>
+                                <a href="post.html?id=${post.id}" class="font-semibold text-blue-600 hover:text-blue-700 transition duration-300 font-['Inter']">Read More &rarr;</a>
+                            </div>
                         </div>`;
                     recentPostsGrid.appendChild(postCard);
                 });

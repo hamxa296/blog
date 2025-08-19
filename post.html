@@ -475,36 +475,39 @@
 
     <!-- Main Post Content -->
     <main class="container mx-auto px-4 py-12">
-        <article class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-10">
+        <article class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-10 relative overflow-hidden paper-texture">
+
+            <!-- Quote Mark Decoration (like in the image) -->
+            <div class="quote-mark">"</div>
 
             <!-- Post Title Placeholder -->
-            <h1 id="post-title" class="text-4xl md:text-5xl font-extrabold mb-4 text-gray-800 dark:text-white">Loading Post...</h1>
+            <h1 id="post-title" class="text-4xl md:text-5xl font-extrabold mb-4 text-gray-800 dark:text-white font-handwritten">Loading Post...</h1>
 
             <!-- Post Meta (Author/Date) Placeholder -->
-            <div id="post-meta" class="text-gray-500 dark:text-gray-400 mb-6">
+            <div id="post-meta" class="text-gray-500 dark:text-gray-400 mb-6 font-['Inter']">
                 <!-- e.g., Posted by Ayesha Khan on August 2, 2025 -->
             </div>
 
             <!-- Featured Image Placeholder -->
             <img id="post-image" src="https://placehold.co/1200x600/E2E8F0/4A5568?text=Loading+Image"
-                alt="Featured post image" class="w-full h-auto rounded-lg mb-8">
+                alt="Featured post image" class="w-full h-auto rounded-lg mb-8 shadow-lg">
 
             <!-- Post Content Placeholder -->
-            <div id="post-content" class="prose prose-lg max-w-none text-gray-800 dark:text-white">
+            <div id="post-content" class="prose prose-lg max-w-none text-gray-800 dark:text-white font-['Inter'] leading-relaxed">
                 <p>Please wait while we fetch the article content...</p>
             </div>
 
             <!-- Post Actions -->
             <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-200 dark:border-gray-600">
                 <div class="flex items-center space-x-4">
-                    <button id="bookmark-btn" class="flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:border-yellow-500 transition duration-300 text-gray-700 dark:text-gray-300">
+                    <button id="bookmark-btn" class="flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:border-yellow-500 transition duration-300 text-gray-700 dark:text-gray-300 hover:bg-yellow-50 dark:hover:bg-yellow-900/20">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
                         </svg>
                         <span>Bookmark</span>
                     </button>
                 </div>
-                <div class="text-sm text-gray-500 dark:text-gray-400">
+                <div class="text-sm text-gray-500 dark:text-gray-400 font-['Inter']">
                     <span>Share your thoughts below!</span>
                 </div>
             </div>
@@ -512,26 +515,26 @@
         </article>
 
         <!-- Reactions Section -->
-        <div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-8 mt-8">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">What do you think?</h3>
+        <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-8 mt-8 paper-texture">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4 font-handwritten">What do you think?</h3>
             <div id="reactions-container" class="flex items-center space-x-4 mb-6">
-                <button id="like-btn" class="reaction-btn flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 transition duration-300 text-gray-700 dark:text-gray-300">
+                <button id="like-btn" class="reaction-btn flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 transition duration-300 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L9 7v13m-3-4H4m0 0H2m2 0v-6"></path>
                     </svg>
                     <span id="like-count">0</span>
                 </button>
-                <button id="heart-btn" class="reaction-btn flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:border-red-500 transition duration-300 text-gray-700 dark:text-gray-300">
+                <button id="heart-btn" class="reaction-btn flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:border-red-500 transition duration-300 text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/20">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                     </svg>
                     <span id="heart-count">0</span>
                 </button>
-                <button id="celebrate-btn" class="reaction-btn flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:border-yellow-500 transition duration-300 text-gray-700 dark:text-gray-300">
+                <button id="celebrate-btn" class="reaction-btn flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:border-yellow-500 transition duration-300 text-gray-700 dark:text-gray-300 hover:bg-yellow-50 dark:hover:bg-yellow-900/20">
                     <span class="text-lg">🎉</span>
                     <span id="celebrate-count">0</span>
                 </button>
-                <button id="insightful-btn" class="reaction-btn flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:border-green-500 transition duration-300 text-gray-700 dark:text-gray-300">
+                <button id="insightful-btn" class="reaction-btn flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:border-green-500 transition duration-300 text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/20">
                     <span class="text-lg">💡</span>
                     <span id="insightful-count">0</span>
                 </button>
@@ -539,18 +542,18 @@
         </div>
 
         <!-- Comments Section -->
-        <div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-8 mt-8">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Comments</h3>
+        <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-8 mt-8 paper-texture">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6 font-handwritten">Comments</h3>
             
             <!-- Comment Form (for logged-in users) -->
             <div id="comment-form-container" class="hidden mb-8">
                 <form id="comment-form" class="space-y-4">
                     <div>
-                        <label for="comment-text" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Write a comment</label>
-                        <textarea id="comment-text" rows="4" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white" placeholder="Share your thoughts about this post..."></textarea>
+                        <label for="comment-text" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-['Inter']">Write a comment</label>
+                        <textarea id="comment-text" rows="4" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-['Inter']" placeholder="Share your thoughts about this post..."></textarea>
                     </div>
                     <div class="flex justify-end">
-                        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold">
+                        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold font-['Inter']">
                             Post Comment
                         </button>
                     </div>
@@ -559,8 +562,8 @@
 
             <!-- Login prompt for guests -->
             <div id="comment-login-prompt" class="text-center py-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg mb-8">
-                <p class="text-gray-600 dark:text-gray-400 mb-4">Join the conversation! Log in to leave a comment.</p>
-                <a href="login.html" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold">
+                <p class="text-gray-600 dark:text-gray-400 mb-4 font-['Inter']">Join the conversation! Log in to leave a comment.</p>
+                <a href="login.html" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold font-['Inter']">
                     Log In
                 </a>
             </div>

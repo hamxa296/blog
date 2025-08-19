@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Lora:wght@400;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Lora:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=Dancing+Script:wght@400;500;600;700&family=Great+Vibes&family=Permanent+Marker&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="styles.css">
@@ -24,6 +24,41 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8f9fa;
+        }
+        /* About page palette (matching contact.html) */
+        .about-theme {
+            --c-navy: #0A1931;
+            --c-deep: #1A3D63;
+            --c-steel: #4A7FA7;
+            --c-light: #B3CFE5;
+            --c-snow: #F6FAFD;
+        }
+        body {
+            background: 
+                linear-gradient(135deg, rgba(0,0,0,0.4), rgba(10,25,49,0.3)),
+                radial-gradient(circle at 30% 20%, rgba(74,127,167,0.2), transparent),
+                radial-gradient(circle at 70% 80%, rgba(26,61,99,0.3), transparent),
+                url('background.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+        
+        .about-section {
+            background: linear-gradient(135deg, rgba(10,25,49,0.85), rgba(26,61,99,0.85));
+            color: var(--c-snow);
+            border: 1px solid rgba(179,207,229,0.25);
+            box-shadow: 0 12px 30px rgba(10,25,49,0.35);
+        }
+        
+        .about-heading {
+            color: var(--c-snow);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .about-text {
+            color: var(--c-light);
         }
     </style>
 </head>
@@ -288,59 +323,87 @@
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-12">
-        <div class="max-w-4xl mx-auto">
+        <div class="max-w-6xl mx-auto">
+            <!-- About Us Section -->
+            <section class="about-section rounded-xl p-8 md:p-12">
+                <div class="max-w-4xl mx-auto">
+                    <!-- Text content -->
+                    <div class="space-y-8">
 
-            <!-- Hero Section -->
-            <section class="text-center mb-16">
-                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight">About GIKI Chronicles</h1>
-                <p class="mt-4 text-xl text-gray-500">
-                    The authentic voice of student life in the Valley.
-                </p>
-            </section>
-
-            <!-- Our Mission Section -->
-            <section class="bg-white rounded-xl shadow-lg p-8 md:p-10 mb-12">
-                <h2 class="text-3xl font-bold mb-4">Our Mission</h2>
-                <p class="text-lg text-gray-600 leading-relaxed">
-                    GIKI Chronicles is a student-run platform dedicated to capturing the diverse stories
-                    and unique experiences that define life at the Ghulam Ishaq Khan Institute. We aim to
-                    create a space where every student can share their voice, from late-night project struggles to the
-                    triumphs of campus events. Our mission is to build a living archive of our collective journey,
-                    fostering a stronger, more connected community through the power of storytelling.
-                </p>
-            </section>
-
-            <!-- The Team Section -->
-            <section>
-                <h2 class="text-3xl font-bold text-center mb-10">Meet the Team</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Team Member 1 -->
-                    <div class="text-center">
-                        <img class="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
-                            src="pfps/pfp1.jpg" alt="Team Member 1">
-                        <h3 class="text-xl font-bold">Haris Farooq</h3>
-                        <p class="text-gray-500">Frontend & UI/UX Lead <br>
-                            Graphic Designer
-                        </p>
-                    </div>
-                    <!-- Team Member 2 -->
-                    <div class="text-center">
-                        <img class="w-32 h-32 rounded-full mx-auto mb-4 object-cover" src="pfps/pfp2.png"
-                            alt="Team Member 2">
-                        <h3 class="text-xl font-bold">Hamza Arif</h3>
-                        <p class="text-gray-500">Backend, Database <br>
-                            and Integration</p>
-                    </div>
-                    <!-- Team Member 3 -->
-                    <div class="text-center">
-                        <img class="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
-                            src="pfps/pfp3.jpg" alt="Team Member 3">
-                        <h3 class="text-xl font-bold">Zara Samoo</h3>
-                        <p class="text-gray-500">Features and <br> Freshmen Guide </p>
+                        <h1 class="about-heading text-8xl md:text-9xl font-black tracking-tight leading-none text-center">ABOUT US</h1>
+                        <div class="space-y-6 about-text leading-relaxed">
+                            <p class="text-xl">
+                                GIKI Chronicles is a student-run platform dedicated to capturing the diverse stories
+                                and unique experiences that define life at the Ghulam Ishaq Khan Institute. We aim to
+                                create a space where every student can share their voice, from late-night project struggles to the
+                                triumphs of campus events.
+                            </p>
+                            <p class="text-xl">
+                                Our mission is to build a living archive of our collective journey,
+                                fostering a stronger, more connected community through the power of storytelling.
+                                Through our platform, students can share their experiences, connect with peers,
+                                and contribute to the rich tapestry of campus life.
+                            </p>
+                            <p class="text-xl">
+                                We believe that every story matters, every experience is valuable, and every voice
+                                deserves to be heard. Join us in documenting the journey of GIKI students and
+                                building a community that celebrates diversity, creativity, and growth.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>
 
+            <!-- The Team Section -->
+            <section class="mt-4">
+                <div class="max-w-6xl mx-auto">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                        <!-- Left side: MEET THE TEAM heading -->
+                        <div>
+                            <h2 class="text-7xl md:text-8xl font-black text-white leading-none">
+                                <div>MEET</div>
+                                <div>THE</div>
+                                <div>TEAM</div>
+                            </h2>
+                        </div>
+                        
+                                                <!-- Right side: Team pictures and content -->
+                        <div class="flex flex-col md:flex-row gap-6 justify-center">
+                            <!-- Team Member 1 -->
+                            <div class="flex flex-col items-center justify-center text-center p-4 rounded-xl bg-slate-800 bg-opacity-90 backdrop-blur-sm border border-slate-600 shadow-lg w-full md:w-64 md:h-64 overflow-hidden">
+                                <img class="w-16 h-16 rounded-full object-cover flex-shrink-0 ring-2 ring-slate-400 mb-3" 
+                                    src="pfps/pfp1.jpg" alt="Haris Farooq">
+                                <div class="flex-1 flex flex-col justify-center">
+                                    <h3 class="text-lg font-bold text-white mb-1">Haris Farooq</h3>
+                                    <p class="text-slate-200 text-sm font-medium">Frontend & UI/UX Lead</p>
+                                    <p class="text-slate-300 text-xs">Graphic Designer</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Team Member 2 -->
+                            <div class="flex flex-col items-center justify-center text-center p-4 rounded-xl bg-slate-800 bg-opacity-90 backdrop-blur-sm border border-slate-600 shadow-lg w-full md:w-64 md:h-64 overflow-hidden">
+                                <img class="w-16 h-16 rounded-full object-cover flex-shrink-0 ring-2 ring-slate-400 mb-3" 
+                                    src="pfps/pfp2.png" alt="Hamza Arif">
+                                <div class="flex-1 flex flex-col justify-center">
+                                    <h3 class="text-lg font-bold text-white mb-1">Hamza Arif</h3>
+                                    <p class="text-slate-200 text-sm font-medium">Backend, Database</p>
+                                    <p class="text-slate-300 text-xs">and Integration</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Team Member 3 -->
+                            <div class="flex flex-col items-center justify-center text-center p-4 rounded-xl bg-slate-800 bg-opacity-90 backdrop-blur-sm border border-slate-600 shadow-lg w-full md:w-64 md:h-64 overflow-hidden">
+                                <img class="w-16 h-16 rounded-full object-cover flex-shrink-0 ring-2 ring-slate-400 mb-3" 
+                                    src="pfps/pfp3.jpg" alt="Zara Gul Samoo">
+                                <div class="flex-1 flex flex-col justify-center">
+                                    <h3 class="text-lg font-bold text-white mb-1">Zara Gul Samoo</h3>
+                                    <p class="text-slate-200 text-sm font-medium">Features and</p>
+                                    <p class="text-slate-300 text-xs">Freshmen Guide</p>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </section>
         </div>
     </main>
 
