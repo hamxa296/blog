@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-basic-dark">
 
 <head>
     <meta charset="UTF-8">
@@ -19,14 +19,26 @@
 
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* Contact page palette (scoped) */
+        .contact-theme {
+            --c-navy: #0A1931;
+            --c-deep: #1A3D63;
+            --c-steel: #4A7FA7;
+            --c-light: #B3CFE5;
+            --c-snow: #F6FAFD;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color, #f8f9fa);
-            background-image: var(--bg-image);
+            background:
+                linear-gradient(135deg, rgba(0,0,0,0.4), rgba(10,25,49,0.3)),
+                radial-gradient(circle at 30% 20%, rgba(74,127,167,0.2), transparent),
+                radial-gradient(circle at 70% 80%, rgba(26,61,99,0.3), transparent),
+                url('background.jpeg');
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
             background-attachment: fixed;
+            background-repeat: no-repeat;
             color: var(--text-color, #1f2937);
         }
 
@@ -258,7 +270,7 @@
     </style>
 </head>
 
-<body class="text-gray-800">
+<body class="text-gray-800 contact-theme">
 
     <!-- Header -->
     <header class="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-50">
@@ -475,13 +487,16 @@
 
     <!-- Main Post Content -->
     <main class="container mx-auto px-4 py-12">
-        <article class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-10 relative overflow-hidden paper-texture">
+        <!-- Post Title displayed on bare background -->
+        <div class="max-w-4xl mx-auto text-center mb-6">
+            <h1 id="post-title" class="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-lg">Loading Post...</h1>
+        </div>
+        <article class="max-w-4xl mx-auto rounded-xl shadow-lg p-6 md:p-10 relative overflow-hidden contact-surface">
 
             <!-- Quote Mark Decoration (like in the image) -->
             <div class="quote-mark">"</div>
 
-            <!-- Post Title Placeholder -->
-            <h1 id="post-title" class="text-4xl md:text-5xl font-extrabold mb-4 text-gray-800 dark:text-white font-handwritten">Loading Post...</h1>
+            <!-- Title moved above article -->
 
             <!-- Post Meta (Author/Date) Placeholder -->
             <div id="post-meta" class="text-gray-500 dark:text-gray-400 mb-6 font-['Inter']">
@@ -515,7 +530,7 @@
         </article>
 
         <!-- Reactions Section -->
-        <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-8 mt-8 paper-texture">
+        <div class="max-w-4xl mx-auto rounded-xl shadow-lg p-6 md:p-8 mt-8 contact-surface">
             <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4 font-handwritten">What do you think?</h3>
             <div id="reactions-container" class="flex items-center space-x-4 mb-6">
                 <button id="like-btn" class="reaction-btn flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 transition duration-300 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20">
@@ -542,7 +557,7 @@
         </div>
 
         <!-- Comments Section -->
-        <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-8 mt-8 paper-texture">
+        <div class="max-w-4xl mx-auto rounded-xl shadow-lg p-6 md:p-8 mt-8 contact-surface">
             <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6 font-handwritten">Comments</h3>
             
             <!-- Comment Form (for logged-in users) -->
@@ -586,6 +601,13 @@
                     <p>Be the first to comment on this post!</p>
                 </div>
             </div>
+        </div>
+
+        <!-- Back to All Posts button -->
+        <div class="max-w-4xl mx-auto mt-8 mb-4 flex justify-center">
+            <a href="browse.html" class="px-6 py-3 rounded-full border-2 border-[#E6F3FF]/70 text-[#E6F3FF] hover:bg-[#4A7FA7]/20 hover:border-[#E6F3FF] transition-colors duration-200 font-semibold">
+                ← Back to All Posts
+            </a>
         </div>
     </main>
 

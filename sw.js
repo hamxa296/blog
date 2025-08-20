@@ -3,9 +3,9 @@
  * Provides offline functionality and advanced caching
  */
 
-const CACHE_NAME = 'giki-chronicles-v1.0';
-const STATIC_CACHE = 'giki-static-v1.0';
-const DYNAMIC_CACHE = 'giki-dynamic-v1.0';
+const CACHE_NAME = 'giki-chronicles-v1.1';
+const STATIC_CACHE = 'giki-static-v1.1';
+const DYNAMIC_CACHE = 'giki-dynamic-v1.1';
 
 // Files to cache immediately
 const STATIC_FILES = [
@@ -102,10 +102,14 @@ async function networkFirst(request) {
     }
     
     try {
-        const networkResponse = await fetch(request);
+        const networkResponse = await fetch(request, { cache: 'reload' });
         if (networkResponse.ok) {
-            const cache = await caches.open(DYNAMIC_CACHE);
-            cache.put(request, networkResponse.clone());
+            const contentType = networkResponse.headers.get('content-type') || '';
+            // Avoid caching HTML documents to prevent stale page duplication
+            if (!contentType.includes('text/html') && request.destination !== 'document') {
+                const cache = await caches.open(DYNAMIC_CACHE);
+                cache.put(request, networkResponse.clone());
+            }
         }
         return networkResponse;
     } catch (error) {
