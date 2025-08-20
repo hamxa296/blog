@@ -322,6 +322,8 @@
 
     <!-- Optimized combined JavaScript (includes Firebase initialization) -->
     <script src="combined.min.js"></script>
+    <!-- Unified Notifications -->
+    <script src="notifications.js"></script>
 
     <!-- Your React Component -->
     <script type="text/babel">
@@ -1159,7 +1161,8 @@
             const handleCheckboxChange = async (itemId, isChecked) => {
                 if (!currentUser) {
                     setShowGuestSavePrompt(true);
-                    alert('Please login to track and sync your packing progress across devices.');
+                    if (typeof window.showToast === 'function') showToast('Please login to track and sync your packing progress across devices.', 'warning');
+                    else alert('Please login to track and sync your packing progress across devices.');
                     return;
                 }
                 const newCheckedItems = { ...checkedItems, [itemId]: isChecked };

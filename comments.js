@@ -767,7 +767,8 @@ async function handleCommentSubmit(event) {
         // Refresh comments
         await displayComments(currentPostId);
     } else {
-        alert(result.error);
+        if (typeof window.showToast === 'function') showToast(result.error || 'Failed to post comment.', 'error');
+        else alert(result.error);
     }
 
     // Re-enable submit button
@@ -798,7 +799,8 @@ async function handleReplySubmit(event, parentId) {
         // Refresh comments
         await displayComments(currentPostId);
     } else {
-        alert(result.error);
+        if (typeof window.showToast === 'function') showToast(result.error || 'Failed to post reply.', 'error');
+        else alert(result.error);
     }
 
     // Re-enable submit button
@@ -836,7 +838,8 @@ function toggleReplyForm(commentId) {
 async function handleReactionClick(reactionType) {
     const user = auth.currentUser;
     if (!user) {
-        alert('Please log in to react to this post.');
+        if (typeof window.showToast === 'function') showToast('Please log in to react to this post.', 'warning');
+        else alert('Please log in to react to this post.');
         return;
     }
 
@@ -876,7 +879,8 @@ async function handleReactionClick(reactionType) {
             button.classList.remove('active');
             countElement.textContent = Math.max(0, currentCount - 1);
         }
-        alert(result.error);
+        if (typeof window.showToast === 'function') showToast(result.error || 'Failed to update reaction.', 'error');
+        else alert(result.error);
     }
 }
 
@@ -884,9 +888,10 @@ async function handleReactionClick(reactionType) {
  * Handles comment deletion
  */
 async function handleDeleteComment(commentId) {
-    if (!confirm('Are you sure you want to delete this comment?')) {
-        return;
-    }
+    const ok = await (typeof window.showConfirmModal === 'function'
+        ? showConfirmModal('This action will permanently remove your comment.', { title: 'Delete comment?', confirmText: 'Delete', variant: 'danger' })
+        : Promise.resolve(confirm('Are you sure you want to delete this comment?')));
+    if (!ok) return;
 
     const result = await deleteComment(commentId);
     
@@ -894,7 +899,8 @@ async function handleDeleteComment(commentId) {
         // Refresh comments
         await displayComments(currentPostId);
     } else {
-        alert(result.error);
+        if (typeof window.showToast === 'function') showToast(result.error || 'Failed to delete comment.', 'error');
+        else alert(result.error);
     }
 }
 
@@ -904,7 +910,8 @@ async function handleDeleteComment(commentId) {
 async function handleBookmarkClick() {
     const user = auth.currentUser;
     if (!user) {
-        alert('Please log in to bookmark posts.');
+        if (typeof window.showToast === 'function') showToast('Please log in to bookmark posts.', 'warning');
+        else alert('Please log in to bookmark posts.');
         return;
     }
 
@@ -914,7 +921,8 @@ async function handleBookmarkClick() {
     if (result.success) {
         updateBookmarkButton(result.action === 'added');
     } else {
-        alert(result.error);
+        if (typeof window.showToast === 'function') showToast(result.error || 'Failed to update bookmark.', 'error');
+        else alert(result.error);
     }
 }
 

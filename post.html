@@ -119,6 +119,19 @@
             background-color: rgba(22, 163, 74, 0.1);
         }
 
+        /* Reactions responsive layout */
+        #reactions-container {
+            flex-wrap: nowrap;
+            gap: 0.5rem;
+        }
+        #reactions-container .reaction-btn { white-space: nowrap; }
+        @media (max-width: 640px) {
+            #reactions-container { justify-content: space-between; gap: 0.5rem; }
+            #reactions-container .reaction-btn { padding: 0.35rem 0.6rem; border-width: 1.5px; }
+            #reactions-container .reaction-btn svg { width: 18px; height: 18px; }
+            #reactions-container .reaction-btn span.text-lg { font-size: 1rem; }
+        }
+
         /* Comment styling */
         .comment-item {
             border-left: 3px solid var(--border-color, #e5e7eb);
@@ -156,9 +169,9 @@
             color: var(--primary-color, #60a5fa) !important;
         }
 
-        /* Theme-aware article background */
-        .theme-basic-dark article {
-            background-color: var(--card-bg, #374151) !important;
+        /* Theme-aware article background (lighter surface in dark mode) */
+        .theme-basic-dark article.bg-white {
+            background-color: var(--hover-bg, #2d2f2e) !important;
             color: var(--text-color, #f9fafb) !important;
         }
 
@@ -254,6 +267,69 @@
         .theme-basic-dark .prose pre {
             background-color: var(--bg-color, #1f2937) !important;
             color: var(--text-color, #f9fafb) !important;
+        }
+
+        /* Force light background for comment textareas in dark theme */
+        .theme-basic-dark #comments-container textarea,
+        .theme-basic-dark #comment-text {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+            border-color: #d1d5db !important;
+        }
+        .theme-basic-dark #comments-container textarea::placeholder {
+            color: #6b7280 !important;
+        }
+
+        /* Readability improvements (mobile-first) */
+        .post-content {
+            font-size: 1.0625rem; /* ~17px */
+            line-height: 1.9;
+            letter-spacing: 0.01em;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            font-kerning: normal;
+        }
+
+        .post-content p,
+        .post-content li {
+            line-height: 1.9;
+            margin-bottom: 1.2em;
+        }
+
+        .post-content h1,
+        .post-content h2,
+        .post-content h3 {
+            text-wrap: balance;
+        }
+
+        .post-content img,
+        .post-content video,
+        .post-content iframe {
+            width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+        }
+
+        .post-content blockquote {
+            padding-left: 1rem;
+            border-left: 4px solid var(--border-color, #e5e7eb);
+            margin: 1.25rem 0;
+        }
+
+        .post-content ul,
+        .post-content ol {
+            margin-left: 1.25rem;
+        }
+
+        @media (min-width: 640px) {
+            .post-content { font-size: 1.125rem; /* 18px on larger screens */ }
+        }
+
+        @media (max-width: 640px) {
+            article { padding: 1rem !important; }
+            .post-content h1 { font-size: 1.875rem; }
+            .post-content h2 { font-size: 1.5rem; }
+            .post-content h3 { font-size: 1.25rem; }
         }
     </style>
 </head>
@@ -495,8 +571,8 @@
             </div>
 
             <!-- Post Actions -->
-            <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-200 dark:border-gray-600">
-                <div class="flex items-center space-x-4">
+            <div class="flex flex-col sm:flex-row items-center justify-between mt-8 pt-6 border-t border-gray-200 dark:border-gray-600">
+                <div class="flex items-center space-x-4 mb-3 sm:mb-0">
                     <button id="bookmark-btn" class="flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:border-yellow-500 transition duration-300 text-gray-700 dark:text-gray-300">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
@@ -504,7 +580,7 @@
                         <span>Bookmark</span>
                     </button>
                 </div>
-                <div class="text-sm text-gray-500 dark:text-gray-400">
+                <div class="text-sm text-gray-500 dark:text-gray-400 w-full sm:w-auto text-center sm:text-right">
                     <span>Share your thoughts below!</span>
                 </div>
             </div>
@@ -514,7 +590,7 @@
         <!-- Reactions Section -->
         <div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-8 mt-8">
             <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">What do you think?</h3>
-            <div id="reactions-container" class="flex items-center space-x-4 mb-6">
+            <div id="reactions-container" class="flex items-center mb-2">
                 <button id="like-btn" class="reaction-btn flex items-center space-x-2 px-4 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 transition duration-300 text-gray-700 dark:text-gray-300">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L9 7v13m-3-4H4m0 0H2m2 0v-6"></path>
@@ -536,6 +612,7 @@
                     <span id="insightful-count">0</span>
                 </button>
             </div>
+            <div class="text-sm text-gray-500 dark:text-gray-400 text-center mb-4 sm:hidden">Share your thoughts below!</div>
         </div>
 
         <!-- Comments Section -->
@@ -596,6 +673,8 @@
 
     <!-- Optimized combined JavaScript bundle (includes Firebase initialization) -->
     <script src="combined.min.js"></script>
+    <!-- Unified Notifications -->
+    <script src="notifications.js"></script>
     
     <!-- Comments and reactions functionality -->
     <script src="comments.js"></script>
