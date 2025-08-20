@@ -23,6 +23,68 @@
             font-family: 'Inter', sans-serif;
             background-color: #f8f9fa;
         }
+        /* Admin access guard overlay */
+        #admin-access-guard {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        #admin-access-guard .guard-card {
+            max-width: 760px;
+            width: 100%;
+            background: #111827;
+            border: 2px solid #b91c1c;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            color: #f9fafb;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        #admin-access-guard .guard-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 1rem auto;
+            color: #ef4444;
+        }
+        #admin-access-guard .guard-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.01em;
+        }
+        #admin-access-guard .guard-message {
+            font-size: 1rem;
+            color: #e5e7eb;
+            margin-bottom: 1.25rem;
+        }
+        #admin-access-guard .guard-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+        #admin-access-guard .btn {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+        #admin-access-guard .btn-primary {
+            background: #ef4444;
+            color: white;
+        }
+        #admin-access-guard .btn-primary:hover { background: #dc2626; }
+        #admin-access-guard .btn-secondary {
+            background: #1f2937;
+            color: #f9fafb;
+            border: 1px solid #374151;
+        }
+        #admin-access-guard .btn-secondary:hover { background: #374151; }
         
         /* Event Management Styles */
         .event-tab {
@@ -79,6 +141,22 @@
 </head>
 
 <body class="text-gray-800">
+
+    <!-- Frontend Admin Access Guard (hidden until checked) -->
+    <div id="admin-access-guard" role="alert" aria-live="assertive">
+        <div class="guard-card">
+            <svg class="guard-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="guard-title" id="guard-title">Verifying access…</div>
+            <div class="guard-message" id="guard-message">Please wait while we confirm your admin permissions.</div>
+            <div class="guard-actions">
+                <button id="guard-home" class="btn btn-secondary" style="display:none">Go to Home</button>
+                <button id="guard-login" class="btn btn-primary" style="display:none">Sign In</button>
+                <button id="guard-logout" class="btn btn-secondary" style="display:none">Sign Out</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
@@ -788,6 +866,125 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
+    <!-- Frontend Admin Gatekeeper (blocks page for non-admins) -->
+    <script>
+        (function() {
+            const guardEl = document.getElementById('admin-access-guard');
+            const titleEl = document.getElementById('guard-title');
+            const msgEl = document.getElementById('guard-message');
+            const btnHome = document.getElementById('guard-home');
+            const btnLogin = document.getElementById('guard-login');
+            const btnLogout = document.getElementById('guard-logout');
+
+            // Expose flags to other scripts if needed
+            window.__ADMIN_ACCESS_VERIFIED__ = false;
+            window.__ADMIN_ACCESS_DENIED__ = false;
+
+            function showGuard(title, message, { showHome = false, showLogin = false, showLogout = false } = {}) {
+                if (guardEl) {
+                    guardEl.style.display = 'flex';
+                    titleEl && (titleEl.textContent = title);
+                    msgEl && (msgEl.textContent = message);
+                    if (btnHome) btnHome.style.display = showHome ? 'inline-block' : 'none';
+                    if (btnLogin) btnLogin.style.display = showLogin ? 'inline-block' : 'none';
+                    if (btnLogout) btnLogout.style.display = showLogout ? 'inline-block' : 'none';
+                }
+            }
+
+            function hideGuard() {
+                if (guardEl) guardEl.style.display = 'none';
+            }
+
+            // Button actions
+            if (btnHome) btnHome.addEventListener('click', () => { window.location.href = 'index.html'; });
+            if (btnLogin) btnLogin.addEventListener('click', () => { window.location.href = 'login.html'; });
+            if (btnLogout) btnLogout.addEventListener('click', async () => {
+                try {
+                    if (window.firebase && firebase.auth) {
+                        await firebase.auth().signOut();
+                    }
+                } catch (e) { /* ignore */ }
+                window.location.href = 'index.html';
+            });
+
+            // Start with guard visible
+            showGuard('Verifying access…', 'Please wait while we confirm your admin permissions.');
+
+            // Wait until Firebase is ready
+            function whenFirebaseReady(cb) {
+                const maxWaitMs = 8000; // fail fast if SDK never loads
+                const start = Date.now();
+                (function check() {
+                    if (window.firebase && firebase.apps && typeof firebase.auth === 'function' && typeof firebase.firestore === 'function') {
+                        cb();
+                    } else if (Date.now() - start > maxWaitMs) {
+                        showGuard('Service unavailable', 'Unable to load authentication services. Please refresh and try again.', { showHome: true });
+                        window.__ADMIN_ACCESS_DENIED__ = true;
+                    } else {
+                        setTimeout(check, 100);
+                    }
+                })();
+            }
+
+            function revealAdminContent() {
+                const adminContent = document.getElementById('admin-content');
+                const loadingMessage = document.getElementById('loading-message');
+                if (loadingMessage) loadingMessage.classList.add('hidden');
+                if (adminContent) adminContent.classList.remove('hidden');
+            }
+
+            // Core gate logic
+            whenFirebaseReady(() => {
+                try {
+                    const auth = firebase.auth();
+                    const db = firebase.firestore();
+
+                    const finalizeDenied = (reasonTitle, reasonMessage, opts) => {
+                        showGuard(reasonTitle, reasonMessage, opts);
+                        window.__ADMIN_ACCESS_DENIED__ = true;
+                        window.__ADMIN_ACCESS_VERIFIED__ = false;
+                    };
+
+                    const finalizeAllowed = () => {
+                        window.__ADMIN_ACCESS_VERIFIED__ = true;
+                        window.__ADMIN_ACCESS_DENIED__ = false;
+                        revealAdminContent();
+                        hideGuard();
+                    };
+
+                    const performCheck = async (user) => {
+                        if (!user) {
+                            finalizeDenied('Sign-in required', 'You must be signed in to access the admin dashboard.', { showLogin: true, showHome: true });
+                            return;
+                        }
+                        try {
+                            const doc = await db.collection('users').doc(user.uid).get();
+                            const isAdmin = !!(doc.exists && doc.data() && doc.data().isAdmin === true);
+                            if (isAdmin) {
+                                finalizeAllowed();
+                            } else {
+                                finalizeDenied('Access denied', 'This page is restricted to administrators only.', { showHome: true, showLogout: true });
+                            }
+                        } catch (err) {
+                            finalizeDenied('Access check failed', 'We could not verify your permissions. Please try again.', { showHome: true });
+                        }
+                    };
+
+                    // If auth state is already known
+                    const current = auth.currentUser;
+                    if (current) {
+                        performCheck(current);
+                    }
+                    // Also listen for state changes
+                    auth.onAuthStateChanged((u) => performCheck(u));
+                } catch (err) {
+                    showGuard('Unexpected error', 'An unexpected error occurred while verifying access.', { showHome: true });
+                    window.__ADMIN_ACCESS_DENIED__ = true;
+                }
+            });
+        })();
+    </script>
+
     <!-- Firebase initialization (required before combined.min.js) -->
     <!-- Local scripts -->
     <script src="auth.js"></script>
@@ -1028,6 +1225,8 @@
     
     <!-- Optimized combined JavaScript -->
     <script src="combined.min.js" onerror="console.error('Failed to load combined.min.js')" onload="console.log('combined.min.js loaded')"></script>
+    <!-- Unified Notifications -->
+    <script src="notifications.js"></script>
     <script src="posts.js" onerror="console.error('Failed to load posts.js')" onload="console.log('posts.js loaded')"></script>
     <script src="secure-access.js" onerror="console.error('Failed to load secure-access.js')" onload="console.log('secure-access.js loaded')"></script>
 
@@ -1919,7 +2118,8 @@
 
             // Event action functions (global scope)
             window.approveEvent = async function(eventId) {
-                if (confirm('Are you sure you want to approve this event?')) {
+                const ok = await (typeof window.showConfirmModal === 'function' ? showConfirmModal('This event will be visible to all users.', { title: 'Approve event?', confirmText: 'Approve' }) : Promise.resolve(confirm('Are you sure you want to approve this event?')));
+                if (ok) {
                     try {
                         if (typeof updateEventStatus !== 'function') {
                             alert('Calendar functions not loaded yet. Please refresh the page.');
@@ -1943,7 +2143,8 @@
             };
 
             window.rejectEvent = async function(eventId) {
-                if (confirm('Are you sure you want to reject this event?')) {
+                const ok = await (typeof window.showConfirmModal === 'function' ? showConfirmModal('This will mark the event as rejected.', { title: 'Reject event?', confirmText: 'Reject', variant: 'danger' }) : Promise.resolve(confirm('Are you sure you want to reject this event?')));
+                if (ok) {
                     try {
                         if (typeof updateEventStatus !== 'function') {
                             alert('Calendar functions not loaded yet. Please refresh the page.');
@@ -1967,7 +2168,8 @@
             };
 
             window.deleteEventFromAdmin = async function(eventId) {
-                if (confirm('Are you sure you want to delete this event? This action cannot be undone.')) {
+                const ok = await (typeof window.showConfirmModal === 'function' ? showConfirmModal('This action cannot be undone.', { title: 'Delete event?', confirmText: 'Delete', variant: 'danger' }) : Promise.resolve(confirm('Are you sure you want to delete this event? This action cannot be undone.')));
+                if (ok) {
                     try {
                         if (typeof deleteEvent !== 'function') {
                             alert('Calendar functions not loaded yet. Please refresh the page.');

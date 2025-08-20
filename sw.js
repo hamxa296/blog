@@ -7,14 +7,22 @@ const CACHE_NAME = 'giki-chronicles-v1.0';
 const STATIC_CACHE = 'giki-static-v1.0';
 const DYNAMIC_CACHE = 'giki-dynamic-v1.0';
 
-// Files to cache immediately
+// Files to cache immediately (only local files)
 const STATIC_FILES = [
     '/',
     '/index.html',
     '/styles.css',
-    '/combined.min.js',
     '/logo.png',
-    '/favicons/favicon.ico'
+    '/favicons/favicon.ico',
+    '/offline.html'
+];
+
+// External resources to cache separately (with error handling)
+const EXTERNAL_RESOURCES = [
+    'https://cdn.tailwindcss.com',
+    'https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js',
+    'https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js',
+    'https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js'
 ];
 
 // Install event - cache static files
@@ -22,11 +30,44 @@ self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(STATIC_CACHE)
             .then(cache => {
+                // Cache local files first
                 return cache.addAll(STATIC_FILES);
             })
+            .then(() => {
+                console.log('Service Worker: Caching external resources');
+                // Cache external resources with error handling
+                return cacheExternalResources();
+            })
             .then(() => self.skipWaiting())
+            .catch(error => {
+                console.warn('Service Worker: Some resources failed to cache:', error);
+                // Continue installation even if some resources fail
+                return self.skipWaiting();
+            })
     );
 });
+
+// Function to cache external resources with error handling
+async function cacheExternalResources() {
+    const cache = await caches.open(STATIC_CACHE);
+    const promises = EXTERNAL_RESOURCES.map(async (url) => {
+        try {
+            const response = await fetch(url, {
+                mode: 'cors',
+                credentials: 'omit'
+            });
+            if (response.ok) {
+                await cache.put(url, response);
+                console.log('Service Worker: Cached external resource:', url);
+            }
+        } catch (error) {
+            console.warn('Service Worker: Failed to cache external resource:', url, error);
+            // Don't throw error, just log it
+        }
+    });
+    
+    await Promise.allSettled(promises);
+}
 
 // Activate event - clean up old caches
 self.addEventListener('activate', event => {

@@ -387,7 +387,8 @@ async function openPhotoReview(photoId) {
     try {
         const doc = await db.collection("galleryPhotos").doc(photoId).get();
         if (!doc.exists) {
-            alert('Photo not found');
+            if (typeof window.showToast === 'function') showToast('Photo not found', 'error');
+            else alert('Photo not found');
             return;
         }
         
@@ -448,7 +449,8 @@ async function openPhotoReview(photoId) {
         
     } catch (error) {
         console.error('Error opening photo review:', error);
-        alert('Error loading photo details');
+        if (typeof window.showToast === 'function') showToast('Error loading photo details', 'error');
+        else alert('Error loading photo details');
     }
 }
 
@@ -459,13 +461,19 @@ async function approvePhoto(photoId) {
         return;
     }
     
-    if (!confirm('Are you sure you want to approve this photo?')) return;
+    {
+        const proceed = await (typeof window.showConfirmModal === 'function'
+            ? showConfirmModal('This photo will appear in the public gallery.', { title: 'Approve photo?', confirmText: 'Approve' })
+            : Promise.resolve(confirm('Are you sure you want to approve this photo?')));
+        if (!proceed) return;
+    }
     
     const isHighlighted = document.getElementById('highlight-photo')?.checked || false;
     
     const result = await updateGalleryPhotoStatus(photoId, 'approved', { isHighlighted });
     if (result.success) {
-        alert('Photo approved successfully!');
+        if (typeof window.showToast === 'function') showToast('Photo approved successfully!', 'success');
+        else alert('Photo approved successfully!');
         
         // Close modal if it exists
         const modal = document.getElementById('admin-review-modal');
@@ -476,7 +484,8 @@ async function approvePhoto(photoId) {
         await switchPhotoTab(currentPhotoStatus);
         await loadAdminStats();
     } else {
-        alert('Error approving photo: ' + result.error);
+        if (typeof window.showToast === 'function') showToast('Error approving photo: ' + (result.error || ''), 'error');
+        else alert('Error approving photo: ' + result.error);
     }
 }
 
@@ -506,7 +515,8 @@ async function rejectPhoto(photoId) {
             
             const result = await updateGalleryPhotoStatus(photoId, 'rejected', { rejectionReason: reason });
             if (result.success) {
-                alert('Photo rejected successfully!');
+                if (typeof window.showToast === 'function') showToast('Photo rejected successfully!', 'success');
+                else alert('Photo rejected successfully!');
                 modal.classList.add('hidden');
                 
                 // Close admin review modal if it exists
@@ -519,7 +529,8 @@ async function rejectPhoto(photoId) {
                 await switchPhotoTab(currentPhotoStatus);
                 await loadAdminStats();
             } else {
-                alert('Error rejecting photo: ' + result.error);
+                if (typeof window.showToast === 'function') showToast('Error rejecting photo: ' + (result.error || ''), 'error');
+                else alert('Error rejecting photo: ' + result.error);
             }
         };
     }
@@ -555,12 +566,14 @@ async function deletePhoto(photoId, cloudinaryId) {
         confirmBtn.onclick = async () => {
             const result = await deleteGalleryPhoto(photoId, cloudinaryId);
             if (result.success) {
-                alert('Photo deleted successfully!');
+                if (typeof window.showToast === 'function') showToast('Photo deleted successfully!', 'success');
+                else alert('Photo deleted successfully!');
                 modal.classList.add('hidden');
                 await switchPhotoTab(currentPhotoStatus);
                 await loadAdminStats();
             } else {
-                alert('Error deleting photo: ' + result.error);
+                if (typeof window.showToast === 'function') showToast('Error deleting photo: ' + (result.error || ''), 'error');
+                else alert('Error deleting photo: ' + result.error);
             }
         };
     }
@@ -616,7 +629,8 @@ async function viewPhotoDetails(photoId) {
     try {
         const doc = await db.collection("galleryPhotos").doc(photoId).get();
         if (!doc.exists) {
-            alert('Photo not found');
+            if (typeof window.showToast === 'function') showToast('Photo not found', 'error');
+            else alert('Photo not found');
             return;
         }
         
@@ -668,7 +682,8 @@ async function viewPhotoDetails(photoId) {
         
     } catch (error) {
         console.error('Error viewing photo details:', error);
-        alert('Error loading photo details');
+        if (typeof window.showToast === 'function') showToast('Error loading photo details', 'error');
+        else alert('Error loading photo details');
     }
 }
 
