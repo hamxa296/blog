@@ -16,6 +16,18 @@
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fallback to local Tailwind if CDN fails -->
+  <script>
+    // Check if Tailwind loaded successfully
+    if (typeof window.tailwind === 'undefined') {
+      console.warn('Tailwind CDN failed to load, using fallback styles');
+      // Load a minimal CSS fallback
+      const fallbackCSS = document.createElement('link');
+      fallbackCSS.rel = 'stylesheet';
+      fallbackCSS.href = 'tailwind-fallback.css';
+      document.head.appendChild(fallbackCSS);
+    }
+  </script>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1114,9 +1126,11 @@
     <div class="container mx-auto px-6 py-8">
       <div class="flex flex-col md:flex-row justify-between items-center">
         <p>&copy; 2025 GIKI Chronicles. All Rights Reserved.</p>
+
                  <div class="flex mt-4 md:mt-0 space-x-4">
            <a href="#" class="text-[#B3CFE5] hover:text-white transition duration-300">Instagram</a>
          </div>
+
       </div>
     </div>
   </footer>
@@ -1128,6 +1142,8 @@
 
   <!-- Optimized combined JavaScript bundle (includes Firebase initialization) -->
   <script src="combined.min.js"></script>
+  <!-- Unified Notifications -->
+  <script src="notifications.js"></script>
   
   <!-- Additional scripts not in bundle -->
   
@@ -1195,6 +1211,24 @@
     }
   </script>
 
+  <!-- Service Worker Registration -->
+  <script>
+    // Register service worker with error handling
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('Service Worker registered successfully:', registration.scope);
+          })
+          .catch(error => {
+            console.warn('Service Worker registration failed:', error);
+            // Don't show error to user, just log it
+          });
+      });
+    } else {
+      console.log('Service Worker not supported in this browser');
+    }
+  </script>
 
 </body>
 

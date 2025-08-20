@@ -7,7 +7,8 @@
 const ADMIN_UIDS = [
     "DNDjKZRt0yQNh4d3inNchRcs0oY2", // Your working admin account
     "zCINcUAy84aMwHF83wlRUTO2Dn32",
-    "gn2AlkdswANjVg58rUXOLoPaX192"
+    "gn2AlkdswANjVg58rUXOLoPaX192",
+    "b7QYLqpUCNbCKGvU1SQgr1pHBJj1"
 ];
 
 /**

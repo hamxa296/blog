@@ -167,13 +167,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         const uploadImage = async (file) => {
             // Validate file type
             if (!file.type.startsWith('image/')) {
-                alert('Please select a valid image file.');
+                if (typeof window.showToast === 'function') showToast('Please select a valid image file.', 'warning');
+                else alert('Please select a valid image file.');
                 return;
             }
             
             // Validate file size (10MB limit)
             if (file.size > 10 * 1024 * 1024) {
-                alert('File size must be less than 10MB.');
+                if (typeof window.showToast === 'function') showToast('File size must be less than 10MB.', 'warning');
+                else alert('File size must be less than 10MB.');
                 return;
             }
             
@@ -667,9 +669,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Load comments and reactions much later (after user has seen the post content)
                 setTimeout(() => {
                     if (typeof initializeCommentsAndReactions === 'function') {
+                        console.log('Initializing comments and reactions for post:', postId);
                         initializeCommentsAndReactions(postId);
                     } else {
-                        console.warn('initializeCommentsAndReactions function not found');
+                        console.error('initializeCommentsAndReactions function not found. Available functions:', Object.keys(window).filter(key => key.includes('Comment') || key.includes('Reaction') || key.includes('Bookmark')));
                     }
                 }, 2000); // 2 second delay - user can read the post content first
             } else {
@@ -685,65 +688,40 @@ document.addEventListener('DOMContentLoaded', async () => {
             const currentTheme = localStorage.getItem('selected-theme') || 'basic-dark';
             const isDarkTheme = currentTheme === 'basic-dark';
             
-            // Apply theme-aware styles to all text elements in the post content
+            // Apply theme-aware styles to text elements in the post content
             const textElements = postContent.querySelectorAll('h1, h2, h3, h4, h5, h6, p, li, span, div, blockquote, code, pre, strong, em, a, ul, ol');
-            
+
             textElements.forEach(element => {
-                // Skip elements that already have explicit theme styles
+                // Always remove any previously injected theme classes so we rely on body/html theme
+                element.classList.remove('theme-basic-dark', 'theme-basic-light');
+
+                // Skip elements that already have explicit CSS variable based colors
                 if (element.style.color && element.style.color.includes('var(--')) {
                     return;
                 }
-                
+
                 if (isDarkTheme) {
-                    // Apply dark theme styles - use CSS classes instead of inline styles
-                    element.classList.add('theme-basic-dark');
-                    element.classList.remove('theme-basic-light');
-                    
-                    // Special handling for links
+                    // Minimal overrides for readability in dark mode
                     if (element.tagName === 'A') {
-                        element.style.color = '#60a5fa'; // Blue for links in dark theme
+                        element.style.color = '#60a5fa';
                     }
-                    
-                    // Special handling for code blocks
-                    if (element.tagName === 'CODE') {
+                    if (element.tagName === 'CODE' || element.tagName === 'PRE') {
                         element.style.backgroundColor = '#1f2937';
                         element.style.color = '#f9fafb';
                     }
-                    
-                    // Special handling for pre blocks
-                    if (element.tagName === 'PRE') {
-                        element.style.backgroundColor = '#1f2937';
-                        element.style.color = '#f9fafb';
-                    }
-                    
-                    // Special handling for blockquotes
                     if (element.tagName === 'BLOCKQUOTE') {
                         element.style.color = '#9ca3af';
                         element.style.borderLeftColor = '#4b5563';
                     }
                 } else {
-                    // Apply light theme styles - use CSS classes instead of inline styles
-                    element.classList.add('theme-basic-light');
-                    element.classList.remove('theme-basic-dark');
-                    
-                    // Special handling for links
+                    // Light mode minimal overrides
                     if (element.tagName === 'A') {
-                        element.style.color = '#2563eb'; // Blue for links in light theme
+                        element.style.color = '#2563eb';
                     }
-                    
-                    // Special handling for code blocks
-                    if (element.tagName === 'CODE') {
+                    if (element.tagName === 'CODE' || element.tagName === 'PRE') {
                         element.style.backgroundColor = '#f8f9fa';
                         element.style.color = '#1f2937';
                     }
-                    
-                    // Special handling for pre blocks
-                    if (element.tagName === 'PRE') {
-                        element.style.backgroundColor = '#f8f9fa';
-                        element.style.color = '#1f2937';
-                    }
-                    
-                    // Special handling for blockquotes
                     if (element.tagName === 'BLOCKQUOTE') {
                         element.style.color = '#6b7280';
                         element.style.borderLeftColor = '#e5e7eb';
@@ -1203,7 +1181,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Reload photos to update the UI
             loadPhotos();
         } else {
-            alert('Failed to update photo status. Please try again.');
+            if (typeof window.showToast === 'function') showToast('Failed to update photo status. Please try again.', 'error');
+            else alert('Failed to update photo status. Please try again.');
         }
     };
     // --- Admin Page Logic ---
@@ -1393,7 +1372,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         modal.classList.add('hidden');
                         displayPosts(); // Refresh the list
                     } else {
-                        alert('Error deleting post: ' + result.error);
+                        if (typeof window.showToast === 'function') showToast('Error deleting post: ' + (result.error || ''), 'error');
+                        else alert('Error deleting post: ' + result.error);
                     }
                 };
 
@@ -1633,11 +1613,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (result.success) {
                 displayPendingEvents(); // Refresh the list
             } else {
-                alert('Error approving event: ' + result.error);
+                if (typeof window.showToast === 'function') showToast('Error approving event: ' + (result.error || ''), 'error');
+                else alert('Error approving event: ' + result.error);
             }
         } catch (error) {
             console.error('Error approving event:', error);
-            alert('Error approving event');
+            if (typeof window.showToast === 'function') showToast('Error approving event', 'error');
+            else alert('Error approving event');
         }
     };
 
@@ -1647,11 +1629,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (result.success) {
                 displayPendingEvents(); // Refresh the list
             } else {
-                alert('Error rejecting event: ' + result.error);
+                if (typeof window.showToast === 'function') showToast('Error rejecting event: ' + (result.error || ''), 'error');
+                else alert('Error rejecting event: ' + result.error);
             }
         } catch (error) {
             console.error('Error rejecting event:', error);
-            alert('Error rejecting event');
+            if (typeof window.showToast === 'function') showToast('Error rejecting event', 'error');
+            else alert('Error rejecting event');
         }
     };
 
@@ -1662,11 +1646,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (result.success) {
                 displayPendingGalleryPhotos(); // Refresh the list
             } else {
-                alert('Error approving photo: ' + result.error);
+                if (typeof window.showToast === 'function') showToast('Error approving photo: ' + (result.error || ''), 'error');
+                else alert('Error approving photo: ' + result.error);
             }
         } catch (error) {
             console.error('Error approving photo:', error);
-            alert('Error approving photo');
+            if (typeof window.showToast === 'function') showToast('Error approving photo', 'error');
+            else alert('Error approving photo');
         }
     };
 
@@ -1676,11 +1662,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (result.success) {
                 displayPendingGalleryPhotos(); // Refresh the list
             } else {
-                alert('Error rejecting photo: ' + result.error);
+                if (typeof window.showToast === 'function') showToast('Error rejecting photo: ' + (result.error || ''), 'error');
+                else alert('Error rejecting photo: ' + result.error);
             }
         } catch (error) {
             console.error('Error rejecting photo:', error);
-            alert('Error rejecting photo');
+            if (typeof window.showToast === 'function') showToast('Error rejecting photo', 'error');
+            else alert('Error rejecting photo');
         }
     };
 });
