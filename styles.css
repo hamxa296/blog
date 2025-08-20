@@ -37,6 +37,237 @@ body {
     gap: 1.5rem;
 }
 
+/* Collage Blog Post Styles */
+.collage-post {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 1px solid #e9ecef;
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+}
+
+.collage-post:hover {
+    transform: translateY(-4px) rotate(0deg) !important;
+    box-shadow: 
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Featured Post Styles (Black Square) */
+.featured-post {
+    background: linear-gradient(145deg, #1a1a1a 0%, #000000 100%);
+    border: 3px solid #ffffff;
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.featured-post::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    background: #ffffff;
+    border-radius: 8px;
+    z-index: -1;
+}
+
+/* Paper Texture Effects */
+.paper-texture {
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%);
+    background-size: 100px 100px, 150px 150px, 200px 200px;
+}
+
+/* Enhanced Paper Texture for Posts */
+.paper-texture-enhanced {
+    background: 
+        linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%),
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.05) 0%, transparent 50%);
+    background-size: 100px 100px, 150px 150px, 200px 200px;
+    border: 1px solid rgba(229, 231, 235, 0.8);
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Sticky Note Effect */
+.sticky-note {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 1px solid #f59e0b;
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06),
+        2px 2px 4px rgba(0, 0, 0, 0.1);
+    transform: rotate(-2deg);
+    transition: all 0.3s ease;
+}
+
+.sticky-note:hover {
+    transform: rotate(0deg) translateY(-4px);
+    box-shadow: 
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04),
+        2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Handwritten Font Styles */
+.font-handwritten {
+    font-family: 'Kalam', 'Architects Daughter', cursive;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.font-handwritten-light {
+    font-family: 'Kalam', 'Architects Daughter', cursive;
+    font-weight: 300;
+    letter-spacing: 0.01em;
+}
+
+/* Enhanced Handwritten Styles */
+.font-handwritten-bold {
+    font-family: 'Kalam', 'Architects Daughter', cursive;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.font-handwritten-cursive {
+    font-family: 'Architects Daughter', 'Kalam', cursive;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+}
+
+/* Collage Grid Layout */
+.collage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    position: relative;
+}
+
+/* Decorative Elements */
+.collage-decoration {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.1;
+    z-index: 0;
+}
+
+.collage-decoration.circle-1 {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(45deg, #fbbf24, #f59e0b);
+    border-radius: 50%;
+    top: 10%;
+    left: 5%;
+    transform: rotate(15deg);
+}
+
+.collage-decoration.circle-2 {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+    border-radius: 50%;
+    top: 20%;
+    right: 10%;
+    transform: rotate(-20deg);
+}
+
+.collage-decoration.circle-3 {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(45deg, #10b981, #059669);
+    border-radius: 50%;
+    bottom: 15%;
+    left: 15%;
+    transform: rotate(45deg);
+}
+
+/* Enhanced Post Card Styles */
+.post-card {
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.post-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.post-card:hover::before {
+    transform: scaleX(1);
+}
+
+.post-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(59, 130, 246, 0.1);
+}
+
+/* Featured Post Enhanced Styling */
+.featured-post-enhanced {
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
+
+.featured-post-enhanced::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* Quote Mark Styling (like in the image) */
+.quote-mark {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 60px;
+    height: 60px;
+    background: #000000;
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #ffffff;
+    font-family: 'Georgia', serif;
+    transform: rotate(15deg);
+}
+
 /* Theme Styles */
 /* Basic Light Theme (Default) */
 .theme-basic-light {

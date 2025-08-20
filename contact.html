@@ -1,3 +1,4 @@
+@ -1,775 +1,775 @@
 <!DOCTYPE html>
 <html lang="en" class="theme-basic-dark">
 
@@ -22,10 +23,182 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+        /* Contact page palette (scoped) */
+        .contact-theme {
+            --c-navy: #0A1931;
+            --c-deep: #1A3D63;
+            --c-steel: #4A7FA7;
+            --c-light: #B3CFE5;
+            --c-snow: #F6FAFD;
+        }
+        body {
+            background: 
+                linear-gradient(135deg, rgba(0,0,0,0.4), rgba(10,25,49,0.3)),
+                radial-gradient(circle at 30% 20%, rgba(74,127,167,0.2), transparent),
+                radial-gradient(circle at 70% 80%, rgba(26,61,99,0.3), transparent),
+                url('background.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+        
+        .contact-hero {
+            background: 
+                radial-gradient(1200px 400px at -10% -20%, rgba(0,0,0,0.3), transparent),
+                linear-gradient(135deg, rgba(10,25,49,0.7), rgba(26,61,99,0.6));
+            color: var(--c-snow);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            position: relative;
+        }
+        
+        .contact-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                linear-gradient(135deg, rgba(0,0,0,0.4), rgba(10,25,49,0.3)),
+                radial-gradient(circle at 30% 20%, rgba(74,127,167,0.2), transparent),
+                radial-gradient(circle at 70% 80%, rgba(26,61,99,0.3), transparent);
+            filter: blur(8px);
+            z-index: -1;
+        }
+        .contact-badge {
+            background-color: rgba(255,255,255,0.08);
+            color: var(--c-snow);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .contact-card {
+            background: linear-gradient(135deg, rgba(10,25,49,0.85), rgba(26,61,99,0.85));
+            color: var(--c-snow);
+            border: 1px solid rgba(179,207,229,0.25);
+            box-shadow: 0 12px 30px rgba(10,25,49,0.35);
+        }
+        .contact-input {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(179,207,229,0.35);
+            color: var(--c-snow);
+        }
+        .contact-input::placeholder { color: var(--c-light); }
+        .contact-input:focus {
+            outline: none;
+            border-color: var(--c-steel);
+            box-shadow: 0 0 0 3px rgba(74,127,167,0.25);
+            background: rgba(255,255,255,0.08);
+        }
+        .contact-primary {
+            background-color: var(--c-deep);
+            color: var(--c-snow);
+        }
+        .contact-primary:hover { background-color: var(--c-navy); }
+        .contact-chip {
+            background-color: rgba(10,25,49,0.06);
+            border: 1px solid rgba(26,61,99,0.25);
+            color: var(--c-deep);
+        }
+        .newsletter-band {
+            background: linear-gradient(135deg, var(--c-navy), var(--c-deep));
+            color: var(--c-snow);
+            border-top: 1px solid rgba(179,207,229,0.2);
+            border-bottom: 1px solid rgba(179,207,229,0.2);
+        }
+        .rounded-arch {
+            border-radius: 48% 48% 12px 12px / 48% 48% 12px 12px;
+            overflow: hidden;
+            border: 3px solid var(--c-light);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+        }
+        .rounded-arch{ position: relative; }
+        .rounded-arch::after { content:""; position:absolute; inset:0; pointer-events:none; box-shadow: inset 0 0 80px rgba(10,25,49,.35); }
+        .hero-accents{ position:absolute; inset:0; pointer-events:none; }
+        .accent{ position:absolute; filter:blur(42px); opacity:.15; border-radius:9999px; }
+        .accent-1{ width:220px; height:220px; left:-60px; top:-40px; background:radial-gradient(closest-side, var(--c-steel), transparent); }
+        .accent-2{ width:260px; height:260px; right:-80px; bottom:-60px; background:radial-gradient(closest-side, var(--c-light), transparent); }
+        .contact-card{ position:relative; }
+        .contact-card::before{ content:""; position:absolute; inset:0; background-image:repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0px, rgba(255,255,255,.03) 1px, transparent 1px, transparent 2px); mix-blend-mode:overlay; opacity:.3; pointer-events:none; border-radius:inherit; }
+        .fl{ position:relative; }
+        .fl-label{ 
+            position:absolute; 
+            left:16px; 
+            top:16px; 
+            color:var(--c-light); 
+            font-size:1rem; 
+            transition:all .2s ease; 
+            pointer-events:none; 
+            transform-origin: left top;
+        }
+        .contact-input{ 
+            padding: 16px; 
+            padding-top: 24px;
+        }
+        
+        /* Special handling for select elements */
+        select.contact-input {
+            padding-top: 24px;
+            padding-bottom: 16px;
+            padding-left: 20px;
+        }
+        
+        /* Style the placeholder option to be less visible */
+        select.contact-input option[value=""] {
+            color: rgba(179, 207, 229, 0.4) !important;
+            font-style: italic !important;
+        }
+        
+        /* Customizable placeholder styling - modify these values as needed */
+        :root {
+            --placeholder-left: 16px;        /* Reset to default left padding */
+            --placeholder-top: 16px;         /* Reset to default top padding */
+            --placeholder-opacity: 0.4;      /* Reset to default opacity */
+            --placeholder-color: 179, 207, 229; /* RGB values for placeholder color */
+        }
+        
+        /* Force select padding and styling */
+        select.contact-input {
+            padding-left: var(--placeholder-left) !important;
+            padding-top: var(--placeholder-top) !important;
+        }
+        
+        /* Target the specific placeholder option */
+        #subject option[value=""] {
+            color: rgba(var(--placeholder-color), var(--placeholder-opacity)) !important;
+            font-style: italic !important;
+        }
+        
+        /* Regular input padding adjustments */
+        .contact-input {
+            padding-left: var(--placeholder-left) !important;
+        }
+        
+        /* Move dropdown arrow to the left for subject select */
+        #subject {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23B3CFE5' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: left 16px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+            padding-left: 48px !important;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        
+        .contact-input:focus + .fl-label, 
+        .contact-input:not(:placeholder-shown) + .fl-label,
+        select.contact-input:focus + .fl-label,
+        select.contact-input:not([value=""]) + .fl-label { 
+            transform: translateY(-8px) scale(0.85); 
+            font-size: 0.875rem; 
+            color: var(--c-light); 
+            opacity: 0.9;
+        }
+        .contact-primary{ background:linear-gradient(135deg, var(--c-deep), var(--c-navy)); box-shadow:0 8px 20px rgba(26,61,99,.35); transition:transform .15s ease, box-shadow .2s ease, background .2s ease; }
+        .contact-primary:hover{ transform:translateY(-1px); box-shadow:0 12px 26px rgba(10,25,49,.45); }
+        .ig-btn{ background:linear-gradient(135deg, var(--c-steel), var(--c-deep)); color:var(--c-snow); }
+        .ig-btn:hover{ box-shadow:0 10px 24px rgba(26,61,99,.25); transform:translateY(-1px); }
     </style>
 </head>
 
-<body class="text-gray-800 theme-basic-dark">
+<body class="text-gray-800 theme-basic-dark contact-theme">
 
     <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
@@ -84,51 +257,155 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-12">
-        <div class="max-w-2xl mx-auto">
-            <div class="text-center mb-12">
-                <h1 class="text-5xl font-extrabold tracking-tight">Get in Touch</h1>
-                <p class="mt-4 text-lg text-gray-500">
-                    Have a suggestion, a story idea, or want to be featured? We'd love to hear from you.
-                </p>
+    <main class="px-4">
+        <!-- Hero -->
+        <section class="contact-hero relative min-h-screen flex items-center">
+            <div class="hero-accents" aria-hidden="true">
+                <span class="accent accent-1"></span>
+                <span class="accent accent-2"></span>
             </div>
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <!-- Left: Content -->
+                    <div class="text-left">
+                        <h1 class="text-6xl md:text-7xl font-extrabold tracking-tight mb-8 leading-tight">
+                            Let's<br>
+                            <span class="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Connect</span>
+                        </h1>
+                        <p class="text-2xl opacity-90 max-w-xl mb-12 leading-relaxed">
+                            Have a story to share? Want to be featured? We're here to listen and amplify your voice.
+                        </p>
+                        
 
-            <div class="bg-white rounded-xl shadow-lg p-8">
-                <form id="contact-form">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div>
-                            <label for="name" class="block text-gray-700 font-semibold mb-2">Full Name</label>
-                            <input type="text" id="name" name="name"
-                                class="w-full p-3 border border-gray-300 rounded-lg" required>
-                        </div>
-                        <div>
-                            <label for="email" class="block text-gray-700 font-semibold mb-2">Email Address</label>
-                            <input type="email" id="email" name="email"
-                                class="w-full p-3 border border-gray-300 rounded-lg" required>
+                    </div>
+                    
+                    <!-- Right: Hero Image -->
+                    <div class="flex justify-center lg:justify-end">
+                        <div class="rounded-arch w-full max-w-md lg:max-w-lg">
+                            <img src="contact-hero.jpeg" alt="Campus" class="w-full h-full object-cover" />
                         </div>
                     </div>
-                    <div class="mt-6">
-                        <label for="subject" class="block text-gray-700 font-semibold mb-2">Subject</label>
-                        <select id="subject" name="subject" class="w-full p-3 border border-gray-300 rounded-lg">
-                            <option>General Suggestion</option>
-                            <option>Apply to be a Featured Post</option>
-                            <option>Report an Issue</option>
-                            <option>Other</option>
-                        </select>
-                    </div>
-                    <div class="mt-6">
-                        <label for="message" class="block text-gray-700 font-semibold mb-2">Message</label>
-                        <textarea id="message" name="message" rows="5"
-                            class="w-full p-3 border border-gray-300 rounded-lg" required></textarea>
-                    </div>
-                    <div id="form-message" class="text-center my-4 h-5"></div>
-                    <button type="submit"
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full transition duration-300 text-lg">
-                        Send Message
-                    </button>
-                </form>
+                </div>
             </div>
-        </div>
+        </section>
+
+        <!-- Content Section -->
+        <section class="container mx-auto px-4 py-20 relative z-10">
+            <div class="max-w-6xl mx-auto">
+                <!-- Section Header -->
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6">Get in Touch</h2>
+                    <p class="text-xl opacity-80 max-w-2xl mx-auto">
+                    <p class="text-xl max-w-2xl mx-auto">
+                        Got something to share? We'd love to hear from you! Drop us a message and we'll get back to you soon.
+                    </p>
+                </div>
+                
+                <div class="grid lg:grid-cols-3 gap-12">
+                    <!-- Form Card -->
+                    <div class="lg:col-span-2">
+                        <div class="contact-card rounded-3xl p-8 md:p-12">
+                            <form id="contact-form" class="space-y-8">
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div class="fl">
+                                        <input id="name" name="name" type="text" placeholder=" " class="contact-input w-full p-4 rounded-xl text-lg" required>
+                                        <label for="name" class="fl-label">Full Name</label>
+                                    </div>
+                                    <div class="fl">
+                                        <input id="email" name="email" type="email" placeholder=" " class="contact-input w-full p-4 rounded-xl text-lg" required>
+                                        <label for="email" class="fl-label">Email Address</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="fl">
+                                    <select id="subject" name="subject" class="contact-input w-full rounded-xl text-lg">
+                                        <option value="" disabled selected>Select Subject</option>
+                                        <option value="general">General Suggestion</option>
+                                        <option value="featured">Apply to be a Featured Post</option>
+                                        <option value="issue">Report an Issue</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="fl">
+                                    <textarea id="message" name="message" rows="6" placeholder=" " class="contact-input w-full p-4 rounded-xl text-lg" required></textarea>
+                                    <label for="message" class="fl-label">Your Message</label>
+                                </div>
+                                
+                                <div id="form-message" class="text-center my-6 h-6"></div>
+                                
+                                <button type="submit" class="contact-primary w-full font-bold py-5 px-8 rounded-2xl transition duration-300 text-xl hover:scale-105">
+                                    Send Message
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Right Sidebar -->
+                    <div class="space-y-8">
+                        <!-- Social Media Card -->
+                        <div class="contact-card rounded-3xl p-8">
+                            <div class="text-center mb-6">
+                                <h3 class="text-2xl font-bold mb-3">Join Our Community</h3>
+                                <p class="text-base opacity-80">Follow us for exclusive content, behind-the-scenes, and student stories</p>
+                            </div>
+                            
+                            <!-- Instagram Button -->
+                            <div class="flex justify-center">
+                                <a class="ig-btn w-16 h-16 rounded-3xl grid place-items-center relative overflow-hidden group hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl" href="#" aria-label="Instagram">
+                                    <!-- Background gradient -->
+                                    <div class="absolute inset-0 bg-gradient-to-br from-purple-500 via-pink-500 to-yellow-500 opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    
+                                    <!-- Icon -->
+                                    <svg class="w-8 h-8 relative z-10 text-white" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7 2C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5H7zm10 2a3 3 0 013 3v10a3 3 0 01-3 3H7a3 3 0 01-3-3V7a3 3 0 013-3h10z"/>
+                                        <path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0 2.2A2.8 2.8 0 1112 15.8 2.8 2.8 0 0112 9.2z"/>
+                                        <circle cx="17.5" cy="6.5" r="1.3"/>
+                                    </svg>
+                                    
+                                    <!-- Hover overlay -->
+                                    <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-3xl"></div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Response Time Card -->
+                        <div class="contact-card rounded-3xl p-8">
+                            <h3 class="text-2xl font-bold mb-6">We'll Get Back to You</h3>
+                            
+                            <!-- Priority Response -->
+                            <div class="mb-6 p-4 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl border border-blue-500/30">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-semibold text-blue-300">Priority Response</span>
+                                    <span class="text-xs bg-blue-500/30 px-2 py-1 rounded-full">12h</span>
+                                </div>
+                                <p class="text-sm opacity-80">Technical issues & urgent matters</p>
+                            </div>
+                            
+                            <!-- Standard Response -->
+                            <div class="mb-6 p-4 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-2xl border border-green-500/30">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-semibold text-green-300">Standard Response</span>
+                                    <span class="text-xs bg-green-500/30 px-2 py-1 rounded-full">24h</span>
+                                </div>
+                                <p class="text-sm opacity-80">General inquiries & suggestions</p>
+                            </div>
+                            
+                            <!-- Extended Response -->
+                            <div class="p-4 bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-2xl border border-amber-500/30">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-semibold text-amber-300">Extended Response</span>
+                                    <span class="text-xs bg-amber-500/30 px-2 py-1 rounded-full">48h</span>
+                                </div>
+                                <p class="text-sm opacity-80">Feature requests & detailed proposals</p>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Sidebar -->
@@ -341,7 +618,6 @@
     <script src="tour-manager.js"></script>
     <script src="welcome-popup.js"></script>
     <script src="firebase-error-handler.js"></script>
-    <script src="tour-test.js"></script>
     <script src="app.js"></script>
 
     <script>
