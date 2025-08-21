@@ -4,197 +4,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us - GIKI Chronicles</title>
-    <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="48x48" href="/favicons/favicon-48x48.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
-    <link rel="manifest" href="/site.webmanifest">
+  <title>Contact — GIKI Chronicles</title>
+  <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicons/favicon-48x48.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/logo.png">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fallback to local Tailwind if CDN fails -->
+  <script>
+    if (typeof window.tailwind === 'undefined') {
+      console.warn('Tailwind CDN failed to load, using fallback styles');
+      const fallbackCSS = document.createElement('link');
+      fallbackCSS.rel = 'stylesheet';
+      fallbackCSS.href = 'tailwind-fallback.css';
+      document.head.appendChild(fallbackCSS);
+    }
+  </script>
 
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Contact page palette (scoped) */
-        .contact-theme {
-            --c-navy: #0A1931;
-            --c-deep: #1A3D63;
-            --c-steel: #4A7FA7;
-            --c-light: #B3CFE5;
-            --c-snow: #F6FAFD;
-        }
-        body {
-            background: 
-                linear-gradient(135deg, rgba(0,0,0,0.4), rgba(10,25,49,0.3)),
-                radial-gradient(circle at 30% 20%, rgba(74,127,167,0.2), transparent),
-                radial-gradient(circle at 70% 80%, rgba(26,61,99,0.3), transparent),
-                url('background.jpeg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-        }
-        
-        .contact-hero {
-            background: 
-                radial-gradient(1200px 400px at -10% -20%, rgba(0,0,0,0.3), transparent),
-                linear-gradient(135deg, rgba(10,25,49,0.7), rgba(26,61,99,0.6));
-            color: var(--c-snow);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            position: relative;
-        }
-        
-        .contact-hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: 
-                linear-gradient(135deg, rgba(0,0,0,0.4), rgba(10,25,49,0.3)),
-                radial-gradient(circle at 30% 20%, rgba(74,127,167,0.2), transparent),
-                radial-gradient(circle at 70% 80%, rgba(26,61,99,0.3), transparent);
-            filter: blur(8px);
-            z-index: -1;
-        }
-        .contact-badge {
-            background-color: rgba(255,255,255,0.08);
-            color: var(--c-snow);
-            border: 1px solid rgba(255,255,255,0.12);
-        }
-        .contact-card {
-            background: linear-gradient(135deg, rgba(10,25,49,0.85), rgba(26,61,99,0.85));
-            color: var(--c-snow);
-            border: 1px solid rgba(179,207,229,0.25);
-            box-shadow: 0 12px 30px rgba(10,25,49,0.35);
-        }
-        .contact-input {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(179,207,229,0.35);
-            color: var(--c-snow);
-        }
-        .contact-input::placeholder { color: var(--c-light); }
-        .contact-input:focus {
-            outline: none;
-            border-color: var(--c-steel);
-            box-shadow: 0 0 0 3px rgba(74,127,167,0.25);
-            background: rgba(255,255,255,0.08);
-        }
-        .contact-primary {
-            background-color: var(--c-deep);
-            color: var(--c-snow);
-        }
-        .contact-primary:hover { background-color: var(--c-navy); }
-        .contact-chip {
-            background-color: rgba(10,25,49,0.06);
-            border: 1px solid rgba(26,61,99,0.25);
-            color: var(--c-deep);
-        }
-        .newsletter-band {
-            background: linear-gradient(135deg, var(--c-navy), var(--c-deep));
-            color: var(--c-snow);
-            border-top: 1px solid rgba(179,207,229,0.2);
-            border-bottom: 1px solid rgba(179,207,229,0.2);
-        }
-        .rounded-arch {
-            border-radius: 48% 48% 12px 12px / 48% 48% 12px 12px;
-            overflow: hidden;
-            border: 3px solid var(--c-light);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-        }
-        .rounded-arch{ position: relative; }
-        .rounded-arch::after { content:""; position:absolute; inset:0; pointer-events:none; box-shadow: inset 0 0 80px rgba(10,25,49,.35); }
-        .hero-accents{ position:absolute; inset:0; pointer-events:none; }
-        .accent{ position:absolute; filter:blur(42px); opacity:.15; border-radius:9999px; }
-        .accent-1{ width:220px; height:220px; left:-60px; top:-40px; background:radial-gradient(closest-side, var(--c-steel), transparent); }
-        .accent-2{ width:260px; height:260px; right:-80px; bottom:-60px; background:radial-gradient(closest-side, var(--c-light), transparent); }
-        .contact-card{ position:relative; }
-        .contact-card::before{ content:""; position:absolute; inset:0; background-image:repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0px, rgba(255,255,255,.03) 1px, transparent 1px, transparent 2px); mix-blend-mode:overlay; opacity:.3; pointer-events:none; border-radius:inherit; }
-        .fl{ position:relative; }
-        .fl-label{ 
-            position:absolute; 
-            left:16px; 
-            top:16px; 
-            color:var(--c-light); 
-            font-size:1rem; 
-            transition:all .2s ease; 
-            pointer-events:none; 
-            transform-origin: left top;
-        }
-        .contact-input{ 
-            padding: 16px; 
-            padding-top: 24px;
-        }
-        
-        /* Special handling for select elements */
-        select.contact-input {
-            padding-top: 24px;
-            padding-bottom: 16px;
-            padding-left: 20px;
-        }
-        
-        /* Style the placeholder option to be less visible */
-        select.contact-input option[value=""] {
-            color: rgba(179, 207, 229, 0.4) !important;
-            font-style: italic !important;
-        }
-        
-        /* Customizable placeholder styling - modify these values as needed */
-        :root {
-            --placeholder-left: 16px;        /* Reset to default left padding */
-            --placeholder-top: 16px;         /* Reset to default top padding */
-            --placeholder-opacity: 0.4;      /* Reset to default opacity */
-            --placeholder-color: 179, 207, 229; /* RGB values for placeholder color */
-        }
-        
-        /* Force select padding and styling */
-        select.contact-input {
-            padding-left: var(--placeholder-left) !important;
-            padding-top: var(--placeholder-top) !important;
-        }
-        
-        /* Target the specific placeholder option */
-        #subject option[value=""] {
-            color: rgba(var(--placeholder-color), var(--placeholder-opacity)) !important;
-            font-style: italic !important;
-        }
-        
-        /* Regular input padding adjustments */
-        .contact-input {
-            padding-left: var(--placeholder-left) !important;
-        }
-        
-        /* Move dropdown arrow to the left for subject select */
-        #subject {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23B3CFE5' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-            background-position: left 16px center;
-            background-repeat: no-repeat;
-            background-size: 16px;
-            padding-left: 48px !important;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-        }
-        
-        .contact-input:focus + .fl-label, 
-        .contact-input:not(:placeholder-shown) + .fl-label,
-        select.contact-input:focus + .fl-label,
-        select.contact-input:not([value=""]) + .fl-label { 
-            transform: translateY(-8px) scale(0.85); 
-            font-size: 0.875rem; 
-            color: var(--c-light); 
-            opacity: 0.9;
-        }
-        .contact-primary{ background:linear-gradient(135deg, var(--c-deep), var(--c-navy)); box-shadow:0 8px 20px rgba(26,61,99,.35); transition:transform .15s ease, box-shadow .2s ease, background .2s ease; }
-        .contact-primary:hover{ transform:translateY(-1px); box-shadow:0 12px 26px rgba(10,25,49,.45); }
-        .ig-btn{ background:linear-gradient(135deg, var(--c-steel), var(--c-deep)); color:var(--c-snow); }
-        .ig-btn:hover{ box-shadow:0 10px 24px rgba(26,61,99,.25); transform:translateY(-1px); }
-    </style>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Apply theme early -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('selected-theme') || 'basic-dark';
+      if (document.documentElement) {
+        document.documentElement.classList.add(`theme-${savedTheme}`);
+      }
+      if (document.body) {
+        document.body.classList.add(`theme-${savedTheme}`);
+      } else {
+        document.addEventListener('DOMContentLoaded', function() {
+          if (document.body) {
+            document.body.classList.add(`theme-${savedTheme}`);
+          }
+        });
+      }
+    })();
+  </script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* Base */
+    body { font-family: 'Inter', sans-serif; }
+
+    /* Contact page palette (scoped) */
+    .contact-theme {
+      --c-navy: #0A1931;
+      --c-deep: #1A3D63;
+      --c-steel: #4A7FA7;
+      --c-light: #B3CFE5;
+      --c-snow: #F6FAFD;
+    }
+
+    /* Background */
+    body {
+      background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(10,25,49,0.3)),
+            radial-gradient(circle at 30% 20%, rgba(74,127,167,0.2), transparent),
+            radial-gradient(circle at 70% 80%, rgba(26,61,99,0.3), transparent),
+            url('background.jpeg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+    }
+
+    /* Hero */
+    .contact-hero {
+      background: radial-gradient(1200px 400px at -10% -20%, rgba(0,0,0,0.3), transparent),
+            linear-gradient(135deg, rgba(10,25,49,0.7), rgba(26,61,99,0.6));
+      color: var(--c-snow);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      /* desktop: center vertically and give generous space; mobile rules below override to top-align */
+      display: flex;
+      align-items: center;
+      padding-top: 4.5rem;
+      padding-bottom: 4.5rem;
+      min-height: 56vh;
+    }
+
+    .contact-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(10,25,49,0.3)),
+            radial-gradient(circle at 30% 20%, rgba(74,127,167,0.2), transparent),
+            radial-gradient(circle at 70% 80%, rgba(26,61,99,0.3), transparent);
+      filter: blur(8px);
+      z-index: -1;
+    }
+
+    .hero-accents { position:absolute; inset:0; pointer-events:none; }
+    .accent { position:absolute; filter:blur(42px); opacity:.15; border-radius:9999px; }
+    .accent-1{ width:220px; height:220px; left:-60px; top:-40px; background:radial-gradient(closest-side, var(--c-steel), transparent); }
+    .accent-2{ width:260px; height:260px; right:-80px; bottom:-60px; background:radial-gradient(closest-side, var(--c-light), transparent); }
+
+    /* Cards / inputs */
+    .contact-card{ position:relative; background: linear-gradient(135deg, rgba(10,25,49,0.85), rgba(26,61,99,0.85)); color:var(--c-snow); border:1px solid rgba(179,207,229,0.25); box-shadow:0 12px 30px rgba(10,25,49,0.35); }
+    .contact-card::before{ content:""; position:absolute; inset:0; background-image:repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0px, rgba(255,255,255,.03) 1px, transparent 1px, transparent 2px); mix-blend-mode:overlay; opacity:.3; pointer-events:none; border-radius:inherit; }
+
+    .contact-input { background: rgba(255,255,255,0.06); border:1px solid rgba(179,207,229,0.35); color:var(--c-snow); padding:16px; padding-top:24px; }
+    .contact-input::placeholder { color: var(--c-light); }
+    .contact-input:focus { outline:none; border-color:var(--c-steel); box-shadow:0 0 0 3px rgba(74,127,167,0.25); background: rgba(255,255,255,0.08); }
+    .fl { position:relative; }
+    .fl-label { position:absolute; left:16px; top:16px; color:var(--c-light); font-size:1rem; transition:all .2s ease; pointer-events:none; transform-origin:left top; }
+
+    /* Rounded arch image */
+    .rounded-arch { border-radius: 48% 48% 12px 12px / 48% 48% 12px 12px; overflow:hidden; border:3px solid var(--c-light); box-shadow:0 12px 30px rgba(0,0,0,0.25); position:relative; }
+    .rounded-arch::after { content:""; position:absolute; inset:0; pointer-events:none; box-shadow: inset 0 0 80px rgba(10,25,49,.35); }
+
+  /* gradient text used in hero */
+  .gradient-text { background: linear-gradient(90deg,#77c9ff,#c78bff); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline-block; }
+
+    /* Desktop (wider screens) tweaks to mirror provided showcase images */
+    @media (min-width: 1024px) {
+      /* Larger hero title on desktop */
+      .contact-hero h1 { font-size: 5.25rem; line-height: 0.98; margin-bottom: 0.6rem; }
+
+      /* push hero text slightly left and make the image larger and framed */
+      .contact-hero .rounded-arch { width: 60%; max-width: 520px; border-radius: 48% 48% 12px 12px / 48% 48% 12px 12px; border:4px solid rgba(246,250,253,0.85); box-shadow: 0 24px 60px rgba(2,6,23,0.6); }
+      .contact-hero .flex.justify-center { align-items: flex-start; }
+
+      /* Make content section form more spacious on desktop (left wide card) */
+      .contact-card { border-radius: 28px; }
+      .contact-card p, .contact-card h3 { color: var(--c-snow); }
+
+      /* Right sidebar stacked cards sizing */
+      .space-y-6 > .contact-card { min-height: 180px; display:flex; flex-direction:column; justify-content:center; }
+
+  /* Show response details inline on desktop; keep info button visible and use in-card popover */
+  .response-inline { display: block; }
+  /* Ensure fullscreen popup overlay stays hidden on desktop (we use in-card popover instead) */
+  #response-popup { display: none !important; }
+    }
+
+    /* By default (mobile) the inline details are hidden; preserved popup behavior for small screens */
+    .response-inline { display: none; }
+
+    /* in-card popover (anchored to top-right of the response card) */
+    .response-popover { position: absolute; top: 3.25rem; right: 1rem; z-index: 70; width: 320px; max-width: calc(100% - 2rem); display: none; }
+    .response-popover.open { display: block; }
+    .response-popover .card { background: rgba(10,25,49,0.98); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:1rem; box-shadow:0 12px 30px rgba(0,0,0,0.45); }
+    /* small screens: keep full-screen modal behavior and hide in-card popover area */
+    @media (max-width: 767px) {
+      .response-popover { display: none !important; }
+    }
+
+  /* Response item title and pill styles (desktop colored variants) */
+  .response-title { font-weight:700; font-size:1rem; }
+  .time-pill { padding:6px 10px; border-radius:9999px; font-size:0.75rem; color:var(--c-snow); }
+
+  .priority-title { color: #9fd8ff; }
+  .priority-pill { background: linear-gradient(135deg, rgba(74,127,167,0.16), rgba(74,127,167,0.24)); }
+
+  .standard-title { color: #9fffbf; }
+  .standard-pill { background: linear-gradient(135deg, rgba(34,139,94,0.12), rgba(34,139,94,0.2)); }
+
+  .extended-title { color: #ffd37a; }
+  .extended-pill { background: linear-gradient(135deg, rgba(204,153,51,0.12), rgba(204,153,51,0.22)); }
+
+  /* make inner response blocks slightly translucent with subtle inset */
+  .response-item { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; }
+
+    /* Placeholder & select styling */
+    :root { --placeholder-left:16px; --placeholder-top:16px; --placeholder-opacity:0.4; --placeholder-color:179,207,229; }
+    select.contact-input { padding-top:24px; padding-bottom:16px; padding-left:var(--placeholder-left) !important; }
+    select.contact-input option[value=""] { color: rgba(179,207,229,0.4) !important; font-style:italic !important; }
+    #subject { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23B3CFE5' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e"); background-position:left 16px center; background-repeat:no-repeat; background-size:16px; padding-left:48px !important; appearance:none; }
+
+    .contact-primary { background:linear-gradient(135deg, var(--c-deep), var(--c-navy)); box-shadow:0 8px 20px rgba(26,61,99,.35); transition:transform .15s ease, box-shadow .2s ease, background .2s ease; }
+    .contact-primary:hover { transform:translateY(-1px); box-shadow:0 12px 26px rgba(10,25,49,.45); }
+  .ig-btn { background: linear-gradient(135deg, #c78bff, #77c9ff); color:var(--c-snow); position:relative; z-index:0; overflow:hidden; }
+
+    /* Response popup / info button colors - use site palette for consistency */
+    /* use deeper navy gradient for the info button */
+    #response-info-btn { background: linear-gradient(135deg, var(--c-deep), var(--c-navy)); color:var(--c-snow); border:1px solid rgba(179,207,229,0.06); box-shadow:0 8px 18px rgba(10,25,49,0.36); }
+    #response-info-btn:focus { outline:2px solid rgba(179,207,229,0.14); }
+
+    /* make the popup container opaque and anchored to the site's navy */
+    #response-popup .response-popup-card {
+      background: rgba(10,25,49,0.98); /* opaque navy */
+      border: 1px solid rgba(179,207,229,0.06);
+      color: var(--c-snow);
+    }
+    /* stronger backdrop opacity */
+    #response-popup-backdrop { background: rgba(0,0,0,0.7); }
+    #response-popup .response-item { padding:1rem; border-radius:12px; }
+    #response-popup .response-item.priority { background: linear-gradient(135deg, rgba(74,127,167,0.08), rgba(26,61,99,0.12)); border:1px solid rgba(74,127,167,0.18); }
+    #response-popup .response-item.standard { background: linear-gradient(135deg, rgba(34,139,94,0.06), rgba(16,103,80,0.08)); border:1px solid rgba(34,139,94,0.12); }
+    #response-popup .response-item.extended { background: linear-gradient(135deg, rgba(204,153,51,0.06), rgba(160,110,40,0.08)); border:1px solid rgba(204,153,51,0.12); }
+
+  /* hide site social button(s) while popup is open to avoid stacking issues */
+  .popup-open .ig-btn { display:none !important; }
+
+  /* Photo modal styles (desktop default) */
+  /* Use flex and align-items:flex-start so the modal appears near the top of the viewport */
+  .photo-modal { position: fixed; inset:0; display:flex; align-items:flex-start; justify-content:center; padding-top:3.5rem; background:rgba(0,0,0,0.6); z-index:60; }
+  .photo-modal.hidden { display:none; }
+  .photo-modal .modal-card { width: min(920px,94vw); max-height:88vh; margin-top:1.5rem; overflow:hidden; background: linear-gradient(135deg, rgba(10,25,49,0.95), rgba(26,61,99,0.95)); border:3px solid rgba(179,207,229,0.2); border-radius:48% 48% 12px 12px / 48% 48% 12px 12px; box-shadow:0 18px 48px rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; }
+  .photo-modal .modal-card img { width:100%; height:100%; object-fit:cover; display:block; border-radius:inherit; }
+  .photo-modal .close-btn { position:absolute; top:18px; right:18px; background:rgba(0,0,0,0.45); color:var(--c-snow); border:none; padding:8px 10px; border-radius:8px; cursor:pointer; }
+
+  /* Animations for modals/popovers */
+  @keyframes modalFadeIn { from { opacity: 0; transform: translateY(8px) scale(.99); } to { opacity:1; transform: translateY(0) scale(1); } }
+  @keyframes modalFadeOut { from { opacity:1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(8px) scale(.99); } }
+
+  .modal-enter { animation: modalFadeIn 240ms cubic-bezier(.2,.9,.2,1) both; }
+  .modal-exit { animation: modalFadeOut 180ms cubic-bezier(.3,.1,.25,1) both; }
+
+  @keyframes backdropFadeIn { from { opacity: 0; } to { opacity: 0.6; } }
+  @keyframes backdropFadeOut { from { opacity: 0.6; } to { opacity: 0; } }
+  .backdrop-enter { animation: backdropFadeIn 240ms ease both; }
+  .backdrop-exit { animation: backdropFadeOut 180ms ease both; }
+
+    /* Mobile adjustments */
+    @media (max-width: 768px) {
+      body { background-attachment: scroll; }
+
+      /* let the hero size to its content on mobile */
+      .contact-hero { min-height:auto; padding-top:0.6rem; padding-bottom:0.6rem; display:flex; align-items:flex-start; position:relative; z-index:0; }
+
+      /* hide heavy accents */
+      .hero-accents { display:none; }
+
+      /* floating semicircle-like image */
+      .contact-hero .rounded-arch { position:absolute; right:1rem; top:14%; width:38%; max-width:260px; border-radius:48% 48% 12px 12px / 48% 48% 12px 12px; border-width:2px; box-shadow:0 12px 30px rgba(0,0,0,0.28); overflow:hidden; z-index:1; }
+      .contact-hero .rounded-arch img { width:100%; height:auto; max-height:40vh; object-fit:cover; display:block; }
+      .contact-hero .text-left { max-width: calc(100% - 44%); margin-top:0.3rem; }
+      .contact-hero .container { padding-right:5.5rem; }
+      .contact-hero h1 { font-size:1.9rem; line-height:1.03; margin-bottom:0.25rem; }
+      .contact-hero p { font-size:0.95rem; margin-bottom:0.5rem; }
+
+      /* make modal circular on small screens */
+      .photo-modal .modal-card { width: min(360px,78vw); height: min(360px,78vw); max-height:78vw; aspect-ratio:1/1; border-radius:9999px; padding:0; }
+      .photo-modal .close-btn { top:8px; right:8px; }
+    }
+
+    @media (max-width: 420px) {
+      .contact-hero { min-height:auto; }
+      .contact-hero .rounded-arch { width:34%; max-width:190px; top:12%; right:0.6rem; }
+      .contact-hero .container { padding-right:3.6rem; }
+      .contact-hero h1 { font-size:1.5rem; }
+      .contact-hero p { font-size:0.9rem; }
+  /* tighter card + inputs on small screens */
+  .contact-card { padding:0.5rem; }
+  #contact-form .contact-input { padding:8px !important; font-size:0.9rem; }
+  /* reduce vertical gap between form rows */
+  #contact-form .fl { margin-bottom:0.6rem; }
+  button.contact-primary { padding:8px 10px; font-size:0.9rem; }
+    }
+  </style>
 </head>
 
 <body class="text-gray-800 theme-basic-dark contact-theme">
@@ -257,14 +326,14 @@
 
     <!-- Main Content -->
     <main class="px-4">
-        <!-- Hero -->
-        <section class="contact-hero relative min-h-screen flex items-center">
+  <!-- Hero -->
+  <section class="contact-hero relative">
             <div class="hero-accents" aria-hidden="true">
                 <span class="accent accent-1"></span>
                 <span class="accent accent-2"></span>
             </div>
             <div class="container mx-auto px-4 relative z-10">
-                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="grid lg:grid-cols-2 gap-16 items-start">
                     <!-- Left: Content -->
                     <div class="text-left">
                         <h1 class="text-6xl md:text-7xl font-extrabold tracking-tight mb-8 leading-tight">
@@ -288,22 +357,29 @@
             </div>
         </section>
 
-        <!-- Content Section -->
-        <section class="container mx-auto px-4 py-20 relative z-10">
+    <!-- Photo Modal (hidden by default) -->
+    <div id="photo-modal" class="photo-modal hidden" aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-modal="true">
+        <button class="close-btn" id="photo-modal-close" aria-label="Close photo">✕</button>
+        <img id="photo-modal-img" src="contact-hero.jpeg" alt="Campus photo enlarged">
+      </div>
+    </div>
+
+  <!-- Content Section -->
+  <section class="container mx-auto px-4 py-12 relative z-10">
             <div class="max-w-6xl mx-auto">
                 <!-- Section Header -->
-                <div class="text-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-bold mb-6">Get in Touch</h2>
-                    <p class="text-xl opacity-80 max-w-2xl mx-auto">
-                    <p class="text-xl max-w-2xl mx-auto">
-                        Got something to share? We'd love to hear from you! Drop us a message and we'll get back to you soon.
-                    </p>
-                </div>
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4">Get in Touch</h2>
+          <p class="text-lg opacity-80 max-w-2xl mx-auto">
+            Got something to share? We'd love to hear from you! Drop us a message and we'll get back to you soon.
+          </p>
+        </div>
                 
                 <div class="grid lg:grid-cols-3 gap-12">
                     <!-- Form Card -->
                     <div class="lg:col-span-2">
-                        <div class="contact-card rounded-3xl p-8 md:p-12">
+                        <div class="contact-card rounded-3xl p-6 md:p-8">
                             <form id="contact-form" class="space-y-8">
                                 <div class="grid md:grid-cols-2 gap-6">
                                     <div class="fl">
@@ -351,52 +427,105 @@
                             
                             <!-- Instagram Button -->
                             <div class="flex justify-center">
-                                <a class="ig-btn w-16 h-16 rounded-3xl grid place-items-center relative overflow-hidden group hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl" href="#" aria-label="Instagram">
-                                    <!-- Background gradient -->
-                                    <div class="absolute inset-0 bg-gradient-to-br from-purple-500 via-pink-500 to-yellow-500 opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                    
-                                    <!-- Icon -->
-                                    <svg class="w-8 h-8 relative z-10 text-white" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M7 2C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5H7zm10 2a3 3 0 013 3v10a3 3 0 01-3 3H7a3 3 0 01-3-3V7a3 3 0 013-3h10z"/>
-                                        <path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0 2.2A2.8 2.8 0 1112 15.8 2.8 2.8 0 0112 9.2z"/>
-                                        <circle cx="17.5" cy="6.5" r="1.3"/>
-                                    </svg>
-                                    
-                                    <!-- Hover overlay -->
-                                    <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-3xl"></div>
-                                </a>
+                <a class="ig-btn w-16 h-16 rounded-3xl grid place-items-center group hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl" href="#" aria-label="Instagram">
+                  <!-- Icon -->
+                  <svg class="w-8 h-8 relative z-10 text-white" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 2C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5H7zm10 2a3 3 0 013 3v10a3 3 0 01-3 3H7a3 3 0 01-3-3V7a3 3 0 013-3h10z"/>
+                    <path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0 2.2A2.8 2.8 0 1112 15.8 2.8 2.8 0 0112 9.2z"/>
+                    <circle cx="17.5" cy="6.5" r="1.3"/>
+                  </svg>
+                </a>
                             </div>
                         </div>
 
-                        <!-- Response Time Card -->
-                        <div class="contact-card rounded-3xl p-8">
-                            <h3 class="text-2xl font-bold mb-6">We'll Get Back to You</h3>
-                            
-                            <!-- Priority Response -->
-                            <div class="mb-6 p-4 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl border border-blue-500/30">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-sm font-semibold text-blue-300">Priority Response</span>
-                                    <span class="text-xs bg-blue-500/30 px-2 py-1 rounded-full">12h</span>
-                                </div>
-                                <p class="text-sm opacity-80">Technical issues & urgent matters</p>
+                        <!-- Response Time Card (with info popup) -->
+                        <div class="contact-card rounded-3xl p-8 relative">
+                            <div class="flex items-start justify-between">
+                              <h3 class="text-2xl font-bold mb-6">We'll Get Back to You</h3>
+                              <button id="response-info-btn" class="ml-4 bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center" aria-expanded="false" aria-controls="response-popup" aria-label="More info about response times">i</button>
                             </div>
-                            
-                            <!-- Standard Response -->
-                            <div class="mb-6 p-4 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-2xl border border-green-500/30">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-sm font-semibold text-green-300">Standard Response</span>
-                                    <span class="text-xs bg-green-500/30 px-2 py-1 rounded-full">24h</span>
+
+                            <!-- Visible summary (kept brief) -->
+                            <p class="text-sm opacity-80 mb-4">Typical response times for different inquiry types. Tap the info button for details.</p>
+
+                            <!-- Inline response details for desktop -->
+                            <div class="response-inline space-y-3 mt-4">
+                                <div class="p-4 rounded-2xl border response-item priority">
+                                    <div class="flex items-center justify-between mb-2">
+                                      <span class="response-title priority-title">Priority Response</span>
+                                      <span class="time-pill priority-pill">12h</span>
+                                    </div>
+                                    <p class="text-sm text-white/80">Technical issues & urgent matters</p>
                                 </div>
-                                <p class="text-sm opacity-80">General inquiries & suggestions</p>
+
+                                <div class="p-4 rounded-2xl border response-item standard">
+                                    <div class="flex items-center justify-between mb-2">
+                                      <span class="response-title standard-title">Standard Response</span>
+                                      <span class="time-pill standard-pill">24h</span>
+                                    </div>
+                                    <p class="text-sm text-white/80">General inquiries & suggestions</p>
+                                </div>
+
+                                <div class="p-4 rounded-2xl border response-item extended">
+                                    <div class="flex items-center justify-between mb-2">
+                                      <span class="response-title extended-title">Extended Response</span>
+                                      <span class="time-pill extended-pill">48h</span>
+                                    </div>
+                                    <p class="text-sm text-white/80">Feature requests & detailed proposals</p>
+                                </div>
                             </div>
-                            
-                            <!-- Extended Response -->
-                            <div class="p-4 bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-2xl border border-amber-500/30">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-sm font-semibold text-amber-300">Extended Response</span>
-                                    <span class="text-xs bg-amber-500/30 px-2 py-1 rounded-full">48h</span>
+
+                            <!-- In-card popover (for desktop when info button is used) -->
+                            <div class="response-popover" id="response-popover" aria-hidden="true">
+                              <div class="card">
+                                <button id="response-popover-close" class="text-white bg-transparent border-0 text-lg float-right">✕</button>
+                                <h4 class="text-lg font-semibold text-white mb-3">Response Times</h4>
+                                <div class="space-y-3">
+                                  <div class="p-3 rounded-md priority">
+                                    <div class="flex justify-between items-center"><div><strong>Priority Response</strong><div class="text-sm opacity-80">Technical issues & urgent matters</div></div><div class="text-xs bg-white/10 px-2 py-1 rounded-full">12h</div></div>
+                                  </div>
+                                  <div class="p-3 rounded-md standard">
+                                    <div class="flex justify-between items-center"><div><strong>Standard Response</strong><div class="text-sm opacity-80">General inquiries & suggestions</div></div><div class="text-xs bg-white/10 px-2 py-1 rounded-full">24h</div></div>
+                                  </div>
+                                  <div class="p-3 rounded-md extended">
+                                    <div class="flex justify-between items-center"><div><strong>Extended Response</strong><div class="text-sm opacity-80">Feature requests & detailed proposals</div></div><div class="text-xs bg-white/10 px-2 py-1 rounded-full">48h</div></div>
+                                  </div>
                                 </div>
-                                <p class="text-sm opacity-80">Feature requests & detailed proposals</p>
+                              </div>
+                            </div>
+
+                            <!-- Hidden popup with full details -->
+                            <div id="response-popup" class="fixed inset-0 z-60 hidden items-center justify-center p-6" aria-hidden="true">
+                              <div class="absolute inset-0 bg-black/50" id="response-popup-backdrop"></div>
+                              <div class="relative max-w-md w-full response-popup-card rounded-2xl p-6 border border-white/10 shadow-2xl">
+                                <button id="response-popup-close" class="absolute top-4 right-4 text-white bg-transparent border-0 text-xl">✕</button>
+                                <h4 class="text-xl font-semibold text-white mb-4">Response Times</h4>
+                                <div class="space-y-4">
+                                  <div class="p-4 rounded-2xl border response-item priority">
+                                    <div class="flex items-center justify-between mb-2">
+                                      <span class="text-sm font-semibold text-blue-300">Priority Response</span>
+                                      <span class="text-xs bg-blue-500/30 px-2 py-1 rounded-full">12h</span>
+                                    </div>
+                                    <p class="text-sm text-white/80">Technical issues & urgent matters</p>
+                                  </div>
+
+                                  <div class="p-4 rounded-2xl border response-item standard">
+                                    <div class="flex items-center justify-between mb-2">
+                                      <span class="text-sm font-semibold text-green-300">Standard Response</span>
+                                      <span class="text-xs bg-green-500/30 px-2 py-1 rounded-full">24h</span>
+                                    </div>
+                                    <p class="text-sm text-white/80">General inquiries & suggestions</p>
+                                  </div>
+
+                                  <div class="p-4 rounded-2xl border response-item extended">
+                                    <div class="flex items-center justify-between mb-2">
+                                      <span class="text-sm font-semibold text-amber-300">Extended Response</span>
+                                      <span class="text-xs bg-amber-500/30 px-2 py-1 rounded-full">48h</span>
+                                    </div>
+                                    <p class="text-sm text-white/80">Feature requests & detailed proposals</p>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                         </div>
 
@@ -771,6 +900,77 @@
             }
         });
     </script>
+
+  <script>
+    // Response popup behavior (fixed toggle and ARIA management)
+    (function(){
+      const infoBtn = document.getElementById('response-info-btn');
+      const popup = document.getElementById('response-popup');
+      const popupClose = document.getElementById('response-popup-close');
+      const popupBackdrop = document.getElementById('response-popup-backdrop');
+
+      if (!infoBtn || !popup) return;
+
+      function openPopup(){
+        popup.classList.remove('hidden');
+        popup.classList.add('flex');
+        popup.setAttribute('aria-hidden','false');
+        infoBtn.setAttribute('aria-expanded','true');
+        if (popupClose) popupClose.focus();
+        document.body.style.overflow = 'hidden';
+        document.body.classList.add('popup-open');
+      }
+
+      function closePopup(){
+        popup.classList.add('hidden');
+        popup.classList.remove('flex');
+        popup.setAttribute('aria-hidden','true');
+        infoBtn.setAttribute('aria-expanded','false');
+        infoBtn.focus();
+        document.body.style.overflow = '';
+        document.body.classList.remove('popup-open');
+      }
+
+      // Adaptive behavior: on small screens open the fullscreen popup; on larger screens toggle in-card popover
+      const popover = document.getElementById('response-popover');
+      const popoverClose = document.getElementById('response-popover-close');
+
+      function isSmallScreen() { return window.matchMedia('(max-width: 767px)').matches; }
+
+      infoBtn.addEventListener('click', () => {
+        if (isSmallScreen()) {
+          // mobile: use fullscreen popup
+          const isOpen = !popup.classList.contains('hidden');
+          if (isOpen) closePopup(); else openPopup();
+        } else {
+          // desktop/tablet: toggle in-card popover
+          if (!popover) return;
+          const isOpen = popover.classList.contains('open');
+          if (isOpen) {
+            popover.classList.remove('open');
+            popover.setAttribute('aria-hidden','true');
+            infoBtn.setAttribute('aria-expanded','false');
+          } else {
+            popover.classList.add('open');
+            popover.setAttribute('aria-hidden','false');
+            infoBtn.setAttribute('aria-expanded','true');
+            // move focus to the popover close button
+            if (popoverClose) popoverClose.focus();
+          }
+        }
+      });
+
+      if (popupBackdrop) popupBackdrop.addEventListener('click', closePopup);
+      if (popupClose) popupClose.addEventListener('click', closePopup);
+      if (popoverClose) popoverClose.addEventListener('click', () => {
+        if (popover) { popover.classList.remove('open'); popover.setAttribute('aria-hidden','true'); infoBtn.setAttribute('aria-expanded','false'); infoBtn.focus(); }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && popup && !popup.classList.contains('hidden')) closePopup();
+      });
+  })();
+  </script>
 
 </body>
 

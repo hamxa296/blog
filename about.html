@@ -21,10 +21,6 @@
 
     <link rel="stylesheet" href="styles.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa;
-        }
         /* About page palette (matching contact.html) */
         .about-theme {
             --c-navy: #0A1931;
@@ -33,8 +29,9 @@
             --c-light: #B3CFE5;
             --c-snow: #F6FAFD;
         }
-        body {
-            background: 
+        html, body {
+            font-family: 'Inter', sans-serif;
+            background:
                 linear-gradient(135deg, rgba(0,0,0,0.4), rgba(10,25,49,0.3)),
                 radial-gradient(circle at 30% 20%, rgba(74,127,167,0.2), transparent),
                 radial-gradient(circle at 70% 80%, rgba(26,61,99,0.3), transparent),
@@ -46,26 +43,41 @@
         }
         
         .about-section {
-            background: linear-gradient(135deg, rgba(10,25,49,0.85), rgba(26,61,99,0.85));
+            /* transparent container so background shows through */
+            background: transparent;
             color: var(--c-snow);
-            border: 1px solid rgba(179,207,229,0.25);
-            box-shadow: 0 12px 30px rgba(10,25,49,0.35);
+            border: none;
+            box-shadow: none;
+            /* Let the section size to the image but limit to viewport so no page scroll is required */
+            min-height: auto !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
+            padding: 1.25rem;
         }
         
         .about-heading {
             color: var(--c-snow);
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-size: 2.5rem !important;
         }
         
         .about-text {
             color: var(--c-light);
         }
+        /* Make about-text readable in light mode */
+        .theme-basic-light .about-text {
+            color: #1A3D63 !important;
+        }
 
         /* About layout: vertical label on the left, text on the right */
         .about-layout {
             display: flex;
-            align-items: stretch;
+            align-items: center; /* vertical centering */
+            justify-content: center; /* center children horizontally */
             gap: 2rem;
+            height: 100%;
         }
         .about-vertical {
             writing-mode: vertical-rl;
@@ -79,6 +91,164 @@
         }
         .about-vertical h1 { 
             transform: rotate(180deg);
+        }
+
+        /* New responsive image area for About page */
+        .about-image {
+            flex: 0 0 auto;
+            max-width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            padding: 0.25rem;
+        }
+        .about-img {
+            /* Ensure the entire image is visible by containing it within the viewport.
+               The actual max-height is set via --about-img-max-height (calculated by script)
+               so we can subtract the header height and leave extra space at the bottom. */
+            width: auto;
+            height: auto;
+            max-width: calc(100vw - 4rem);
+            max-height: var(--about-img-max-height, calc(100vh - 8rem));
+            object-fit: contain; /* show whole image without cropping */
+            border-radius: 0.5rem;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+            display: inline-block;
+        }
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .about-section {
+                padding: 1.25rem !important;
+                border-radius: 0.75rem !important;
+                min-height: 0 !important;
+            }
+            .about-layout {
+                flex-direction: column;
+                gap: 1.25rem !important;
+                align-items: stretch !important;
+                height: auto;
+            }
+            .about-vertical {
+                writing-mode: horizontal-tb;
+                border-right: none;
+                border-bottom: 1px solid rgba(179,207,229,0.25);
+                justify-content: flex-start;
+                padding-bottom: 0.5rem;
+                padding-left: 0;
+                padding-right: 0;
+            }
+            /* Make image full-width on small screens */
+            .about-image {
+                flex-basis: 100%;
+                max-width: 100%;
+            }
+            .about-img {
+                max-height: calc(100vh - 6rem);
+                max-width: calc(100vw - 3rem);
+            }
+            .about-vertical h1 {
+                transform: none !important; /* Remove inversion on mobile */
+                font-size: 1.5rem !important;
+                text-align: left;
+                margin-bottom: 0.5rem;
+            }
+            .about-heading {
+                font-size: 1.5rem !important;
+            }
+            .about-text {
+                font-size: 0.95rem !important;
+            }
+            .space-y-6 > * + * {
+                margin-top: 1.25rem !important;
+            }
+            .about-section p {
+                line-height: 1.7 !important;
+            }
+        }
+        @media (max-width: 480px) {
+            .about-vertical h1,
+            .about-heading {
+                font-size: 1.25rem !important;
+                transform: none !important; /* Remove inversion on small screens */
+            }
+            .about-text {
+                font-size: 0.9rem !important;
+            }
+            .about-layout {
+                gap: 1.5rem !important;
+            }
+            .space-y-6 > * + * {
+                margin-top: 1.5rem !important;
+            }
+            .about-img {
+                max-height: calc(100vh - 5rem);
+                max-width: calc(100vw - 2rem);
+            }
+        }
+
+        /* Center the main container (accounts for header height) */
+        main.container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Subtract an approximate header height so the section centers in the remaining viewport */
+            min-height: calc(100vh - 88px);
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        /* Entrance & micro-interaction animations */
+    :root { --reveal-duration: 1100ms; --reveal-ease: cubic-bezier(.2,.9,.3,1); }
+
+        /* start hidden, animate in when .animate is added */
+        .about-section,
+        .about-section .about-img {
+            opacity: 0;
+            transform: translateY(12px) scale(.98);
+            transition: opacity var(--reveal-duration) var(--reveal-ease), transform var(--reveal-duration) var(--reveal-ease);
+        }
+
+        .about-section.animate {
+            opacity: 1;
+            transform: none;
+        }
+
+        .about-section.animate .about-img {
+            opacity: 1;
+            transform: none;
+            transition-delay: 120ms;
+        }
+
+        /* gentle float animation after reveal */
+        @keyframes floatY {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0); }
+        }
+
+        .about-img.animate-float {
+            animation: floatY 10s ease-in-out 1.5s infinite;
+        }
+
+        /* hover micro-interaction for pointer devices */
+        @media (hover: hover) and (pointer: fine) {
+            .about-img:hover {
+                transform: scale(1.02);
+                transition: transform 360ms ease;
+            }
+        }
+
+        /* Respect user motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+            .about-section,
+            .about-section .about-img,
+            .about-img.animate-float {
+                transition: none !important;
+                animation: none !important;
+                transform: none !important;
+                opacity: 1 !important;
+            }
         }
     </style>
 </head>
@@ -235,8 +405,7 @@
                         <div class="relative">
                           <button id="sidebar-calendar-dropdown-toggle" class="w-full flex items-center px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition duration-200">
                             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
                             Calendar
                             <svg class="w-4 h-4 ml-auto transition-transform duration-200" id="sidebar-calendar-dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -342,86 +511,19 @@
     <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-12">
-        <div class="max-w-6xl mx-auto">
-            <!-- About Us Section -->
-            <section class="about-section rounded-xl p-8 md:p-12">
-                <div class="about-layout">
-                    <div class="about-vertical px-2 md:px-4">
-                        <h1 class="about-heading text-5xl md:text-6xl font-black tracking-tight leading-none">ABOUT US</h1>
+    <main class="container mx-auto px-2 py-6 flex justify-center items-center min-h-[70vh]">
+        <div class="max-w-6xl w-full">
+            <!-- About Us Section (with responsive image) -->
+            <section class="about-section rounded-xl p-8 md:p-12 min-h-[220px] flex">
+                <div class="about-layout w-full h-full" style="align-items: center;">
+                    <!-- Image column -->
+                    <div class="about-image">
+                        <figure style="height:100%; margin:0;">
+                            <img src="about us.png" alt="Students at GIKI - About GIKI Chronicles" class="about-img">
+                        </figure>
                     </div>
-                    <div class="flex-1">
-                        <div class="space-y-6 about-text leading-relaxed max-w-4xl">
-                            <p class="text-xl">
-                                GIKI Chronicles is a student-run platform dedicated to capturing the diverse stories
-                                and unique experiences that define life at the Ghulam Ishaq Khan Institute. We aim to
-                                create a space where every student can share their voice, from late-night project struggles to the
-                                triumphs of campus events.
-                            </p>
-                            <p class="text-xl">
-                                Our mission is to build a living archive of our collective journey,
-                                fostering a stronger, more connected community through the power of storytelling.
-                                Through our platform, students can share their experiences, connect with peers,
-                                and contribute to the rich tapestry of campus life.
-                            </p>
-                            <p class="text-xl">
-                                We believe that every story matters, every experience is valuable, and every voice
-                                deserves to be heard. Join us in documenting the journey of GIKI students and
-                                building a community that celebrates diversity, creativity, and growth.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
-            <!-- The Team Section -->
-            <section class="mt-12 md:mt-16">
-                <div class="max-w-6xl mx-auto">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-                        <!-- Left side: MEET THE TEAM heading -->
-                        <div>
-                            <h2 class="text-7xl md:text-8xl font-black text-white leading-none">
-                                <div>MEET</div>
-                                <div>THE</div>
-                                <div>TEAM</div>
-                            </h2>
-                        </div>
-                        
-                                                <!-- Right side: Team pictures and content -->
-                        <div class="flex flex-col md:flex-row gap-6 justify-start lg:col-span-2">
-                            <!-- Team Member 1 -->
-                            <div class="flex flex-col items-center justify-center text-center p-4 rounded-xl bg-slate-800 bg-opacity-90 backdrop-blur-sm border border-slate-600 shadow-lg w-full md:w-96 lg:w-[32rem] md:h-72 overflow-hidden">
-                                <img class="w-24 h-24 rounded-full object-cover flex-shrink-0 ring-2 ring-slate-400 mb-3" 
-                                    src="pfps/pfp1.jpg" alt="Haris Farooq">
-                                <div class="flex-1 flex flex-col justify-center">
-                                    <h3 class="text-2xl md:text-3xl font-bold text-white mb-1">Haris Farooq</h3>
-                                    <p class="text-slate-200 text-sm font-medium">Frontend & UI/UX Lead</p>
-                                    <p class="text-slate-300 text-xs">Graphic Designer</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Team Member 2 -->
-                            <div class="flex flex-col items-center justify-center text-center p-4 rounded-xl bg-slate-800 bg-opacity-90 backdrop-blur-sm border border-slate-600 shadow-lg w-full md:w-96 lg:w-[32rem] md:h-72 overflow-hidden">
-                                <img class="w-24 h-24 rounded-full object-cover flex-shrink-0 ring-2 ring-slate-400 mb-3" 
-                                    src="pfps/pfp2.png" alt="Hamza Arif">
-                                <div class="flex-1 flex flex-col justify-center">
-                                    <h3 class="text-2xl md:text-3xl font-bold text-white mb-1">Hamza Arif</h3>
-                                    <p class="text-slate-200 text-sm font-medium">Backend, Database</p>
-                                    <p class="text-slate-300 text-xs">and Integration</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Team Member 3 -->
-                            <div class="flex flex-col items-center justify-center text-center p-4 rounded-xl bg-slate-800 bg-opacity-90 backdrop-blur-sm border border-slate-600 shadow-lg w-full md:w-96 lg:w-[32rem] md:h-72 overflow-hidden">
-                                <img class="w-24 h-24 rounded-full object-cover flex-shrink-0 ring-2 ring-slate-400 mb-3" 
-                                    src="pfps/pfp3.jpg" alt="Zara Gul Samoo">
-                                <div class="flex-1 flex flex-col justify-center">
-                                    <h3 class="text-2xl md:text-3xl font-bold text-white mb-1">Zara Gul Samoo</h3>
-                                    <p class="text-slate-200 text-sm font-medium">Features and</p>
-                                    <p class="text-slate-300 text-xs">Freshmen Guide</p>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Text column removed so image can center -->
                 </div>
             </section>
         </div>
@@ -452,6 +554,59 @@
           });
       }
     </script>
+
+        <script>
+            // Animate About section when it enters view. Respect prefers-reduced-motion.
+            (function() {
+                if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+                const section = document.querySelector('.about-section');
+                const img = document.querySelector('.about-img');
+                if (!section) return;
+
+                const io = new IntersectionObserver((entries, obs) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            section.classList.add('animate');
+                            // add float a bit after reveal
+                            setTimeout(() => img && img.classList.add('animate-float'), 1400);
+                            obs.disconnect();
+                        }
+                    });
+                }, { threshold: 0.2 });
+
+                io.observe(section);
+            })();
+        </script>
+
+                <script>
+                    // Compute available height for the about image so it always fits with a spare gap.
+                    (function() {
+                                    const SPARE_GAP = 48; // pixels to leave above AND below the image
+                                    const root = document.documentElement;
+
+                                    function updateMaxHeight() {
+                                        const vh = window.innerHeight;
+                                        const header = document.querySelector('header');
+                                        const headerH = header ? header.getBoundingClientRect().height : 88;
+                                        // subtract header + spare gap top + spare gap bottom
+                                        const max = Math.max(200, Math.floor(vh - headerH - (SPARE_GAP * 2)));
+                                        root.style.setProperty('--about-img-max-height', max + 'px');
+                                        // Also set a CSS var for the top gap so layout code could use it if needed
+                                        root.style.setProperty('--about-img-top-gap', SPARE_GAP + 'px');
+                                    }
+
+                                    // update when ready and on viewport changes
+                                    window.addEventListener('load', updateMaxHeight);
+                                    window.addEventListener('resize', updateMaxHeight);
+                                    window.addEventListener('orientationchange', updateMaxHeight);
+
+                                    // also update after images load (in case header/font metrics change)
+                                    document.addEventListener('DOMContentLoaded', updateMaxHeight);
+                                    // run once now
+                                    updateMaxHeight();
+                                })();
+                </script>
 
 </body>
 

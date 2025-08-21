@@ -33,6 +33,21 @@
         
         // Dispatch a custom event to notify other scripts that theme has changed
         window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: themeName } }));
+        
+        // Font color adjustment for light/dark mode
+        if (themeName === 'basic-light') {
+            document.body.style.color = '#1A3D63'; // dark blue for light mode
+            document.querySelectorAll('.recent-post-card, .post-card-hover').forEach(card => {
+                card.style.backgroundColor = '#F6FAFD'; // light background
+                card.style.color = '#1A3D63';
+            });
+        } else {
+            // Use an even lighter color for dark mode post text
+            document.querySelectorAll('.recent-post-card, .post-card-hover').forEach(card => {
+                card.style.backgroundColor = '#0A1931'; // dark background
+                card.style.color = '#E3F2FD'; // very light icy blue
+            });
+        }
     }
 
     // Function to initialize theme functionality
@@ -78,4 +93,4 @@
             applyTheme(savedTheme);
         }
     }, 500);
-})(); 
+})();

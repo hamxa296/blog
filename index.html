@@ -587,7 +587,7 @@
               <span class="text-8xl font-bold text-[#4A7FA7]/30 mr-6 section-number">01</span>
               <div class="flex-1">
                 <div class="w-24 h-px bg-[#B3CFE5]/40 mb-2"></div>
-                <span class="text-sm font-medium text-[#B3CFE5] tracking-widest">GET STARTED</span>
+                <span class="text-sm font-medium text-[#B3CFE5] tracking-wider">GET STARTED</span>
               </div>
             </div>
             
@@ -636,7 +636,7 @@
                <span class="text-8xl font-bold text-[#4A7FA7]/30 mr-6 section-number">02</span>
                <div class="flex-1">
                  <div class="w-24 h-px bg-[#B3CFE5]/40 mb-2"></div>
-                 <span class="text-sm font-medium text-[#B3CFE5] tracking-widest">STAY CONNECTED</span>
+                 <span class="text-sm font-medium text-[#B3CFE5] tracking-wider">STAY CONNECTED</span>
                </div>
              </div>
              
@@ -671,9 +671,9 @@
                <span class="text-8xl font-bold text-[#4A7FA7]/30 mr-6 section-number">03</span>
                <div class="flex-1">
                  <div class="w-24 h-px bg-[#B3CFE5]/40 mb-2"></div>
-                 <span class="text-sm font-medium text-[#B3CFE5] tracking-widest">CAMPUS ESSENTIALS</span>
+                 <span class="text-sm font-medium text-[#B3CFE5] tracking-wider">CAMPUS ESSENTIALS</span>
                </div>
-             </div>
+             </div
              
              <h2 class="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
                Explore Our Campus Through Photos!
@@ -875,8 +875,8 @@
   </div>
 
      <!-- Featured Post Modal -->
-   <div id="featured-post-modal" class="fixed inset-0 modal-backdrop flex items-center justify-center z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="featured-post-modal-title">
-     <div class="bg-gradient-to-br from-[#0A1931] via-[#1A3D63] to-[#4A7FA7] rounded-3xl shadow-2xl max-w-5xl w-full m-4 max-h-[98vh] overflow-y-auto">
+   <div id="featured-post-modal" class="fixed inset-0 modal-backdrop flex items-center justify-center overflow-y-auto p-4 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="featured-post-modal-title">
+     <div class="bg-gradient-to-br from-[#0A1931] via-[#1A3D63] to-[#4A7FA7] rounded-3xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto m-4">
       <!-- Modal Header -->
       <div class="flex items-center justify-between p-6 border-b border-[#B3CFE5]/20">
         <div class="flex items-center space-x-3">
@@ -925,9 +925,8 @@
   </div>
 
      <!-- Recent Post Modal -->
-   <div id="recent-post-modal" class="fixed inset-0 modal-backdrop z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="recent-post-modal-title">
-     <div class="h-full w-full flex items-center justify-center p-4">
-       <div class="bg-gradient-to-br from-[#0A1931] via-[#1A3D63] to-[#4A7FA7] rounded-3xl shadow-2xl max-w-5xl w-full max-h-[92vh] flex flex-col">
+   <div id="recent-post-modal" class="fixed inset-0 modal-backdrop flex items-center justify-center overflow-y-auto p-4 hidden" role="dialog" aria-modal="true" aria-labelledby="recent-post-modal-title">
+    <div class="bg-gradient-to-br from-[#0A1931] via-[#1A3D63] to-[#4A7FA7] rounded-3xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto flex flex-col">
       <!-- Modal Header -->
       <div class="flex items-center justify-between p-6 border-b border-[#B3CFE5]/20 flex-shrink-0">
         <div class="flex items-center space-x-3">
@@ -957,7 +956,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
             </svg>
             <span>Share</span>
-        </button>
+          </button>
           <button id="recent-post-bookmark" class="flex items-center space-x-2 px-4 py-2 bg-[#4A7FA7]/20 text-[#B3CFE5] rounded-full hover:bg-[#4A7FA7]/40 transition-colors duration-300">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
@@ -972,23 +971,8 @@
           </svg>
         </a>
       </div>
-      </div>
-     </div>
-   </div>
-
-     <!-- Footer -->
-   <footer class="bg-[#0A1931] text-white mt-16">
-    <div class="container mx-auto px-6 py-8">
-      <div class="flex flex-col md:flex-row justify-between items-center">
-        <p>&copy; 2025 GIKI Chronicles. All Rights Reserved.</p>
-
-                 <div class="flex mt-4 md:mt-0 space-x-4">
-           <a href="#" class="text-[#B3CFE5] hover:text-white transition duration-300">Instagram</a>
-         </div>
-
-      </div>
     </div>
-  </footer>
+  </div>
 
   <!-- Firebase SDKs (required before combined.min.js) -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -1114,6 +1098,8 @@
         }
       });
 
+
+
       // Function to display featured post
       const displayFeaturedPost = async () => {
         try {
@@ -1198,7 +1184,7 @@
                 </div>
               </div>
             `;
-            
+
             // Update modal read more link
             document.getElementById('featured-post-read-more').href = `post.html?id=${post.id}`;
           } else {
@@ -1243,65 +1229,37 @@
             const recentPosts = result.posts.filter(post => !post.isFeatured).slice(0, 3);
             
             recentPosts.forEach(post => {
-              const postCard = document.createElement('div');
-              postCard.className = 'group relative';
-              
               const postDate = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : 'N/A';
-              
-              postCard.innerHTML = `
-                <div class="bg-[#0A1931] rounded-2xl overflow-hidden shadow-xl border border-[#4A7FA7]/20 hover:border-[#4A7FA7]/40 h-96 relative post-card-hover group">
-                  <!-- TOP: Clean Image Section - No Text Overlay -->
-                  <div class="h-2/3 relative overflow-hidden">
-                    <img src="${post.photoUrl || 'https://placehold.co/600x400/4A7FA7/FFFFFF?text=GIKI+Blog'}" 
-                         alt="${post.title}" 
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                  </div>
-                  
-                  <!-- Date Badge - Top right corner -->
-                  <div class="absolute top-4 right-4 bg-[#B3CFE5] text-[#0A1931] px-3 py-1 rounded-full text-xs font-bold z-20">
-                    ${postDate}
-                  </div>
-                  
-                  <!-- BOTTOM: Content Section - Separate from image -->
-                  <div class="h-1/3 p-4 bg-gradient-to-br from-[#0A1931] to-[#1A3D63] flex flex-col justify-between">
-                    <!-- Title and Description -->
-                    <div class="mb-3">
-                      <h4 class="text-lg font-bold text-white mb-2 group-hover:text-[#B3CFE5] transition-colors duration-300 line-clamp-1">
-                        ${post.title}
-                      </h4>
-                      <p class="text-[#B3CFE5]/80 text-sm mb-3 leading-relaxed line-clamp-2">
-                        ${post.description || 'A fascinating story from the GIKI community.'}
-                      </p>
+              const card = document.createElement('div');
+              card.className = 'bg-white rounded-xl shadow-lg overflow-hidden flex flex-col border border-[#B3CFE5]/30 h-[370px]';
+
+              card.innerHTML = `
+                <div class="h-44 w-full overflow-hidden">
+                  <img src="${post.photoUrl || 'https://placehold.co/600x400/4A7FA7/FFFFFF?text=GIKI+Blog'}"
+                    alt="${post.title}"
+                    class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                </div>
+                <div class="flex-1 flex flex-col justify-between px-5 py-4">
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="bg-[#B3CFE5] text-[#0A1931] text-xs font-semibold px-3 py-1 rounded-full">${postDate}</span>
+                      <span class="bg-[#4A7FA7]/10 text-[#4A7FA7] text-xs px-2 py-1 rounded-full">${post.genre || 'Campus Life'}</span>
                     </div>
-                    
-                    <!-- Meta Info -->
-                    <div class="flex items-center justify-between mb-4">
-                      <div class="flex items-center text-[#B3CFE5]/80 text-sm">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <span>5 min read</span>
-                      </div>
-                      <div class="flex items-center text-[#B3CFE5]/80 text-sm">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                        </svg>
-                        <span>24</span>
-                      </div>
-                    </div>
-                    
-                      <!-- Action Button -->
-                      <button onclick="openRecentPostModal('${post.id}')" class="w-full py-2 px-4 bg-[#B3CFE5] text-[#0A1931] font-semibold rounded-xl hover:bg-white transition-all duration-300 transform hover:scale-105 shadow-lg text-center block">
-                        Read More →
-                      </button>
+                    <h4 class="text-lg font-bold text-[#0A1931] mb-2 line-clamp-1">${post.title}</h4>
+                    <p class="text-sm text-[#1A3D63] mb-3 line-clamp-2" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                      ${post.description || 'A fascinating story from the GIKI community.'}
+                    </p>
+                  </div>
+                  <div class="flex items-center justify-between mt-2">
+                    <button onclick="openRecentPostModal('${post.id}')"
+                      class="bg-[#4A7FA7] text-white px-4 py-2 rounded-full font-semibold hover:bg-[#1A3D63] transition duration-200">
+                      Read More
+                    </button>
+                    <span class="text-xs text-[#4A7FA7]/70">5 min read</span>
                   </div>
                 </div>
-                
-                <!-- Floating Decorative Element -->
-                <div class="absolute -top-2 -right-2 w-4 h-4 bg-[#B3CFE5] rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-300 floating-circle"></div>
               `;
-              
-              recentPostsGrid.appendChild(postCard);
+              recentPostsGrid.appendChild(card);
             });
           } else {
             // If no posts, hide skeleton and show message
@@ -1378,7 +1336,7 @@
                 </svg>
               </div>
               <h3 class="text-4xl font-bold text-white mb-4">Featured Story Preview</h3>
-              <div class="w-32 h-1 bg-gradient-to-r from-[#4A7FA7] to-[#B3CFE5] mx-auto mb-6 rounded-full"></div>
+              <div class="w-32 h-1 bg-gradient-to-r from-[#4A7FA7] to-[#B3CFE5] mx-auto mb-6"></div>
             </div>
             
             <!-- Content Preview Card -->
@@ -1405,7 +1363,7 @@
                   <div class="flex items-center space-x-6 text-sm text-[#B3CFE5]/70">
                     <span class="flex items-center space-x-2">
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                       </svg>
                       <span>Full Article</span>
                     </span>
@@ -1417,7 +1375,7 @@
                     </span>
                     <span class="flex items-center space-x-2">
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4 4 0 000 6.364L12 20.364l7.682-7.682a4 4 0 00-6.364-6.364L12 7.636l-1.318-1.318a4 4 0 00-6.364 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4 4 0 00-6.364 0z"></path>
                       </svg>
                       <span>Reactions</span>
                     </span>
@@ -1484,7 +1442,7 @@
                 </div>
                 
                 <!-- BOTTOM: Details Section - Compact Card -->
-                <div class="bg-gradient-to-br from-[#0A1931]/90 to-[#1A3D63]/90 rounded-2xl p-4 border border-[#B3CFE5]/30 backdrop-blur-sm shadow-lg">
+                <div class="bg-gradient-to-br from-[#0A1931]/90 to-[#1A3D63]/90 rounded-2xl p-4 border border-[#B3CFE5]/20 text-center">
                   <!-- Header with badge and date -->
                   <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center space-x-3">
@@ -1499,7 +1457,7 @@
                   
                   <!-- Description -->
                   ${description ? `<p class="text-[#B3CFE5]/90 text-sm leading-relaxed mb-3">${description}</p>` : ''}
-                  
+
                   <!-- Meta Info Row -->
                   <div class="flex items-center justify-between pt-3 pb-1 border-t border-[#B3CFE5]/20">
                     <div class="flex items-center space-x-3 text-[#B3CFE5]/80">
@@ -1511,9 +1469,15 @@
                       </div>
                       <div class="flex items-center space-x-1">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4 4 0 000 6.364L12 20.364l7.682-7.682a4 4 0 00-6.364-6.364L12 7.636l-1.318-1.318a4 4 0 00-6.364 0z"></path>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                         </svg>
-                        <span class="text-xs">24 reactions</span>
+                        <span class="text-xs">Comments</span>
+                      </div>
+                      <div class="flex items-center space-x-1">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4 4 0 00-6.364 0z"></path>
+                        </svg>
+                        <span class="text-xs">Reactions</span>
                       </div>
                     </div>
                     
@@ -1541,7 +1505,7 @@
               <h3 class="text-2xl font-bold text-white mb-2">Story Preview</h3>
               <p class="text-[#B3CFE5]/90">Click \"Read Full Story\" below to open the article.</p>
             </div>
-          </div>`;
+          </div>`;        
       } catch (e) {
         console.error('Error loading post for modal', e);
         modalContent.innerHTML = `
