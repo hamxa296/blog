@@ -60,6 +60,26 @@
         .about-text {
             color: var(--c-light);
         }
+
+        /* About layout: vertical label on the left, text on the right */
+        .about-layout {
+            display: flex;
+            align-items: stretch;
+            gap: 2rem;
+        }
+        .about-vertical {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            border-right: 1px solid rgba(179,207,229,0.25);
+        }
+        .about-vertical h1 { 
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 
@@ -326,12 +346,12 @@
         <div class="max-w-6xl mx-auto">
             <!-- About Us Section -->
             <section class="about-section rounded-xl p-8 md:p-12">
-                <div class="max-w-4xl mx-auto">
-                    <!-- Text content -->
-                    <div class="space-y-8">
-
-                        <h1 class="about-heading text-8xl md:text-9xl font-black tracking-tight leading-none text-center">ABOUT US</h1>
-                        <div class="space-y-6 about-text leading-relaxed">
+                <div class="about-layout">
+                    <div class="about-vertical px-2 md:px-4">
+                        <h1 class="about-heading text-5xl md:text-6xl font-black tracking-tight leading-none">ABOUT US</h1>
+                    </div>
+                    <div class="flex-1">
+                        <div class="space-y-6 about-text leading-relaxed max-w-4xl">
                             <p class="text-xl">
                                 GIKI Chronicles is a student-run platform dedicated to capturing the diverse stories
                                 and unique experiences that define life at the Ghulam Ishaq Khan Institute. We aim to
@@ -355,9 +375,9 @@
             </section>
 
             <!-- The Team Section -->
-            <section class="mt-4">
+            <section class="mt-12 md:mt-16">
                 <div class="max-w-6xl mx-auto">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
                         <!-- Left side: MEET THE TEAM heading -->
                         <div>
                             <h2 class="text-7xl md:text-8xl font-black text-white leading-none">
@@ -368,35 +388,35 @@
                         </div>
                         
                                                 <!-- Right side: Team pictures and content -->
-                        <div class="flex flex-col md:flex-row gap-6 justify-center">
+                        <div class="flex flex-col md:flex-row gap-6 justify-start lg:col-span-2">
                             <!-- Team Member 1 -->
-                            <div class="flex flex-col items-center justify-center text-center p-4 rounded-xl bg-slate-800 bg-opacity-90 backdrop-blur-sm border border-slate-600 shadow-lg w-full md:w-64 md:h-64 overflow-hidden">
-                                <img class="w-16 h-16 rounded-full object-cover flex-shrink-0 ring-2 ring-slate-400 mb-3" 
+                            <div class="flex flex-col items-center justify-center text-center p-4 rounded-xl bg-slate-800 bg-opacity-90 backdrop-blur-sm border border-slate-600 shadow-lg w-full md:w-96 lg:w-[32rem] md:h-72 overflow-hidden">
+                                <img class="w-24 h-24 rounded-full object-cover flex-shrink-0 ring-2 ring-slate-400 mb-3" 
                                     src="pfps/pfp1.jpg" alt="Haris Farooq">
                                 <div class="flex-1 flex flex-col justify-center">
-                                    <h3 class="text-lg font-bold text-white mb-1">Haris Farooq</h3>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-white mb-1">Haris Farooq</h3>
                                     <p class="text-slate-200 text-sm font-medium">Frontend & UI/UX Lead</p>
                                     <p class="text-slate-300 text-xs">Graphic Designer</p>
                                 </div>
                             </div>
                             
                             <!-- Team Member 2 -->
-                            <div class="flex flex-col items-center justify-center text-center p-4 rounded-xl bg-slate-800 bg-opacity-90 backdrop-blur-sm border border-slate-600 shadow-lg w-full md:w-64 md:h-64 overflow-hidden">
-                                <img class="w-16 h-16 rounded-full object-cover flex-shrink-0 ring-2 ring-slate-400 mb-3" 
+                            <div class="flex flex-col items-center justify-center text-center p-4 rounded-xl bg-slate-800 bg-opacity-90 backdrop-blur-sm border border-slate-600 shadow-lg w-full md:w-96 lg:w-[32rem] md:h-72 overflow-hidden">
+                                <img class="w-24 h-24 rounded-full object-cover flex-shrink-0 ring-2 ring-slate-400 mb-3" 
                                     src="pfps/pfp2.png" alt="Hamza Arif">
                                 <div class="flex-1 flex flex-col justify-center">
-                                    <h3 class="text-lg font-bold text-white mb-1">Hamza Arif</h3>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-white mb-1">Hamza Arif</h3>
                                     <p class="text-slate-200 text-sm font-medium">Backend, Database</p>
                                     <p class="text-slate-300 text-xs">and Integration</p>
                                 </div>
                             </div>
                             
                             <!-- Team Member 3 -->
-                            <div class="flex flex-col items-center justify-center text-center p-4 rounded-xl bg-slate-800 bg-opacity-90 backdrop-blur-sm border border-slate-600 shadow-lg w-full md:w-64 md:h-64 overflow-hidden">
-                                <img class="w-16 h-16 rounded-full object-cover flex-shrink-0 ring-2 ring-slate-400 mb-3" 
+                            <div class="flex flex-col items-center justify-center text-center p-4 rounded-xl bg-slate-800 bg-opacity-90 backdrop-blur-sm border border-slate-600 shadow-lg w-full md:w-96 lg:w-[32rem] md:h-72 overflow-hidden">
+                                <img class="w-24 h-24 rounded-full object-cover flex-shrink-0 ring-2 ring-slate-400 mb-3" 
                                     src="pfps/pfp3.jpg" alt="Zara Gul Samoo">
                                 <div class="flex-1 flex flex-col justify-center">
-                                    <h3 class="text-lg font-bold text-white mb-1">Zara Gul Samoo</h3>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-white mb-1">Zara Gul Samoo</h3>
                                     <p class="text-slate-200 text-sm font-medium">Features and</p>
                                     <p class="text-slate-300 text-xs">Freshmen Guide</p>
                                 </div>
