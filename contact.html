@@ -912,23 +912,63 @@
       if (!infoBtn || !popup) return;
 
       function openPopup(){
+        const popupCard = popup.querySelector('.response-popup-card');
+        // show container
         popup.classList.remove('hidden');
         popup.classList.add('flex');
         popup.setAttribute('aria-hidden','false');
         infoBtn.setAttribute('aria-expanded','true');
-        if (popupClose) popupClose.focus();
         document.body.style.overflow = 'hidden';
         document.body.classList.add('popup-open');
+
+        // animate backdrop and card
+        if (popupBackdrop) {
+          popupBackdrop.classList.remove('backdrop-exit');
+          popupBackdrop.classList.add('backdrop-enter');
+        }
+        if (popupCard) {
+          popupCard.classList.remove('modal-exit');
+          popupCard.classList.add('modal-enter');
+          // focus close after animation (safe fallback)
+          popupCard.addEventListener('animationend', function once() { if (popupClose) popupClose.focus(); popupCard.removeEventListener('animationend', once); });
+        } else {
+          if (popupClose) popupClose.focus();
+        }
       }
 
       function closePopup(){
-        popup.classList.add('hidden');
-        popup.classList.remove('flex');
-        popup.setAttribute('aria-hidden','true');
-        infoBtn.setAttribute('aria-expanded','false');
-        infoBtn.focus();
-        document.body.style.overflow = '';
-        document.body.classList.remove('popup-open');
+        const popupCard = popup.querySelector('.response-popup-card');
+        // play exit animations
+        if (popupCard) {
+          popupCard.classList.remove('modal-enter');
+          popupCard.classList.add('modal-exit');
+        }
+        if (popupBackdrop) {
+          popupBackdrop.classList.remove('backdrop-enter');
+          popupBackdrop.classList.add('backdrop-exit');
+        }
+
+        // after animation, hide
+        const onEnd = () => {
+          popup.classList.add('hidden');
+          popup.classList.remove('flex');
+          popup.setAttribute('aria-hidden','true');
+          infoBtn.setAttribute('aria-expanded','false');
+          infoBtn.focus();
+          document.body.style.overflow = '';
+          document.body.classList.remove('popup-open');
+          if (popupCard) { popupCard.classList.remove('modal-exit'); }
+          if (popupBackdrop) { popupBackdrop.classList.remove('backdrop-exit'); }
+          if (popupCard) popupCard.removeEventListener('animationend', onEnd);
+        };
+
+        if (popupCard) {
+          popupCard.addEventListener('animationend', onEnd);
+        } else if (popupBackdrop) {
+          popupBackdrop.addEventListener('animationend', onEnd);
+        } else {
+          onEnd();
+        }
       }
 
       // Adaptive behavior: on small screens open the fullscreen popup; on larger screens toggle in-card popover
@@ -969,6 +1009,65 @@
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && popup && !popup.classList.contains('hidden')) closePopup();
       });
+  })();
+
+  // Photo modal behavior with animations
+  (function(){
+    const modal = document.getElementById('photo-modal');
+    const modalImg = document.getElementById('photo-modal-img');
+    const closeBtn = document.getElementById('photo-modal-close');
+    const modalCard = modal ? modal.querySelector('.modal-card') : null;
+
+    if (!modal || !modalImg) return;
+
+    function openPhotoModal(src, alt) {
+      if (modalImg) { modalImg.src = src; modalImg.alt = alt || '' }
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden','false');
+      document.body.style.overflow = 'hidden';
+      // animate backdrop via class on modal
+      modal.classList.remove('modal-exit');
+      modal.classList.add('modal-enter');
+      if (modalCard) {
+        modalCard.classList.remove('modal-exit');
+        modalCard.classList.add('modal-enter');
+      }
+    }
+
+    function closePhotoModal() {
+      if (modalCard) {
+        modalCard.classList.remove('modal-enter');
+        modalCard.classList.add('modal-exit');
+      }
+      modal.classList.remove('modal-enter');
+      modal.classList.add('modal-exit');
+
+      const onEnd = () => {
+        modal.classList.add('hidden');
+        modal.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
+        if (modalCard) modalCard.classList.remove('modal-exit');
+        modal.removeEventListener('animationend', onEnd);
+      };
+
+      modal.addEventListener('animationend', onEnd);
+    }
+
+    // find hero thumbnail image and wire click
+    const heroImg = document.querySelector('.contact-hero .rounded-arch img');
+    if (heroImg) heroImg.addEventListener('click', () => openPhotoModal(heroImg.src, heroImg.alt));
+
+    if (closeBtn) closeBtn.addEventListener('click', closePhotoModal);
+
+    // click outside modal content closes
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closePhotoModal();
+    });
+
+    // close on ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) closePhotoModal();
+    });
   })();
   </script>
 
