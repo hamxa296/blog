@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="theme-basic-dark">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -21,7 +21,7 @@
     <!-- Custom Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Lora:wght@400;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&family=Rock+Salt&family=Special+Elite&family=Indie+Flower&display=swap"
         rel="stylesheet">
 
     <style>
@@ -33,8 +33,115 @@
             font-family: 'Lora', serif;
         }
 
+        /* Guide theme palette (mirrors contact/index) */
+        .guide-theme {
+            --c-navy: #0A1931;
+            --c-deep: #1A3D63;
+            --c-steel: #4A7FA7;
+            --c-light: #B3CFE5;
+            --c-snow: #F6FAFD;
+        }
 
+        /* Blueish background with layered gradients and campus image */
+        body.guide-theme {
+            background:
+                linear-gradient(135deg, rgba(0,0,0,0.4), rgba(10,25,49,0.3)),
+                radial-gradient(circle at 30% 20%, rgba(74,127,167,0.2), transparent),
+                radial-gradient(circle at 70% 80%, rgba(26,61,99,0.3), transparent),
+                url('background.jpeg') !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-attachment: fixed !important;
+            background-repeat: no-repeat !important;
+            background-color: #0A1931 !important;
+            overflow-x: hidden; /* prevent horizontal scrollbar on hover effects */
+        }
 
+        /* Neutralize global theme backgrounds applied to <html> to avoid flash of old bg */
+        html.theme-basic-dark, html.theme-basic-light {
+            background: transparent !important;
+            background-image: none !important;
+            background-color: transparent !important;
+        }
+
+        /* Chalky, handwritten display title */
+        .handwriting-title {
+            font-family: 'Rock Salt', 'Special Elite', 'Indie Flower', cursive;
+            letter-spacing: 1px;
+            transform: rotate(-1deg) skew(-0.5deg);
+            text-shadow: 0 2px 12px rgba(0,0,0,0.25);
+        }
+
+        /* Container styling to match the vibe */
+        .chronicle-container {
+            background: linear-gradient(135deg, rgba(10,25,49,0.85), rgba(26,61,99,0.85));
+            color: var(--c-snow);
+            border: 1px solid rgba(179,207,229,0.2);
+            box-shadow: 0 16px 40px rgba(10,25,49,0.45);
+        }
+
+        /* Cards on the grid (icy blue background, darker blue text) */
+        .card-panel {
+            /* lighter abstract paint-splash in blues: soft wash + translucent drops + streaks */
+            background:
+                /* lighter drops */
+                radial-gradient(150px 110px at 14% 22%, rgba(207,227,242,0.80), transparent 62%),
+                radial-gradient(130px 95px at 82% 18%, rgba(187,214,236,0.65), transparent 60%),
+                radial-gradient(170px 120px at 30% 78%, rgba(168,203,231,0.50), transparent 60%),
+                radial-gradient(190px 130px at 72% 72%, rgba(141,181,217,0.45), transparent 58%),
+                /* soft streaks */
+                linear-gradient(160deg, rgba(255,255,255,0.08) 12%, transparent 12.5% 20%, rgba(255,255,255,0.06) 20.5% 28%, transparent 28.5% 36%, rgba(255,255,255,0.05) 36.5% 44%, transparent 44.5%),
+                /* base wash (lighter blues) */
+                linear-gradient(155deg, #CFE3F2 0%, #A7CBE6 58%, #8DB5D9 100%);
+            background-blend-mode: screen, screen, overlay, overlay, overlay, normal;
+            color: var(--c-deep);
+            border: 1px solid rgba(26,61,99,0.22);
+            box-shadow: 0 12px 30px rgba(10,25,49,0.12);
+            transition: box-shadow .25s ease, transform .25s ease, background .3s ease;
+            will-change: transform;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            border-radius: inherit;
+            /* extra micro splatters */
+            background:
+                radial-gradient(6px 6px at 18% 30%, rgba(255,255,255,0.35), transparent 60%),
+                radial-gradient(9px 9px at 26% 60%, rgba(207,227,242,0.40), transparent 62%),
+                radial-gradient(7px 7px at 78% 48%, rgba(255,255,255,0.28), transparent 62%),
+                radial-gradient(6px 6px at 64% 26%, rgba(207,227,242,0.35), transparent 62%),
+                radial-gradient(5px 5px at 42% 18%, rgba(255,255,255,0.25), transparent 62%);
+            mix-blend-mode: overlay;
+        }
+        .card-panel:hover {
+            border-color: rgba(26,61,99,0.36);
+            box-shadow: 0 16px 40px rgba(10,25,49,0.20);
+            background:
+                radial-gradient(150px 110px at 12% 20%, rgba(207,227,242,0.88), transparent 62%),
+                radial-gradient(130px 95px at 84% 16%, rgba(187,214,236,0.72), transparent 60%),
+                radial-gradient(170px 120px at 28% 76%, rgba(168,203,231,0.56), transparent 60%),
+                radial-gradient(190px 130px at 74% 70%, rgba(141,181,217,0.50), transparent 58%),
+                linear-gradient(160deg, rgba(255,255,255,0.10) 10%, transparent 10.5% 22%, rgba(255,255,255,0.08) 22.5% 32%, transparent 32.5% 44%, rgba(255,255,255,0.06) 44.5%),
+                linear-gradient(155deg, #CFE3F2 0%, #9EC4E2 58%, #89B7DB 100%);
+            background-blend-mode: screen, screen, overlay, overlay, overlay, normal;
+            transform: translateY(-2px); /* subtle lift without scaling to avoid cutoff */
+        }
+
+        /* Expanded section panel */
+        .guide-section-panel {
+            background: linear-gradient(135deg, rgba(10,25,49,0.9), rgba(26,61,99,0.9));
+            color: var(--c-snow);
+            border: 1px solid rgba(179,207,229,0.25);
+        }
+
+        /* Accent utilities */
+        .accent-divider { background-color: rgba(179,207,229,0.45); }
+        .accent-dot { background-color: rgba(179,207,229,0.7); }
     </style>
          <script>
          // Apply theme immediately to prevent flash
@@ -82,7 +189,7 @@
 
 </head>
 
-<body class="text-gray-800">
+<body class="text-gray-800 guide-theme">
 
     <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
@@ -107,20 +214,20 @@
             <!-- Right side: Navigation -->
             <div class="hidden md:flex items-center space-x-6 ml-auto">
                 <!-- <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a> -->
-                <a href="about.html" class="text-gray-600 hover:text-blue-600 transition duration-300">About</a>
+                <a href="about.html" class="text-gray-600 hover:text-[#4A7FA7] transition duration-300">About</a>
                 <!-- <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a> -->
                 <a href="gallery.html"
-                    class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+                    class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
                     <span class="relative z-10">Gallery</span>
                 </a>
 
                 <a href="guide.html" data-nav
-                    class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+                    class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
                     <span class="relative z-10">Freshmen Guide</span>
                 </a>
 
                 <a href="calendar.html" data-nav
-                    class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+                    class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
                     <span class="relative z-10">Calendar</span>
                 </a>
                 <!-- GUEST NAVIGATION (DESKTOP) -->
@@ -1193,39 +1300,39 @@
             }, [guideSections]);
 
             return (
-                <div className="bg-gray-900 min-h-screen font-inter text-gray-100 pt-20 p-2 sm:p-8">
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 sm:p-8 mb-4 sm:mb-8 rounded-xl shadow-lg text-center">
-                        <h1 className="text-2xl sm:text-4xl font-bold font-lora">GIKI Freshman Guide</h1>
-                        <p className="mt-2 text-base sm:text-lg text-gray-200">Your ultimate resource for a smooth start at GIKI.</p>
+                <div className="min-h-screen font-inter text-gray-100 pt-20 p-2 sm:p-8">
+                    <div className="max-w-5xl mx-auto bg-gradient-to-r from-[#0A1931] to-[#1A3D63] text-white p-4 sm:p-8 mb-4 sm:mb-8 rounded-xl shadow-lg text-center border border-[#B3CFE5]/30">
+                        <h1 className="text-2xl sm:text-4xl font-bold font-lora handwriting-title">GIKI Freshman Guide</h1>
+                        <p className="mt-2 text-base sm:text-lg text-[#B3CFE5]">Your ultimate resource for a smooth start at GIKI.</p>
                     </div>
-                    <div className="max-w-5xl mx-auto chronicle-container bg-gray-800 p-3 sm:p-6 lg:p-10 rounded-xl sm:rounded-2xl shadow-xl border border-gray-700">
+                    <div className="max-w-5xl mx-auto chronicle-container p-3 sm:p-6 lg:p-10 rounded-xl sm:rounded-2xl shadow-xl">
                         {/* Connection Status Indicator */}
                         {firebaseConnectionStatus === 'connecting' && (
-                            <div className="mb-4 p-3 bg-blue-900 border border-blue-600 rounded-lg">
+                            <div className="mb-4 p-3 bg-[#0A1931] border border-[#4A7FA7] rounded-lg">
                                 <div className="flex items-center justify-center">
-                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-[#B3CFE5]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
-                                    <span className="text-blue-300 text-sm">Connecting...</span>
+                                    <span className="text-[#B3CFE5] text-sm">Connecting...</span>
                                 </div>
                             </div>
                         )}
 
                         {firebaseConnectionStatus === 'error' && (
-                            <div className="mb-4 p-3 bg-yellow-900 border border-yellow-600 rounded-lg">
+                            <div className="mb-4 p-3 bg-[#1A3D63] border border-[#4A7FA7] rounded-lg">
                                 <div className="flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-yellow-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-5 h-5 text-[#B3CFE5] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
                                     </svg>
-                                    <span className="text-yellow-300 text-sm">Using offline mode - some features may be limited</span>
+                                    <span className="text-[#B3CFE5] text-sm">Using offline mode - some features may be limited</span>
                                 </div>
                             </div>
                         )}
 
                         <div className="text-center mb-6 sm:mb-10">
-                            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold font-lora text-blue-400">Welcome to GIKI!</h2>
-                            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-gray-300 max-w-2xl mx-auto px-2">
+                            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold font-lora text-[#B3CFE5] handwriting-title">Welcome to GIKI!</h2>
+                            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-[#B3CFE5] max-w-2xl mx-auto px-2">
                                 Welcome to your new home! This guide is designed to help you navigate your first few weeks here. We've compiled essential information, tips, and resources to make your transition as smooth as possible.
                             </p>
                         </div>
@@ -1234,9 +1341,9 @@
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6">
                                     {guideSections.length > 0 ? (
                                         guideSections.map(section => (
-                                            <div key={section.id} className="p-4 sm:p-6 bg-gray-700 rounded-xl cursor-pointer shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg border border-gray-600" onClick={() => handleTagClick(section.id)} title={section.shortDescription}>
-                                                <h3 className="text-lg sm:text-xl font-semibold font-lora text-blue-400">{section.tag}</h3>
-                                                <p className="mt-2 text-sm text-gray-300">{section.shortDescription}</p>
+                                            <div key={section.id} className="p-4 sm:p-6 card-panel rounded-xl cursor-pointer transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-0.5" onClick={() => handleTagClick(section.id)} title={section.shortDescription}>
+                                                <h3 className="text-lg sm:text-xl font-semibold font-lora text-[#1A3D63]">{section.tag}</h3>
+                                                <p className="mt-2 text-sm text-[#0A1931]/80">{section.shortDescription}</p>
                                             </div>
                                         ))
                                     ) : (
@@ -1247,18 +1354,18 @@
                             {guideSections.map(section => (
                                 <div key={section.id}>
                                     {expandedSection === section.id && (
-                                        <div id={section.id} className="mt-6 sm:mt-12 p-4 sm:p-8 bg-gray-700 rounded-xl shadow-inner border border-gray-600 transition-all duration-500 ease-in-out">
+                                        <div id={section.id} className="mt-6 sm:mt-12 p-4 sm:p-8 guide-section-panel rounded-xl shadow-inner transition-all duration-500 ease-in-out">
                                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 gap-3">
-                                                <h2 className="text-2xl sm:text-3xl font-bold font-lora text-blue-400">{section.tag}</h2>
+                                                <h2 className="text-2xl sm:text-3xl font-bold font-lora text-[#B3CFE5]">{section.tag}</h2>
                                                 {isAdmin && (
-                                                    <button onClick={() => handleEditClick(section.id)} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md self-start">Edit</button>
+                                                    <button onClick={() => handleEditClick(section.id)} className="bg-[#4A7FA7] text-white px-4 py-2 rounded-lg hover:bg-[#1A3D63] transition-colors shadow-md self-start">Edit</button>
                                                 )}
                                             </div>
                                             {section.id === "societies-events" && societySubCategories ? (
                                                 <div className="flex flex-col gap-4 sm:gap-6">
                                                     <nav className="flex flex-wrap gap-2 mb-4 sm:mb-6">
                                                         {Object.keys(societySubCategories).map((key) => (
-                                                            <button key={key} onClick={() => setSelectedSocietySubTag(key)} className={`px-3 sm:px-6 py-2 rounded-full font-semibold transition-colors duration-200 text-sm sm:text-base ${selectedSocietySubTag === key ? 'bg-blue-600 text-white shadow-md' : 'text-gray-300 bg-gray-600 hover:bg-gray-500'}`}>
+                                                            <button key={key} onClick={() => setSelectedSocietySubTag(key)} className={`px-3 sm:px-6 py-2 rounded-full font-semibold transition-colors duration-200 text-sm sm:text-base ${selectedSocietySubTag === key ? 'bg-[#4A7FA7] text-white shadow-md' : 'text-[#B3CFE5] bg-[#1A3D63] hover:bg-[#4A7FA7]/30'}`}>
                                                                 <span>{societySubCategories[key].title}</span>
                                                             </button>
                                                         ))}
@@ -1266,13 +1373,13 @@
                                                     <div className="flex-grow">
                                                         {selectedSocietySubTag ? (
                                                             societySubCategories[selectedSocietySubTag]?.societies?.map((item, index) => (
-                                                                <div key={index} className="p-3 sm:p-4 bg-gray-600 rounded-lg mb-3 sm:mb-4 shadow-sm border border-gray-500">
-                                                                    <h4 className="text-lg sm:text-xl font-semibold text-gray-100">{item.name}</h4>
-                                                                    <p className="mt-1 text-sm text-gray-300">{item.description}</p>
+                                                                <div key={index} className="p-3 sm:p-4 bg-[#0A1931] rounded-lg mb-3 sm:mb-4 shadow-sm border border-[#4A7FA7]/40">
+                                                                    <h4 className="text-lg sm:text-xl font-semibold text-[#F6FAFD]">{item.name}</h4>
+                                                                    <p className="mt-1 text-sm text-[#B3CFE5]">{item.description}</p>
                                                                 </div>
                                                             ))
                                                         ) : (
-                                                            <div className="text-center p-6 sm:p-8 text-gray-400 bg-gray-600 rounded-lg border border-gray-500"><p className="text-base sm:text-lg">Please select a society category to view the details.</p></div>
+                                                            <div className="text-center p-6 sm:p-8 text-[#B3CFE5] bg-[#0A1931] rounded-lg border border-[#4A7FA7]/40"><p className="text-base sm:text-lg">Please select a society category to view the details.</p></div>
                                                         )}
                                                     </div>
                                                 </div>
@@ -1280,19 +1387,19 @@
                                                 Array.isArray(section.fullContent) && section.id === "important-contacts" ? (
                                                     <div className="overflow-x-auto">
                                                         <table className="w-full text-left table-auto border-collapse text-sm sm:text-base">
-                                                            <thead className="text-gray-100 bg-gray-600">
+                                                            <thead className="text-white bg-[#1A3D63]">
                                                                 <tr>
-                                                                    <th className="py-2 sm:py-3 px-2 sm:px-4 border-b border-gray-500 font-semibold">Contact</th>
-                                                                    <th className="py-2 sm:py-3 px-2 sm:px-4 border-b border-gray-500 font-semibold">Department</th>
-                                                                    <th className="py-2 sm:py-3 px-2 sm:px-4 border-b border-gray-500 font-semibold">Purpose</th>
+                                                                    <th className="py-2 sm:py-3 px-2 sm:px-4 border-b border-[#4A7FA7]/40 font-semibold">Contact</th>
+                                                                    <th className="py-2 sm:py-3 px-2 sm:px-4 border-b border-[#4A7FA7]/40 font-semibold">Department</th>
+                                                                    <th className="py-2 sm:py-3 px-2 sm:px-4 border-b border-[#4A7FA7]/40 font-semibold">Purpose</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 {section.fullContent.map((item, index) => (
-                                                                    <tr key={index} className="border-b border-gray-600 last:border-b-0">
-                                                                        <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-100">{item.contact}</td>
-                                                                        <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-300">{item.department}</td>
-                                                                        <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-300">{item.purpose}</td>
+                                                                    <tr key={index} className="border-b border-[#4A7FA7]/30 last:border-b-0">
+                                                                        <td className="py-2 sm:py-3 px-2 sm:px-4 text-[#F6FAFD]">{item.contact}</td>
+                                                                        <td className="py-2 sm:py-3 px-2 sm:px-4 text-[#B3CFE5]">{item.department}</td>
+                                                                        <td className="py-2 sm:py-3 px-2 sm:px-4 text-[#B3CFE5]">{item.purpose}</td>
                                                                     </tr>
                                                                 ))}
                                                             </tbody>
@@ -1303,41 +1410,41 @@
                                                         <ul className="mt-4 space-y-2 list-disc list-inside">
                                                             {section.fullContent.split('\n').filter(line => line.trim()).map((line, index) => {
                                                                 const content = line.trim().startsWith('-') ? line.trim().substring(1).trim() : line;
-                                                                return content && <li key={index} className="text-gray-700">{content}</li>;
+                                                                return content && <li key={index} className="text-[#B3CFE5]">{content}</li>;
                                                             })}
                                                         </ul>
                                                     ) : (
-                                                        <p className="mt-4 text-gray-100 leading-relaxed whitespace-pre-wrap">{section.fullContent}</p>
+                                                        <p className="mt-4 text-[#F6FAFD] leading-relaxed whitespace-pre-wrap">{section.fullContent}</p>
                                                     )
                                                 )
                                             )}
                                             {section.id === "campus-map" && (
-                                                <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-gray-700 rounded-xl border border-gray-600">
+                                                <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-[#0A1931] rounded-xl border border-[#4A7FA7]/40">
                                                     <div className="text-center">
                                                         <div className="mb-4">
-                                                            <svg className="w-16 h-16 text-blue-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <svg className="w-16 h-16 text-[#B3CFE5] mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m-6 3l6-3"></path>
                                                             </svg>
-                                                            <h3 className="text-xl font-semibold text-blue-300 mb-2">Interactive Campus Map</h3>
-                                                            <p className="text-gray-300 mb-6">Explore our enhanced interactive campus map with detailed information about all locations, buildings, and facilities.</p>
+                                                            <h3 className="text-xl font-semibold text-[#B3CFE5] mb-2">Interactive Campus Map</h3>
+                                                            <p className="text-[#B3CFE5] mb-6">Explore our enhanced interactive campus map with detailed information about all locations, buildings, and facilities.</p>
                                                         </div>
                                                         <a 
                                                             href="newmap.html" 
-                                                            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
+                                                            className="inline-flex items-center gap-2 bg-[#4A7FA7] hover:bg-[#1A3D63] text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
                                                         >
                                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                                                             </svg>
                                                             Open Interactive Map
                                                         </a>
-                                                        <p className="text-xs text-gray-400 mt-3">Features: Pin locations, detailed descriptions, touch support, and responsive design</p>
+                                                        <p className="text-xs text-[#B3CFE5] mt-3">Features: Pin locations, detailed descriptions, touch support, and responsive design</p>
                                                     </div>
                                                 </div>
                                             )}
                                             {section.id === "dorm-room-info" && (
                                                 <div className="mt-6 sm:mt-8">
-                                                    <h3 className="text-xl sm:text-2xl font-semibold font-lora text-blue-300 mb-4">Room Tours & Photos</h3>
-                                                    <p className="text-sm text-gray-300 mb-6">Take a virtual tour of the hostel rooms and facilities to get a better idea of your new home.</p>
+                                                    <h3 className="text-xl sm:text-2xl font-semibold font-lora text-[#B3CFE5] mb-4">Room Tours & Photos</h3>
+                                                    <p className="text-sm text-[#B3CFE5] mb-6">Take a virtual tour of the hostel rooms and facilities to get a better idea of your new home.</p>
                                                     
                                                     {/* Media Gallery */}
                                                     <div className="space-y-6">
@@ -1348,7 +1455,7 @@
                                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                                 {/* Boys Hostel Square */}
                                                                 <div 
-                                                                    className="bg-blue-600 hover:bg-blue-700 cursor-pointer rounded-lg p-6 text-center transition-colors duration-200"
+                                                                    className="bg-[#4A7FA7] hover:bg-[#1A3D63] cursor-pointer rounded-lg p-6 text-center transition-colors duration-200"
                                                                     onClick={() => {
                                                                         setSelectedHostel('boys');
                                                                         setCurrentMediaIndex(0);
@@ -1360,7 +1467,7 @@
 
                                                                 {/* Girls Hostel Square */}
                                                                 <div 
-                                                                    className="bg-pink-600 hover:bg-pink-700 cursor-pointer rounded-lg p-6 text-center transition-colors duration-200"
+                                                                    className="bg-[#1A3D63] hover:bg-[#4A7FA7] cursor-pointer rounded-lg p-6 text-center transition-colors duration-200"
                                                                     onClick={() => {
                                                                         setSelectedHostel('girls');
                                                                         setCurrentMediaIndex(0);
@@ -1374,20 +1481,20 @@
                                                             {/* Premium Media Viewer Modal */}
                                                             {selectedHostel && (
                                                                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                                                                    <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl max-w-5xl w-full max-h-[95vh] overflow-hidden shadow-2xl border border-gray-700/50">
+                                                                    <div className="bg-gradient-to-br from-[#0A1931] via-[#1A3D63] to-[#4A7FA7] rounded-2xl max-w-5xl w-full max-h-[95vh] overflow-hidden shadow-2xl border border-[#B3CFE5]/30">
                                                                         {/* Premium Header */}
-                                                                        <div className="flex justify-between items-center p-6 border-b border-gray-700/50 bg-gradient-to-r from-gray-800/50 to-gray-700/50">
+                                                                        <div className="flex justify-between items-center p-6 border-b border-[#B3CFE5]/30 bg-gradient-to-r from-[#0A1931]/50 to-[#1A3D63]/50">
                                                                             <div className="flex items-center space-x-3">
-                                                                                <div className={`w-3 h-3 rounded-full ${selectedHostel === 'boys' ? 'bg-blue-500' : 'bg-pink-500'} shadow-lg`}></div>
+                                                                                <div className={`w-3 h-3 rounded-full ${selectedHostel === 'boys' ? 'bg-[#4A7FA7]' : 'bg-[#B3CFE5]'} shadow-lg`}></div>
                                                                                 <h3 className="text-2xl font-bold text-white tracking-wide">
                                                                                     {selectedHostel === 'boys' ? 'Boys Hostel' : 'Girls Hostel'} Tour
                                                                                 </h3>
                                                                             </div>
                                                                             <button 
                                                                                 onClick={() => setSelectedHostel(null)}
-                                                                                className="group relative w-10 h-10 rounded-full bg-gray-700/50 hover:bg-red-500/20 flex items-center justify-center transition-all duration-300 border border-gray-600/50 hover:border-red-400/50"
+                                                                                className="group relative w-10 h-10 rounded-full bg-[#0A1931]/50 hover:bg-[#4A7FA7]/20 flex items-center justify-center transition-all duration-300 border border-[#B3CFE5]/30 hover:border-[#B3CFE5]/60"
                                                                             >
-                                                                                <svg className="w-5 h-5 text-gray-300 group-hover:text-red-400 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                <svg className="w-5 h-5 text-[#B3CFE5] group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
                                                                                 </svg>
                                                                             </button>
@@ -1424,7 +1531,7 @@
                                                                                                                               />
                                                                                                                           </div>
                                                                                         )}
-                                                                                        <div className="hidden p-6 bg-gradient-to-r from-gray-700 to-gray-600 text-gray-200 rounded-lg mt-4 shadow-lg">
+                                                                                        <div className="hidden p-6 bg-gradient-to-r from-[#0A1931] to-[#1A3D63] text-[#B3CFE5] rounded-lg mt-4 shadow-lg">
                                                                                             <svg className="w-8 h-8 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
                                                                                             </svg>
@@ -1434,7 +1541,7 @@
                                                                                         {/* Premium Content Info */}
                                                                                         <div className="mt-8 max-w-2xl mx-auto">
                                                                                             <h4 className="text-2xl font-bold text-white mb-3 tracking-wide">{currentMedia.title}</h4>
-                                                                                            <p className="text-gray-300 text-lg leading-relaxed">{currentMedia.description}</p>
+                                                                                            <p className="text-[#B3CFE5] text-lg leading-relaxed">{currentMedia.description}</p>
                                                                                         </div>
                                                                                     </div>
                                                                                 )}
@@ -1448,8 +1555,8 @@
                                                                                         className="absolute left-6 top-1/2 transform -translate-y-1/2 group"
                                                                                         disabled={currentMediaIndex === 0}
                                                                                     >
-                                                                                        <div className="w-12 h-12 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-sm flex items-center justify-center transition-all duration-300 border border-gray-600/50 hover:border-white/30 shadow-lg">
-                                                                                            <svg className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                        <div className="w-12 h-12 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm flex items-center justify-center transition-all duration-300 border border-[#B3CFE5]/30 hover:border-[#B3CFE5]/60 shadow-lg">
+                                                                                            <svg className="w-6 h-6 text-[#B3CFE5] group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
                                                                                             </svg>
                                                                                         </div>
@@ -1459,8 +1566,8 @@
                                                                                         className="absolute right-6 top-1/2 transform -translate-y-1/2 group"
                                                                                         disabled={currentMediaIndex === dormMediaConfig[selectedHostel + 'Hostel'].media.length - 1}
                                                                                     >
-                                                                                        <div className="w-12 h-12 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-sm flex items-center justify-center transition-all duration-300 border border-gray-600/50 hover:border-white/30 shadow-lg">
-                                                                                            <svg className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                        <div className="w-12 h-12 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm flex items-center justify-center transition-all duration-300 border border-[#B3CFE5]/30 hover:border-[#B3CFE5]/60 shadow-lg">
+                                                                                            <svg className="w-6 h-6 text-[#B3CFE5] group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
                                                                                             </svg>
                                                                                         </div>
@@ -1477,8 +1584,8 @@
                                             )}
                                             {section.id === "what-to-pack" && (
                                                 <div className="mt-4">
-                                                    <h3 className="text-xl sm:text-2xl font-semibold font-lora text-blue-300 mb-2">Your Essential Packing Checklist</h3>
-                                                    <p className="text-sm text-gray-300 mb-4">Check items as you pack. Your progress is saved automatically{currentUser ? ' to your account' : ' on this device'}.</p>
+                                                    <h3 className="text-xl sm:text-2xl font-semibold font-lora text-[#B3CFE5] mb-2">Your Essential Packing Checklist</h3>
+                                                    <p className="text-sm text-[#B3CFE5] mb-4">Check items as you pack. Your progress is saved automatically{currentUser ? ' to your account' : ' on this device'}.</p>
 
                                                     {/* Loading saved list */}
                                                     {isLoadingSavedList && (
@@ -1523,9 +1630,9 @@
                                                                         name="newItem"
                                                                         type="text"
                                                                         placeholder="Add a custom item (saved only for you)"
-                                                                        className="flex-grow p-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-gray-700 text-gray-100 text-sm"
+                                                                        className="flex-grow p-2 border border-[#4A7FA7] rounded focus:outline-none focus:ring-1 focus:ring-[#4A7FA7] bg-[#0A1931] text-[#F6FAFD] text-sm"
                                                                     />
-                                                                    <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-semibold text-sm">
+                                                                    <button type="submit" className="px-4 py-2 bg-[#4A7FA7] text-white rounded hover:bg-[#1A3D63] font-semibold text-sm">
                                                                         Add Item
                                                                     </button>
                                                                 </form>
@@ -1572,31 +1679,31 @@
                                                                             ].map((section) => {
                                                                                 const checkedCount = section.items.filter((it) => checkedItems[buildItemId(section.key, it)]).length;
                                                                                 return (
-                                                                                    <div key={section.key} className="bg-gray-600 rounded overflow-hidden">
+                                                                                    <div key={section.key} className="bg-[#0A1931] rounded overflow-hidden border border-[#4A7FA7]/30">
                                                                                         <div
-                                                                                            className="w-full flex items-center justify-between px-3 py-2 hover:bg-gray-500 cursor-pointer"
+                                                                                            className="w-full flex items-center justify-between px-3 py-2 hover:bg-[#1A3D63] cursor-pointer"
                                                                                             onClick={() => setOpenSections(prev => ({ ...prev, [section.key]: !prev[section.key] }))}
                                                                                         >
                                                                                             <div className="flex items-center gap-2">
-                                                                                                <span className="font-semibold text-gray-100 text-sm">{section.title}</span>
-                                                                                                <span className="text-xs px-1.5 py-0.5 rounded-full bg-gray-500 text-gray-100">{checkedCount}/{section.items.length}</span>
+                                                                                                <span className="font-semibold text-[#F6FAFD] text-sm">{section.title}</span>
+                                                                                                <span className="text-xs px-1.5 py-0.5 rounded-full bg-[#4A7FA7]/30 text-[#B3CFE5]">{checkedCount}/{section.items.length}</span>
                                                                                             </div>
                                                                                             <div className="flex items-center gap-1">
                                                                                                 <button
                                                                                                     type="button"
                                                                                                     onClick={(e) => { e.stopPropagation(); handleSelectAllIn(section.key, section.items); }}
-                                                                                                    className="text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                                                                                    className="text-xs px-2 py-1 bg-[#4A7FA7] text-white rounded hover:bg-[#1A3D63]"
                                                                                                 >
                                                                                                     All
                                                                                                 </button>
                                                                                                 <button
                                                                                                     type="button"
                                                                                                     onClick={(e) => { e.stopPropagation(); handleClearIn(section.key, section.items); }}
-                                                                                                    className="text-xs px-2 py-1 bg-gray-700 text-gray-200 rounded hover:bg-gray-800"
+                                                                                                    className="text-xs px-2 py-1 bg-[#0A1931] text-[#B3CFE5] rounded hover:bg-[#1A3D63]"
                                                                                                 >
                                                                                                     Clear
                                                                                                 </button>
-                                                                                                <svg className={`w-4 h-4 text-gray-200 transition-transform ${openSections[section.key] ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 9l6 6 6-6"></path></svg>
+                                                                                                <svg className={`w-4 h-4 text-[#B3CFE5] transition-transform ${openSections[section.key] ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 9l6 6 6-6"></path></svg>
                                                                                             </div>
                                                                                         </div>
                                                                                         {openSections[section.key] && (
@@ -1605,14 +1712,14 @@
                                                                                                     {section.items.map((item) => {
                                                                                                         const itemId = buildItemId(section.key, item);
                                                                                                         return (
-                                                                                                            <label key={itemId} className="flex items-start space-x-2 p-1 rounded hover:bg-gray-500/30 cursor-pointer">
+                                                                                                            <label key={itemId} className="flex items-start space-x-2 p-1 rounded hover:bg-[#1A3D63]/40 cursor-pointer">
                                                                                                                 <input
                                                                                                                     type="checkbox"
                                                                                                                     checked={checkedItems[itemId] || false}
                                                                                                                     onChange={(e) => handleCheckboxChange(itemId, e.target.checked)}
-                                                                                                                    className="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                                                                                                    className="mt-0.5 h-4 w-4 text-[#4A7FA7] focus:ring-[#4A7FA7] border-[#4A7FA7]/40 rounded"
                                                                                                                 />
-                                                                                                                <span className="text-gray-200 text-sm leading-5">{item}</span>
+                                                                                                                <span className="text-[#B3CFE5] text-sm leading-5">{item}</span>
                                                                                                             </label>
                                                                                                         );
                                                                                                     })}
@@ -1626,13 +1733,13 @@
 
                                                                         {/* User custom items */}
                                                                         {customFiltered.length > 0 && (
-                                                                            <div className="mt-4 bg-gray-600 rounded overflow-hidden">
+                                                                            <div className="mt-4 bg-[#0A1931] rounded overflow-hidden border border-[#4A7FA7]/30">
                                                                                 <div
-                                                                                    className="w-full flex items-center justify-between px-3 py-2 hover:bg-gray-500 cursor-pointer"
+                                                                                    className="w-full flex items-center justify-between px-3 py-2 hover:bg-[#1A3D63] cursor-pointer"
                                                                                     onClick={() => setOpenSections(prev => ({ ...prev, custom: !prev.custom }))}
                                                                                 >
-                                                                                    <span className="font-semibold text-gray-100 text-sm">Your Added Items</span>
-                                                                                    <svg className={`w-4 h-4 text-gray-200 transition-transform ${openSections.custom ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 9l6 6 6-6"></path></svg>
+                                                                                    <span className="font-semibold text-[#F6FAFD] text-sm">Your Added Items</span>
+                                                                                    <svg className={`w-4 h-4 text-[#B3CFE5] transition-transform ${openSections.custom ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 9l6 6 6-6"></path></svg>
                                                                                 </div>
                                                                                 {openSections.custom && (
                                                                                     <div className="px-3 pb-2 pt-1">
@@ -1640,15 +1747,15 @@
                                                                                             {customFiltered.map((item) => {
                                                                                                 const id = `custom-${slugify(item)}`;
                                                                                                 return (
-                                                                                                    <div key={id} className="flex items-center justify-between p-1 rounded hover:bg-gray-500/30">
+                                                                                                    <div key={id} className="flex items-center justify-between p-1 rounded hover:bg-[#1A3D63]/40">
                                                                                                         <label className="flex items-start space-x-2 cursor-pointer">
                                                                                                             <input
                                                                                                                 type="checkbox"
                                                                                                                 checked={checkedItems[id] || false}
                                                                                                                 onChange={(e) => handleCheckboxChange(id, e.target.checked)}
-                                                                                                                className="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                                                                                                className="mt-0.5 h-4 w-4 text-[#4A7FA7] focus:ring-[#4A7FA7] border-[#4A7FA7]/40 rounded"
                                                                                                             />
-                                                                                                            <span className="text-gray-300 text-sm">{item}</span>
+                                                                                                            <span className="text-[#B3CFE5] text-sm">{item}</span>
                                                                                                         </label>
                                                                                                         <button type="button" onClick={() => handleDeleteCustomItem(item)} className="text-xs px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700">
                                                                                                             Delete
@@ -1663,20 +1770,20 @@
                                                                         )}
 
                                                                         {/* Progress indicator */}
-                                                                        <div className="mt-4 p-3 bg-gray-600 rounded">
+                                                                        <div className="mt-4 p-3 bg-[#0A1931] rounded border border-[#4A7FA7]/30">
                                                                             <div className="flex justify-between items-center mb-2">
-                                                                                <span className="text-sm font-medium text-gray-300">Packing Progress</span>
-                                                                                <span className="text-sm text-gray-300">{`${done} / ${total} items`}</span>
+                                                                                <span className="text-sm font-medium text-[#B3CFE5]">Packing Progress</span>
+                                                                                <span className="text-sm text-[#B3CFE5]">{`${done} / ${total} items`}</span>
                                                                             </div>
-                                                                            <div className="w-full bg-gray-700 rounded-full h-2">
+                                                                            <div className="w-full bg-[#1A3D63] rounded-full h-2">
                                                                                 <div
-                                                                                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                                                                    className="bg-[#4A7FA7] h-2 rounded-full transition-all duration-300"
                                                                                     style={{ width: `${total === 0 ? 0 : (done / total) * 100}%` }}
                                                                                 ></div>
                                                                             </div>
                                                                             {currentUser && hasSessionChanges && (
                                                                                 <div className="mt-3 flex items-center justify-between">
-                                                                                    <span className="text-xs text-gray-300">You have unsaved changes.</span>
+                                                                                    <span className="text-xs text-[#B3CFE5]">You have unsaved changes.</span>
                                                                                     <button
                                                                                         onClick={handleConfirmSaveAndExit}
                                                                                         className="text-xs px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
@@ -1713,29 +1820,29 @@
 
                                                     {/* Login prompt for non-authenticated users */}
                                                     {!currentUser && (
-                                                        <div className="mt-4 p-4 bg-gradient-to-r from-cyan-900 to-blue-900 border border-cyan-600 rounded text-center relative">
+                                                        <div className="mt-4 p-4 bg-gradient-to-r from-[#0A1931] to-[#1A3D63] border border-[#4A7FA7] rounded text-center relative">
                                                             <div className="mb-3">
-                                                                <svg className="w-8 h-8 text-cyan-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <svg className="w-8 h-8 text-[#B3CFE5] mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                                                                 </svg>
-                                                                <h4 className="text-base font-semibold text-cyan-200 mb-1">Login Required</h4>
-                                                                <p className="text-cyan-100 text-xs mb-3">
+                                                                <h4 className="text-base font-semibold text-[#B3CFE5] mb-1">Login Required</h4>
+                                                                <p className="text-[#B3CFE5] text-xs mb-3">
                                                                     To save your packing list and track your progress across sessions, please login to your account.
                                                                 </p>
                                                             </div>
                                                             <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                                                                <a href="login.html" className="px-4 py-2 bg-indigo-700 text-white rounded hover:bg-indigo-800 transition-colors font-semibold text-sm">
+                                                                <a href="login.html" className="px-4 py-2 bg-[#4A7FA7] text-white rounded hover:bg-[#1A3D63] transition-colors font-semibold text-sm">
                                                                     Login Now
                                                                 </a>
                                                                 <a href="signup.html" className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors font-semibold text-sm">
                                                                     Create Account
                                                                 </a>
                                                             </div>
-                                                            <p className="text-cyan-200 text-xs mt-2">
+                                                            <p className="text-[#B3CFE5] text-xs mt-2">
                                                                 💡 Your packing list will be automatically saved and you can continue where you left off!
                                                             </p>
                                                             {showGuestSavePrompt && (
-                                                                <div className="mt-3 p-2 bg-cyan-800/70 border border-cyan-600 rounded text-cyan-100">
+                                                                <div className="mt-3 p-2 bg-[#0A1931] border border-[#4A7FA7]/40 rounded text-[#B3CFE5]">
                                                                     <span className="text-xs">Progress is saved only on this device. Login to sync across devices.</span>
                                                                 </div>
                                                             )}
@@ -1745,16 +1852,16 @@
                                             )}
                                             <Divider />
                                             {section.faqs && section.faqs.length > 0 && (
-                                                <div className="mt-8 p-6 rounded-xl bg-gray-600 border border-gray-500">
-                                                    <h3 className="text-2xl font-semibold font-lora text-blue-400 border-b-2 pb-2 mb-4 border-gray-500">FAQs</h3>
+                                                <div className="mt-8 p-6 rounded-xl bg-[#0A1931] border border-[#4A7FA7]/30">
+                                                    <h3 className="text-2xl font-semibold font-lora text-[#B3CFE5] border-b-2 pb-2 mb-4 border-[#4A7FA7]/30">FAQs</h3>
                                                     <div className="space-y-4">
                                                         {section.faqs.map((faq, index) => (
-                                                            <details key={index} className="group cursor-pointer p-4 rounded-lg bg-gray-700 border border-gray-500 shadow-sm">
+                                                            <details key={index} className="group cursor-pointer p-4 rounded-lg bg-[#0A1931] border border-[#4A7FA7]/30 shadow-sm">
                                                                 <summary className="flex justify-between items-center font-medium list-none">
-                                                                    <span className="font-semibold text-gray-100">{faq.question}</span>
+                                                                    <span className="font-semibold text-[#F6FAFD]">{faq.question}</span>
                                                                     <span className="transition group-open:rotate-180"><svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg></span>
                                                                 </summary>
-                                                                <p className="text-gray-300 mt-2 ml-4">{faq.answer}</p>
+                                                                <p className="text-[#B3CFE5] mt-2 ml-4">{faq.answer}</p>
                                                             </details>
                                                         ))}
                                                     </div>
@@ -1762,10 +1869,10 @@
                                             )}
                                             {section.warnings && section.warnings.length > 0 && (
                                                 <div className="mt-8">
-                                                    <h3 className="text-2xl font-semibold font-lora text-cyan-300 border-b-2 pb-2 mb-4 border-gray-500">Helpful Reminders</h3>
+                                                    <h3 className="text-2xl font-semibold font-lora text-[#B3CFE5] border-b-2 pb-2 mb-4 border-[#4A7FA7]/30">Helpful Reminders</h3>
                                                     <div className="space-y-4">
                                                         {section.warnings.map((warning, index) => (
-                                                            <div key={index} className="flex items-start p-4 bg-cyan-900 border-l-4 border-cyan-500 text-cyan-200 rounded-md">
+                                                            <div key={index} className="flex items-start p-4 bg-[#0A1931] border-l-4 border-[#4A7FA7] text-[#B3CFE5] rounded-md">
                                                                 <p>{warning}</p>
                                                             </div>
                                                         ))}
@@ -1778,7 +1885,7 @@
                             ))}
                             {expandedSection !== null && (
                                 <div className="text-center mt-6 sm:mt-12">
-                                    <button onClick={handleBackClick} className="bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors shadow-md">&larr; Back to all sections</button>
+                                    <button onClick={handleBackClick} className="bg-[#4A7FA7] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-bold hover:bg-[#1A3D63] transition-colors shadow-md">&larr; Back to all sections</button>
                                 </div>
                             )}
                         </main>
