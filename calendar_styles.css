@@ -227,13 +227,6 @@ main {
     margin-bottom: 2rem;
 }
 
-.month-year {
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: #B3CFE5; /* match GIKI header look */
-    text-shadow: 0 2px 12px rgba(0,0,0,0.25);
-}
-
 .nav-arrow {
     background: linear-gradient(135deg, rgba(10,25,49,0.85), rgba(26,61,99,0.85));
     border: 1px solid rgba(179,207,229,0.25);
@@ -1559,5 +1552,4 @@ header a {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
-}
 }

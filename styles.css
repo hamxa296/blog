@@ -991,3 +991,10 @@ html.theme-basic-dark *::-moz-selection {
     color: var(--bg-color, #282a29) !important;
 }
 
+/* Remove or comment out any .month-year styles here */
+/*
+.month-year {
+    color: #0A1931;
+}
+*/
+
