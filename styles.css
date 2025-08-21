@@ -150,6 +150,39 @@ body {
     line-height: 1.3;
 }
 
+/* Handwriting display title (matches homepage 'Stories from the Valley') */
+.handwriting-title {
+    font-family: 'Rock Salt', cursive;
+    font-weight: 400;
+    font-size: 3.75rem; /* larger default */
+    line-height: 1.1;
+    color: #ffffff;
+    text-shadow: 4px 4px 0px rgba(74,127,167,0.8), 6px 6px 0px rgba(26,61,99,0.6);
+    transform: rotate(-2deg) skew(-1deg);
+    letter-spacing: 2px;
+    filter: contrast(1.2) saturate(1.3);
+    position: relative;
+}
+
+.handwriting-title::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    background: linear-gradient(45deg, transparent 30%, rgba(74,127,167,0.3) 50%, transparent 70%);
+    z-index: -1;
+    filter: blur(1px);
+}
+
+/* Bigger on large screens */
+@media (min-width: 1024px) {
+  .handwriting-title { font-size: 4.25rem; }
+}
+
+/* Comfortable on small screens */
+@media (max-width: 640px) {
+  .handwriting-title { font-size: 2.75rem; }
+}
+
 /* Collage Grid Layout */
 .collage-grid {
     display: grid;
@@ -499,24 +532,169 @@ header {
 
 /* Theme card styling for browse page */
 .theme-card {
-    background-color: var(--card-bg) !important;
-    color: var(--text-color) !important;
+    background: linear-gradient(135deg, rgba(26, 61, 99, 0.9), rgba(10, 25, 49, 0.9)) !important; /* deep to navy */
+    color: #F6FAFD !important; /* snow */
+    border: 2px solid rgba(230, 243, 255, 0.65) !important; /* icy blue */
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.25) !important,
+                inset 0 0 48px rgba(0,0,0,0.35) !important; /* subtle edge fade */
+    position: relative;
 }
 
-.theme-basic-dark .theme-card {
-    background: linear-gradient(135deg, rgba(45, 47, 46, 0.95), rgba(58, 60, 59, 0.95)) !important;
-    backdrop-filter: blur(5px) !important;
-    -webkit-backdrop-filter: blur(5px) !important;
-    border: 1px solid rgba(58, 60, 59, 0.2) !important;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+.theme-card h1,
+.theme-card h2,
+.theme-card h3,
+.theme-card h4 {
+    color: #F6FAFD !important;
 }
 
-.theme-basic-light .theme-card {
-    background: linear-gradient(135deg, rgba(248, 246, 241, 0.95), rgba(240, 238, 233, 0.95)) !important;
-    backdrop-filter: blur(5px) !important;
-    -webkit-backdrop-filter: blur(5px) !important;
-    border: 1px solid rgba(212, 210, 205, 0.2) !important;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+.theme-card p,
+.theme-card .muted,
+.theme-card small,
+.theme-card a {
+    color: #B3CFE5 !important;
+}
+
+/* Contact-surface: reusable palette surface for posts, comments, reactions */
+.contact-surface {
+    background: linear-gradient(135deg, rgba(26, 61, 99, 0.92), rgba(10, 25, 49, 0.92)) !important;
+    color: #F6FAFD !important;
+    border: 2px solid rgba(230, 243, 255, 0.7) !important; /* thicker, lighter */
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35), 0 1px 0 rgba(255,255,255,0.04) inset !important,
+                inset 0 0 64px rgba(0,0,0,0.38) !important; /* stronger inner vignette for depth */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle decorative sheen and vignette */
+.contact-surface::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(500px 300px at 95% 0%, rgba(179, 207, 229, 0.12), transparent 60%),
+        radial-gradient(300px 220px at 0% 100%, rgba(74, 127, 167, 0.12), transparent 60%);
+    pointer-events: none;
+}
+
+.contact-surface::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(255,255,255,0.04);
+    pointer-events: none;
+}
+
+/* Improve readability of text within gradient containers without extra gray panels */
+.contact-surface #post-content,
+.contact-surface .prose {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    color: #F6FAFD !important; /* snow */
+}
+
+.contact-surface .prose p,
+.contact-surface .prose li {
+    color: #EAF4FB !important; /* very light icy text for long reads */
+    line-height: 1.9 !important;
+}
+
+.contact-surface .prose h1,
+.contact-surface .prose h2,
+.contact-surface .prose h3,
+.contact-surface .prose h4 {
+    color: #ffffff !important;
+}
+
+.contact-surface .prose a {
+    color: #B3CFE5 !important; /* light */
+    text-decoration-color: rgba(179,207,229,0.6) !important;
+}
+
+.contact-surface .prose blockquote {
+    background: transparent !important; /* remove grey highlight */
+    border-left: 4px solid rgba(179, 207, 229, 0.45) !important;
+}
+
+/* Remove any residual gray panels on text elements in post content */
+.contact-surface .prose p,
+.contact-surface .prose li,
+.contact-surface .prose strong,
+.contact-surface .prose em,
+.contact-surface .prose h1,
+.contact-surface .prose h2,
+.contact-surface .prose h3,
+.contact-surface .prose h4,
+.contact-surface .prose h5,
+.contact-surface .prose h6 {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Also remove gray backgrounds for code/pre inside posts */
+.contact-surface .prose pre,
+.contact-surface .prose code {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Darker deep-navy cards specifically for the Browse grid */
+#browse-posts-grid .theme-card,
+#browse-posts-grid .contact-surface {
+    background: linear-gradient(135deg, rgba(8, 28, 52, 0.98), rgba(4, 16, 32, 0.99)) !important; /* darker deep → near-navy */
+    border-color: rgba(230, 243, 255, 0.8) !important; /* brighter border */
+}
+
+/* Gradient border accent for browse cards */
+#browse-posts-grid .theme-card::after,
+#browse-posts-grid .contact-surface::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 2px; /* border thickness */
+    background: linear-gradient(135deg, rgba(246,250,253,0.9), rgba(179,207,229,0.9));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+}
+
+/* Palette-aligned actions inside contact surfaces (posts) */
+.contact-surface #bookmark-btn,
+.contact-surface .reaction-btn {
+    border-color: #4A7FA7 !important; /* steel */
+    color: #B3CFE5 !important; /* light */
+    background-color: rgba(10, 25, 49, 0.25) !important; /* navy tint */
+}
+
+.contact-surface #bookmark-btn:hover,
+.contact-surface .reaction-btn:hover {
+    background-color: rgba(74, 127, 167, 0.2) !important; /* steel tint */
+    border-color: #4A7FA7 !important;
+}
+
+.contact-surface .reaction-btn.active {
+    color: #F6FAFD !important;
+}
+
+/* Palette for comment inputs when inside contact surface */
+.theme-basic-dark .contact-surface #comments-container textarea,
+.theme-basic-dark .contact-surface #comment-text,
+.contact-surface #comments-container textarea,
+.contact-surface #comment-text {
+    background-color: rgba(10, 25, 49, 0.6) !important;
+    color: #F6FAFD !important;
+    border-color: rgba(179, 207, 229, 0.35) !important;
+}
+
+.contact-surface #comments-container textarea::placeholder,
+.contact-surface #comment-text::placeholder {
+    color: #B3CFE5 !important;
 }
 
 .theme-basic-dark .focus\:ring-blue-500:focus {
