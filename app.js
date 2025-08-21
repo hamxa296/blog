@@ -663,6 +663,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
                 document.getElementById('post-content').innerHTML = post.content;
                 
+                // Mark content as loaded for CSS targeting
+                document.getElementById('post-content').setAttribute('data-loaded', 'true');
+                
                 // Apply theme-aware styles to the loaded content
                 applyThemeToPostContent();
                 
@@ -680,7 +683,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         };
         
-        // Function to apply theme-aware styles to post content
+        // Function to apply theme-aware styles to post content with ENHANCED ICY BLUE VISIBILITY
         const applyThemeToPostContent = () => {
             const postContent = document.getElementById('post-content');
             if (!postContent) return;
@@ -688,44 +691,37 @@ document.addEventListener('DOMContentLoaded', async () => {
             const currentTheme = localStorage.getItem('selected-theme') || 'basic-dark';
             const isDarkTheme = currentTheme === 'basic-dark';
             
-            // Apply theme-aware styles to text elements in the post content
+            // Apply ENHANCED ICY BLUE VISIBILITY to all text elements in the post content
             const textElements = postContent.querySelectorAll('h1, h2, h3, h4, h5, h6, p, li, span, div, blockquote, code, pre, strong, em, a, ul, ol');
 
             textElements.forEach(element => {
                 // Always remove any previously injected theme classes so we rely on body/html theme
                 element.classList.remove('theme-basic-dark', 'theme-basic-light');
 
-                // Skip elements that already have explicit CSS variable based colors
-                if (element.style.color && element.style.color.includes('var(--')) {
-                    return;
-                }
-
-                if (isDarkTheme) {
-                    // Minimal overrides for readability in dark mode
-                    if (element.tagName === 'A') {
-                        element.style.color = '#60a5fa';
-                    }
-                    if (element.tagName === 'CODE' || element.tagName === 'PRE') {
-                        element.style.backgroundColor = '#1f2937';
-                        element.style.color = '#f9fafb';
-                    }
-                    if (element.tagName === 'BLOCKQUOTE') {
-                        element.style.color = '#9ca3af';
-                        element.style.borderLeftColor = '#4b5563';
-                    }
+                // ENHANCED VISIBILITY: Apply icy blue color to all text elements for better readability
+                if (element.tagName === 'A') {
+                    element.style.color = '#4A7FA7'; // Steel blue for links
+                    element.style.textDecorationColor = 'rgba(74, 127, 167, 0.6)';
+                } else if (element.tagName === 'CODE') {
+                    element.style.color = '#4A7FA7'; // Steel blue for code
+                    element.style.backgroundColor = 'rgba(74, 127, 167, 0.1)';
+                    element.style.padding = '0.125rem 0.25rem';
+                    element.style.borderRadius = '0.25rem';
+                } else if (element.tagName === 'PRE') {
+                    element.style.color = '#B3CFE5'; // Icy blue for pre blocks
+                    element.style.backgroundColor = 'rgba(10, 25, 49, 0.8)';
+                    element.style.padding = '1rem';
+                    element.style.borderRadius = '0.5rem';
+                    element.style.overflowX = 'auto';
+                } else if (element.tagName === 'BLOCKQUOTE') {
+                    element.style.color = '#B3CFE5'; // Icy blue for blockquotes
+                    element.style.borderLeftColor = 'rgba(179, 207, 229, 0.45)';
+                    element.style.paddingLeft = '1rem';
+                    element.style.borderLeftWidth = '4px';
+                    element.style.borderLeftStyle = 'solid';
                 } else {
-                    // Light mode minimal overrides
-                    if (element.tagName === 'A') {
-                        element.style.color = '#2563eb';
-                    }
-                    if (element.tagName === 'CODE' || element.tagName === 'PRE') {
-                        element.style.backgroundColor = '#f8f9fa';
-                        element.style.color = '#1f2937';
-                    }
-                    if (element.tagName === 'BLOCKQUOTE') {
-                        element.style.color = '#6b7280';
-                        element.style.borderLeftColor = '#e5e7eb';
-                    }
+                    // All other text elements get icy blue for enhanced visibility
+                    element.style.color = '#B3CFE5';
                 }
             });
         };

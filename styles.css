@@ -167,7 +167,10 @@ body {
 .handwriting-title::before {
     content: '';
     position: absolute;
-    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    top: -2px; 
+    left: -2px; 
+    right: -2px; 
+    bottom: -2px;
     background: linear-gradient(45deg, transparent 30%, rgba(74,127,167,0.3) 50%, transparent 70%);
     z-index: -1;
     filter: blur(1px);
@@ -175,12 +178,16 @@ body {
 
 /* Bigger on large screens */
 @media (min-width: 1024px) {
-  .handwriting-title { font-size: 4.25rem; }
+    .handwriting-title { 
+        font-size: 4.25rem; 
+    }
 }
 
 /* Comfortable on small screens */
 @media (max-width: 640px) {
-  .handwriting-title { font-size: 2.75rem; }
+    .handwriting-title { 
+        font-size: 2.75rem; 
+    }
 }
 
 /* Collage Grid Layout */
@@ -330,9 +337,6 @@ body {
     --bg-image: url('bg-black.png');
 }
 
-
-
-
 /* Apply theme variables */
 html, body {
     background-color: var(--bg-color, #1f2937);
@@ -374,8 +378,6 @@ body.theme-basic-dark ::-moz-selection,
     background-color: var(--primary-color, #60a5fa) !important;
     color: var(--bg-color, #282a29) !important;
 }
-
-
 
 /* Header - transparent to inherit body background */
 header {
@@ -532,14 +534,13 @@ header {
 
 /* Theme card styling for browse page */
 .theme-card {
-    background: linear-gradient(135deg, rgba(26, 61, 99, 0.9), rgba(10, 25, 49, 0.9)) !important; /* deep to navy */
-    color: #F6FAFD !important; /* snow */
-    border: 2px solid rgba(230, 243, 255, 0.65) !important; /* icy blue */
+    background: linear-gradient(135deg, rgba(26, 61, 99, 0.9), rgba(10, 25, 49, 0.9)) !important;
+    color: #F6FAFD !important;
+    border: 2px solid rgba(230, 243, 255, 0.65) !important;
     backdrop-filter: blur(6px) !important;
     -webkit-backdrop-filter: blur(6px) !important;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.25) !important,
-                inset 0 0 48px rgba(0,0,0,0.35) !important; /* subtle edge fade */
-    position: relative;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.25) !important, 0 0 48px rgba(0,0,0,0.35) inset !important;
+    position: relative !important;
 }
 
 .theme-card h1,
@@ -560,13 +561,12 @@ header {
 .contact-surface {
     background: linear-gradient(135deg, rgba(26, 61, 99, 0.92), rgba(10, 25, 49, 0.92)) !important;
     color: #F6FAFD !important;
-    border: 2px solid rgba(230, 243, 255, 0.7) !important; /* thicker, lighter */
+    border: 2px solid rgba(230, 243, 255, 0.7) !important;
     backdrop-filter: blur(8px) !important;
     -webkit-backdrop-filter: blur(8px) !important;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35), 0 1px 0 rgba(255,255,255,0.04) inset !important,
-                inset 0 0 64px rgba(0,0,0,0.38) !important; /* stronger inner vignette for depth */
-    position: relative;
-    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35) !important, 0 1px 0 rgba(255,255,255,0.04) inset !important, 0 0 64px rgba(0,0,0,0.38) inset !important;
+    position: relative !important;
+    overflow: hidden !important;
 }
 
 /* Subtle decorative sheen and vignette */
@@ -594,7 +594,7 @@ header {
     background: transparent !important;
     border: 0 !important;
     box-shadow: none !important;
-    color: #F6FAFD !important; /* snow */
+    color: #B3CFE5 !important; /* icy blue for enhanced visibility */
 }
 
 .contact-surface .prose p,
@@ -660,7 +660,8 @@ header {
     background: linear-gradient(135deg, rgba(246,250,253,0.9), rgba(179,207,229,0.9));
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
-            mask-composite: exclude;
+    mask-composite: exclude;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     pointer-events: none;
 }
 
@@ -704,8 +705,6 @@ header {
 .theme-basic-dark .focus\:border-blue-500:focus {
     border-color: var(--primary-color) !important;
 }
-
-
 
 /* Glossy effects for dark theme elements */
 .theme-basic-dark header {

@@ -42,6 +42,19 @@
             color: var(--text-color, #1f2937);
         }
 
+        /* Quote mark decoration */
+        .quote-mark {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 5rem;
+            color: rgba(179, 207, 229, 0.1);
+            font-family: serif;
+            line-height: 1;
+            pointer-events: none;
+            z-index: 1;
+        }
+
         /* Header - transparent to inherit body background */
         header {
             background: transparent !important;
@@ -52,14 +65,14 @@
             background: transparent !important;
         }
 
-        /* Styles to make the post content look good */
+        /* Styles to make the post content look good with icy blue text */
         .post-content h1,
         .post-content h2,
         .post-content h3 {
             font-weight: 700;
             margin-top: 1.5em;
             margin-bottom: 0.5em;
-            color: var(--text-color, #1f2937);
+            color: #B3CFE5; /* Icy blue color */
         }
 
         .post-content h1 {
@@ -77,11 +90,11 @@
         .post-content p {
             line-height: 1.75;
             margin-bottom: 1.25em;
-            color: var(--text-color, #1f2937);
+            color: #B3CFE5; /* Icy blue color */
         }
 
         .post-content a {
-            color: var(--primary-color, #2563eb);
+            color: #4A7FA7; /* Steel blue for links */
             text-decoration: underline;
         }
 
@@ -89,7 +102,7 @@
         .post-content ol {
             margin-left: 1.5rem;
             margin-bottom: 1.25em;
-            color: var(--text-color, #1f2937);
+            color: #B3CFE5; /* Icy blue color */
         }
 
         .post-content ul {
@@ -167,18 +180,39 @@
             background-color: var(--bg-color, #f8fafc);
         }
 
-        /* Theme-aware post content styles */
+        /* Theme-aware post content styles with icy blue text - HIGHEST PRIORITY */
         .theme-basic-dark .post-content h1,
         .theme-basic-dark .post-content h2,
         .theme-basic-dark .post-content h3,
+        .theme-basic-dark .post-content h4,
+        .theme-basic-dark .post-content h5,
+        .theme-basic-dark .post-content h6,
         .theme-basic-dark .post-content p,
         .theme-basic-dark .post-content ul,
-        .theme-basic-dark .post-content ol {
-            color: var(--text-color, #f9fafb) !important;
+        .theme-basic-dark .post-content ol,
+        .theme-basic-dark .post-content li,
+        .theme-basic-dark .post-content strong,
+        .theme-basic-dark .post-content b,
+        .theme-basic-dark .post-content em,
+        .theme-basic-dark .post-content i,
+        .theme-basic-dark .post-content blockquote,
+        .theme-basic-dark .post-content div,
+        .theme-basic-dark .post-content span {
+            color: #B3CFE5 !important; /* Icy blue color - ENHANCED VISIBILITY */
         }
 
         .theme-basic-dark .post-content a {
-            color: var(--primary-color, #60a5fa) !important;
+            color: #4A7FA7 !important; /* Steel blue for links */
+        }
+
+        .theme-basic-dark .post-content code {
+            color: #4A7FA7 !important; /* Steel blue for code */
+            background-color: rgba(74, 127, 167, 0.1);
+        }
+
+        .theme-basic-dark .post-content pre {
+            color: #B3CFE5 !important; /* Icy blue for pre blocks */
+            background-color: rgba(10, 25, 49, 0.8);
         }
 
         /* Theme-aware article background (lighter surface in dark mode) */
@@ -333,6 +367,125 @@
             margin-left: 1.25rem;
         }
 
+        /* ENHANCED VISIBILITY: Ensure ALL text elements in post content are icy blue */
+        .post-content,
+        .post-content *,
+        .post-content h1,
+        .post-content h2,
+        .post-content h3,
+        .post-content h4,
+        .post-content h5,
+        .post-content h6,
+        .post-content p,
+        .post-content ul,
+        .post-content ol,
+        .post-content li,
+        .post-content strong,
+        .post-content b,
+        .post-content em,
+        .post-content i,
+        .post-content blockquote,
+        .post-content div,
+        .post-content span {
+            color: #B3CFE5 !important; /* Icy blue for enhanced visibility */
+        }
+
+        /* Additional specificity to override any conflicting styles */
+        #post-content,
+        #post-content *,
+        #post-content h1,
+        #post-content h2,
+        #post-content h3,
+        #post-content h4,
+        #post-content h5,
+        #post-content h6,
+        #post-content p,
+        #post-content ul,
+        #post-content ol,
+        #post-content li,
+        #post-content strong,
+        #post-content b,
+        #post-content em,
+        #post-content i,
+        #post-content blockquote,
+        #post-content div,
+        #post-content span {
+            color: #B3CFE5 !important; /* Icy blue for enhanced visibility - MAXIMUM PRIORITY */
+        }
+
+        /* Specific overrides for different element types */
+        .post-content a {
+            color: #4A7FA7 !important; /* Steel blue for links */
+            text-decoration-color: rgba(74, 127, 167, 0.6);
+        }
+
+        .post-content a:hover {
+            color: #B3CFE5 !important; /* Icy blue on hover */
+        }
+
+        .post-content code {
+            color: #4A7FA7 !important; /* Steel blue for code */
+            background-color: rgba(74, 127, 167, 0.1);
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
+        }
+
+        .post-content pre {
+            color: #B3CFE5 !important; /* Icy blue for pre blocks */
+            background-color: rgba(10, 25, 49, 0.8);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+        }
+
+        /* Ensure prose classes also use icy blue */
+        .post-content.prose,
+        .post-content.prose *,
+        .post-content.prose h1,
+        .post-content.prose h2,
+        .post-content.prose h3,
+        .post-content.prose h4,
+        .post-content.prose h5,
+        .post-content.prose h6,
+        .post-content.prose p,
+        .post-content.prose ul,
+        .post-content.prose ol,
+        .post-content.prose li,
+        .post-content.prose strong,
+        .post-content.prose b,
+        .post-content.prose em,
+        .post-content.prose i,
+        .post-content.prose blockquote {
+            color: #B3CFE5 !important; /* Icy blue for enhanced visibility */
+        }
+
+        /* Dynamic content override - ensures newly loaded content maintains icy blue */
+        #post-content[data-loaded="true"] *,
+        #post-content[data-loaded="true"] h1,
+        #post-content[data-loaded="true"] h2,
+        #post-content[data-loaded="true"] h3,
+        #post-content[data-loaded="true"] h4,
+        #post-content[data-loaded="true"] h5,
+        #post-content[data-loaded="true"] h6,
+        #post-content[data-loaded="true"] p,
+        #post-content[data-loaded="true"] ul,
+        #post-content[data-loaded="true"] ol,
+        #post-content[data-loaded="true"] li,
+        #post-content[data-loaded="true"] strong,
+        #post-content[data-loaded="true"] b,
+        #post-content[data-loaded="true"] em,
+        #post-content[data-loaded="true"] i,
+        #post-content[data-loaded="true"] blockquote,
+        #post-content[data-loaded="true"] div,
+        #post-content[data-loaded="true"] span {
+            color: #B3CFE5 !important; /* Icy blue for enhanced visibility - DYNAMIC CONTENT */
+        }
+
+        /* Final fallback - any text element in post content gets icy blue */
+        #post-content *:not(a):not(code):not(pre) {
+            color: #B3CFE5 !important; /* Icy blue for enhanced visibility - FINAL FALLBACK */
+        }
+
         @media (min-width: 640px) {
             .post-content { font-size: 1.125rem; /* 18px on larger screens */ }
         }
@@ -343,6 +496,8 @@
             .post-content h2 { font-size: 1.5rem; }
             .post-content h3 { font-size: 1.25rem; }
         }
+
+
     </style>
 </head>
 
@@ -561,13 +716,13 @@
     <!-- Sidebar Overlay -->
     <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
 
-    <!-- Main Post Content -->
-    <main class="container mx-auto px-4 py-12">
-        <!-- Post Title displayed on bare background -->
-        <div class="max-w-4xl mx-auto text-center mb-6">
-            <h1 id="post-title" class="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-lg">Loading Post...</h1>
-        </div>
-        <article class="max-w-4xl mx-auto rounded-xl shadow-lg p-6 md:p-10 relative overflow-hidden contact-surface">
+            <!-- Main Post Content -->
+        <main class="container mx-auto px-4 py-12">
+            <!-- Post Title displayed on bare background -->
+            <div class="max-w-4xl mx-auto text-center mb-6">
+                <h1 id="post-title" class="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-lg">Loading Post...</h1>
+            </div>
+            <article class="max-w-4xl mx-auto rounded-xl shadow-lg p-6 md:p-10 relative overflow-hidden contact-surface">
 
             <!-- Quote Mark Decoration (like in the image) -->
             <div class="quote-mark">"</div>
@@ -583,10 +738,10 @@
             <img id="post-image" src="https://placehold.co/1200x600/E2E8F0/4A5568?text=Loading+Image"
                 alt="Featured post image" class="w-full h-auto rounded-lg mb-8 shadow-lg">
 
-            <!-- Post Content Placeholder -->
-            <div id="post-content" class="prose prose-lg max-w-none text-gray-800 dark:text-white font-['Inter'] leading-relaxed">
-                <p>Please wait while we fetch the article content...</p>
-            </div>
+                <!-- Post Content Placeholder -->
+    <div id="post-content" class="prose prose-lg max-w-none text-[#B3CFE5] font-['Inter'] leading-relaxed" style="color: #B3CFE5 !important;">
+        <p style="color: #B3CFE5 !important;">Please wait while we fetch the article content...</p>
+    </div>
 
             <!-- Post Actions -->
 
