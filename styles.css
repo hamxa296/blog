@@ -1013,7 +1013,6 @@ html.theme-basic-dark *::-moz-selection {
 }
 
 /* Remove any conflicting styles that set h-full or overflow-hidden on modals */
-#recent-post-modal > .rounded-3xl,
 #featured-post-modal > .rounded-3xl {
   max-height: 90vh !important;
   overflow-y: auto !important;

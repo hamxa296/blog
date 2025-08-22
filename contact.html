@@ -5,16 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact — GIKI Chronicles</title>
-  <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="48x48" href="/favicons/favicon-48x48.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico?v=1.3">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png?v=1.3">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png?v=1.3">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicons/favicon-48x48.png?v=1.3">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png?v=1.3">
+  <link rel="manifest" href="/site.webmanifest?v=1.3">
+  <link rel="icon" type="image/png" href="/logo.png?v=1.3">
 
   <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com?v=1.3"></script>
   <!-- Fallback to local Tailwind if CDN fails -->
   <script>
     if (typeof window.tailwind === 'undefined') {
@@ -29,18 +29,23 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&display=swap&v=1.3" rel="stylesheet">
 
-  <!-- Apply theme early -->
+  <!-- Apply theme immediately to prevent flash -->
   <script>
     (function() {
       const savedTheme = localStorage.getItem('selected-theme') || 'basic-dark';
+      
+      // Apply to documentElement immediately (always exists)
       if (document.documentElement) {
         document.documentElement.classList.add(`theme-${savedTheme}`);
       }
+      
+      // Apply to body when it becomes available
       if (document.body) {
         document.body.classList.add(`theme-${savedTheme}`);
       } else {
+        // Wait for body to be available
         document.addEventListener('DOMContentLoaded', function() {
           if (document.body) {
             document.body.classList.add(`theme-${savedTheme}`);
@@ -51,11 +56,29 @@
   </script>
 
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=1.3">
 
   <style>
+    /* Contact page color palette matching index.html exactly */
+    :root {
+      --c-navy: #0A1931;
+      --c-deep: #1A3D63;
+      --c-steel: #4A7FA7;
+      --c-light: #B3CFE5;
+      --c-snow: #F6FAFD;
+    }
+    
     /* Base */
-    body { font-family: 'Inter', sans-serif; }
+    body { 
+      font-family: 'Inter', sans-serif; 
+    }
+     
+    /* Ensure hero section fits content */
+    .contact-hero {
+      overflow: visible;
+      height: auto;
+      min-height: auto;
+    }
 
     /* Contact page palette (scoped) */
     .contact-theme {
@@ -66,16 +89,22 @@
       --c-snow: #F6FAFD;
     }
 
-    /* Background */
+    /* Full page background matching index.html */
     body {
-      background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(10,25,49,0.3)),
-            radial-gradient(circle at 30% 20%, rgba(74,127,167,0.2), transparent),
-            radial-gradient(circle at 70% 80%, rgba(26,61,99,0.3), transparent),
-            url('background.jpeg');
+      background: url('background.jpeg?v=1.3') no-repeat center center fixed;
       background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
+    }
+    
+    /* Background overlay for the entire page matching index.html */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(10,25,49,0.3) 0%, rgba(26,61,99,0.25) 50%, rgba(10,25,49,0.3) 100%);
+      z-index: -1;
     }
 
     /* Hero */
@@ -126,30 +155,43 @@
   /* gradient text used in hero */
   .gradient-text { background: linear-gradient(90deg,#77c9ff,#c78bff); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline-block; }
 
-    /* Desktop (wider screens) tweaks to mirror provided showcase images */
-    @media (min-width: 1024px) {
-      /* Larger hero title on desktop */
-      .contact-hero h1 { font-size: 5.25rem; line-height: 0.98; margin-bottom: 0.6rem; }
+         /* Desktop (wider screens) - let Tailwind handle layout */
+     @media (min-width: 1024px) {
+       /* Keep only essential styling that Tailwind can't handle */
+       .contact-hero .rounded-arch { border:4px solid rgba(246,250,253,0.85); box-shadow: 0 24px 60px rgba(2,6,23,0.6); }
+     }
 
-      /* push hero text slightly left and make the image larger and framed */
-      .contact-hero .rounded-arch { width: 60%; max-width: 520px; border-radius: 48% 48% 12px 12px / 48% 48% 12px 12px; border:4px solid rgba(246,250,253,0.85); box-shadow: 0 24px 60px rgba(2,6,23,0.6); }
-      .contact-hero .flex.justify-center { align-items: flex-start; }
+         /* Tablet and smaller desktop breakpoint - let Tailwind handle layout */
+     @media (min-width: 768px) and (max-width: 1023px) {
+       /* Keep only essential styling that Tailwind can't handle */
+       .contact-hero .rounded-arch { border-width: 3px; }
+     }
 
-      /* Make content section form more spacious on desktop (left wide card) */
-      .contact-card { border-radius: 28px; }
-      .contact-card p, .contact-card h3 { color: var(--c-snow); }
+                                       /* Ensure grid layout works on all desktop sizes */
+       @media (min-width: 768px) {
+         /* Let Tailwind handle all layout and spacing */
+       }
 
-      /* Right sidebar stacked cards sizing */
-      .space-y-6 > .contact-card { min-height: 180px; display:flex; flex-direction:column; justify-content:center; }
+                                       /* Wider breakpoints - let Tailwind handle container sizing */
+       @media (min-width: 1280px) {
+         /* Let Tailwind handle all layout and spacing */
+       }
 
-  /* Show response details inline on desktop; keep info button visible and use in-card popover */
-  .response-inline { display: block; }
-  /* Ensure fullscreen popup overlay stays hidden on desktop (we use in-card popover instead) */
-  #response-popup { display: none !important; }
-    }
+       @media (min-width: 1536px) {
+         /* Let Tailwind handle all layout and spacing */
+       }
 
     /* By default (mobile) the inline details are hidden; preserved popup behavior for small screens */
     .response-inline { display: none; }
+    
+         /* Show response details inline on desktop and tablet */
+     @media (min-width: 768px) {
+       .response-inline { display: block; }
+       /* Hide the popup on larger screens since we show inline details */
+       #response-popup { display: none !important; }
+       /* Hide the info button on desktop since details are always visible */
+       #response-info-btn { display: none !important; }
+     }
 
     /* in-card popover (anchored to top-right of the response card) */
     .response-popover { position: absolute; top: 3.25rem; right: 1rem; z-index: 70; width: 320px; max-width: calc(100% - 2rem); display: none; }
@@ -178,9 +220,9 @@
 
     /* Placeholder & select styling */
     :root { --placeholder-left:16px; --placeholder-top:16px; --placeholder-opacity:0.4; --placeholder-color:179,207,229; }
-    select.contact-input { padding-top:24px; padding-bottom:16px; padding-left:var(--placeholder-left) !important; }
-    select.contact-input option[value=""] { color: rgba(179,207,229,0.4) !important; font-style:italic !important; }
-    #subject { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23B3CFE5' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e"); background-position:left 16px center; background-repeat:no-repeat; background-size:16px; padding-left:48px !important; appearance:none; }
+         select.contact-input { padding-top:24px; padding-bottom:16px; padding-left:var(--placeholder-left); }
+     select.contact-input option[value=""] { color: rgba(179,207,229,0.4); font-style:italic; }
+     #subject { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23B3CFE5' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e"); background-position:left 16px center; background-repeat:no-repeat; background-size:16px; padding-left:48px; appearance:none; }
 
     .contact-primary { background:linear-gradient(135deg, var(--c-deep), var(--c-navy)); box-shadow:0 8px 20px rgba(26,61,99,.35); transition:transform .15s ease, box-shadow .2s ease, background .2s ease; }
     .contact-primary:hover { transform:translateY(-1px); box-shadow:0 12px 26px rgba(10,25,49,.45); }
@@ -227,49 +269,199 @@
   .backdrop-enter { animation: backdropFadeIn 240ms ease both; }
   .backdrop-exit { animation: backdropFadeOut 180ms ease both; }
 
-    /* Mobile adjustments */
-    @media (max-width: 768px) {
-      body { background-attachment: scroll; }
+                   /* Mobile adjustments */
+      @media (max-width: 767px) {
+        body { 
+          background-attachment: scroll; 
+        }
+        
+        .contact-hero {
+          height: auto;
+          min-height: auto;
+          overflow: visible;
+        }
 
       /* let the hero size to its content on mobile */
-      .contact-hero { min-height:auto; padding-top:0.6rem; padding-bottom:0.6rem; display:flex; align-items:flex-start; position:relative; z-index:0; }
+      .contact-hero { 
+        min-height: auto; 
+        padding-top: 2rem; 
+        padding-bottom: 2rem; 
+        display: flex; 
+        align-items: flex-start; 
+        position: relative; 
+        z-index: 0; 
+      }
 
       /* hide heavy accents */
-      .hero-accents { display:none; }
+      .hero-accents { display: none; }
 
       /* floating semicircle-like image */
-      .contact-hero .rounded-arch { position:absolute; right:1rem; top:14%; width:38%; max-width:260px; border-radius:48% 48% 12px 12px / 48% 48% 12px 12px; border-width:2px; box-shadow:0 12px 30px rgba(0,0,0,0.28); overflow:hidden; z-index:1; }
-      .contact-hero .rounded-arch img { width:100%; height:auto; max-height:40vh; object-fit:cover; display:block; }
-      .contact-hero .text-left { max-width: calc(100% - 44%); margin-top:0.3rem; }
-      .contact-hero .container { padding-right:5.5rem; }
-      .contact-hero h1 { font-size:1.9rem; line-height:1.03; margin-bottom:0.25rem; }
-      .contact-hero p { font-size:0.95rem; margin-bottom:0.5rem; }
+             .contact-hero .rounded-arch { 
+         /* Let Tailwind handle positioning and sizing */
+         border-width: 2px; 
+         box-shadow: 0 12px 30px rgba(0,0,0,0.28); 
+       }
+      .contact-hero .rounded-arch img { 
+        width: 100%; 
+        height: auto; 
+        max-height: 40vh; 
+        object-fit: cover; 
+        display: block; 
+      }
+             .contact-hero .text-left { 
+         /* Let Tailwind handle layout */
+         margin-top: 0.3rem; 
+       }
+             .contact-hero .container { 
+         /* Let Tailwind handle padding */
+       }
+      .contact-hero h1 { 
+        font-size: 2.5rem; 
+        line-height: 1.1; 
+        margin-bottom: 1rem; 
+        font-weight: 800;
+      }
+      .contact-hero p { 
+        font-size: 1.1rem; 
+        margin-bottom: 1rem; 
+        opacity: 0.9;
+        line-height: 1.4;
+      }
 
       /* make modal circular on small screens */
-      .photo-modal .modal-card { width: min(360px,78vw); height: min(360px,78vw); max-height:78vw; aspect-ratio:1/1; border-radius:9999px; padding:0; }
-      .photo-modal .close-btn { top:8px; right:8px; }
+      .photo-modal .modal-card { 
+        width: min(360px,78vw); 
+        height: min(360px,78vw); 
+        max-height: 78vw; 
+        aspect-ratio: 1/1; 
+        border-radius: 9999px; 
+        padding: 0; 
+      }
+      .photo-modal .close-btn { top: 8px; right: 8px; }
+      
+             /* Mobile form styling - let Tailwind handle layout */
+
+             /* Improve mobile form styling - let Tailwind handle */
+       /* Better mobile input styling - let Tailwind handle */
+       /* Improve mobile button styling - let Tailwind handle */
+
+             /* Better mobile spacing - let Tailwind handle */
+
+             /* Improve mobile section spacing - let Tailwind handle */
+
+             /* Better mobile container padding - let Tailwind handle */
+       /* Improve mobile hero container - let Tailwind handle */
+
+             /* Better mobile card spacing - let Tailwind handle */
+
+             /* Improve mobile response card styling - let Tailwind handle */
+
+             /* Better mobile Instagram button - let Tailwind handle */
     }
 
     @media (max-width: 420px) {
-      .contact-hero { min-height:auto; }
-      .contact-hero .rounded-arch { width:34%; max-width:190px; top:12%; right:0.6rem; }
-      .contact-hero .container { padding-right:3.6rem; }
-      .contact-hero h1 { font-size:1.5rem; }
-      .contact-hero p { font-size:0.9rem; }
-  /* tighter card + inputs on small screens */
-  .contact-card { padding:0.5rem; }
-  #contact-form .contact-input { padding:8px !important; font-size:0.9rem; }
-  /* reduce vertical gap between form rows */
-  #contact-form .fl { margin-bottom:0.6rem; }
-  button.contact-primary { padding:8px 10px; font-size:0.9rem; }
+      .contact-hero { 
+        min-height: auto; 
+        padding-top: 1.5rem; 
+        padding-bottom: 1.5rem; 
+      }
+             .contact-hero .rounded-arch { 
+         /* Let Tailwind handle positioning and sizing */
+       }
+             .contact-hero .container { 
+         /* Let Tailwind handle padding */
+       }
+      .contact-hero h1 { 
+        font-size: 2rem; 
+        line-height: 1.1;
+        margin-bottom: 0.75rem;
+      }
+      .contact-hero p { 
+        font-size: 1rem; 
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+      }
+      
+             /* tighter card + inputs on small screens - let Tailwind handle */
+       /* reduce vertical gap between form rows - let Tailwind handle */
+
+             /* Better spacing for very small screens - let Tailwind handle */
+             .contact-hero .container { 
+         /* Let Tailwind handle padding */
+       }
+
+             /* Additional mobile improvements for consistency - let Tailwind handle */
+
+             /* Better mobile form grid */
+       /* Let Tailwind handle the grid layout */
+
+             /* Improve mobile floating labels - let Tailwind handle */
+       /* Better mobile select styling - let Tailwind handle */
+       /* Improve mobile response info button - let Tailwind handle */
+       /* Better mobile response items - let Tailwind handle */
     }
   </style>
 </head>
 
-<body class="text-gray-800 theme-basic-dark contact-theme">
+<body class="text-[#1A3D63] theme-basic-dark contact-theme">
 
     <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-50">
+      <!-- Header -->
+  <header class="bg-[#1A3D63] shadow-sm sticky top-0 z-50">
+    <nav class="container mx-auto px-6 py-4 flex items-center">
+      <!-- Left side: Hamburger + Logo -->
+      <div class="flex items-center space-x-4">
+        <!-- Hamburger Menu Button -->
+                 <button id="sidebar-toggle" class="text-white hover:text-[#4A7FA7] focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+          </svg>
+        </button>
+
+                 <a href="index.html?v=1.3" class="flex flex-col items-center">
+           <img src="logo.png?v=1.3" alt="GIKI Chronicles Logo" class="h-16 w-auto">
+           <span class="text-lg font-bold text-white mt-1">GIKI Chronicles</span>
+         </a>
+      </div>
+
+      <!-- Right side: Navigation -->
+      <div class="hidden md:flex items-center space-x-6 ml-auto">
+        <!-- <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a> -->
+                                   <a href="about.html?v=1.3" class="text-white hover:text-[#4A7FA7] transition duration-300">About</a>
+        <!-- <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a> -->
+                 <a href="gallery.html?v=1.3"
+            class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+            <span class="relative z-10">Gallery</span>
+          </a>
+
+                                   <a href="guide.html?v=1.3"
+            class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+            <span class="relative z-10">Freshmen Guide</span>
+          </a>
+
+                                   <a href="calendar.html?v=1.3"
+            class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+            <span class="relative z-10">Calendar</span>
+          </a>
+        <!-- GUEST NAVIGATION (DESKTOP) -->
+        <div id="guest-nav" class="flex items-center space-x-6">
+          <a href="login.html?v=1.3" class="text-white hover:text-[#4A7FA7] transition duration-300">Login</a>
+          <!-- <a href="signup.html"
+            class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">Sign Up</a> -->
+        </div>
+
+        <!-- USER NAVIGATION (DESKTOP) -->
+        <div id="user-nav" class="hidden md:flex items-center space-x-6">
+          <!-- <a href="profile.html" class="text-gray-600 hover:text-blue-600">My Profile</a> -->
+          <!-- <a href="gallery.html" class="text-gray-600 hover:text-blue-600">Gallery</a> -->
+          <!-- <a href="contact.html" class="text-gray-600 hover:text-blue-600">Contact</a> -->
+
+          <!-- <button id="logout-button"
+                        class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300">Logout</button> -->
+        </div>
+      </div>
+    </nav>
+  </header>
         <nav class="container mx-auto px-6 py-4 flex items-center">
             <!-- Left side: Hamburger + Logo -->
             <div class="flex items-center space-x-4">
@@ -281,7 +473,7 @@
                 </button>
                 
                         <a href="index.html" class="flex flex-col items-center">
-          <img src="logo.png" alt="GIKI Chronicles Logo" class="h-16 w-auto">
+          <img src="logo.png?v=1.3" alt="GIKI Chronicles Logo" class="h-16 w-auto">
           <span class="text-lg font-bold text-gray-800 mt-1">GIKI Chronicles</span>
         </a>
             </div>
@@ -289,25 +481,25 @@
             <!-- Right side: Navigation -->
             <div class="hidden md:flex items-center space-x-6 ml-auto">
                 <!-- <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a> -->
-                <a href="about.html" class="text-gray-600 hover:text-blue-600 transition duration-300">About</a>
+                <a href="about.html?v=1.3" class="text-white hover:text-[#4A7FA7] transition duration-300">About</a>
                 <!-- <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a> -->
-                <a href="gallery.html"
-                  class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+                <a href="gallery.html?v=1.3"
+                  class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
                   <span class="relative z-10">Gallery</span>
                 </a>
 
-                <a href="guide.html"
-                  class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+                <a href="guide.html?v=1.3"
+                  class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
                   <span class="relative z-10">Freshmen Guide</span>
                 </a>
 
-                <a href="calendar.html"
-                  class="relative px-6 py-2.5 text-blue-600 font-semibold border-2 border-blue-600 rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-blue-600 before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+                <a href="calendar.html?v=1.3"
+                  class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
                   <span class="relative z-10">Calendar</span>
                 </a>
                 <!-- GUEST NAVIGATION (DESKTOP) -->
                 <div id="guest-nav" class="flex items-center space-x-6">
-                  <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
+                  <a href="login.html?v=1.3" class="text-white hover:text-[#4A7FA7] transition duration-300">Login</a>
                   <!-- <a href="signup.html"
                     class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">Sign Up</a> -->
                 </div>
@@ -323,6 +515,57 @@
             </div>
         </nav>
     </header>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-[#1A3D63] transform -translate-x-full transition-transform duration-300 ease-in-out z-40 shadow-lg">
+      <div class="flex flex-col h-full">
+        <!-- Sidebar Header -->
+        <div class="flex items-center justify-between p-6 border-b border-white/20">
+          <h2 class="text-xl font-bold text-white">Menu</h2>
+          <button id="sidebar-close" class="text-white hover:text-[#4A7FA7] focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Sidebar Navigation -->
+        <nav class="flex-1 px-6 py-4 space-y-2">
+          <div class="mb-6">
+            <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">Main</h3>
+            <a href="index.html?v=1.3" class="block px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-md transition duration-200">Home</a>
+            <a href="about.html?v=1.3" class="block px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-md transition duration-200">About</a>
+            <a href="gallery.html?v=1.3" class="block px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-md transition duration-200">Gallery</a>
+            <a href="guide.html?v=1.3" class="block px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-md transition duration-200">Freshmen Guide</a>
+            <a href="calendar.html?v=1.3" class="block px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-md transition duration-200">Calendar</a>
+          </div>
+
+          <div class="mb-6">
+            <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">Account</h3>
+            <a href="login.html?v=1.3" class="block px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-md transition duration-200">Login</a>
+            <a href="profile.html?v=1.3" class="block px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-md transition duration-200">Profile</a>
+          </div>
+
+          <div class="mb-6">
+            <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">Theme</h3>
+            <select id="theme-select" class="w-full px-3 py-2 bg-[#1A3D63] border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#4A7FA7]">
+              <option value="light">Light Mode</option>
+              <option value="dark">Dark Mode</option>
+              <option value="basic-dark">Basic Dark</option>
+            </select>
+          </div>
+
+          <div class="mt-auto">
+            <button id="logout-button" class="w-full px-3 py-2 text-red-400 hover:bg-red-500/20 rounded-md transition duration-200">
+              Logout
+            </button>
+          </div>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
 
     <!-- Main Content -->
     <main class="px-4">
@@ -350,7 +593,7 @@
                     <!-- Right: Hero Image -->
                     <div class="flex justify-center lg:justify-end">
                         <div class="rounded-arch w-full max-w-md lg:max-w-lg">
-                            <img src="contact-hero.jpeg" alt="Campus" class="w-full h-full object-cover" />
+                            <img src="contact-hero.jpeg?v=1.3" alt="Campus" class="w-full h-full object-cover" />
                         </div>
                     </div>
                 </div>
@@ -361,7 +604,7 @@
     <div id="photo-modal" class="photo-modal hidden" aria-hidden="true">
       <div class="modal-card" role="dialog" aria-modal="true">
         <button class="close-btn" id="photo-modal-close" aria-label="Close photo">✕</button>
-        <img id="photo-modal-img" src="contact-hero.jpeg" alt="Campus photo enlarged">
+        <img id="photo-modal-img" src="contact-hero.jpeg?v=1.3" alt="Campus photo enlarged">
       </div>
     </div>
 
@@ -376,10 +619,10 @@
           </p>
         </div>
                 
-                <div class="grid lg:grid-cols-3 gap-12">
+                <div class="grid lg:grid-cols-3 gap-12 items-stretch">
                     <!-- Form Card -->
                     <div class="lg:col-span-2">
-                        <div class="contact-card rounded-3xl p-6 md:p-8">
+                        <div class="contact-card rounded-3xl p-6 md:p-8 h-full">
                             <form id="contact-form" class="space-y-8">
                                 <div class="grid md:grid-cols-2 gap-6">
                                     <div class="fl">
@@ -416,64 +659,64 @@
                         </div>
                     </div>
 
-                    <!-- Right Sidebar -->
-                    <div class="space-y-8">
-                        <!-- Social Media Card -->
-                        <div class="contact-card rounded-3xl p-8">
-                            <div class="text-center mb-6">
-                                <h3 class="text-2xl font-bold mb-3">Join Our Community</h3>
-                                <p class="text-base opacity-80">Follow us for exclusive content, behind-the-scenes, and student stories</p>
-                            </div>
-                            
-                            <!-- Instagram Button -->
-                            <div class="flex justify-center">
-                <a class="ig-btn w-16 h-16 rounded-3xl grid place-items-center group hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl" href="#" aria-label="Instagram">
-                  <!-- Icon -->
-                  <svg class="w-8 h-8 relative z-10 text-white" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7 2C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5H7zm10 2a3 3 0 013 3v10a3 3 0 01-3 3H7a3 3 0 01-3-3V7a3 3 0 013-3h10z"/>
-                    <path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0 2.2A2.8 2.8 0 1112 15.8 2.8 2.8 0 0112 9.2z"/>
-                    <circle cx="17.5" cy="6.5" r="1.3"/>
-                  </svg>
-                </a>
-                            </div>
-                        </div>
+                                         <!-- Right Sidebar -->
+                     <div class="space-y-6 h-full">
+                         <!-- Social Media Card -->
+                         <div class="contact-card rounded-3xl p-6">
+                             <div class="text-center mb-4">
+                                 <h3 class="text-xl font-bold mb-2">Join Our Community</h3>
+                                 <p class="text-sm opacity-80">Follow us for exclusive content, behind-the-scenes, and student stories</p>
+                             </div>
+                             
+                             <!-- Instagram Button -->
+                             <div class="flex justify-center">
+                 <a class="ig-btn w-14 h-14 rounded-3xl grid place-items-center group hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl" href="#" aria-label="Instagram">
+                   <!-- Icon -->
+                   <svg class="w-7 h-7 relative z-10 text-white" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                     <path d="M7 2C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5H7zm10 2a3 3 0 013 3v10a3 3 0 01-3 3H7a3 3 0 01-3-3V7a3 3 0 013-3h10z"/>
+                     <path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0 2.2A2.8 2.8 0 1112 15.8 2.8 2.8 0 0112 9.2z"/>
+                     <circle cx="17.5" cy="6.5" r="1.3"/>
+                   </svg>
+                 </a>
+                             </div>
+                         </div>
 
-                        <!-- Response Time Card (with info popup) -->
-                        <div class="contact-card rounded-3xl p-8 relative">
-                            <div class="flex items-start justify-between">
-                              <h3 class="text-2xl font-bold mb-6">We'll Get Back to You</h3>
-                              <button id="response-info-btn" class="ml-4 bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center" aria-expanded="false" aria-controls="response-popup" aria-label="More info about response times">i</button>
-                            </div>
+                         <!-- Response Time Card (with info popup) -->
+                         <div class="contact-card rounded-3xl p-6 relative">
+                             <div class="flex items-start justify-between">
+                               <h3 class="text-xl font-bold mb-4">We'll Get Back to You</h3>
+                               <button id="response-info-btn" class="ml-4 bg-blue-600 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm" aria-expanded="false" aria-controls="response-popup" aria-label="More info about response times">i</button>
+                             </div>
 
-                            <!-- Visible summary (kept brief) -->
-                            <p class="text-sm opacity-80 mb-4">Typical response times for different inquiry types. Tap the info button for details.</p>
+                             <!-- Visible summary (kept brief) -->
+                             <p class="text-sm opacity-80 mb-3">Typical response times for different inquiry types. Tap the info button for details.</p>
 
-                            <!-- Inline response details for desktop -->
-                            <div class="response-inline space-y-3 mt-4">
-                                <div class="p-4 rounded-2xl border response-item priority">
-                                    <div class="flex items-center justify-between mb-2">
-                                      <span class="response-title priority-title">Priority Response</span>
-                                      <span class="time-pill priority-pill">12h</span>
-                                    </div>
-                                    <p class="text-sm text-white/80">Technical issues & urgent matters</p>
-                                </div>
+                             <!-- Inline response details for desktop -->
+                             <div class="response-inline space-y-2 mt-3">
+                                 <div class="p-3 rounded-xl border response-item priority">
+                                     <div class="flex items-center justify-between mb-1">
+                                       <span class="response-title priority-title text-sm">Priority Response</span>
+                                       <span class="time-pill priority-pill text-xs px-2 py-1">12h</span>
+                                     </div>
+                                     <p class="text-xs text-white/80">Technical issues & urgent matters</p>
+                                 </div>
 
-                                <div class="p-4 rounded-2xl border response-item standard">
-                                    <div class="flex items-center justify-between mb-2">
-                                      <span class="response-title standard-title">Standard Response</span>
-                                      <span class="time-pill standard-pill">24h</span>
-                                    </div>
-                                    <p class="text-sm text-white/80">General inquiries & suggestions</p>
-                                </div>
+                                 <div class="p-3 rounded-xl border response-item standard">
+                                     <div class="flex items-center justify-between mb-1">
+                                       <span class="response-title standard-title text-sm">Standard Response</span>
+                                       <span class="time-pill standard-pill text-xs px-2 py-1">24h</span>
+                                     </div>
+                                     <p class="text-xs text-white/80">General inquiries & suggestions</p>
+                                 </div>
 
-                                <div class="p-4 rounded-2xl border response-item extended">
-                                    <div class="flex items-center justify-between mb-2">
-                                      <span class="response-title extended-title">Extended Response</span>
-                                      <span class="time-pill extended-pill">48h</span>
-                                    </div>
-                                    <p class="text-sm text-white/80">Feature requests & detailed proposals</p>
-                                </div>
-                            </div>
+                                 <div class="p-3 rounded-xl border response-item extended">
+                                     <div class="flex items-center justify-between mb-1">
+                                       <span class="response-title extended-title text-sm">Extended Response</span>
+                                       <span class="time-pill extended-pill text-xs px-2 py-1">48h</span>
+                                     </div>
+                                     <p class="text-xs text-white/80">Feature requests & detailed proposals</p>
+                                 </div>
+                             </div>
 
                             <!-- In-card popover (for desktop when info button is used) -->
                             <div class="response-popover" id="response-popover" aria-hidden="true">
@@ -536,9 +779,7 @@
         </section>
     </main>
 
-    <!-- Sidebar -->
-    <div id="sidebar"
-      class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+
       <div class="flex items-center justify-between p-6 border-b">
         <h2 class="text-xl font-bold text-gray-800">Menu</h2>
         <button id="sidebar-close" class="text-gray-600 hover:text-blue-600 focus:outline-none">
@@ -731,23 +972,23 @@
     <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
 
     <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js?v=1.3"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js?v=1.3"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js?v=1.3"></script>
 
     <!-- Your custom scripts -->
     <!-- Firebase initialization - must be loaded first -->
-    <script src="firebase-init.js"></script>
+    <script src="firebase-init.js?v=1.3"></script>
     <!-- Admin configuration - must be loaded before auth.js -->
-    <script src="admin-config.js"></script>
-    <script src="auth.js"></script>
-    <script src="submissions.js"></script>
-    <script src="script.js"></script>
-    <script src="theme-manager.js"></script>
-    <script src="tour-manager.js"></script>
-    <script src="welcome-popup.js"></script>
-    <script src="firebase-error-handler.js"></script>
-    <script src="app.js"></script>
+    <script src="admin-config.js?v=1.3"></script>
+    <script src="auth.js?v=1.3"></script>
+    <script src="submissions.js?v=1.3"></script>
+    <script src="script.js?v=1.3"></script>
+    <script src="theme-manager.js?v=1.3"></script>
+    <script src="tour-manager.js?v=1.3"></script>
+    <script src="welcome-popup.js?v=1.3"></script>
+    <script src="firebase-error-handler.js?v=1.3"></script>
+    <script src="app.js?v=1.3"></script>
 
     <script>
         // Navigation State Management for Contact Page
@@ -957,7 +1198,7 @@
           infoBtn.focus();
           document.body.style.overflow = '';
           document.body.classList.remove('popup-open');
-          if (popupCard) { popupCard.classList.remove('modal-exit'); }
+          if (popupCard) popupCard.classList.remove('modal-exit');
           if (popupBackdrop) { popupBackdrop.classList.remove('backdrop-exit'); }
           if (popupCard) popupCard.removeEventListener('animationend', onEnd);
         };

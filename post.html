@@ -12,13 +12,48 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?v=1.3"></script>
+    
+    <!-- Apply theme immediately to prevent flash -->
+    <script>
+      (function() {
+        const savedTheme = localStorage.getItem('selected-theme') || 'basic-dark';
+        
+        // Apply to documentElement immediately (always exists)
+        if (document.documentElement) {
+          document.documentElement.classList.add(`theme-${savedTheme}`);
+        }
+        
+        // Apply to body when it becomes available
+        if (document.body) {
+          document.body.classList.add(`theme-${savedTheme}`);
+        } else {
+          // Wait for body to be available
+          document.addEventListener('DOMContentLoaded', function() {
+            if (document.body) {
+              document.body.classList.add(`theme-${savedTheme}`);
+            }
+          });
+        }
+      })();
+    </script>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Lora:wght@400;600;700&display=swap&v=1.3" rel="stylesheet">
 
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=1.3">
+    
     <style>
+        /* Post page color palette matching index.html exactly */
+        :root {
+            --c-navy: #0A1931;
+            --c-deep: #1A3D63;
+            --c-steel: #4A7FA7;
+            --c-light: #B3CFE5;
+            --c-snow: #F6FAFD;
+        }
+        
         /* Contact page palette (scoped) */
         .contact-theme {
             --c-navy: #0A1931;
@@ -28,17 +63,27 @@
             --c-snow: #F6FAFD;
         }
 
+        /* Full page background matching index.html */
+        body {
+            background: url('background.jpeg?v=1.3') no-repeat center center fixed;
+            background-size: cover;
+        }
+        
+        /* Background overlay for the entire page matching index.html */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10,25,49,0.3) 0%, rgba(26,61,99,0.25) 50%, rgba(10,25,49,0.3) 100%);
+            z-index: -1;
+        }
+        
+        /* Post-specific styling */
         body {
             font-family: 'Inter', sans-serif;
-            background:
-                linear-gradient(135deg, rgba(0,0,0,0.4), rgba(10,25,49,0.3)),
-                radial-gradient(circle at 30% 20%, rgba(74,127,167,0.2), transparent),
-                radial-gradient(circle at 70% 80%, rgba(26,61,99,0.3), transparent),
-                url('background.jpeg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
             color: var(--text-color, #1f2937);
         }
 
@@ -712,6 +757,147 @@
     <script src="tour-manager.js"></script>
     <script src="welcome-popup.js"></script>
     <script src="firebase-error-handler.js"></script>
+    
+    <!-- Post loading functionality -->
+    <script>
+        // Function to get URL parameters
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Function to load post content from Firebase
+        async function loadPostContent(postId) {
+            try {
+                // Show loading state
+                document.getElementById('post-title').textContent = 'Loading Post...';
+                document.getElementById('post-content').innerHTML = '<p>Please wait while we fetch the article content...</p>';
+                
+                // Check if Firebase is available
+                if (typeof getPostById === 'function') {
+                    const result = await getPostById(postId);
+                    if (result && result.success && result.post) {
+                        const post = result.post;
+                        
+                        // Update page title
+                        document.title = `${post.title} - GIKI Chronicles`;
+                        
+                        // Update post title
+                        document.getElementById('post-title').textContent = post.title || 'Untitled Post';
+                        
+                        // Update post meta
+                        const postDate = post.createdAt ? post.createdAt.toDate().toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        }) : '';
+                        const author = post.authorName || 'Anonymous';
+                        
+                        document.getElementById('post-meta').innerHTML = `
+                            <div class="flex items-center justify-center space-x-4 text-sm text-gray-500 dark:text-gray-400 mb-6">
+                                <span>Posted by ${author}</span>
+                                ${postDate ? `<span>•</span><span>${postDate}</span>` : ''}
+                                ${post.genre ? `<span>•</span><span class="bg-[#4A7FA7]/10 text-[#4A7FA7] px-2 py-1 rounded-full text-xs">${post.genre}</span>` : ''}
+                            </div>
+                        `;
+                        
+                        // Update post image
+                        if (post.photoUrl) {
+                            document.getElementById('post-image').src = post.photoUrl;
+                            document.getElementById('post-image').alt = post.title;
+                        }
+                        
+                        // Update post content
+                        if (post.content) {
+                            document.getElementById('post-content').innerHTML = post.content;
+                        } else if (post.description) {
+                            document.getElementById('post-content').innerHTML = `
+                                <p class="text-lg text-gray-600 dark:text-gray-300 mb-6">${post.description}</p>
+                                <div class="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-4 rounded">
+                                    <p class="text-yellow-800 dark:text-yellow-200">
+                                        <strong>Note:</strong> This is a preview. The full content will be available soon.
+                                    </p>
+                                </div>
+                            `;
+                        } else {
+                            document.getElementById('post-content').innerHTML = `
+                                <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg text-center">
+                                    <p class="text-gray-500 dark:text-gray-400">Content not available for this post.</p>
+                                </div>
+                            `;
+                        }
+                        
+                        // Load reactions if available
+                        if (typeof loadPostReactions === 'function') {
+                            loadPostReactions(postId);
+                        }
+                        
+                        // Load comments if available
+                        if (typeof loadPostComments === 'function') {
+                            loadPostComments(postId);
+                        }
+                        
+                        console.log('Post loaded successfully:', post);
+                        return;
+                    }
+                }
+                
+                // Fallback if API unavailable or post not found
+                document.getElementById('post-title').textContent = 'Post Not Found';
+                document.getElementById('post-content').innerHTML = `
+                    <div class="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-400 p-4 rounded">
+                        <p class="text-red-800 dark:text-red-200">
+                            <strong>Error:</strong> Unable to load this post. It may have been removed or is temporarily unavailable.
+                        </p>
+                    </div>
+                    <div class="mt-6 text-center">
+                        <a href="browse.html" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                            Browse Other Posts
+                        </a>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Error loading post:', error);
+                document.getElementById('post-title').textContent = 'Error Loading Post';
+                document.getElementById('post-content').innerHTML = `
+                    <div class="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-400 p-4 rounded">
+                        <p class="text-red-800 dark:text-red-200">
+                            <strong>Error:</strong> Something went wrong while loading this post. Please try again later.
+                        </p>
+                    </div>
+                    <div class="mt-6 text-center">
+                        <a href="browse.html" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                            Browse Other Posts
+                        </a>
+                    </div>
+                `;
+            }
+        }
+
+        // Load post when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const postId = getUrlParameter('id');
+            if (postId) {
+                loadPostContent(postId);
+            } else {
+                // No post ID provided
+                document.getElementById('post-title').textContent = 'No Post Selected';
+                document.getElementById('post-content').innerHTML = `
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-4 rounded">
+                        <p class="text-yellow-800 dark:text-yellow-200">
+                            <strong>No Post ID:</strong> Please select a post to view from the main page.
+                        </p>
+                    </div>
+                    <div class="mt-6 text-center">
+                        <a href="index.html" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                            Go to Homepage
+                        </a>
+                    </div>
+                `;
+            }
+        });
+    </script>
 </body>
 
 </html>

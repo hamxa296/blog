@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-basic-dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - GIKI Chronicles</title>
+    
+    <!-- Caching Headers -->
+    <meta http-equiv="Cache-Control" content="max-age=3600, public">
+    <meta http-equiv="Expires" content="3600">
+    <meta http-equiv="Pragma" content="cache">
+    <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root { 
+            --c-navy: #0A1931; 
+            --c-deep: #1A3D63; 
+            --c-steel: #4A7FA7; 
+            --c-light: #B3CFE5; 
+            --c-snow: #F6FAFD;
+            --c-accent: #FF6B6B;
+            --c-success: #4ECDC4;
+            --c-warning: #FFE66D;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, 
+                rgba(10,25,49,0.95) 0%, 
+                rgba(26,61,99,0.90) 25%, 
+                rgba(74,127,167,0.85) 75%, 
+                rgba(179,207,229,0.80) 100%),
+                radial-gradient(circle at 20% 30%, rgba(255,107,107,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(78,205,196,0.1) 0%, transparent 50%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="0.5" fill="white" opacity="0.03"/><circle cx="80" cy="40" r="0.3" fill="white" opacity="0.02"/><circle cx="40" cy="80" r="0.4" fill="white" opacity="0.03"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            background-attachment: fixed;
+            background-size: cover, 400px 400px, 300px 300px, 100px 100px;
+            background-position: center, 20% 30%, 80% 70%, 0 0;
+            min-height: 100vh;
+            color: var(--c-snow);
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Elements */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-dark {
+            background: rgba(10, 25, 49, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(179, 207, 229, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Header Improvements */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Enhanced Navigation */
+        .nav-pill {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            color: var(--c-steel);
+            border: 2px solid var(--c-steel);
+            border-radius: 50px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+
+        .nav-pill::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--c-steel), var(--c-deep));
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 0;
+        }
+
+        .nav-pill:hover::before {
+            left: 0;
+        }
+
+        .nav-pill:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 127, 167, 0.4);
+        }
+
+        .nav-pill span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--c-snow) 0%, var(--c-light) 50%, var(--c-steel) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--c-light);
+            font-weight: 300;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Floating particles animation */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+        }
+
+        /* Enhanced Slideshow */
+        .slideshow-container {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto 3rem;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            background: var(--c-deep);
+        }
+
+        .slide {
+            display: none;
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .slide:hover img {
+            transform: scale(1.05);
+        }
+
+        .slide-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 3rem 2rem 2rem;
+            color: white;
+        }
+
+        .slide-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide-description {
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        /* Navigation dots */
+        .slide-nav {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            margin: 0 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active,
+        .dot:hover {
+            background: var(--c-accent);
+            transform: scale(1.2);
+        }
+
+        /* Enhanced Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--c-accent) 0%, #FF8E8E 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(179, 207, 229, 0.1);
+            color: var(--c-light);
+            border: 2px solid var(--c-light);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--c-light);
+            color: var(--c-deep);
+            transform: translateY(-2px);
+        }
+
+        /* Enhanced Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .gallery-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            group: hover;
+        }
+
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(255,107,107,0.1) 0%, 
+                rgba(78,205,196,0.1) 50%, 
+                rgba(255,230,109,0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .gallery-item:hover::before {
+            opacity: 1;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-item-content {
+            padding: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .gallery-item-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--c-snow);
+        }
+
+        .gallery-item-category {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--c-success) 0%, #4ECDC4 100%);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .gallery-item-meta {
+            font-size: 0.875rem;
+            color: var(--c-light);
+            opacity: 0.8;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+        }
+
+        .filter-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            background: rgba(26, 61, 99, 0.8);
+            border: 2px solid rgba(179, 207, 229, 0.3);
+            color: var(--c-snow);
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--c-accent);
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+        }
+
+        .filter-select option {
+            background: var(--c-deep);
+            color: var(--c-snow);
+        }
+
+        /* Admin Tabs */
+        .admin-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tab-button {
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .tab-button.approved {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .tab-button.pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .tab-button.rejected {
+            background: rgba(244, 67, 54, 0.2);
+            color: #F44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .tab-button:hover {
+            transform: translateY(-2px);
+            opacity: 0.8;
+        }
+
+        /* Modal Improvements */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 25, 49, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(10,25,49,0.95), rgba(26,61,99,0.93));
+            border: 1px solid rgba(179,207,229,0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(50px) scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--c-snow);
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--c-light);
+            font-weight: 600;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(26, 61, 99, 0.8);
+            border: 2px solid rgba(179, 207, 229, 0.3);
+            border-radius: 10px;
+            color: var(--c-snow);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--c-accent);
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: rgba(179, 207, 229, 0.6);
+        }
+
+        /* Skeleton Loaders */
+        .skeleton {
+            background: linear-gradient(90deg, 
+                rgba(179, 207, 229, 0.1) 25%, 
+                rgba(179, 207, 229, 0.2) 50%, 
+                rgba(179, 207, 229, 0.1) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: var(--c-snow);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--c-accent);
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+        }
+
+        .search-input::placeholder {
+            color: rgba(246, 250, 253, 0.6);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(246, 250, 253, 0.6);
+            pointer-events: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-controls {
+                justify-content: center;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .slideshow-container {
+                margin: 0 1rem 2rem;
+            }
+            
+            .slide {
+                height: 300px;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .animate-slide-in {
+            animation: slideInUp 0.6s ease-out forwards;
+        }
+
+        /* Loading States */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(179, 207, 229, 0.3);
+            border-left: 4px solid var(--c-accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 1rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--c-accent);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--c-light);
+            opacity: 0.8;
+        }
+
+    </style>
+</head>
+
+<body>
+    <!-- Header with improved styling -->
+    <header id="header" class="sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <!-- Left side: Hamburger + Logo -->
+            <div class="flex items-center space-x-4">
+                <button id="sidebar-toggle" class="text-gray-600 hover:text-blue-600 focus:outline-none transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+                
+                <a href="index.html" class="flex flex-col items-center group">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mb-1 transform transition-transform group-hover:scale-110">
+                        <span class="text-white font-bold text-xl">GC</span>
+                    </div>
+                    <span class="text-lg font-bold text-gray-800">GIKI Chronicles</span>
+                </a>
+            </div>
+            
+            <!-- Right side: Navigation -->
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="about.html" class="text-gray-600 hover:text-blue-600 transition duration-300">About</a>
+                <a href="gallery.html" class="nav-pill"><span>Gallery</span></a>
+                <a href="guide.html" class="nav-pill"><span>Freshmen Guide</span></a>
+                <a href="calendar.html" class="nav-pill"><span>Calendar</span></a>
+                <a href="login.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Enhanced Hero Section -->
+    <section class="hero-section">
+        <div class="particles">
+            <div class="particle" style="width: 4px; height: 4px; left: 10%; animation-delay: 0s;"></div>
+            <div class="particle" style="width: 6px; height: 6px; left: 20%; animation-delay: 2s;"></div>
+            <div class="particle" style="width: 3px; height: 3px; left: 70%; animation-delay: 4s;"></div>
+            <div class="particle" style="width: 5px; height: 5px; left: 90%; animation-delay: 1s;"></div>
+        </div>
+        
+        <div class="container mx-auto px-6">
+            <h1 class="hero-title">Campus Gallery</h1>
+            <p class="hero-subtitle">Discover the beauty and memories of GIKI through the lens of our community</p>
+        </div>
+    </section>
+
+    <!-- Enhanced Featured Photo Slideshow -->
+    <section class="container mx-auto px-6 mb-12">
+        <div class="slideshow-container">
+            <!-- Slides will be populated by JavaScript -->
+            <div class="slide active">
+                <img src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2186&q=80" alt="Campus View">
+                <div class="slide-overlay">
+                    <h3 class="slide-title">Main Campus Building</h3>
+                    <p class="slide-description">The iconic main building that serves as the heart of our academic community.</p>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80" alt="Library">
+                <div class="slide-overlay">
+                    <h3 class="slide-title">Central Library</h3>
+                    <p class="slide-description">A place of knowledge and quiet study, fostering academic excellence.</p>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80" alt="Sports Complex">
+                <div class="slide-overlay">
+                    <h3 class="slide-title">Sports Complex</h3>
+                    <p class="slide-description">Where champions are made and friendships are forged through sports.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide-nav">
+            <span class="dot active" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+    </section>
+
+    <!-- Enhanced Filter and Controls Section -->
+    <section class="container mx-auto px-6 mb-8">
+        <div class="filter-section">
+            <div class="filter-controls">
+                <div class="search-container">
+                    <div class="search-icon">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <input type="text" id="search-input" class="search-input" placeholder="Search photos...">
+                </div>
+                
+                <select id="category-filter" class="filter-select">
+                    <option value="all">All Places</option>
+                    <option value="Academic Blocks">Academic Blocks</option>
+                    <option value="Hostels">Hostels</option>
+                    <option value="Sports Complex">Sports Complex</option>
+                    <option value="General">General</option>
+                </select>
+                
+                <select id="sort-filter" class="filter-select">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="popular">Most Popular</option>
+                    <option value="title">Title A-Z</option>
+                </select>
+                
+                <!-- Admin Photo Management Tabs -->
+                <div id="admin-photo-tabs" class="admin-tabs hidden">
+                    <button id="tab-approved" class="tab-button approved">
+                        ✓ Approved
+                    </button>
+                    <button id="tab-pending" class="tab-button pending">
+                        ⏳ Pending
+                    </button>
+                    <button id="tab-rejected" class="tab-button rejected">
+                        ✗ Rejected
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <button id="open-submission-modal" class="btn-primary">
+                    📸 Submit Photo
+                </button>
+                
+                <!-- Admin Stats -->
+                <div id="admin-stats" class="stats-container hidden">
+                    <div class="stat-card">
+                        <span id="stats-approved" class="stat-number">0</span>
+                        <span class="stat-label">Approved</span>
+                    </div>
+                    <div class="stat-card">
+                        <span id="stats-pending" class="stat-number">0</span>
+                        <span class="stat-label">Pending</span>
+                    </div>
+                    <div class="stat-card">
+                        <span id="stats-rejected" class="stat-number">0</span>
+                        <span class="stat-label">Rejected</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Gallery Grid -->
+    <section class="container mx-auto px-6">
+        <div id="gallery-grid" class="gallery-grid">
+            <!-- Loading Skeleton -->
+            <div class="gallery-item skeleton">
+                <div class="w-full h-64 skeleton"></div>
+                <div class="p-6">
+                    <div class="h-4 skeleton rounded mb-3"></div>
+                    <div class="h-3 skeleton rounded w-1/2 mb-2"></div>
+                    <div class="h-3 skeleton rounded w-3/4"></div>
+                </div>
+            </div>
+            <div class="gallery-item skeleton">
+                <div class="w-full h-64 skeleton"></div>
+                <div class="p-6">
+                    <div class="h-4 skeleton rounded mb-3"></div>
+                    <div class="h-3 skeleton rounded w-1/2 mb-2"></div>
+                    <div class="h-3 skeleton rounded w-3/4"></div>
+                </div>
+            </div>
+            <div class="gallery-item skeleton">
+                <div class="w-full h-64 skeleton"></div>
+                <div class="p-6">
+                    <div class="h-4 skeleton rounded mb-3"></div>
+                    <div class="h-3 skeleton rounded w-1/2 mb-2"></div>
+                    <div class="h-3 skeleton rounded w-3/4"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Load More Button -->
+        <div class="text-center mt-8">
+            <button id="load-more-btn" class="btn-secondary hidden">
+                Load More Photos
+            </button>
+            <div id="loading-spinner" class="loading-spinner hidden"></div>
+        </div>
+    </section>
+
+    <!-- Enhanced Photo Submission Modal -->
+    <div id="submission-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="modal-title">✨ Share Your Campus Moment</h2>
+                <button id="close-modal" class="text-gray-400 hover:text-gray-200 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <form id="submission-form" class="space-y-6">
+                <div class="form-group">
+                    <label for="caption" class="form-label">📝 Caption</label>
+                    <input type="text" id="caption" class="form-input" placeholder="Describe your photo..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="photo-category" class="form-label">📍 Location Category</label>
+                    <select id="photo-category" class="form-select" required>
+                        <option value="">Choose a category</option>
+                        <option value="Academic Blocks">🏫 Academic Blocks</option>
+                        <option value="Hostels">🏠 Hostels</option>
+                        <option value="Sports Complex">🏃‍♂️ Sports Complex</option>
+                        <option value="General">🌟 General Campus</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location-detail" class="form-label">🗺️ Specific Location (Optional)</label>
+                    <input type="text" id="location-detail" class="form-input" placeholder="e.g., Main Auditorium, Hostel 7, etc.">
+                </div>
+                
+                <div class="form-group">
+                    <label for="photo-upload" class="form-label">📷 Upload Photo</label>
+                    <div class="relative">
+                        <input type="file" id="photo-upload" accept="image/*" required class="form-input">
+                        <div class="mt-2 text-sm text-gray-400">
+                            <p>• Maximum file size: 10MB</p>
+                            <p>• Supported formats: JPG, PNG, WebP</p>
+                            <p>• Images will be optimized automatically</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="photo-preview" class="form-group hidden">
+                    <label class="form-label">Preview</label>
+                    <div class="relative rounded-lg overflow-hidden">
+                        <img id="preview-image" class="w-full h-48 object-cover">
+                        <button type="button" id="remove-preview" class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="form-message" class="text-center text-sm"></div>
+                
+                <div class="flex space-x-4">
+                    <button type="button" id="cancel-submit" class="flex-1 btn-secondary">
+                        Cancel
+                    </button>
+                    <button type="submit" id="submit-btn" class="flex-1 btn-primary">
+                        🚀 Submit for Review
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Enhanced Admin Review Modal -->
+    <div id="admin-review-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="modal-title">🔍 Photo Review</h2>
+                <button id="close-review-modal" class="text-gray-400 hover:text-gray-200 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="review-photo-content" class="space-y-6">
+                <!-- Content populated by JavaScript -->
+            </div>
+            
+            <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-700">
+                <button id="delete-photo-btn" class="btn-secondary text-red-400 border-red-400 hover:bg-red-400 hover:text-white">
+                    🗑️ Delete
+                </button>
+                <button id="reject-photo-btn" class="btn-secondary text-yellow-400 border-yellow-400 hover:bg-yellow-400 hover:text-black">
+                    ❌ Reject
+                </button>
+                <button id="approve-photo-btn" class="btn-primary">
+                    ✅ Approve
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Rejection Modal -->
+    <div id="rejection-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="modal-title text-yellow-400">⚠️ Rejection Reason</h3>
+            <div class="space-y-4">
+                <div class="form-group">
+                    <label class="form-label">Select a reason (optional):</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="rejection-reason" value="inappropriate" class="text-yellow-400">
+                            <span>Inappropriate content</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="rejection-reason" value="quality" class="text-yellow-400">
+                            <span>Poor image quality</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="rejection-reason" value="duplicate" class="text-yellow-400">
+                            <span>Duplicate submission</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="rejection-reason" value="other" class="text-yellow-400">
+                            <span>Other</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="rejection-reason-text" class="form-label">Additional details:</label>
+                    <textarea id="rejection-reason-text" class="form-textarea" rows="3" 
+                              placeholder="Provide additional context (optional)"></textarea>
+                </div>
+            </div>
+            
+            <div class="flex justify-end space-x-4 mt-6">
+                <button id="cancel-rejection" class="btn-secondary">
+                    Cancel
+                </button>
+                <button id="confirm-rejection" class="btn-primary bg-yellow-500 hover:bg-yellow-600">
+                    Confirm Rejection
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Delete Confirmation Modal -->
+    <div id="delete-photo-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="text-center">
+                <div class="text-6xl mb-4">🗑️</div>
+                <h3 class="modal-title text-red-400">Permanent Deletion</h3>
+                <p class="text-gray-300 mb-6 leading-relaxed">
+                    This action cannot be undone. The photo will be permanently removed from both the database and cloud storage.
+                    <br><br>
+                    Are you absolutely sure you want to delete this photo?
+                </p>
+            </div>
+            
+            <div class="flex justify-end space-x-4">
+                <button id="cancel-delete" class="btn-secondary">
+                    Keep Photo
+                </button>
+                <button id="confirm-delete" class="btn-primary bg-red-500 hover:bg-red-600">
+                    🗑️ Delete Forever
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Photo Viewing Modal -->
+    <div id="photo-view-modal" class="fixed inset-0 bg-black bg-opacity-95 flex items-center justify-center hidden z-[60] backdrop-blur-sm">
+        <div id="photo-modal-content" class="relative w-full h-full max-w-7xl max-h-screen overflow-hidden">
+            <button id="close-photo-modal" class="absolute top-4 right-4 z-10 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 transition-all">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            
+            <div class="flex items-center justify-center w-full h-full">
+                <div id="photo-display" class="relative max-w-full max-h-full">
+                    <!-- Photo content inserted by JavaScript -->
+                </div>
+            </div>
+            
+            <div id="photo-info" class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-6 text-white">
+                <!-- Photo info inserted by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced slideshow functionality
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+
+        function showSlide(index) {
+            slides[currentSlideIndex].classList.remove('active');
+            dots[currentSlideIndex].classList.remove('active');
+            
+            currentSlideIndex = index;
+            
+            slides[currentSlideIndex].classList.add('active');
+            dots[currentSlideIndex].classList.add('active');
+        }
+
+        function currentSlide(index) {
+            showSlide(index - 1);
+        }
+
+        // Auto-advance slideshow
+        setInterval(() => {
+            showSlide((currentSlideIndex + 1) % slides.length);
+        }, 5000);
+
+        // Enhanced photo preview functionality
+        document.getElementById('photo-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('photo-preview');
+                    const previewImage = document.getElementById('preview-image');
+                    
+                    previewImage.src = event.target.result;
+                    preview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Remove preview functionality
+        document.getElementById('remove-preview').addEventListener('click', function() {
+            document.getElementById('photo-upload').value = '';
+            document.getElementById('photo-preview').classList.add('hidden');
+        });
+
+        // Enhanced modal functionality
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Modal event listeners
+        document.getElementById('open-submission-modal').addEventListener('click', () => {
+            showModal('submission-modal');
+        });
+
+        document.getElementById('close-modal').addEventListener('click', () => {
+            hideModal('submission-modal');
+        });
+
+        document.getElementById('cancel-submit').addEventListener('click', () => {
+            hideModal('submission-modal');
+        });
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const galleryItems = document.querySelectorAll('.gallery-item:not(.skeleton)');
+            
+            galleryItems.forEach(item => {
+                const title = item.querySelector('.gallery-item-title')?.textContent.toLowerCase() || '';
+                const category = item.querySelector('.gallery-item-category')?.textContent.toLowerCase() || '';
+                
+                if (title.includes(searchTerm) || category.includes(searchTerm)) {
+                    item.style.display = 'block';
+                    item.classList.add('animate-slide-in');
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Sample gallery data for demonstration
+        const samplePhotos = [
+            {
+                id: 1,
+                url: 'https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                title: 'Main Academic Block',
+                category: 'Academic Blocks',
+                description: 'The heart of academic excellence at GIKI',
+                date: '2024-01-15',
+                likes: 24,
+                submittedBy: 'Ali Hassan'
+            },
+            {
+                id: 2,
+                url: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                title: 'Central Library',
+                category: 'Academic Blocks',
+                description: 'A sanctuary of knowledge and learning',
+                date: '2024-01-14',
+                likes: 18,
+                submittedBy: 'Sarah Ahmed'
+            },
+            {
+                id: 3,
+                url: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                title: 'Sports Complex',
+                category: 'Sports Complex',
+                description: 'Where champions are made',
+                date: '2024-01-13',
+                likes: 31,
+                submittedBy: 'Ahmed Khan'
+            },
+            {
+                id: 4,
+                url: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                title: 'Hostel Common Area',
+                category: 'Hostels',
+                description: 'A place to relax and bond with friends',
+                date: '2024-01-12',
+                likes: 15,
+                submittedBy: 'Fatima Ali'
+            },
+            {
+                id: 5,
+                url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                title: 'Campus Green Spaces',
+                category: 'General',
+                description: 'Beautiful landscaping throughout the campus',
+                date: '2024-01-11',
+                likes: 27,
+                submittedBy: 'Omar Sheikh'
+            },
+            {
+                id: 6,
+                url: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                title: 'Computer Lab',
+                category: 'Academic Blocks',
+                description: 'State-of-the-art computing facilities',
+                date: '2024-01-10',
+                likes: 12,
+                submittedBy: 'Zain Malik'
+            }
+        ];
+
+        // Function to create gallery items
+        function createGalleryItem(photo) {
+            return `
+                <div class="gallery-item animate-slide-in" data-id="${photo.id}" onclick="openPhotoModal(${photo.id})">
+                    <img src="${photo.url}" alt="${photo.title}" loading="lazy">
+                    <div class="gallery-item-content">
+                        <div class="gallery-item-category">${photo.category}</div>
+                        <h3 class="gallery-item-title">${photo.title}</h3>
+                        <p class="gallery-item-meta">${photo.description}</p>
+                        <div class="flex items-center justify-between mt-3 text-sm text-gray-400">
+                            <span>📅 ${new Date(photo.date).toLocaleDateString()}</span>
+                            <span>❤️ ${photo.likes} likes</span>
+                            <span>👤 ${photo.submittedBy}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to open photo modal
+        function openPhotoModal(photoId) {
+            const photo = samplePhotos.find(p => p.id === photoId);
+            if (!photo) return;
+
+            const modal = document.getElementById('photo-view-modal');
+            const photoDisplay = document.getElementById('photo-display');
+            const photoInfo = document.getElementById('photo-info');
+
+            photoDisplay.innerHTML = `
+                <img src="${photo.url}" alt="${photo.title}" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl">
+            `;
+
+            photoInfo.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2">${photo.title}</h3>
+                        <p class="text-lg mb-2">${photo.description}</p>
+                        <div class="flex items-center space-x-4 text-sm opacity-90">
+                            <span class="bg-blue-500 px-3 py-1 rounded-full">${photo.category}</span>
+                            <span>📅 ${new Date(photo.date).toLocaleDateString()}</span>
+                            <span>👤 ${photo.submittedBy}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 text-lg">
+                        <button class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg transition-colors">
+                            ❤️ ${photo.likes}
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        // Close photo modal
+        document.getElementById('close-photo-modal').addEventListener('click', () => {
+            document.getElementById('photo-view-modal').classList.add('hidden');
+        });
+
+        // Load sample photos
+        setTimeout(() => {
+            const galleryGrid = document.getElementById('gallery-grid');
+            galleryGrid.innerHTML = samplePhotos.map(photo => createGalleryItem(photo)).join('');
+        }, 1500);
+
+        // Category filter functionality
+        document.getElementById('category-filter').addEventListener('change', function(e) {
+            const category = e.target.value;
+            const galleryItems = document.querySelectorAll('.gallery-item:not(.skeleton)');
+            
+            galleryItems.forEach(item => {
+                const itemCategory = item.querySelector('.gallery-item-category').textContent;
+                if (category === 'all' || itemCategory === category) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Sort filter functionality
+        document.getElementById('sort-filter').addEventListener('change', function(e) {
+            const sortBy = e.target.value;
+            const galleryGrid = document.getElementById('gallery-grid');
+            const items = Array.from(galleryGrid.querySelectorAll('.gallery-item:not(.skeleton)'));
+            
+            items.sort((a, b) => {
+                switch(sortBy) {
+                    case 'newest':
+                        return new Date(b.dataset.date || '2024-01-01') - new Date(a.dataset.date || '2024-01-01');
+                    case 'oldest':
+                        return new Date(a.dataset.date || '2024-01-01') - new Date(b.dataset.date || '2024-01-01');
+                    case 'title':
+                        return a.querySelector('.gallery-item-title').textContent.localeCompare(
+                            b.querySelector('.gallery-item-title').textContent
+                        );
+                    case 'popular':
+                        const aLikes = parseInt(a.querySelector('[data-likes]')?.dataset.likes || '0');
+                        const bLikes = parseInt(b.querySelector('[data-likes]')?.dataset.likes || '0');
+                        return bLikes - aLikes;
+                    default:
+                        return 0;
+                }
+            });
+
+            // Remove skeletons and re-append sorted items
+            galleryGrid.querySelectorAll('.skeleton').forEach(skeleton => skeleton.remove());
+            items.forEach(item => galleryGrid.appendChild(item));
+        });
+    </script>
+</body>
+
+</html>

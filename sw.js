@@ -3,9 +3,9 @@
  * Provides offline functionality and advanced caching
  */
 
-const CACHE_NAME = 'giki-chronicles-v1.1';
-const STATIC_CACHE = 'giki-static-v1.1';
-const DYNAMIC_CACHE = 'giki-dynamic-v1.1';
+const CACHE_NAME = 'giki-chronicles-v1.3';
+const STATIC_CACHE = 'giki-static-v1.3';
+const DYNAMIC_CACHE = 'giki-dynamic-v1.3';
 
 // Files to cache immediately (only local files)
 const STATIC_FILES = [
