@@ -481,7 +481,7 @@
         <!-- Highlighted Photo Slideshow -->
         <section id="highlighted-photo" class="mb-12">
             <!-- Skeleton Loader -->
-            <div class="w-full h-64 sm:h-80 md:h-96 bg-gray-100 animate-pulse"></div>
+            <div class="w-full h-64 sm:h-80 md:h-96 animate-pulse rounded-xl"></div>
         </section>
 
         <!-- Filter and Submit Section -->
@@ -641,7 +641,7 @@
     <script src="notifications.js"></script>
     <script src="tour-manager.js"></script>
     <!-- Gallery functionality -->
-    <script src="gallery.js"></script>
+
 
     <!-- Service Worker Registration -->
     <script>
@@ -671,7 +671,7 @@
                 // Load approved photos initially
                 const result = await getGalleryPhotos('approved');
                 if (result.success) {
-                    renderGalleryPhotos(result.photos, 'gallery-grid');
+                    renderPhotoGrid(result.photos, 'approved');
                 } else {
                     console.error('Failed to load photos:', result.error);
                 }
@@ -689,14 +689,14 @@
                     if (category === 'all') {
                         const result = await getGalleryPhotos('approved');
                         if (result.success) {
-                            renderGalleryPhotos(result.photos, 'gallery-grid');
+                            renderPhotoGrid(result.photos, 'approved');
                         }
                     } else {
                         // Filter by category (you can implement this in getGalleryPhotos)
                         const result = await getGalleryPhotos('approved');
                         if (result.success) {
                             const filteredPhotos = result.photos.filter(photo => photo.category === category);
-                            renderGalleryPhotos(filteredPhotos, 'gallery-grid');
+                            renderPhotoGrid(filteredPhotos, 'approved');
                         }
                     }
                 });
@@ -713,7 +713,7 @@
                     tabApproved.addEventListener('click', async () => {
                         const result = await getGalleryPhotos('approved');
                         if (result.success) {
-                            renderGalleryPhotos(result.photos, 'gallery-grid', true);
+                            renderPhotoGrid(result.photos, 'approved');
                         }
                     });
                 }
@@ -722,7 +722,7 @@
                     tabPending.addEventListener('click', async () => {
                         const result = await getGalleryPhotos('pending');
                         if (result.success) {
-                            renderGalleryPhotos(result.photos, 'gallery-grid', true);
+                            renderPhotoGrid(result.photos, 'pending');
                         }
                     });
                 }
@@ -731,7 +731,7 @@
                     tabRejected.addEventListener('click', async () => {
                         const result = await getGalleryPhotos('rejected');
                         if (result.success) {
-                            renderGalleryPhotos(result.photos, 'gallery-grid', true);
+                            renderPhotoGrid(result.photos, 'rejected');
                         }
                     });
                 }
