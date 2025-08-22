@@ -36,6 +36,12 @@
     box-sizing: border-box;
 }
 
+/* Form container sizing */
+form {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
 html {
     max-width: 100vw;
     overflow-x: hidden;
@@ -678,10 +684,11 @@ body.modal-open {
 .submit-event-section {
     display: none;
     width: 100%;
-    max-width: 700px;
+    max-width: 800px;
     text-align: center;
     margin: 2rem auto;
     animation: fadeIn 0.5s ease-in-out;
+    box-sizing: border-box;
 }
 
 .submit-event-section .hero-title,
@@ -695,10 +702,15 @@ body.modal-open {
     border-radius: 1.5rem;
     padding: 2.5rem;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .form-group {
     margin-bottom: 1.5rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .form-group label {
@@ -712,6 +724,7 @@ body.modal-open {
 .form-group select,
 .form-group textarea {
     width: 100%;
+    max-width: 100%;
     padding: 0.75rem;
     background-color: var(--bg-color, #ffffff);
     border: 1px solid var(--border-color, #e5e7eb);
@@ -720,6 +733,7 @@ body.modal-open {
     font-family: 'Inter', sans-serif;
     font-size: 1rem;
     transition: border-color 0.3s ease;
+    box-sizing: border-box;
 }
 
 .form-group input:focus,
@@ -745,6 +759,8 @@ body.modal-open {
     font-weight: 500;
     cursor: pointer;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
@@ -1152,6 +1168,28 @@ body.modal-open {
         aspect-ratio: auto; /* allow natural height */
         min-height: auto; /* allow content to dictate height */
     }
+    
+    .submit-event-section {
+        max-width: min(94vw, 800px);
+        margin: 1.5rem auto;
+        padding: 0 1rem;
+        box-sizing: border-box;
+    }
+    
+    .submit-event-form {
+        padding: 2rem;
+        border-radius: 1.25rem;
+        margin: 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .submit-form-btn {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 0.75rem 1.25rem;
+    }
 
     .calendar-header {
         flex-direction: row; /* keep arrows beside month */
@@ -1299,6 +1337,29 @@ body.modal-open {
         aspect-ratio: auto; /* let content define height */
         max-width: 100%;
         min-height: auto; /* let content define height */
+    }
+    
+    .submit-event-section {
+        max-width: 94vw;
+        margin: 1rem auto;
+        padding: 0 0.5rem;
+        box-sizing: border-box;
+    }
+    
+    .submit-event-form {
+        padding: 1.5rem;
+        border-radius: 1rem;
+        margin: 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .submit-form-btn {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
     }
     
     .calendar-grid {

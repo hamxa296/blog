@@ -245,11 +245,20 @@
               class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
+                </path>
+              </svg>
+              All Posts
+            </a>
+            <a href="about.html?v=1.3"
+              class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
               About
             </a>
-            <a href="launching-soon.html?v=1.3"
+            <a href="contact.html?v=1.3"
               class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -295,21 +304,7 @@
           </div>
         </div>
 
-        <!-- Theme Settings -->
-        <div>
-          <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">Theme</h3>
-          <div class="space-y-2">
-            <div class="px-3 py-2">
-              <label for="theme-select" class="block text-sm font-medium text-white/80 mb-2">Choose
-                Theme</label>
-              <select id="theme-select"
-                class="w-full px-3 py-2 border border-white/30 rounded-lg focus:ring-2 focus:ring-[#4A7FA7] focus:border-[#4A7FA7] bg-[#1A3D63] text-white">
-                <option value="basic-dark">Basic Dark</option>
-                <option value="basic-light">Basic Light</option>
-              </select>
-            </div>
-          </div>
-        </div>
+
 
         <!-- User Section -->
         <div id="sidebar-guest-nav">
@@ -386,7 +381,7 @@
   <main class="min-h-screen">
     <div class="container mx-auto px-4 py-8 md:py-12">
       <div class="text-center mb-8 md:mb-12">
-        <h1 class="text-3xl md:text-4xl font-bold handwriting-title mb-4">🚧 Coming Soon! 🚧</h1>
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold handwriting-title mb-4">🚧 Coming Soon! 🚧</h1>
         <p class="mt-4 md:mt-5 text-base md:text-lg text-[#1A3D63] max-w-2xl mx-auto px-4">
           We're working hard to bring you amazing features. Our team is actively developing these exciting
           capabilities.
@@ -451,7 +446,7 @@
   <script src="notifications.js"></script>
 
   <!-- Additional scripts not in bundle -->
-  <script src="tour-manager.js"></script>
+  
   <script src="firebase-error-handler.js"></script>
 
   <!-- Theme and UI scripts -->
@@ -479,26 +474,7 @@
       sidebarClose.addEventListener('click', closeSidebar);
       sidebarOverlay.addEventListener('click', closeSidebar);
 
-      // Theme selector functionality
-      const themeSelect = document.getElementById('theme-select');
-      if (themeSelect) {
-        themeSelect.addEventListener('change', function () {
-          const selectedTheme = this.value;
-          localStorage.setItem('selected-theme', selectedTheme);
 
-          // Remove all theme classes
-          document.documentElement.classList.remove('theme-basic-dark', 'theme-basic-light');
-          document.body.classList.remove('theme-basic-dark', 'theme-basic-light');
-
-          // Add new theme class
-          document.documentElement.classList.add(`theme-${selectedTheme}`);
-          document.body.classList.add(`theme-${selectedTheme}`);
-        });
-
-        // Set current theme
-        const savedTheme = localStorage.getItem('selected-theme') || 'basic-dark';
-        themeSelect.value = savedTheme;
-      }
     });
   </script>
 </body>

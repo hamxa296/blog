@@ -229,7 +229,7 @@ This document provides comprehensive details about the security implementation t
 - ✅ `guide.html` - All security modules integrated
 - ✅ `admin.html` - All security modules integrated
 - ✅ `posts.js` - Debug code cleanup
-- ✅ `tour-manager.js` - Production-safe debugging
+
 
 ### **New Security Collections in Firestore**
 - `mfa_data` - Multi-factor authentication data

@@ -7,7 +7,6 @@ class WelcomePopup {
     init() {
         // Check if user has seen the welcome popup before
         const hasSeenWelcome = localStorage.getItem('welcome-popup-shown');
-        const hasCompletedTour = localStorage.getItem('tour-completed');
         
         // Show welcome popup for new users who haven't seen it
         if (!hasSeenWelcome) {
@@ -22,33 +21,54 @@ class WelcomePopup {
         // Create welcome popup
         const popup = document.createElement('div');
         popup.id = 'welcome-popup';
-        popup.className = 'fixed inset-0 bg-black bg-opacity-50 z-[10000] flex items-center justify-center p-4';
+        popup.className = 'fixed inset-0 z-[10000] flex items-center justify-center p-4';
+        popup.style.cssText = `
+            background: linear-gradient(135deg, rgba(10, 25, 49, 0.8), rgba(26, 61, 99, 0.8));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        `;
+        
         popup.innerHTML = `
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full transform transition-all duration-300 scale-95 opacity-0">
-                <div class="p-6">
-                    <div class="flex items-center mb-4">
+            <div class="welcome-popup-content transform transition-all duration-300 scale-95 opacity-0" style="
+                background: linear-gradient(135deg, rgba(37, 39, 38, 0.98), rgba(45, 47, 46, 0.98));
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+                border: 1px solid rgba(74, 127, 167, 0.3);
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                border-radius: 16px;
+                max-width: 480px;
+                width: 100%;
+            ">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
                         <div class="flex-shrink-0">
-                            <img src="logo.png" alt="GIKI Chronicles" class="h-12 w-auto">
+                            <img src="logo.png" alt="GIKI Chronicles" class="h-16 w-auto">
                         </div>
-                        <div class="ml-4">
-                            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Welcome to GIKI Chronicles! 👋</h2>
-                            <p class="text-sm text-gray-600 dark:text-gray-300">Your campus community blog</p>
+                        <div class="ml-5">
+                            <h2 class="text-2xl font-bold text-white mb-1" style="font-family: 'Rock Salt', cursive;">Welcome to GIKI Chronicles! 👋</h2>
+                            <p class="text-[#B3CFE5] text-base" style="font-family: 'Indie Flower', cursive;">Your campus community blog</p>
                         </div>
                     </div>
                     
-                    <p class="text-gray-700 dark:text-gray-300 mb-6">
+                    <p class="text-[#E3F2FD] text-lg leading-relaxed mb-8" style="font-family: 'Indie Flower', cursive;">
                         Welcome to GIKI Chronicles! We're excited to have you here. 
-                        Would you like to take a quick tour to learn about all the features?
+                        Explore our campus community blog and discover all the features we have to offer.
                     </p>
                     
-                    <div class="flex space-x-3">
-                        <button id="welcome-start-tour" 
-                                class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">
-                            Take a Quick Tour
-                        </button>
-                        <button id="welcome-skip-tour" 
-                                class="flex-1 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors duration-200">
-                            Skip for Now
+                    <div class="flex justify-center">
+                        <button id="welcome-close" 
+                                class="welcome-button transform transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#4A7FA7] focus:ring-opacity-50"
+                                style="
+                                    background: linear-gradient(135deg, #4A7FA7, #1A3D63);
+                                    color: white;
+                                    padding: 12px 32px;
+                                    border-radius: 12px;
+                                    font-weight: 600;
+                                    font-size: 16px;
+                                    box-shadow: 0 4px 15px rgba(74, 127, 167, 0.4);
+                                    font-family: 'Special Elite', cursive;
+                                ">
+                            Get Started
                         </button>
                     </div>
                 </div>
@@ -59,7 +79,7 @@ class WelcomePopup {
         
         // Animate popup in
         setTimeout(() => {
-            const popupContent = popup.querySelector('.bg-white, .dark\\:bg-gray-800');
+            const popupContent = popup.querySelector('.welcome-popup-content');
             popupContent.classList.remove('scale-95', 'opacity-0');
             popupContent.classList.add('scale-100', 'opacity-100');
         }, 100);
@@ -71,15 +91,7 @@ class WelcomePopup {
             }
         });
         
-        document.getElementById('welcome-start-tour').addEventListener('click', () => {
-            this.closePopup();
-            // Start the tour
-            if (window.websiteTour) {
-                window.websiteTour.startTour();
-            }
-        });
-        
-        document.getElementById('welcome-skip-tour').addEventListener('click', () => {
+        document.getElementById('welcome-close').addEventListener('click', () => {
             this.closePopup();
         });
         
@@ -94,7 +106,7 @@ class WelcomePopup {
     closePopup() {
         const popup = document.getElementById('welcome-popup');
         if (popup) {
-            const popupContent = popup.querySelector('.bg-white, .dark\\:bg-gray-800');
+            const popupContent = popup.querySelector('.welcome-popup-content');
             popupContent.classList.add('scale-95', 'opacity-0');
             popupContent.classList.remove('scale-100', 'opacity-100');
             
@@ -124,8 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add reset function for testing
     window.resetWelcomePopup = () => {
         localStorage.removeItem('welcome-popup-shown');
-        localStorage.removeItem('tour-completed');
-        localStorage.removeItem('tour-started');
     };
 });
 
