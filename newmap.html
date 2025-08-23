@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GIKI Chronicles - Interactive Campus Map</title>
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico?v=1.3">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png?v=1.3">
@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="48x48" href="/favicons/favicon-48x48.png?v=1.3">
     <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png?v=1.3">
     <link rel="manifest" href="/site.webmanifest?v=1.3">
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @keyframes fadeIn {
@@ -144,7 +144,7 @@
     </style>
     <script>
         // Simple error handling for map loading
-        window.addEventListener('error', function(e) {
+        window.addEventListener('error', function (e) {
             console.warn('Map loading error:', e);
         });
     </script>
@@ -161,7 +161,7 @@
             </svg>
             Back to Guide
         </a>
-        
+
 
     </div>
 
@@ -193,7 +193,7 @@
                 <p class="text-white text-lg">Loading Campus Map...</p>
             </div>
         </div>
-        
+
         <div id="mapWrapper" class="relative select-none"
             style="transform: translate(0px, 0px) scale(1); width: 1400px; height: 933px; transform-origin: 0 0;">
             <div id="mapBackground" class="w-full h-full relative"
@@ -296,10 +296,10 @@
 
     <!-- Security Utilities -->
     <script src="security-utils.js"></script>
-    
+
     <script>
         console.log('Map script starting...');
-        
+
         // Map state
         let scale = 1;
         let translate = { x: 0, y: 0 };
@@ -314,7 +314,7 @@
         const mapWrapper = document.getElementById('mapWrapper');
         const pinsContainer = document.getElementById('pinsContainer');
         const infoBoxContainer = document.getElementById('infoBoxContainer');
-        
+
         // Debug DOM elements
         console.log('DOM elements:', {
             mapContainer: !!mapContainer,
@@ -325,36 +325,124 @@
 
         // Location data
         const locations = {
-            'hostels-11-12': { title: 'Hostels 11 & 12', description: 'Student residential facilities providing accommodation for undergraduate students. These hostels feature modern amenities including study rooms, common areas, and recreational facilities.' },
-            'senior-hostels': { title: 'Senior Hostels', description: 'Premium residential accommodation specifically designed for senior students and graduate researchers, featuring enhanced privacy and dedicated study facilities.' },
-            'new-girls-hostel': { title: 'New Girls Hostel', description: 'A modern residential facility for female students with state-of-the-art amenities, advanced security systems, and comfortable living spaces.' },
-            'central-library': { title: 'Central Library', description: 'The main library of GIKI housing extensive collections of books, journals, and digital resources. Features quiet study areas and computer labs.' },
-            'new-academic': { title: 'New Academic Block', description: 'A modern academic building with contemporary classrooms, state-of-the-art laboratories, and faculty offices, equipped with the latest educational technology.' },
-            'fbs': { title: 'Faculty of Basic Sciences (FBS)', description: 'Houses departments of Mathematics, Physics, and Chemistry. Includes specialized laboratories and research facilities.' },
-            'fcse': { title: 'Faculty of Computer Science & Engineering (FCSE)', description: 'A state-of-the-art facility for computer science programs, featuring advanced computer labs and networking facilities.' },
-            'fmce': { title: 'Faculty of Mechanical & Chemical Engineering (FMCE)', description: 'Advanced facility with modern laboratories, workshops, and testing facilities for hands-on learning.' },
-            'fme': { title: 'Faculty of Materials & Energy (FME)', description: 'Specialized facility for materials science and energy engineering programs, featuring advanced materials testing labs.' },
-            'giki-main': { title: 'GIKI Main Building', description: 'The central administrative and academic hub of the university, housing the main auditorium and administrative offices.' },
-            'oric': { title: 'ORIC', description: 'The Office of Research, Innovation and Commercialization, facilitating research projects and industry collaborations.' },
-            'brabers': { title: 'Brabers Building', description: 'A multi-purpose academic building housing various departments and facilities, featuring modern classrooms and office spaces.' },
-            'medical-center': { title: 'Medical Center', description: 'Comprehensive on-campus healthcare facility providing medical services to students, faculty, and staff.' },
-            'faculty-club': { title: 'Faculty Club', description: 'A recreational and dining facility for faculty members and staff, providing restaurant services and meeting rooms.' },
-            'central-mess': { title: 'Central Mess', description: 'The main dining facility for students, offering breakfast, lunch, and dinner in spacious dining halls.' },
-            'tuck': { title: 'Tuck Shop', description: 'Campus convenience store and cafeteria providing snacks, beverages, and daily essentials. A popular gathering spot.' },
-            'residential-villas': { title: 'C-type Residential Villas', description: 'Premium housing facilities for faculty and visiting scholars, offering comfortable living spaces with modern amenities.' },
-            'residential-area': { title: 'Residential Area', description: 'A comprehensive residential complex for faculty and staff families, featuring various housing units and parks.' },
-            'helipad': { title: 'Helipad', description: 'An emergency helicopter landing facility used for medical emergencies and official visits.' },
-            'sports-complex': { title: 'Sports Complex', description: 'A multi-sport facility featuring indoor courts, a gymnasium, and a fitness center.' },
-            'main-ground': { title: 'Main Ground', description: 'A large outdoor sports ground used for cricket, football, and athletics, hosting major university events.' },
-            'student-mosque': { title: 'Student Mosque', description: 'A centrally located prayer facility for the student community.' },
-            'tuck-mosque': { title: 'Tuck Mosque', description: 'A prayer facility located near the residential area for faculty and staff.' },
-            'residential-mosque': { title: 'Residential Area Mosque', description: 'A community mosque serving the residential area for faculty and staff families.' },
-            'hbl-bank': { title: 'HBL Bank', description: 'An on-campus banking facility providing financial services to the university community.' },
-            'giki-school': { title: 'GIKI School and College', description: 'An educational institution affiliated with GIKI providing quality education at school and college levels.' },
-            'admin-block': { title: 'Admin Block', description: 'The central administrative building housing key offices like student services and admissions.' },
-            'logik': { title: 'LOGIK (Incubation Center)', description: 'An innovation and entrepreneurship center supporting student and faculty startups with mentorship and resources.' },
-            'giki-guest-house': { title: 'GIKI Guest House', description: 'Accommodation for visiting scholars and official guests, featuring comfortable rooms and conference facilities.' }
+            'hostels-11-12': {
+                title: 'Hostels 11 & 12',
+                description: 'Two of the newest boys’ hostels at GIKI, primarily accommodating undergraduate freshmen. They feature spacious rooms, community washrooms, and common rooms.'
+            },
+            'senior-hostels': {
+                title: 'Senior Hostels',
+                description: 'Residential blocks designed for senior undergraduate students. These older hostels are usually allotted to undergraduates from 2nd year onwards.'
+            },
+            'new-girls-hostel': {
+                title: 'New Girls Hostel (H13)',
+                description: 'A modern residential facility for female students with state-of-the-art amenities and comfortable living spaces.'
+            },
+            'central-library': {
+                title: 'Central Library',
+                description: 'The main library of GIKI housing extensive collections of books, journals, and digital resources. Featuring quiet study rooms.'
+            },
+            'new-academic': {
+                title: 'New Academic Block',
+                description: 'A modern academic building with contemporary classrooms, state-of-the-art laboratories, and faculty offices equipped with the latest educational technology.'
+            },
+            'fbs': {
+                title: 'Faculty of Basic Sciences (FBS)',
+                description: 'Houses the departments of Mathematics, Physics, and Chemistry. Includes specialized laboratories and research facilities.'
+            },
+            'fcse': {
+                title: 'Faculty of Computer Science & Engineering (FCSE)',
+                description: 'A state-of-the-art facility for computer science programs, featuring computer labs and networking facilities.'
+            },
+            'fmce': {
+                title: 'Faculty of Materials & Chemical Engineering (FMCE)',
+                description: 'An advanced facility with modern laboratories, workshops, and testing facilities for hands-on learning.'
+            },
+            'fme': {
+                title: 'Faculty of Mechanical Engineering (FME)',
+                description: 'A specialized facility for mechanical engineering programs, featuring advanced laboratories and testing facilities.'
+            },
+            'giki-main': {
+                title: 'AHA Auditorium',
+                description: 'The central auditorium of the university, hosting major events.'
+            },
+            'oric': {
+                title: 'ORIC',
+                description: 'The Office of Research, Innovation and Commercialization, facilitating research projects and industry collaborations.'
+            },
+            'brabers': {
+                title: 'Brabers Building',
+                description: 'A multi-purpose academic building housing various departments of the MGS Faculty and exam halls.'
+            },
+            'medical-center': {
+                title: 'Medical Center',
+                description: 'A comprehensive on-campus healthcare facility providing medical services to students, faculty, and staff.'
+            },
+            'faculty-club': {
+                title: 'Faculty Club',
+                description: 'A recreational and dining facility for faculty members and staff, providing restaurant services and meeting rooms.'
+            },
+            'central-mess': {
+                title: 'Central Mess',
+                description: 'The main dining facility for students, offering breakfast, lunch, and dinner in spacious dining halls.'
+            },
+            'tuck': {
+                title: 'Tuck Shop',
+                description: 'Campus convenience stores and restaurants providing snacks, beverages, and daily essentials. A popular gathering spot.'
+            },
+            'residential-villas': {
+                title: 'C-type Residential Villas',
+                description: 'Premium housing facilities for faculty, offering comfortable living spaces.'
+            },
+            'residential-area': {
+                title: 'Residential Area',
+                description: 'A comprehensive residential complex for faculty and staff families, featuring various housing units and parks.'
+            },
+            'helipad': {
+                title: 'Helipad',
+                description: 'A helicopter landing facility used for official visits.'
+            },
+            'sports-complex': {
+                title: 'Sports Complex',
+                description: 'A multi-sport facility featuring indoor courts, a gymnasium, and a tennis court.'
+            },
+            'main-ground': {
+                title: 'Main Ground',
+                description: 'A large outdoor sports ground used for cricket, football, and athletics, and for hosting major university events.'
+            },
+            'student-mosque': {
+                title: 'Student Mosque',
+                description: 'A centrally located prayer facility for the student community.'
+            },
+            'tuck-mosque': {
+                title: 'Tuck Mosque',
+                description: 'A prayer facility located near the Tuck. This was the first building ever constructed in GIKI.'
+            },
+            'residential-mosque': {
+                title: 'Residential Area Mosque',
+                description: 'A community mosque serving the residential area for faculty and staff families.'
+            },
+            'hbl-bank': {
+                title: 'HBL Bank',
+                description: 'An on-campus banking facility providing financial services to the university community.'
+            },
+            'giki-school': {
+                title: 'GIKI School and College',
+                description: 'An educational institution affiliated with GIKI, providing quality education at school and college levels.'
+            },
+            'admin-block': {
+                title: 'Admin Block',
+                description: 'The central administrative building housing key offices such as student services and admissions.'
+            },
+            'logik': {
+                title: 'LOGIK',
+                description: "GIKI's very own clock tower and innovation hub."
+            },
+            'giki-guest-house': {
+                title: 'GIKI Guest House',
+                description: 'Accommodation for visiting scholars and official guests, featuring comfortable rooms and conference facilities.'
+            }
         };
+
 
         // Pin colors
         const pinColors = {
@@ -441,41 +529,41 @@
             const color = pinColors[pin.type] || '#FFFFFF';
 
             // Create pin content safely without innerHTML
-        const tooltipDiv = document.createElement('div');
-        tooltipDiv.className = 'absolute bottom-full mb-3 left-1/2 transform -translate-x-1/2 bg-gray-900/80 text-white px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 shadow-xl backdrop-blur-sm opacity-0 translate-y-2 pointer-events-none';
-        tooltipDiv.textContent = pin.label;
-        
-        const tooltipArrow = document.createElement('div');
-        tooltipArrow.className = 'absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-6 border-x-transparent border-t-6 border-t-gray-900/80';
-        tooltipArrow.style.borderLeftWidth = '6px';
-        tooltipArrow.style.borderRightWidth = '6px';
-        tooltipArrow.style.borderTopWidth = '6px';
-        
-        const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svgElement.setAttribute('width', '32');
-        svgElement.setAttribute('height', '40');
-        svgElement.setAttribute('viewBox', '0 0 32 40');
-        svgElement.className = 'drop-shadow-lg transition-transform duration-300';
-        svgElement.style.filter = `drop-shadow(0 4px 8px ${color}50)`;
-        
-        const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        pathElement.setAttribute('d', 'M16 0C8.268 0 2 6.268 2 14c0 8.5 12.053 24.11 12.553 24.71a1.5 1.5 0 0 0 2.894 0C17.947 38.11 30 22.5 30 14c0-7.732-6.268-14-14-14z');
-        pathElement.setAttribute('fill', color);
-        pathElement.setAttribute('stroke', '#FFFFFF');
-        pathElement.setAttribute('stroke-width', '2');
-        
-        const circleElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        circleElement.setAttribute('cx', '16');
-        circleElement.setAttribute('cy', '14');
-        circleElement.setAttribute('r', '5');
-        circleElement.setAttribute('fill', '#FFFFFF');
-        
-        svgElement.appendChild(pathElement);
-        svgElement.appendChild(circleElement);
-        
-        tooltipDiv.appendChild(tooltipArrow);
-        pinDiv.appendChild(tooltipDiv);
-        pinDiv.appendChild(svgElement);
+            const tooltipDiv = document.createElement('div');
+            tooltipDiv.className = 'absolute bottom-full mb-3 left-1/2 transform -translate-x-1/2 bg-gray-900/80 text-white px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 shadow-xl backdrop-blur-sm opacity-0 translate-y-2 pointer-events-none';
+            tooltipDiv.textContent = pin.label;
+
+            const tooltipArrow = document.createElement('div');
+            tooltipArrow.className = 'absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-6 border-x-transparent border-t-6 border-t-gray-900/80';
+            tooltipArrow.style.borderLeftWidth = '6px';
+            tooltipArrow.style.borderRightWidth = '6px';
+            tooltipArrow.style.borderTopWidth = '6px';
+
+            const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svgElement.setAttribute('width', '32');
+            svgElement.setAttribute('height', '40');
+            svgElement.setAttribute('viewBox', '0 0 32 40');
+            svgElement.className = 'drop-shadow-lg transition-transform duration-300';
+            svgElement.style.filter = `drop-shadow(0 4px 8px ${color}50)`;
+
+            const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            pathElement.setAttribute('d', 'M16 0C8.268 0 2 6.268 2 14c0 8.5 12.053 24.11 12.553 24.71a1.5 1.5 0 0 0 2.894 0C17.947 38.11 30 22.5 30 14c0-7.732-6.268-14-14-14z');
+            pathElement.setAttribute('fill', color);
+            pathElement.setAttribute('stroke', '#FFFFFF');
+            pathElement.setAttribute('stroke-width', '2');
+
+            const circleElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circleElement.setAttribute('cx', '16');
+            circleElement.setAttribute('cy', '14');
+            circleElement.setAttribute('r', '5');
+            circleElement.setAttribute('fill', '#FFFFFF');
+
+            svgElement.appendChild(pathElement);
+            svgElement.appendChild(circleElement);
+
+            tooltipDiv.appendChild(tooltipArrow);
+            pinDiv.appendChild(tooltipDiv);
+            pinDiv.appendChild(svgElement);
 
             // Event listeners
             pinDiv.addEventListener('mouseenter', () => {
@@ -518,9 +606,9 @@
             try {
                 console.log('Rendering pins...');
                 // Clear pins container safely
-            while (pinsContainer.firstChild) {
-                pinsContainer.removeChild(pinsContainer.firstChild);
-            }
+                while (pinsContainer.firstChild) {
+                    pinsContainer.removeChild(pinsContainer.firstChild);
+                }
                 pins.forEach(pin => {
                     pinsContainer.appendChild(createPinElement(pin));
                 });
@@ -547,15 +635,15 @@
             closeButton.className = 'infobox-close';
             closeButton.textContent = '×';
             closeButton.addEventListener('click', () => infoBox.remove());
-            
+
             const titleElement = document.createElement('h3');
             titleElement.className = 'text-lg font-semibold text-white mb-2 pr-6';
             titleElement.textContent = location.title;
-            
+
             const descriptionElement = document.createElement('p');
             descriptionElement.className = 'text-sm text-gray-300 leading-relaxed';
             descriptionElement.textContent = location.description;
-            
+
             infoBox.appendChild(closeButton);
             infoBox.appendChild(titleElement);
             infoBox.appendChild(descriptionElement);
@@ -781,7 +869,7 @@
         document.getElementById('zoomIn').addEventListener('click', zoomIn);
         document.getElementById('zoomOut').addEventListener('click', zoomOut);
         document.getElementById('resetView').addEventListener('click', resetView);
-        
+
 
 
         // Mouse events
@@ -837,15 +925,15 @@
         // Initialize with error handling
         try {
             console.log('Initializing map...');
-            
+
             // Check if map image is loaded
             const mapImage = new Image();
-            mapImage.onload = function() {
+            mapImage.onload = function () {
                 console.log('Map image loaded, initializing...');
                 resetView();
                 loadPinPositions();
                 console.log('Map initialized successfully');
-                
+
                 // Hide loading indicator after a short delay to ensure everything is rendered
                 setTimeout(() => {
                     const loadingIndicator = document.getElementById('loadingIndicator');
@@ -857,8 +945,8 @@
                     }
                 }, 1000);
             };
-            
-            mapImage.onerror = function() {
+
+            mapImage.onerror = function () {
                 console.error('Failed to load map image');
                 // Set fallback background instead of throwing error
                 const mapBackground = document.getElementById('mapBackground');
@@ -868,27 +956,27 @@
                     // Create fallback content safely without innerHTML
                     const fallbackContainer = document.createElement('div');
                     fallbackContainer.className = 'flex items-center justify-center h-full text-white';
-                    
+
                     const fallbackContent = document.createElement('div');
                     fallbackContent.className = 'text-center';
-                    
+
                     const emojiDiv = document.createElement('div');
                     emojiDiv.className = 'text-6xl mb-4';
                     emojiDiv.textContent = '🗺️';
-                    
+
                     const titleDiv = document.createElement('h2');
                     titleDiv.className = 'text-2xl font-bold mb-2';
                     titleDiv.textContent = 'Campus Map';
-                    
+
                     const descriptionDiv = document.createElement('p');
                     descriptionDiv.className = 'text-gray-300';
                     descriptionDiv.textContent = 'Map image unavailable, but pins are still functional';
-                    
+
                     fallbackContent.appendChild(emojiDiv);
                     fallbackContent.appendChild(titleDiv);
                     fallbackContent.appendChild(descriptionDiv);
                     fallbackContainer.appendChild(fallbackContent);
-                    
+
                     // Clear existing content and add fallback
                     while (mapBackground.firstChild) {
                         mapBackground.removeChild(mapBackground.firstChild);
@@ -898,7 +986,7 @@
                 // Continue with initialization
                 resetView();
                 loadPinPositions();
-                
+
                 // Hide loading indicator
                 setTimeout(() => {
                     const loadingIndicator = document.getElementById('loadingIndicator');
@@ -910,7 +998,7 @@
                     }
                 }, 1000);
             };
-            
+
             mapImage.src = 'map.png';
         } catch (error) {
             console.error('Error initializing map:', error);
@@ -920,29 +1008,29 @@
                 // Create error content safely without innerHTML
                 const errorContainer = document.createElement('div');
                 errorContainer.className = 'text-center';
-                
+
                 const warningDiv = document.createElement('div');
                 warningDiv.className = 'text-red-400 text-6xl mb-4';
                 warningDiv.textContent = '⚠️';
-                
+
                 const errorTitle = document.createElement('p');
                 errorTitle.className = 'text-white text-lg mb-2';
                 errorTitle.textContent = 'Failed to load map';
-                
+
                 const errorDescription = document.createElement('p');
                 errorDescription.className = 'text-gray-300 text-sm';
                 errorDescription.textContent = 'Please refresh the page or check your connection';
-                
+
                 const retryButton = document.createElement('button');
                 retryButton.className = 'px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700';
                 retryButton.textContent = 'Retry';
                 retryButton.addEventListener('click', () => window.location.reload());
-                
+
                 errorContainer.appendChild(warningDiv);
                 errorContainer.appendChild(errorTitle);
                 errorContainer.appendChild(errorDescription);
                 errorContainer.appendChild(retryButton);
-                
+
                 // Clear existing content and add error content
                 while (loadingIndicator.firstChild) {
                     loadingIndicator.removeChild(loadingIndicator.firstChild);
