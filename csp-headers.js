@@ -13,7 +13,7 @@ const cspMetaTag = `
 <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' 'nonce-${generateNonce()}' https://cdn.tailwindcss.com https://www.gstatic.com https://fonts.googleapis.com;
-    style-src 'self' 'nonce-${generateNonce()}' https://fonts.googleapis.com;
+    style-src 'self' 'nonce-${generateNonce()}' 'unsafe-inline' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
     img-src 'self' data: https: blob:;
     connect-src 'self' https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com;
@@ -39,7 +39,7 @@ function addCSPMetaTag() {
             const cspContent = `
                 default-src 'self';
                 script-src 'self' 'nonce-${nonce}' https://cdn.tailwindcss.com https://www.gstatic.com https://fonts.googleapis.com;
-                style-src 'self' 'nonce-${nonce}' https://fonts.googleapis.com;
+                style-src 'self' 'nonce-${nonce}' 'unsafe-inline' https://fonts.googleapis.com;
                 font-src 'self' https://fonts.gstatic.com;
                 img-src 'self' data: https: blob:;
                 connect-src 'self' https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com;
