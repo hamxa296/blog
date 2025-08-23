@@ -3,17 +3,12 @@
  * This file provides CSP headers and meta tags for enhanced security
  */
 
-// Generate a unique nonce for CSP
-function generateNonce() {
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-}
-
-// CSP meta tag for HTML files
+// CSP meta tag for HTML files (uses unsafe-inline to allow dynamic inline style mutations)
 const cspMetaTag = `
 <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self' 'nonce-${generateNonce()}' https://cdn.tailwindcss.com https://www.gstatic.com https://fonts.googleapis.com;
-    style-src 'self' 'nonce-${generateNonce()}' 'unsafe-inline' https://fonts.googleapis.com;
+    script-src 'self' https://cdn.tailwindcss.com https://www.gstatic.com https://fonts.googleapis.com 'unsafe-inline';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
     img-src 'self' data: https: blob:;
     connect-src 'self' https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com;
@@ -34,12 +29,11 @@ function addCSPMetaTag() {
             const meta = document.createElement('meta');
             meta.setAttribute('http-equiv', 'Content-Security-Policy');
             
-            // Generate a new nonce for this page load
-            const nonce = generateNonce();
+            // Build CSP content that allows inline styles (unsafe-inline) so runtime element.style mutations work
             const cspContent = `
                 default-src 'self';
-                script-src 'self' 'nonce-${nonce}' https://cdn.tailwindcss.com https://www.gstatic.com https://fonts.googleapis.com;
-                style-src 'self' 'nonce-${nonce}' 'unsafe-inline' https://fonts.googleapis.com;
+                script-src 'self' https://cdn.tailwindcss.com https://www.gstatic.com https://fonts.googleapis.com 'unsafe-inline';
+                style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
                 font-src 'self' https://fonts.gstatic.com;
                 img-src 'self' data: https: blob:;
                 connect-src 'self' https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com;
@@ -49,12 +43,9 @@ function addCSPMetaTag() {
                 form-action 'self';
                 upgrade-insecure-requests;
             `.replace(/\s+/g, ' ').trim();
-            
+
             meta.setAttribute('content', cspContent);
             document.head.appendChild(meta);
-            
-            // Store nonce globally for use in inline scripts
-            window.cspNonce = nonce;
         }
     }
 }
