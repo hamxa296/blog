@@ -7,12 +7,12 @@
 const cspMetaTag = `
 <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self' https://cdn.tailwindcss.com https://www.gstatic.com https://fonts.googleapis.com 'unsafe-inline';
+    script-src 'self' https://cdn.tailwindcss.com https://www.gstatic.com https://fonts.googleapis.com https://apis.google.com 'unsafe-inline';
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
     img-src 'self' data: https: blob:;
     connect-src 'self' https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com;
-    frame-src 'self';
+    frame-src 'self' https://giki-chronicles.firebaseapp.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
@@ -32,12 +32,12 @@ function addCSPMetaTag() {
             // Build CSP content that allows inline styles (unsafe-inline) so runtime element.style mutations work
             const cspContent = `
                 default-src 'self';
-                script-src 'self' https://cdn.tailwindcss.com https://www.gstatic.com https://fonts.googleapis.com 'unsafe-inline';
+                script-src 'self' https://cdn.tailwindcss.com https://www.gstatic.com https://fonts.googleapis.com https://apis.google.com 'unsafe-inline';
                 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
                 font-src 'self' https://fonts.gstatic.com;
                 img-src 'self' data: https: blob:;
                 connect-src 'self' https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com;
-                frame-src 'self';
+                frame-src 'self' https://giki-chronicles.firebaseapp.com;
                 object-src 'none';
                 base-uri 'self';
                 form-action 'self';
