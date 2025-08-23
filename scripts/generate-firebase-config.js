@@ -29,8 +29,8 @@ if (typeof module !== 'undefined' && module.exports) {
 
 fs.writeFileSync(outPath, content, { encoding: 'utf8' });
 console.log('Wrote firebase-config-vercel.js from environment variables');
-
-// Exit non-zero if the apiKey is missing to fail the build in CI if desired
+// Fail the build if the API key is missing to prevent accidental deploys without keys
 if (!config.apiKey) {
-    console.warn('WARNING: FIREBASE_API_KEY is not set. The generated firebase-config-vercel.js will be empty.');
+    console.error('ERROR: FIREBASE_API_KEY is not set. Aborting build to avoid deploying an empty firebase config.');
+    process.exit(1);
 }
