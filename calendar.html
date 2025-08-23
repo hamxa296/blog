@@ -38,6 +38,10 @@
      </script>
     <link rel="stylesheet" href="styles.css?v=1.3">
     <link rel="stylesheet" href="calendar_styles.css?v=1.3">
+    
+    <!-- Security Utilities and CSP -->
+    <script src="security-utils.js"></script>
+    <script src="csp-headers.js"></script>
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -264,7 +268,7 @@
             </a>
             <a href="about.html?v=1.3"
               class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
-              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 24 24">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
@@ -528,18 +532,18 @@
       <span class="modal-close-add">&times;</span>
       <h3 class="modal-title">Add to your Calendar</h3>
       <div class="calendar-options-container">
-        <a href="#" target="_blank" id="google-calendar-link" class="calendar-option-btn">
-          <svg class="calendar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-            <path fill="#4285F4" d="M40 8H28V4H40V8Z" />
-            <path fill="#FBBC04" d="M20 8H8V4H20V8Z" />
-            <path fill="#EA4335" d="M40 8H8V40H40V8Z" />
-            <path fill="#1A73E8" d="M30 20H18V16H30V20Z" />
-            <path fill="#34A853" d="M30 28H18V24H30V28Z" />
-            <path fill="#FCCC49" d="M22 36H18V32H22V36Z" />
-          </svg>
-          <span>Google Calendar</span>
-        </a>
-        <a href="#" target="_blank" id="outlook-calendar-link" class="calendar-option-btn">
+                 <a href="#" target="_blank" rel="noopener noreferrer" id="google-calendar-link" class="calendar-option-btn">
+           <svg class="calendar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+             <path fill="#4285F4" d="M40 8H28V4H40V8Z" />
+             <path fill="#FBBC04" d="M20 8H8V4H20V8Z" />
+             <path fill="#EA4335" d="M40 8H8V40H40V8Z" />
+             <path fill="#1A73E8" d="M30 20H18V16H30V20Z" />
+             <path fill="#34A853" d="M30 28H18V24H30V28Z" />
+             <path fill="#FCCC49" d="M22 36H18V32H22V36Z" />
+           </svg>
+           <span>Google Calendar</span>
+         </a>
+         <a href="#" target="_blank" rel="noopener noreferrer" id="outlook-calendar-link" class="calendar-option-btn">
           <svg class="calendar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path fill="#0078D4"
               d="M21 21.5L21 2.5C21 2.22386 20.7761 2 20.5 2L3.5 2C3.22386 2 3 2.22386 3 2.5L3 21.5C3 21.7761 3.22386 22 3.5 22L20.5 22C20.7761 22 21 21.7761 21 21.5ZM19 20L5 20L5 4L19 4L19 20ZM12 11.5L12 18.5C12 18.7761 11.7761 19 11.5 19L9.5 19C9.22386 19 9 18.7761 9 18.5L9 11.5C9 11.2239 9.22386 11 9.5 11L11.5 11C11.7761 11 12 11.2239 12 11.5ZM15 11.5L15 18.5C15 18.7761 14.7761 19 14.5 19L12.5 19C12.2239 19 12 18.7761 12 18.5L12 11.5C12 11.2239 12.2239 11 12.5 11L14.5 11C14.7761 11 15 11.2239 15 11.5ZM17 11.5L17 18.5C17 18.7761 16.7761 19 16.5 19L14.5 19C14.2239 19 14 18.7761 14 18.5L14 11.5C14 11.2239 14.2239 11 14.5 11L16.5 11C16.7761 11 17 11.2239 17 11.5Z" />
@@ -575,6 +579,9 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+      <!-- Secure Firebase Configuration (must be loaded before combined.min.js) -->
+    <script src="firebase-config-vercel.js"></script>
 
   <!-- Optimized combined JavaScript bundle (includes Firebase initialization) -->
   <script src="combined.min.js"></script>

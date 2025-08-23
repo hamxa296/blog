@@ -28,52 +28,84 @@ class WelcomePopup {
             -webkit-backdrop-filter: blur(10px);
         `;
         
-        popup.innerHTML = `
-            <div class="welcome-popup-content transform transition-all duration-300 scale-95 opacity-0" style="
-                background: linear-gradient(135deg, rgba(37, 39, 38, 0.98), rgba(45, 47, 46, 0.98));
-                backdrop-filter: blur(15px);
-                -webkit-backdrop-filter: blur(15px);
-                border: 1px solid rgba(74, 127, 167, 0.3);
-                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-                border-radius: 16px;
-                max-width: 480px;
-                width: 100%;
-            ">
-                <div class="p-8">
-                    <div class="flex items-center mb-6">
-                        <div class="flex-shrink-0">
-                            <img src="logo.png" alt="GIKI Chronicles" class="h-16 w-auto">
-                        </div>
-                        <div class="ml-5">
-                            <h2 class="text-2xl font-bold text-white mb-1" style="font-family: 'Rock Salt', cursive;">Welcome to GIKI Chronicles! 👋</h2>
-                            <p class="text-[#B3CFE5] text-base" style="font-family: 'Indie Flower', cursive;">Your campus community blog</p>
-                        </div>
-                    </div>
-                    
-                    <p class="text-[#E3F2FD] text-lg leading-relaxed mb-8" style="font-family: 'Indie Flower', cursive;">
-                        Welcome to GIKI Chronicles! We're excited to have you here. 
-                        Explore our campus community blog and discover all the features we have to offer.
-                    </p>
-                    
-                    <div class="flex justify-center">
-                        <button id="welcome-close" 
-                                class="welcome-button transform transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#4A7FA7] focus:ring-opacity-50"
-                                style="
-                                    background: linear-gradient(135deg, #4A7FA7, #1A3D63);
-                                    color: white;
-                                    padding: 12px 32px;
-                                    border-radius: 12px;
-                                    font-weight: 600;
-                                    font-size: 16px;
-                                    box-shadow: 0 4px 15px rgba(74, 127, 167, 0.4);
-                                    font-family: 'Special Elite', cursive;
-                                ">
-                            Get Started
-                        </button>
-                    </div>
-                </div>
-            </div>
+        // Create popup content safely without innerHTML
+        const popupContent = document.createElement('div');
+        popupContent.className = 'welcome-popup-content transform transition-all duration-300 scale-95 opacity-0';
+        popupContent.style.cssText = `
+            background: linear-gradient(135deg, rgba(37, 39, 38, 0.98), rgba(45, 47, 46, 0.98));
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(74, 127, 167, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-radius: 16px;
+            max-width: 480px;
+            width: 100%;
         `;
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'p-8';
+        
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'flex items-center mb-6';
+        
+        const logoDiv = document.createElement('div');
+        logoDiv.className = 'flex-shrink-0';
+        
+        const logoImg = document.createElement('img');
+        logoImg.src = 'logo.png';
+        logoImg.alt = 'GIKI Chronicles';
+        logoImg.className = 'h-16 w-auto';
+        
+        const textDiv = document.createElement('div');
+        textDiv.className = 'ml-5';
+        
+        const title = document.createElement('h2');
+        title.className = 'text-2xl font-bold text-white mb-1';
+        title.style.fontFamily = 'Rock Salt, cursive';
+        title.textContent = 'Welcome to GIKI Chronicles! 👋';
+        
+        const subtitle = document.createElement('p');
+        subtitle.className = 'text-[#B3CFE5] text-base';
+        subtitle.style.fontFamily = 'Indie Flower, cursive';
+        subtitle.textContent = 'Your campus community blog';
+        
+        const description = document.createElement('p');
+        description.className = 'text-[#E3F2FD] text-lg leading-relaxed mb-8';
+        description.style.fontFamily = 'Indie Flower, cursive';
+        description.textContent = 'Welcome to GIKI Chronicles! We\'re excited to have you here. Explore our campus community blog and discover all the features we have to offer.';
+        
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'flex justify-center';
+        
+        const closeButton = document.createElement('button');
+        closeButton.id = 'welcome-close';
+        closeButton.className = 'welcome-button transform transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#4A7FA7] focus:ring-opacity-50';
+        closeButton.style.cssText = `
+            background: linear-gradient(135deg, #4A7FA7, #1A3D63);
+            color: white;
+            padding: 12px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(74, 127, 167, 0.4);
+            font-family: 'Special Elite', cursive;
+        `;
+        closeButton.textContent = 'Get Started';
+        
+        // Assemble the DOM structure
+        logoDiv.appendChild(logoImg);
+        textDiv.appendChild(title);
+        textDiv.appendChild(subtitle);
+        headerDiv.appendChild(logoDiv);
+        headerDiv.appendChild(textDiv);
+        buttonContainer.appendChild(closeButton);
+        
+        contentDiv.appendChild(headerDiv);
+        contentDiv.appendChild(description);
+        contentDiv.appendChild(buttonContainer);
+        
+        popupContent.appendChild(contentDiv);
+        popup.appendChild(popupContent);
         
         document.body.appendChild(popup);
         

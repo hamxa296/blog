@@ -4,15 +4,24 @@
  * Firebase-related script loaded on any page.
  */
 
-// Firebase project configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyC1Q9tIEHLqAKZj6IjJN8aPiQCAPYbsi7I",
-    authDomain: "giki-chronicles.firebaseapp.com",
-    projectId: "giki-chronicles",
-    storageBucket: "giki-chronicles.firebasestorage.app",
-    messagingSenderId: "80968785263",
-    appId: "1:80968785263:web:666d2e69fef2ef6f5a5c9a"
-};
+// Firebase project configuration - Load from secure config
+let firebaseConfig;
+
+// Try to load from secure config first
+if (typeof window !== 'undefined' && window.firebaseConfig) {
+    firebaseConfig = window.firebaseConfig;
+} else {
+    // Fallback to hardcoded config (should be replaced in production)
+    console.warn('Using fallback Firebase config. Please configure firebase-config.js properly.');
+    firebaseConfig = {
+        apiKey: "YOUR_API_KEY_HERE",
+        authDomain: "giki-chronicles.firebaseapp.com",
+        projectId: "giki-chronicles",
+        storageBucket: "giki-chronicles.firebasestorage.app",
+        messagingSenderId: "80968785263",
+        appId: "1:80968785263:web:666d2e69fef2ef6f5a5c9a"
+    };
+}
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);

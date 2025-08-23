@@ -618,10 +618,17 @@
         </div>
     </div>
 
+    <!-- Security Utilities and CSP -->
+    <script src="security-utils.js"></script>
+    <script src="csp-headers.js"></script>
+    
     <!-- Firebase SDKs (required before combined.min.js) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Secure Firebase Configuration (must be loaded before combined.min.js) -->
+    <script src="firebase-config.js?v=1.4"></script>
 
     <!-- Optimized combined JavaScript (includes Firebase initialization) -->
     <script src="combined.min.js"></script>

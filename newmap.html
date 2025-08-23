@@ -294,6 +294,9 @@
     <!-- Info Box Container -->
     <div id="infoBoxContainer" class="fixed inset-0 pointer-events-none z-50"></div>
 
+    <!-- Security Utilities -->
+    <script src="security-utils.js"></script>
+    
     <script>
         console.log('Map script starting...');
         
@@ -437,16 +440,42 @@
 
             const color = pinColors[pin.type] || '#FFFFFF';
 
-            pinDiv.innerHTML = `
-                <div class="absolute bottom-full mb-3 left-1/2 transform -translate-x-1/2 bg-gray-900/80 text-white px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 shadow-xl backdrop-blur-sm opacity-0 translate-y-2 pointer-events-none">
-                    ${pin.label}
-                    <div class="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-6 border-x-transparent border-t-6 border-t-gray-900/80" style="border-left-width: 6px; border-right-width: 6px; border-top-width: 6px;"></div>
-                </div>
-                <svg width="32" height="40" viewBox="0 0 32 40" class="drop-shadow-lg transition-transform duration-300" style="filter: drop-shadow(0 4px 8px ${color}50)">
-                    <path d="M16 0C8.268 0 2 6.268 2 14c0 8.5 12.053 24.11 12.553 24.71a1.5 1.5 0 0 0 2.894 0C17.947 38.11 30 22.5 30 14c0-7.732-6.268-14-14-14z" fill="${color}" stroke="#FFFFFF" stroke-width="2"/>
-                    <circle cx="16" cy="14" r="5" fill="#FFFFFF" />
-                </svg>
-            `;
+            // Create pin content safely without innerHTML
+        const tooltipDiv = document.createElement('div');
+        tooltipDiv.className = 'absolute bottom-full mb-3 left-1/2 transform -translate-x-1/2 bg-gray-900/80 text-white px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 shadow-xl backdrop-blur-sm opacity-0 translate-y-2 pointer-events-none';
+        tooltipDiv.textContent = pin.label;
+        
+        const tooltipArrow = document.createElement('div');
+        tooltipArrow.className = 'absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-6 border-x-transparent border-t-6 border-t-gray-900/80';
+        tooltipArrow.style.borderLeftWidth = '6px';
+        tooltipArrow.style.borderRightWidth = '6px';
+        tooltipArrow.style.borderTopWidth = '6px';
+        
+        const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svgElement.setAttribute('width', '32');
+        svgElement.setAttribute('height', '40');
+        svgElement.setAttribute('viewBox', '0 0 32 40');
+        svgElement.className = 'drop-shadow-lg transition-transform duration-300';
+        svgElement.style.filter = `drop-shadow(0 4px 8px ${color}50)`;
+        
+        const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pathElement.setAttribute('d', 'M16 0C8.268 0 2 6.268 2 14c0 8.5 12.053 24.11 12.553 24.71a1.5 1.5 0 0 0 2.894 0C17.947 38.11 30 22.5 30 14c0-7.732-6.268-14-14-14z');
+        pathElement.setAttribute('fill', color);
+        pathElement.setAttribute('stroke', '#FFFFFF');
+        pathElement.setAttribute('stroke-width', '2');
+        
+        const circleElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circleElement.setAttribute('cx', '16');
+        circleElement.setAttribute('cy', '14');
+        circleElement.setAttribute('r', '5');
+        circleElement.setAttribute('fill', '#FFFFFF');
+        
+        svgElement.appendChild(pathElement);
+        svgElement.appendChild(circleElement);
+        
+        tooltipDiv.appendChild(tooltipArrow);
+        pinDiv.appendChild(tooltipDiv);
+        pinDiv.appendChild(svgElement);
 
             // Event listeners
             pinDiv.addEventListener('mouseenter', () => {
@@ -488,7 +517,10 @@
         function renderPins() {
             try {
                 console.log('Rendering pins...');
-                pinsContainer.innerHTML = '';
+                // Clear pins container safely
+            while (pinsContainer.firstChild) {
+                pinsContainer.removeChild(pinsContainer.firstChild);
+            }
                 pins.forEach(pin => {
                     pinsContainer.appendChild(createPinElement(pin));
                 });
@@ -510,11 +542,23 @@
 
             const infoBox = document.createElement('div');
             infoBox.className = 'infobox pointer-events-auto';
-            infoBox.innerHTML = `
-                <button class="infobox-close" onclick="this.parentElement.remove()">&times;</button>
-                <h3 class="text-lg font-semibold text-white mb-2 pr-6">${location.title}</h3>
-                <p class="text-sm text-gray-300 leading-relaxed">${location.description}</p>
-            `;
+            // Create info box content safely without innerHTML
+            const closeButton = document.createElement('button');
+            closeButton.className = 'infobox-close';
+            closeButton.textContent = '×';
+            closeButton.addEventListener('click', () => infoBox.remove());
+            
+            const titleElement = document.createElement('h3');
+            titleElement.className = 'text-lg font-semibold text-white mb-2 pr-6';
+            titleElement.textContent = location.title;
+            
+            const descriptionElement = document.createElement('p');
+            descriptionElement.className = 'text-sm text-gray-300 leading-relaxed';
+            descriptionElement.textContent = location.description;
+            
+            infoBox.appendChild(closeButton);
+            infoBox.appendChild(titleElement);
+            infoBox.appendChild(descriptionElement);
 
             // Get the actual pin position on screen (accounting for zoom and pan)
             const pin = pins.find(p => p.id === locationId);
@@ -821,15 +865,35 @@
                 if (mapBackground) {
                     mapBackground.style.backgroundImage = 'none';
                     mapBackground.style.backgroundColor = '#1f2937';
-                    mapBackground.innerHTML = `
-                        <div class="flex items-center justify-center h-full text-white">
-                            <div class="text-center">
-                                <div class="text-6xl mb-4">🗺️</div>
-                                <h2 class="text-2xl font-bold mb-2">Campus Map</h2>
-                                <p class="text-gray-300">Map image unavailable, but pins are still functional</p>
-                            </div>
-                        </div>
-                    `;
+                    // Create fallback content safely without innerHTML
+                    const fallbackContainer = document.createElement('div');
+                    fallbackContainer.className = 'flex items-center justify-center h-full text-white';
+                    
+                    const fallbackContent = document.createElement('div');
+                    fallbackContent.className = 'text-center';
+                    
+                    const emojiDiv = document.createElement('div');
+                    emojiDiv.className = 'text-6xl mb-4';
+                    emojiDiv.textContent = '🗺️';
+                    
+                    const titleDiv = document.createElement('h2');
+                    titleDiv.className = 'text-2xl font-bold mb-2';
+                    titleDiv.textContent = 'Campus Map';
+                    
+                    const descriptionDiv = document.createElement('p');
+                    descriptionDiv.className = 'text-gray-300';
+                    descriptionDiv.textContent = 'Map image unavailable, but pins are still functional';
+                    
+                    fallbackContent.appendChild(emojiDiv);
+                    fallbackContent.appendChild(titleDiv);
+                    fallbackContent.appendChild(descriptionDiv);
+                    fallbackContainer.appendChild(fallbackContent);
+                    
+                    // Clear existing content and add fallback
+                    while (mapBackground.firstChild) {
+                        mapBackground.removeChild(mapBackground.firstChild);
+                    }
+                    mapBackground.appendChild(fallbackContainer);
                 }
                 // Continue with initialization
                 resetView();
@@ -853,14 +917,37 @@
             // Hide loading indicator on error
             const loadingIndicator = document.getElementById('loadingIndicator');
             if (loadingIndicator) {
-                loadingIndicator.innerHTML = `
-                    <div class="text-center">
-                        <div class="text-red-400 text-6xl mb-4">⚠️</div>
-                        <p class="text-white text-lg mb-2">Failed to load map</p>
-                        <p class="text-gray-300 text-sm">Please refresh the page or check your connection</p>
-                        <button onclick="window.location.reload()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Retry</button>
-                    </div>
-                `;
+                // Create error content safely without innerHTML
+                const errorContainer = document.createElement('div');
+                errorContainer.className = 'text-center';
+                
+                const warningDiv = document.createElement('div');
+                warningDiv.className = 'text-red-400 text-6xl mb-4';
+                warningDiv.textContent = '⚠️';
+                
+                const errorTitle = document.createElement('p');
+                errorTitle.className = 'text-white text-lg mb-2';
+                errorTitle.textContent = 'Failed to load map';
+                
+                const errorDescription = document.createElement('p');
+                errorDescription.className = 'text-gray-300 text-sm';
+                errorDescription.textContent = 'Please refresh the page or check your connection';
+                
+                const retryButton = document.createElement('button');
+                retryButton.className = 'px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700';
+                retryButton.textContent = 'Retry';
+                retryButton.addEventListener('click', () => window.location.reload());
+                
+                errorContainer.appendChild(warningDiv);
+                errorContainer.appendChild(errorTitle);
+                errorContainer.appendChild(errorDescription);
+                errorContainer.appendChild(retryButton);
+                
+                // Clear existing content and add error content
+                while (loadingIndicator.firstChild) {
+                    loadingIndicator.removeChild(loadingIndicator.firstChild);
+                }
+                loadingIndicator.appendChild(errorContainer);
             }
         }
 

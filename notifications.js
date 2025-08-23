@@ -153,15 +153,43 @@
             const toast = document.createElement('div');
             toast.className = `gc-toast gc-${type}`;
             toast.style.position = 'relative';
-            toast.innerHTML = `
-                <span class="gc-icon" aria-hidden="true">${iconFor(type)}</span>
-                <div class="gc-content-wrap" role="status">
-                  ${title ? `<div class="gc-title">${title}</div>` : ''}
-                  <div class="gc-message">${message}</div>
-                </div>
-                ${actionText ? `<button class="gc-btn-action gc-btn gc-btn-secondary">${actionText}</button>` : ''}
-                <div class="gc-progress"><span></span></div>
-            `;
+            // Create toast content safely without innerHTML
+            const iconSpan = document.createElement('span');
+            iconSpan.className = 'gc-icon';
+            iconSpan.setAttribute('aria-hidden', 'true');
+            iconSpan.textContent = iconFor(type);
+            
+            const contentWrap = document.createElement('div');
+            contentWrap.className = 'gc-content-wrap';
+            contentWrap.setAttribute('role', 'status');
+            
+            if (title) {
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'gc-title';
+                titleDiv.textContent = title;
+                contentWrap.appendChild(titleDiv);
+            }
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'gc-message';
+            messageDiv.textContent = message;
+            contentWrap.appendChild(messageDiv);
+            
+            if (actionText) {
+                const actionButton = document.createElement('button');
+                actionButton.className = 'gc-btn-action gc-btn gc-btn-secondary';
+                actionButton.textContent = actionText;
+                toast.appendChild(actionButton);
+            }
+            
+            const progressDiv = document.createElement('div');
+            progressDiv.className = 'gc-progress';
+            const progressSpan = document.createElement('span');
+            progressDiv.appendChild(progressSpan);
+            
+            toast.appendChild(iconSpan);
+            toast.appendChild(contentWrap);
+            toast.appendChild(progressDiv);
             const close = () => {
                 toast.classList.remove('gc-show');
                 setTimeout(() => toast.remove(), 200);
@@ -212,7 +240,7 @@
         } catch (e) {
             // As a last resort
             console.warn('Toast failed, falling back to console:', e);
-            console.log(`[${type}]`, message);
+            // console.log(`[${type}]`, message);
         }
     }
 
@@ -228,20 +256,45 @@
 
             const overlay = document.createElement('div');
             overlay.className = 'gc-confirm-overlay';
-            overlay.innerHTML = `
-                <div class="gc-confirm-modal">
-                    <div class="gc-confirm-body">
-                        <div>
-                            <h3 class="gc-title">${title}</h3>
-                            <p class="gc-message">${message}</p>
-                        </div>
-                    </div>
-                    <div class="gc-confirm-actions">
-                        <button class="gc-btn gc-btn-secondary" data-action="cancel">${cancelText}</button>
-                        <button class="gc-btn ${variant === 'danger' ? 'gc-btn-danger' : 'gc-btn-primary'}" data-action="confirm">${confirmText}</button>
-                    </div>
-                </div>
-            `;
+            // Create confirm modal content safely without innerHTML
+            const modalDiv = document.createElement('div');
+            modalDiv.className = 'gc-confirm-modal';
+            
+            const bodyDiv = document.createElement('div');
+            bodyDiv.className = 'gc-confirm-body';
+            
+            const contentDiv = document.createElement('div');
+            
+            const titleH3 = document.createElement('h3');
+            titleH3.className = 'gc-title';
+            titleH3.textContent = title;
+            
+            const messageP = document.createElement('p');
+            messageP.className = 'gc-message';
+            messageP.textContent = message;
+            
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'gc-confirm-actions';
+            
+            const cancelButton = document.createElement('button');
+            cancelButton.className = 'gc-btn gc-btn-secondary';
+            cancelButton.setAttribute('data-action', 'cancel');
+            cancelButton.textContent = cancelText;
+            
+            const confirmButton = document.createElement('button');
+            confirmButton.className = `gc-btn ${variant === 'danger' ? 'gc-btn-danger' : 'gc-btn-primary'}`;
+            confirmButton.setAttribute('data-action', 'confirm');
+            confirmButton.textContent = confirmText;
+            
+            // Assemble the DOM structure
+            contentDiv.appendChild(titleH3);
+            contentDiv.appendChild(messageP);
+            bodyDiv.appendChild(contentDiv);
+            actionsDiv.appendChild(cancelButton);
+            actionsDiv.appendChild(confirmButton);
+            modalDiv.appendChild(bodyDiv);
+            modalDiv.appendChild(actionsDiv);
+            overlay.appendChild(modalDiv);
 
             const modal = overlay.firstElementChild;
             document.body.appendChild(overlay);

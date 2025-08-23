@@ -55,10 +55,7 @@
     
     // Function to update modal text colors based on theme
     function updateModalTextColors(themeName) {
-        console.log('🔍 THEME DEBUG: updateModalTextColors called with theme:', themeName);
-        
         if (themeName === 'basic-dark') {
-            console.log('🔍 THEME DEBUG: Applying dark mode styling');
             // Dark mode: Use icy blue colors for better readability
             const modalSelectors = [
                 '#featured-post-modal',
@@ -66,13 +63,10 @@
             ];
             
             modalSelectors.forEach(selector => {
-                console.log('🔍 THEME DEBUG: Processing modal selector:', selector);
                 const modal = document.querySelector(selector);
                 if (modal) {
-                    console.log('🔍 THEME DEBUG: Found modal:', selector);
                     // Force ALL text elements to icy blue in dark mode
                     const allTextElements = modal.querySelectorAll('*');
-                    console.log('🔍 THEME DEBUG: Found', allTextElements.length, 'elements in modal');
                     allTextElements.forEach(element => {
                         // Skip buttons, links, and elements with specific background colors
                         if (element.tagName !== 'BUTTON' && 
@@ -84,7 +78,6 @@
                             !element.classList.contains('text-[#B3CFE5]') &&
                             !element.classList.contains('text-[#4A7FA7]')) {
                             
-                            console.log('🔍 THEME DEBUG: Styling element:', element.tagName, element.className);
                             // Apply icy blue color for better readability in dark mode
                             element.style.setProperty('color', '#E3F2FD', 'important');
                         }
@@ -100,13 +93,10 @@
                             !element.classList.contains('bg-[#1A3D63]') &&
                             !element.classList.contains('bg-[#B3CFE5]')) {
                             
-                            console.log('🔍 THEME DEBUG: Styling text element:', element.tagName, element.className);
                             // Force icy blue color with !important
                             element.style.setProperty('color', '#E3F2FD', 'important');
                         }
                     });
-                } else {
-                    console.log('❌ THEME DEBUG: Modal not found:', selector);
                 }
             });
             
@@ -114,7 +104,6 @@
             const allModals = document.querySelectorAll('[id$="-modal"]');
             allModals.forEach(modal => {
                 if (modal.id !== 'event-modal' && modal.id !== 'featured-post-modal') {
-                    console.log('🔍 THEME DEBUG: Found unknown modal:', modal.id);
                     // Apply basic styling to unknown modals
                     const textElements = modal.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, div');
                     textElements.forEach(element => {
@@ -180,7 +169,6 @@
                 if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
                     mutation.addedNodes.forEach(function(node) {
                         if (node.nodeType === 1 && node.id && node.id.endsWith('-modal')) {
-                            console.log('🔍 THEME DEBUG: New modal detected:', node.id);
                             // New modal added, update its text colors
                             setTimeout(() => updateModalTextColors(savedTheme), 100);
                         }
