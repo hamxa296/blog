@@ -161,6 +161,30 @@
     #message { overflow: hidden; overflow-y: hidden; resize: none; scrollbar-width: none; -ms-overflow-style: none; }
     #message::-webkit-scrollbar { display: none; }
 
+    /* Form message styling */
+    #form-message { 
+        min-height: 1.25rem; 
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    #form-message:empty { 
+        min-height: 1.25rem; 
+    }
+
+    /* Spinner animation */
+    .animate-spin {
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
     /* Ensure the contact form/card never shows an internal scrollbar */
     .contact-card, #contact-form { overflow: visible !important; }
     #contact-form { scrollbar-width: none; -ms-overflow-style: none; }
@@ -246,6 +270,7 @@
 
     .contact-primary { background:linear-gradient(135deg, var(--c-deep), var(--c-navy)); box-shadow:0 8px 20px rgba(26,61,99,.35); transition:transform .15s ease, box-shadow .2s ease, background .2s ease; box-sizing:border-box; max-width:100%; white-space:normal; overflow-wrap:anywhere; word-break:break-word; }
     .contact-primary:hover { transform:translateY(-1px); box-shadow:0 12px 26px rgba(10,25,49,.45); }
+    .contact-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
     
     /* Mobile button overflow prevention */
     @media (max-width: 480px) {
@@ -765,10 +790,16 @@
                                     <label for="message" class="fl-label">Your Message</label>
                                 </div>
                                 
-                                <div id="form-message" class="text-center my-2 md:my-3 h-5"></div>
+                                <div id="form-message" class="text-center my-2 md:my-3 h-5 font-medium">
+                                    <div id="form-loading" class="text-blue-400">Initializing form...</div>
+                                </div>
                                 
-                                <button type="submit" class="contact-primary w-full font-bold py-3 md:py-5 px-4 md:px-8 rounded-2xl transition duration-300 text-lg md:text-xl hover:scale-105">
-                                    Send Message
+                                <button type="submit" id="submit-btn" disabled class="contact-primary w-full font-bold py-3 md:py-5 px-4 md:px-8 rounded-2xl transition duration-300 text-lg md:text-xl hover:scale-105 flex items-center justify-center space-x-2 opacity-60 cursor-not-allowed">
+                                    <span class="submit-text">Initializing...</span>
+                                    <svg class="submit-spinner hidden w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
                                 </button>
                             </form>
                         </div>
@@ -914,10 +945,169 @@
     <!-- Theme manager for consistent theming -->
     <script src="theme-manager.js?v=1.4"></script>
 
+    <!-- Firebase utilities and functions -->
+    <script>
+        // logoutUser function (simplified version)
+        async function logoutUser() {
+            try {
+                if (typeof auth !== 'undefined') {
+                    await auth.signOut();
+                    console.log('User logged out successfully');
+                }
+            } catch (error) {
+                console.error('Error during logout:', error);
+                throw error;
+            }
+        }
+
+        // isUserAdmin function (simplified version)
+        async function isUserAdmin() {
+            try {
+                if (typeof auth === 'undefined' || !auth.currentUser) {
+                    return false;
+                }
+                
+                // Check if user document exists and has admin flag
+                const userDoc = await db.collection('users').doc(auth.currentUser.uid).get();
+                if (userDoc.exists) {
+                    return userDoc.data().isAdmin === true;
+                }
+                
+                return false;
+            } catch (error) {
+                console.error('Error checking admin status:', error);
+                return false;
+            }
+        }
+    </script>
+
     <script src="welcome-popup.js?v=1.4"></script>
     <script src="firebase-error-handler.js?v=1.4"></script>
 
     <script>
+        // Contact Form Functionality
+        async function submitContactForm(formData) {
+            try {
+                // Show loading state
+                const submitButton = document.getElementById('submit-btn');
+                const submitText = submitButton.querySelector('.submit-text');
+                const submitSpinner = submitButton.querySelector('.submit-spinner');
+                
+                submitText.textContent = 'Sending...';
+                submitSpinner.classList.remove('hidden');
+                submitButton.disabled = true;
+
+                // Get current user info if logged in
+                let currentUser = null;
+                if (typeof auth !== 'undefined' && auth.currentUser) {
+                    currentUser = {
+                        uid: auth.currentUser.uid,
+                        email: auth.currentUser.email,
+                        displayName: auth.currentUser.displayName || auth.currentUser.email?.split('@')[0] || 'User'
+                    };
+                }
+
+                // Prepare contact data
+                const contactData = {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    subject: formData.get('subject'),
+                    message: formData.get('message'),
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'new',
+                    ipAddress: await getClientIP(),
+                    userAgent: navigator.userAgent,
+                    // Add user info if logged in
+                    ...(currentUser && {
+                        userId: currentUser.uid,
+                        userEmail: currentUser.email,
+                        userName: currentUser.displayName
+                    })
+                };
+
+                // Add to Firestore (using the correct collection name from firestore.rules)
+                const docRef = await db.collection('submissions').add(contactData);
+                
+                console.log('Contact form submitted successfully:', docRef.id);
+                
+                // Show success message
+                showFormMessage('Message sent successfully! We\'ll get back to you soon.', 'success');
+                
+                // Reset form
+                document.getElementById('contact-form').reset();
+                
+                // Reset floating labels
+                resetFloatingLabels();
+                
+                return true;
+                
+            } catch (error) {
+                console.error('Error submitting contact form:', error);
+                
+                // Provide more specific error messages based on error type
+                let errorMessage = 'Failed to send message. Please try again or contact us directly.';
+                
+                if (error.code === 'permission-denied') {
+                    errorMessage = 'Access denied. The contact form may be temporarily unavailable. Please try again later.';
+                } else if (error.code === 'unavailable') {
+                    errorMessage = 'Service temporarily unavailable. Please try again in a few minutes.';
+                } else if (error.code === 'unauthenticated') {
+                    errorMessage = 'Authentication required. Please refresh the page and try again.';
+                } else if (error.message && error.message.includes('network')) {
+                    errorMessage = 'Network error. Please check your connection and try again.';
+                } else if (error.message && error.message.includes('Missing or insufficient permissions')) {
+                    errorMessage = 'Service configuration issue. Please contact support or try again later.';
+                }
+                
+                showFormMessage(errorMessage, 'error');
+                return false;
+            } finally {
+                // Restore button state
+                const submitButton = document.getElementById('submit-btn');
+                const submitText = submitButton.querySelector('.submit-text');
+                const submitSpinner = submitButton.querySelector('.submit-spinner');
+                
+                submitText.textContent = 'Send Message';
+                submitSpinner.classList.add('hidden');
+                submitButton.disabled = false;
+            }
+        }
+
+        // Get client IP address (CSP-compliant fallback method)
+        async function getClientIP() {
+            // Since we can't fetch external IP due to CSP, use a fallback
+            // This is just for logging purposes and not critical for functionality
+            return 'csp-restricted';
+        }
+
+        // Show form message
+        function showFormMessage(message, type = 'info') {
+            const messageEl = document.getElementById('form-message');
+            if (!messageEl) return;
+            
+            messageEl.textContent = message;
+            messageEl.className = `text-center my-2 md:my-3 h-5 ${type === 'success' ? 'text-green-400' : type === 'error' ? 'text-red-400' : 'text-blue-400'}`;
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                messageEl.textContent = '';
+                messageEl.className = 'text-center my-2 md:my-3 h-5';
+            }, 5000);
+        }
+
+        // Reset floating labels
+        function resetFloatingLabels() {
+            const inputs = document.querySelectorAll('#contact-form input, #contact-form textarea');
+            inputs.forEach(input => {
+                const label = input.parentElement.querySelector('.fl-label');
+                if (label) {
+                    label.style.transform = 'none';
+                    label.style.color = 'var(--c-light)';
+                    label.style.top = '16px';
+                }
+            });
+        }
+
         // Navigation State Management for Contact Page
         function updateNavigationState(user) {
             const guestNav = document.getElementById('guest-nav');
@@ -1052,6 +1242,12 @@
         document.addEventListener('DOMContentLoaded', () => {
             initializeSidebar();
 
+            // Wait a bit for Firebase to fully initialize before setting up the form
+            setTimeout(() => {
+                // Initialize contact form
+                initializeContactForm();
+            }, 1000);
+
             // Wait for Firebase auth to be initialized
             const handleAuthStateChanged = (event) => {
                 if (event.detail.initialized) {
@@ -1067,6 +1263,90 @@
                 updateNavigationState(auth.currentUser);
             }
         });
+
+        // Initialize contact form functionality
+        function initializeContactForm() {
+            const contactForm = document.getElementById('contact-form');
+            if (!contactForm) return;
+
+            // Check if Firebase is ready before setting up the form
+            if (typeof db === 'undefined' || typeof firebase === 'undefined') {
+                console.warn('Firebase not ready, retrying in 2 seconds...');
+                setTimeout(() => initializeContactForm(), 2000);
+                return;
+            }
+
+            // Hide loading message and show form is ready
+            const formLoading = document.getElementById('form-loading');
+            if (formLoading) {
+                formLoading.style.display = 'none';
+            }
+
+            // Enable submit button
+            const submitBtn = document.getElementById('submit-btn');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+                const submitText = submitBtn.querySelector('.submit-text');
+                if (submitText) {
+                    submitText.textContent = 'Send Message';
+                }
+            }
+
+            contactForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Clear any previous messages
+                showFormMessage('');
+                
+                // Basic form validation
+                const formData = new FormData(contactForm);
+                const name = formData.get('name').trim();
+                const email = formData.get('email').trim();
+                const subject = formData.get('subject');
+                const message = formData.get('message').trim();
+
+                // Validate required fields
+                if (!name || !email || !subject || !message) {
+                    showFormMessage('Please fill in all required fields.', 'error');
+                    return;
+                }
+
+                // Validate name length
+                if (name.length < 2) {
+                    showFormMessage('Name must be at least 2 characters long.', 'error');
+                    return;
+                }
+
+                // Validate email format
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showFormMessage('Please enter a valid email address.', 'error');
+                    return;
+                }
+
+                // Validate subject selection
+                if (subject === 'Select Subject' || !subject) {
+                    showFormMessage('Please select a subject.', 'error');
+                    return;
+                }
+
+                // Validate message length
+                if (message.length < 10) {
+                    showFormMessage('Message must be at least 10 characters long.', 'error');
+                    return;
+                }
+
+                // Final Firebase availability check
+                if (typeof db === 'undefined' || typeof firebase === 'undefined') {
+                    showFormMessage('Service temporarily unavailable. Please refresh the page and try again.', 'error');
+                    return;
+                }
+
+                // Submit form
+                await submitContactForm(formData);
+            });
+        }
     </script>
 
     <script>
