@@ -22,25 +22,14 @@ class WelcomePopup {
         const popup = document.createElement('div');
         popup.id = 'welcome-popup';
         popup.className = 'fixed inset-0 z-[10000] flex items-center justify-center p-4';
-        popup.style.cssText = `
-            background: linear-gradient(135deg, rgba(10, 25, 49, 0.8), rgba(26, 61, 99, 0.8));
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        `;
+    // Add class for styling instead of inline CSS to comply with CSP;
+    // inject styles into a nonce'd <style> tag if nonce exists.
+    popup.classList.add('welcome-popup-overlay');
         
         // Create popup content safely without innerHTML
         const popupContent = document.createElement('div');
         popupContent.className = 'welcome-popup-content transform transition-all duration-300 scale-95 opacity-0';
-        popupContent.style.cssText = `
-            background: linear-gradient(135deg, rgba(37, 39, 38, 0.98), rgba(45, 47, 46, 0.98));
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(74, 127, 167, 0.3);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            border-radius: 16px;
-            max-width: 480px;
-            width: 100%;
-        `;
+    popupContent.classList.add('welcome-popup-content-style');
         
         const contentDiv = document.createElement('div');
         contentDiv.className = 'p-8';
@@ -80,16 +69,7 @@ class WelcomePopup {
         const closeButton = document.createElement('button');
         closeButton.id = 'welcome-close';
         closeButton.className = 'welcome-button transform transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#4A7FA7] focus:ring-opacity-50';
-        closeButton.style.cssText = `
-            background: linear-gradient(135deg, #4A7FA7, #1A3D63);
-            color: white;
-            padding: 12px 32px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 16px;
-            box-shadow: 0 4px 15px rgba(74, 127, 167, 0.4);
-            font-family: 'Special Elite', cursive;
-        `;
+    closeButton.classList.add('welcome-popup-close-btn');
         closeButton.textContent = 'Get Started';
         
         // Assemble the DOM structure
