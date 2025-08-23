@@ -11,6 +11,8 @@ firebase-debug.*.log*
 .firebase/
 
 # Firebase config
+firebase-config-vercel.js
+firebase-config-secure.js
 
 # Uncomment this if you'd like others to create their own Firebase project.
 # For a team working on the same Firebase project(s), it is recommended to leave
@@ -72,3 +74,4 @@ node_modules/
 # dataconnect generated files
 .dataconnect
 .vercel
+firebase-config-vercel.js
