@@ -17,13 +17,13 @@
   <script src="https://cdn.tailwindcss.com?v=1.4"></script>
   <!-- Fallback to local Tailwind if CDN fails -->
   <script>
-    if (typeof window.tailwind === 'undefined') {
-      console.warn('Tailwind CDN failed to load, using fallback styles');
-      const fallbackCSS = document.createElement('link');
-      fallbackCSS.rel = 'stylesheet';
-      fallbackCSS.href = 'tailwind-fallback.css';
-      document.head.appendChild(fallbackCSS);
-    }
+  if (typeof window.tailwind === 'undefined') {
+    console.warn('Tailwind CDN failed to load, using fallback styles');
+    const fallbackCSS = document.createElement('link');
+    fallbackCSS.rel = 'stylesheet';
+    fallbackCSS.href = 'tailwind-fallback.css?v=1.4';
+    document.head.appendChild(fallbackCSS);
+  }
   </script>
 
   <!-- Google Fonts -->
@@ -58,7 +58,7 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="styles.css?v=1.4">
 
-  <style>
+  <style nonce="p9dw92xsowf6klhdd91rhk">
     /* Contact page color palette matching index.html exactly */
     :root {
       --c-navy: #0A1931;
@@ -453,15 +453,12 @@
       <div class="hidden md:flex items-center space-x-6 ml-auto">
         <!-- <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a> -->
 
-                     <a href="gallery.html?v=1.4"
-            class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
-            <span class="relative z-10">Gallery</span>
-          </a>
-
-        <a href="guide.html?v=1.3"
-            class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
-            <span class="relative z-10">Freshmen Guide</span>
-          </a>
+                     <a href="gallery.html?v=1.4" class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+  <span class="relative z-10">Gallery</span>
+</a>
+<a href="guide.html?v=1.4" class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+  <span class="relative z-10">Freshmen Guide</span>
+</a>
 
                          <a href="calendar.html?v=1.4"
             class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
@@ -590,7 +587,7 @@
                   </svg>
                   Calendar View
                 </a>
-                                 <a href="calendar.html#events?v=1.4"
+                                 <a href="calendar.html?v=1.4#events"
                   class="block px-3 py-2 text-sm text-white/80 hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
                   <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -599,7 +596,7 @@
                   </svg>
                   View Events
                 </a>
-                                 <a href="calendar.html#submit?v=1.4"
+                                 <a href="calendar.html?v=1.4#submit"
                   class="block px-3 py-2 text-sm text-white/80 hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
                   <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -633,7 +630,7 @@
         <div id="sidebar-user-nav" class="hidden">
           <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">My Account</h3>
           <div class="space-y-2">
-            <a href="launching-soon.html?v=1.3"
+            <a href="launching-soon.html?v=1.4"
               class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -641,7 +638,7 @@
               </svg>
               My Profile
             </a>
-            <a href="launching-soon.html?v=1.3"
+            <a href="launching-soon.html?v=1.4"
               class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

@@ -313,7 +313,7 @@ body {
     --card-bg: #ffffff;
     --border-color: #d4d2cd;
     --hover-bg: #f0eee9;
-    --bg-image: url('bg-light.png');
+    --bg-image: url('bg-light.png?v=1.4');
 }
 
 /* Basic Dark Theme */
@@ -327,7 +327,7 @@ body {
     --card-bg: #252726;
     --border-color: #3a3c3b;
     --hover-bg: #2d2f2e;
-    --bg-image: url('bg-black.png');
+    --bg-image: url('bg-black.png?v=1.4');
 }
 
 /* Welcome popup styles (non-inline to comply with CSP) */

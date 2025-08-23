@@ -4,24 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Cache-busting meta -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>GIKI Freshman Guide</title>
-    <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico?v=1.3">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png?v=1.3">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png?v=1.3">
-    <link rel="icon" type="image/png" sizes="48x48" href="/favicons/favicon-48x48.png?v=1.3">
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png?v=1.3">
-    <link rel="manifest" href="/site.webmanifest?v=1.3">
+    <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico?v=1.4">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png?v=1.4">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png?v=1.4">
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicons/favicon-48x48.png?v=1.4">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png?v=1.4">
+    <link rel="manifest" href="/site.webmanifest?v=1.4">
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?v=1.3"></script>
+    <script src="https://cdn.tailwindcss.com?v=1.4"></script>
     <!-- React Libraries -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js?v=1.3"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js?v=1.3"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js?v=1.4"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js?v=1.4"></script>
     <!-- Babel for JSX transpilation -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js?v=1.3"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js?v=1.4"></script>
     <!-- Custom Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&family=Rock+Salt&family=Special+Elite&family=Indie+Flower&display=swap&v=1.3"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&family=Rock+Salt&family=Special+Elite&family=Indie+Flower&display=swap&v=1.4"
         rel="stylesheet">
 
     <!-- Apply theme immediately to prevent flash -->
@@ -48,7 +52,7 @@
       })();
     </script>
     
-    <style>
+    <style nonce="p9dw92xsowf6klhdd91rhk">
         /* Guide page color palette matching index.html exactly */
         :root {
             --c-navy: #0A1931;
@@ -77,7 +81,7 @@
 
         /* Full page background matching index.html */
         body {
-            background: url('background.jpeg?v=1.3') no-repeat center center fixed;
+            background: url('background.jpeg?v=1.4') no-repeat center center fixed;
             background-size: cover;
         }
         
@@ -99,7 +103,7 @@
                 linear-gradient(135deg, rgba(0,0,0,0.4), rgba(10,25,49,0.3)),
                 radial-gradient(circle at 30% 20%, rgba(74,127,167,0.2), transparent),
                 radial-gradient(circle at 70% 80%, rgba(26,61,99,0.3), transparent),
-                url('background.jpeg?v=1.3') !important;
+                url('background.jpeg?v=1.4') !important;
             background-size: cover !important;
             background-position: center !important;
             background-attachment: fixed !important;
@@ -217,7 +221,7 @@
              }
          })();
      </script>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=1.4">
 
     <!-- Basic error handling -->
     <script>
@@ -266,17 +270,17 @@
             <div class="hidden md:flex items-center space-x-6 ml-auto">
                 <!-- <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a> -->
 
-                <a href="gallery.html?v=1.3"
+                <a href="gallery.html?v=1.4"
                     class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
                     <span class="relative z-10">Gallery</span>
                 </a>
 
-                <a href="guide.html?v=1.3"
+                <a href="guide.html?v=1.4"
                     class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
                     <span class="relative z-10">Freshmen Guide</span>
                 </a>
 
-                <a href="calendar.html?v=1.3"
+                <a href="calendar.html?v=1.4"
                     class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
                     <span class="relative z-10">Calendar</span>
                 </a>
@@ -328,7 +332,7 @@
                     </svg>
                     Home
                 </a>
-                        <a href="launching-soon.html?v=1.3"
+                        <a href="launching-soon.html?v=1.4"
                             class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
                             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -337,7 +341,7 @@
                             </svg>
                             All Posts
                         </a>
-                        <a href="about.html?v=1.3"
+                        <a href="about.html?v=1.4"
                             class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
                             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -345,8 +349,8 @@
                             </svg>
                             About
                         </a>
-                        <a href="contact.html?v=1.3"
-                            class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] transition duration-200">
+                        <a href="contact.html?v=1.4"
+                            class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
                             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
@@ -354,7 +358,7 @@
                             </svg>
                             Contact
                         </a>
-                        <a href="gallery.html?v=1.3"
+                        <a href="gallery.html?v=1.4"
                             class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
                             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -370,7 +374,7 @@
                 <div>
                     <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">Resources</h3>
                     <div class="space-y-2">
-                        <a href="guide.html?v=1.3" data-nav
+                        <a href="guide.html?v=1.4" data-nav
                             class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
                             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -379,7 +383,7 @@
                             </svg>
                             Freshman Guide
                         </a>
-                        <a href="calendar.html?v=1.3" data-nav
+                        <a href="calendar.html?v=1.4" data-nav
                             class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
                             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -468,17 +472,17 @@
     <div id="root"></div>
 
     <!-- Firebase SDKs (required before combined.min.js) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js?v=1.3"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js?v=1.3"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js?v=1.3"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js?v=1.4"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js?v=1.4"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js?v=1.4"></script>
 
     <!-- Secure Firebase Configuration (must be loaded before combined.min.js) -->
-    <script src="firebase-config.js"></script>
+    <script src="firebase-config.js?v=1.4"></script>
 
     <!-- Optimized combined JavaScript (includes Firebase initialization) -->
-    <script src="combined.min.js?v=1.3"></script>
+    <script src="combined.min.js?v=1.4"></script>
     <!-- Unified Notifications -->
-    <script src="notifications.js?v=1.3"></script>
+    <script src="notifications.js?v=1.4"></script>
 
     <!-- Your React Component -->
     <script type="text/babel">
@@ -1797,9 +1801,7 @@
                                                                                                             />
                                                                                                             <span className="text-[#B3CFE5] text-sm">{item}</span>
                                                                                                         </label>
-                                                                                                        <button type="button" onClick={() => handleDeleteCustomItem(item)} className="text-xs px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700">
-                                                                                                            Delete
-                                                                                                        </button>
+                                                                                                        <button type="button" onClick={() => handleDeleteCustomItem(item)} className="text-red-400 hover:text-red-300"><svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.381 21H7.618a2 2 0 01-1.993-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1H9a1 1 0 00-1 1v3m10 0H4" /></svg></button>
                                                                                                     </div>
                                                                                                 );
                                                                                             })}
@@ -1863,7 +1865,7 @@
                                                         <div className="mt-4 p-4 bg-gradient-to-r from-[#0A1931] to-[#1A3D63] border border-[#4A7FA7] rounded text-center relative">
                                                             <div className="mb-3">
                                                                 <svg className="w-8 h-8 text-[#B3CFE5] mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 012 2h7a2 2 0 012 2v1"></path>
                                                                 </svg>
                                                                 <h4 className="text-base font-semibold text-[#B3CFE5] mb-1">Login Required</h4>
                                                                 <p className="text-[#B3CFE5] text-xs mb-3">
@@ -2055,9 +2057,19 @@
         );
     </script>
     <!-- Theme and UI scripts -->
-    <script src="theme-manager.js"></script>
+    <script src="theme-manager.js?v=1.4"></script>
+    <script src="welcome-popup.js?v=1.4"></script>
 
-    <script src="welcome-popup.js"></script>
+    <!-- Harden SW update on this page too -->
+    <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js?v=1.4', { updateViaCache: 'none' })
+        .catch(() => {});
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
+      });
+    }
+  </script>
 </body>
 
 </html>
