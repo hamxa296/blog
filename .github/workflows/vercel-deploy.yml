@@ -1,0 +1,19 @@
+name: Trigger Vercel Deploy on main
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  trigger-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel Deploy Hook
+        env:
+          VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$VERCEL_DEPLOY_HOOK" ]; then
+            echo "Missing VERCEL_DEPLOY_HOOK secret" >&2
+            exit 1
+          fi
+          curl -sSf -X POST "$VERCEL_DEPLOY_HOOK" || (echo "Deploy hook POST failed" >&2; exit 1)
