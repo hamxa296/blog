@@ -19,13 +19,16 @@ function getEnv(key, fallback) {
     return fallback;
 }
 
+// When built on Vercel, a generated `firebase-config-vercel.js` will be created
+// from environment variables. For local development, set window.__env or
+// use a local `firebase-config.js` file.
 const firebaseConfigData = {
-    apiKey: getEnv('FIREBASE_API_KEY', 'AIzaSyC1Q9tIEHLqAKZj6IjJN8aPiQCAPYbsi7I'),
-    authDomain: getEnv('FIREBASE_AUTH_DOMAIN', 'giki-chronicles.firebaseapp.com'),
-    projectId: getEnv('FIREBASE_PROJECT_ID', 'giki-chronicles'),
-    storageBucket: getEnv('FIREBASE_STORAGE_BUCKET', 'giki-chronicles.firebasestorage.app'),
-    messagingSenderId: getEnv('FIREBASE_MESSAGING_SENDER_ID', '80968785263'),
-    appId: getEnv('FIREBASE_APP_ID', '1:80968785263:web:666d2e69fef2ef6f5a5c9a')
+    apiKey: getEnv('FIREBASE_API_KEY', ''),
+    authDomain: getEnv('FIREBASE_AUTH_DOMAIN', ''),
+    projectId: getEnv('FIREBASE_PROJECT_ID', ''),
+    storageBucket: getEnv('FIREBASE_STORAGE_BUCKET', ''),
+    messagingSenderId: getEnv('FIREBASE_MESSAGING_SENDER_ID', ''),
+    appId: getEnv('FIREBASE_APP_ID', '')
 };
 
 // Security check - warn if using development values when server-side NODE_ENV=production is set
