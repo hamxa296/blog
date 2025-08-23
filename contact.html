@@ -147,6 +147,15 @@
     .contact-input:focus { outline:none; border-color:var(--c-steel); box-shadow:0 0 0 3px rgba(74,127,167,0.25); background: rgba(255,255,255,0.08); }
     .fl { position:relative; }
     .fl-label { position:absolute; left:16px; top:16px; color:var(--c-light); font-size:1rem; transition:all .2s ease; pointer-events:none; transform-origin:left top; }
+    
+    /* Floating label animation states handled by JavaScript */
+    
+    /* Ensure inputs have proper padding for floating labels */
+    .fl input.contact-input,
+    .fl textarea.contact-input {
+        padding-top: 24px;
+        padding-bottom: 16px;
+    }
 
     /* Remove scrollbar in message textarea and auto-expand */
     #message { overflow: hidden; overflow-y: hidden; resize: none; scrollbar-width: none; -ms-overflow-style: none; }
@@ -1241,6 +1250,39 @@
     // close on ESC
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) closePhotoModal();
+    });
+  })();
+
+  // Floating label behavior for contact form
+  (function() {
+    const contactForm = document.getElementById('contact-form');
+    if (!contactForm) return;
+
+    const inputs = contactForm.querySelectorAll('input, textarea');
+    
+    function handleInput(input) {
+      const label = input.parentElement.querySelector('.fl-label');
+      if (!label) return;
+      
+      if (input.value.trim() !== '' || input === document.activeElement) {
+        label.style.transform = 'translateY(-8px) scale(0.85)';
+        label.style.color = 'var(--c-steel)';
+        label.style.top = '8px';
+      } else {
+        label.style.transform = 'none';
+        label.style.color = 'var(--c-light)';
+        label.style.top = '16px';
+      }
+    }
+
+    inputs.forEach(input => {
+      // Handle initial state
+      handleInput(input);
+      
+      // Handle input events
+      input.addEventListener('input', () => handleInput(input));
+      input.addEventListener('focus', () => handleInput(input));
+      input.addEventListener('blur', () => handleInput(input));
     });
   })();
   </script>
