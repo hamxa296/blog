@@ -6,9 +6,9 @@
     "doc": "docs"
   },
   "scripts": {
-  "generate-config": "node ./scripts/generate-firebase-config.js",
-  "build": "npm run generate-config",
-  "test": "echo \"Error: no test specified\" && exit 1"
+    "generate-config": "node ./scripts/generate-firebase-config.js",
+    "build": "npm run generate-config",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -21,5 +21,8 @@
     "url": "https://github.com/hamxa296/blog/issues"
   },
   "homepage": "https://github.com/hamxa296/blog#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "@vercel/analytics": "^1.5.0"
+  }
 }
