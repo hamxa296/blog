@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>About Us - GIKI Chronicles</title>
      <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico?v=1.5">
    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png?v=1.5">
@@ -33,7 +33,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
      <link
-     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&family=Rock+Salt&family=Special+Elite&family=Indie+Flower&display=swap&v=1.5"
+     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&family=Rock+Salt&family=Special+Elite&family=Indie+Flower&family=Playfair+Display:wght@700&family=Brush+Script+MT&display=swap&v=1.5"
      rel="stylesheet">
 
      <!-- Apply theme immediately to prevent flash -->
@@ -245,6 +245,14 @@
         font-family: 'Inter', sans-serif;
     }
     
+    /* Trial.html structure styles */
+    .w-800px {
+        width: 800px;
+        max-width: 100%;
+    }
+    
+
+    
     .about-section {
         /* transparent container so background shows through */
         background: transparent;
@@ -452,6 +460,287 @@
             animation: none !important;
             transform: none !important;
             opacity: 1 !important;
+        }
+    }
+    
+    /* Trial.html specific styles */
+    .barcode {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 10px;
+        letter-spacing: 2px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .header h1 {
+        font-size: 48px;
+        font-weight: 700;
+        margin: 0;
+        font-family: 'Playfair Display', serif;
+        text-transform: uppercase;
+    }
+
+    .header h1 span {
+        font-family: 'Brush Script MT', cursive;
+        font-size: 56px;
+        font-style: italic;
+    }
+
+    .image-box {
+        width: 100%;
+        border-radius: 20px;
+        overflow: hidden;
+        margin: 20px 0;
+    }
+
+    .image-box img {
+        width: 100%;
+        display: block;
+    }
+
+    .content {
+        font-size: 15px;
+        line-height: 1.7;
+        color: #333;
+        text-align: justify;
+        font-weight: 700;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    .content p {
+        font-weight: 700;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .button {
+        margin-top: 20px;
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 20px;
+        background: linear-gradient(to right, #70c0e8, #364574);
+        color: white;
+        font-weight: 500;
+        text-decoration: none;
+    }
+    
+    /* Responsive Design for Different Devices */
+    
+    /* Tablet and Medium Screens */
+    @media (max-width: 1024px) {
+        .w-800px {
+            width: 90%;
+            max-width: 700px;
+            padding: 2rem;
+        }
+        
+        .header h1 {
+            font-size: 42px;
+        }
+        
+        .header h1 span {
+            font-size: 48px;
+        }
+        
+        .content {
+            font-size: 14px;
+            font-weight: 700;
+        }
+    }
+    
+    /* Mobile Devices */
+    @media (max-width: 768px) {
+        .w-800px {
+            width: 95%;
+            max-width: 100%;
+            padding: 1.5rem;
+            margin: 0 1rem;
+        }
+        
+        .header h1 {
+            font-size: 36px;
+        }
+        
+        .header h1 span {
+            font-size: 40px;
+        }
+        
+        .barcode {
+            top: 15px;
+            right: 20px;
+            font-size: 8px;
+        }
+        
+        .image-box {
+            margin: 15px 0;
+        }
+        
+        .content {
+            font-size: 13px;
+            line-height: 1.6;
+            font-weight: 700;
+        }
+        
+        .button {
+            padding: 12px 24px;
+            font-size: 14px;
+        }
+        
+        /* Adjust main container padding for mobile */
+        main.container {
+            padding: 1rem;
+        }
+    }
+    
+    /* Small Mobile Devices */
+    @media (max-width: 480px) {
+        .w-800px {
+            width: 98%;
+            padding: 1rem;
+            margin: 0 0.5rem;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+        }
+        
+        .header h1 span {
+            font-size: 32px;
+        }
+        
+        .barcode {
+            top: 10px;
+            right: 15px;
+            font-size: 7px;
+        }
+        
+        .image-box {
+            margin: 10px 0;
+        }
+        
+        .content {
+            font-size: 12px;
+            line-height: 1.5;
+            font-weight: 700;
+        }
+        
+        .button {
+            padding: 10px 20px;
+            font-size: 13px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        /* Reduce main container padding further */
+        main.container {
+            padding: 0.5rem;
+        }
+    }
+    
+    /* Extra Small Devices */
+    @media (max-width: 360px) {
+        .w-800px {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 0;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+        }
+        
+        .header h1 span {
+            font-size: 28px;
+        }
+        
+        .content {
+            font-size: 11px;
+            font-weight: 700;
+        }
+        
+        .button {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+    }
+    
+    /* Landscape Orientation on Mobile */
+    @media (max-height: 500px) and (orientation: landscape) {
+        .w-800px {
+            padding: 1rem;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+        }
+        
+        .header h1 span {
+            font-size: 36px;
+        }
+        
+        .image-box {
+            margin: 10px 0;
+        }
+        
+        .content {
+            font-size: 12px;
+            font-weight: 700;
+        }
+    }
+    
+    /* High DPI Displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        .image-box img {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+    }
+    
+    /* Touch Device Optimizations */
+    @media (hover: none) and (pointer: coarse) {
+        .button {
+            min-height: 44px; /* Minimum touch target size */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .image-box img {
+            cursor: pointer;
+        }
+    }
+    
+    /* Responsive Container Additional Styles */
+    .responsive-container {
+        transition: all 0.3s ease;
+    }
+    
+    /* Ensure smooth transitions between breakpoints */
+    .responsive-container,
+    .responsive-container * {
+        box-sizing: border-box;
+    }
+    
+    /* Print styles for better printing */
+    @media print {
+        .responsive-container {
+            width: 100% !important;
+            max-width: none !important;
+            box-shadow: none !important;
+            background: white !important;
+            color: black !important;
+        }
+        
+        .barcode {
+            display: none !important;
+        }
+        
+        .button {
+            display: none !important;
         }
     }
   </style>
@@ -699,19 +988,34 @@
     <!-- Main Content -->
     <main class="container mx-auto px-2 py-6 flex justify-center items-center min-h-[70vh]">
         <div class="max-w-6xl w-full">
-            <!-- About Us Section (with responsive image) -->
-            <section class="about-section rounded-xl p-8 md:p-12 min-h-[220px] flex">
-                <div class="about-layout w-full h-full items-center">
-                    <!-- Image column -->
-                    <div class="about-image">
-                        <figure class="h-full m-0">
-                            <img src="about us.png?v=1.4" alt="Students at GIKI - About GIKI Chronicles" class="about-img">
-                        </figure>
-                    </div>
+            <!-- About Us Section (complete trial.html content) -->
+            <div class="w-800px bg-[#627fa1] p-10 rounded-xl shadow-lg relative mx-auto responsive-container" style="background-image: url('https://www.transparenttextures.com/patterns/white-linen.png'); background-clip: border-box;">
+                <div class="barcode absolute top-5 right-8 text-xs tracking-widest text-white/80">▌3|||| |||||| |8▐</div>
 
-                    <!-- Text column removed so image can center -->
+                <div class="header text-center mb-5">
+                    <h1 class="text-5xl font-bold m-0 font-['Playfair_Display'] uppercase text-white">
+                        ABOUT <span class="font-['Brush_Script_MT'] text-6xl italic">Us</span>
+                    </h1>
                 </div>
-            </section>
+
+                <div class="image-box w-full rounded-2xl overflow-hidden my-5">
+                    <img src="about.jpg" alt="Campus Image" class="w-full block">
+                </div>
+
+                <div class="content text-sm leading-7 text-[#333] text-justify">
+                    <p>
+                        GIKI Chronicles is where campus life comes alive. From pulling all-nighters in labs to celebrating big
+                        wins at events, we're capturing the moments that make GIKI unforgettable. Think of it as a living diary
+                        of our struggles, laughs, and milestones — told by students, for students. Every story matters, every
+                        voice deserves to be heard, and together we're building a community that celebrates what makes GIKI,
+                        GIKI.
+                    </p>
+                </div>
+
+                <a href="#" class="button mt-5 inline-block px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#70c0e8] to-[#364574] text-white font-medium no-underline hover:opacity-90 transition-opacity">
+                    Giki Chronicles
+                </a>
+            </div>
         </div>
     </main>
 
