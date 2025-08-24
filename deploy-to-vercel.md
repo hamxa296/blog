@@ -25,17 +25,6 @@
 ### **Step 3: Set Environment Variables**
 1. Go to Project Settings → Environment Variables
 2. Add these variables:
-   ```
-   FIREBASE_API_KEY=AIzaSyC1Q9tIEHLqAKZj6IjJN8aPiQCAPYbsi7I
-   FIREBASE_AUTH_DOMAIN=giki-chronicles.firebaseapp.com
-   FIREBASE_PROJECT_ID=giki-chronicles
-   FIREBASE_STORAGE_BUCKET=giki-chronicles.firebasestorage.app
-   FIREBASE_MESSAGING_SENDER_ID=80968785263
-   FIREBASE_APP_ID=1:80968785263:web:666d2e69fef2ef6f5a5c9a
-   NODE_ENV=production
-   ENABLE_CSP=true
-   ENABLE_SECURITY_OVERRIDES=true
-   ```
 3. Set Environment to "Production"
 4. Click "Save"
 
