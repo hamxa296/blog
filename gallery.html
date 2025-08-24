@@ -260,6 +260,80 @@
           transform: rotate(-1deg) skew(-0.5deg);
           text-shadow: 0 2px 12px rgba(0,0,0,0.25);
         }
+        
+        /* Featured photo styling - icy blueish theme with transparency */
+        #highlighted-photo {
+            position: relative;
+        }
+        
+        #highlighted-photo > div {
+            border: 2px solid rgba(74,127,167,0.15) !important;
+            border-radius: 1rem;
+            background: linear-gradient(135deg, rgba(74,127,167,0.05), rgba(179,207,229,0.03)) !important;
+            box-shadow: 0 4px 20px rgba(74,127,167,0.08);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        #highlighted-photo > div:hover {
+            border-color: rgba(74,127,167,0.25) !important;
+            background: linear-gradient(135deg, rgba(74,127,167,0.08), rgba(179,207,229,0.05)) !important;
+            box-shadow: 0 8px 30px rgba(74,127,167,0.15);
+            transform: translateY(-2px);
+        }
+        
+        /* Override any default Tailwind grey backgrounds */
+        #highlighted-photo .bg-gray-50,
+        #highlighted-photo .bg-gray-100,
+        #highlighted-photo .bg-gray-200 {
+            background: transparent !important;
+        }
+        
+        /* Featured photo image container styling */
+        #highlighted-photo .flex.items-center.justify-center.rounded-xl.overflow-hidden {
+            background: transparent !important;
+            border: none !important;
+        }
+        
+        /* Featured photo image styling */
+        #highlighted-photo img {
+            border-radius: 0.75rem !important;
+            transition: transform 0.3s ease;
+        }
+        
+        #highlighted-photo img:hover {
+            transform: scale(1.02);
+        }
+        
+        /* Featured photo text styling */
+        #highlighted-photo h3 {
+            color: var(--c-navy) !important;
+            text-shadow: 0 1px 3px rgba(255,255,255,0.8);
+        }
+        
+        #highlighted-photo p {
+            color: var(--c-deep) !important;
+        }
+        
+        /* Gallery grid item styling - override grey backgrounds */
+        #gallery-grid .bg-gray-100,
+        #gallery-grid .bg-gray-200,
+        #gallery-grid .bg-gray-300 {
+            background: transparent !important;
+        }
+        
+        /* Gallery grid text styling */
+        #gallery-grid .text-gray-500,
+        #gallery-grid .text-gray-600,
+        #gallery-grid .text-gray-400 {
+            color: var(--c-deep) !important;
+        }
+        
+        /* Gallery grid skeleton loaders - make them more icy blueish */
+        #gallery-grid .animate-pulse {
+            background: linear-gradient(135deg, rgba(74,127,167,0.1), rgba(179,207,229,0.05)) !important;
+            border: 1px solid rgba(74,127,167,0.15) !important;
+        }
     </style>
 </head>
 
@@ -524,9 +598,9 @@
         <!-- Gallery Grid -->
         <section id="gallery-grid" class="gallery-grid">
             <!-- Skeleton Loaders -->
-            <div class="w-full h-64 bg-gray-300 rounded-xl animate-pulse"></div>
-            <div class="w-full h-64 bg-gray-300 rounded-xl animate-pulse"></div>
-            <div class="w-full h-64 bg-gray-300 rounded-xl animate-pulse"></div>
+            <div class="w-full h-64 rounded-xl animate-pulse"></div>
+            <div class="w-full h-64 rounded-xl animate-pulse"></div>
+            <div class="w-full h-64 rounded-xl animate-pulse"></div>
         </section>
     </main>
 
@@ -676,10 +750,14 @@
 
         async function initializeGallery() {
             try {
-                // Load approved photos initially
-                const result = await getGalleryPhotos('approved');
+                // Load approved photos initially with pagination
+                const result = await getGalleryPhotosByStatus('approved', 0, 12);
                 if (result.success) {
                     renderPhotoGrid(result.photos, 'approved');
+                    // Set pagination state - only show "Load More" if we got a full page
+                    window.hasMorePhotos = result.photos.length === 12;
+                    window.currentPage = 0;
+                    window.currentPhotoStatus = 'approved';
                 } else {
                     console.error('Failed to load photos:', result.error);
                 }
@@ -695,16 +773,22 @@
                 categoryFilter.addEventListener('change', async (e) => {
                     const category = e.target.value;
                     if (category === 'all') {
-                        const result = await getGalleryPhotos('approved');
+                        const result = await getGalleryPhotosByStatus('approved', 0, 12);
                         if (result.success) {
                             renderPhotoGrid(result.photos, 'approved');
+                            // Set pagination state
+                            window.hasMorePhotos = result.photos.length === 12;
+                            window.currentPage = 0;
                         }
                     } else {
                         // Filter by category (you can implement this in getGalleryPhotos)
-                        const result = await getGalleryPhotos('approved');
+                        const result = await getGalleryPhotosByStatus('approved', 0, 12);
                         if (result.success) {
                             const filteredPhotos = result.photos.filter(photo => photo.category === category);
                             renderPhotoGrid(filteredPhotos, 'approved');
+                            // Set pagination state
+                            window.hasMorePhotos = result.photos.length === 12;
+                            window.currentPage = 0;
                         }
                     }
                 });
@@ -719,27 +803,39 @@
 
                 if (tabApproved) {
                     tabApproved.addEventListener('click', async () => {
-                        const result = await getGalleryPhotos('approved');
+                        const result = await getGalleryPhotosByStatus('approved', 0, 12);
                         if (result.success) {
                             renderPhotoGrid(result.photos, 'approved');
+                            // Set pagination state
+                            window.hasMorePhotos = result.photos.length === 12;
+                            window.currentPage = 0;
+                            window.currentPhotoStatus = 'approved';
                         }
                     });
                 }
 
                 if (tabPending) {
                     tabPending.addEventListener('click', async () => {
-                        const result = await getGalleryPhotos('pending');
+                        const result = await getGalleryPhotosByStatus('pending', 0, 12);
                         if (result.success) {
                             renderPhotoGrid(result.photos, 'pending');
+                            // Set pagination state
+                            window.hasMorePhotos = result.photos.length === 12;
+                            window.currentPage = 0;
+                            window.currentPhotoStatus = 'pending';
                         }
                     });
                 }
 
                 if (tabRejected) {
                     tabRejected.addEventListener('click', async () => {
-                        const result = await getGalleryPhotos('rejected');
+                        const result = await getGalleryPhotosByStatus('rejected', 0, 12);
                         if (result.success) {
                             renderPhotoGrid(result.photos, 'rejected');
+                            // Set pagination state
+                            window.hasMorePhotos = result.photos.length === 12;
+                            window.currentPage = 0;
+                            window.currentPhotoStatus = 'rejected';
                         }
                     });
                 }
