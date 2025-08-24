@@ -10,8 +10,8 @@ const cspMetaTag = `
     script-src 'self' https://cdn.tailwindcss.com https://www.gstatic.com https://fonts.googleapis.com https://apis.google.com 'unsafe-inline';
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
-    img-src 'self' data: https: blob:;
-    connect-src 'self' https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com;
+    img-src 'self' data: https: blob: https://res.cloudinary.com;
+    connect-src 'self' https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://api.cloudinary.com https://www.google.com https://outlook.live.com;
     frame-src 'self' https://giki-chronicles.firebaseapp.com;
     object-src 'none';
     base-uri 'self';
@@ -35,8 +35,8 @@ function addCSPMetaTag() {
                 script-src 'self' https://cdn.tailwindcss.com https://www.gstatic.com https://fonts.googleapis.com https://apis.google.com 'unsafe-inline';
                 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
                 font-src 'self' https://fonts.gstatic.com;
-                img-src 'self' data: https: blob:;
-                connect-src 'self' https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com;
+                img-src 'self' data: https: blob: https://res.cloudinary.com;
+                connect-src 'self' https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://api.cloudinary.com https://www.google.com https://outlook.live.com;
                 frame-src 'self' https://giki-chronicles.firebaseapp.com;
                 object-src 'none';
                 base-uri 'self';
