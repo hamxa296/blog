@@ -428,6 +428,11 @@
           class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
           <span class="relative z-10">Calendar</span>
         </a>
+        <!-- Test Post (Desktop) -->
+        <a id="test-post-link" href="post.html"
+          class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+          <span class="relative z-10">Test Post</span>
+        </a>
         <!-- GUEST NAVIGATION (DESKTOP) -->
         <div id="guest-nav" class="flex items-center space-x-6">
           <a href="login.html?v=1.8" class="text-white hover:text-[#4A7FA7] transition duration-300">Login</a>
@@ -1125,6 +1130,29 @@
         }
       });
     }
+  </script>
+
+  <!-- Test Post Link Handler -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var link = document.getElementById('test-post-link');
+      if (!link) return;
+      var saved = localStorage.getItem('TEST_POST_ID') || localStorage.getItem('test-post-id');
+      if (saved) {
+        link.href = 'post.html?id=' + encodeURIComponent(saved);
+        link.title = 'Testing post: ' + saved;
+      } else {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          var id = prompt('Enter Firestore Post Document ID to test:');
+          if (id && id.trim()) {
+            id = id.trim();
+            try { localStorage.setItem('TEST_POST_ID', id); } catch (err) {}
+            window.location.href = 'post.html?id=' + encodeURIComponent(id);
+          }
+        });
+      }
+    });
   </script>
 
   <!-- Service Worker Registration -->
