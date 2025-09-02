@@ -1,315 +1,529 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oceanic Blog</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navy: '#0A1931',
-                        deep: '#1A3D63',
-                        steel: '#4A7FA7',
-                        light: '#B3CFE5',
-                        snow: '#F6FAFD',
-                    }
-                }
-            }
+  <script type="text/javascript" src="/___vscode_livepreview_injected_script"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oceanic Blog</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#0A1931',
+            deep: '#1A3D63',
+            steel: '#4A7FA7',
+            light: '#B3CFE5',
+            snow: '#F6FAFD',
+          }
         }
-    </script>
-    <style>
-        .reaction-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .reaction-btn:hover {
-            transform: translateY(-3px);
-        }
-        
-        .reaction-btn:active {
-            transform: translateY(0);
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-        
-        .sticker {
-            position: absolute;
-            opacity: 0.8;
-            z-index: 10;
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        .sticker-1 {
-            top: 10%;
-            left: 5%;
-            animation-delay: 0s;
-        }
-        
-        .sticker-2 {
-            bottom: 15%;
-            right: 5%;
-            animation-delay: 2s;
-        }
-        
-        .content-wrapper {
-            position: relative;
-        }
-        
-        @media (min-width: 768px) {
-            .sticker-1 {
-                top: 15%;
-                left: 10%;
-            }
-            
-            .sticker-2 {
-                bottom: 20%;
-                right: 10%;
-            }
-        }
-        
-        .prose {
-            max-width: 65ch;
-        }
-        
-        .prose p {
-            margin-bottom: 1.5rem;
-            line-height: 1.7;
-        }
-        
-        .prose h2 {
-            margin-top: 2.5rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-left: 1rem;
-        }
-        
-        .prose h2::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: #4A7FA7;
-            border-radius: 2px;
-        }
-    </style>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
-    <script src="firebase-config.js"></script>
-    <script src="combined.min.js"></script>
+      }
+    }
+  </script>
+  <!-- Fonts and global styles -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&display=swap&v=1.8"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=1.8">
+  <style>
+    /* Page background to match site theme */
+    :root {
+      --c-navy: #0A1931;
+      --c-deep: #1A3D63;
+      --c-steel: #4A7FA7;
+      --c-light: #B3CFE5;
+      --c-snow: #F6FAFD;
+    }
+
+    body {
+      background: url('background.jpeg?v=1.8') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(10, 25, 49, 0.35) 0%, rgba(26, 61, 99, 0.28) 50%, rgba(10, 25, 49, 0.35) 100%);
+      z-index: -1;
+    }
+  </style>
+  <style>
+    .reaction-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .reaction-btn:hover {
+      transform: translateY(-3px);
+    }
+
+    .reaction-btn:active {
+      transform: translateY(0);
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+
+      100% {
+        transform: translateY(0px);
+      }
+    }
+
+    .sticker {
+      position: absolute;
+      opacity: 0.8;
+      z-index: 10;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .sticker-1 {
+      top: 10%;
+      left: 5%;
+      animation-delay: 0s;
+    }
+
+    .sticker-2 {
+      bottom: 15%;
+      right: 5%;
+      animation-delay: 2s;
+      display: none; /* hide camera icon on mobile */
+    }
+
+    .content-wrapper {
+      position: relative;
+    }
+
+    @media (min-width: 768px) {
+      .sticker-1 {
+        top: 15%;
+        left: 10%;
+      }
+
+      .sticker-2 {
+        bottom: 20%;
+        right: 10%;
+        display: block; /* show camera icon on desktop */
+      }
+    }
+
+    .prose {
+      max-width: 65ch;
+    }
+
+    .prose p {
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .prose h2 {
+      margin-top: 2.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      padding-left: 1rem;
+    }
+
+    .prose h2::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #4A7FA7;
+      border-radius: 2px;
+    }
+
+    /* iOS-inspired pill buttons (theme-aware, glass finish) */
+    .btn-ios {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 9999px;
+      color: #EAF6FF;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 6px 20px rgba(2, 10, 20, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -1px 0 rgba(2, 10, 20, 0.18);
+      -webkit-backdrop-filter: saturate(180%) blur(12px);
+      backdrop-filter: saturate(180%) blur(12px);
+      transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-ios::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 55%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0));
+      border-top-left-radius: inherit;
+      border-top-right-radius: inherit;
+      opacity: .35;
+      pointer-events: none;
+    }
+
+    .btn-ios:hover {
+      background: linear-gradient(180deg, rgba(74, 127, 167, 0.35), rgba(74, 127, 167, 0.2));
+      box-shadow: 0 16px 36px rgba(2, 10, 20, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-ios:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 18px rgba(2, 10, 20, 0.26), inset 0 0 0 rgba(255, 255, 255, 0);
+    }
+
+    .btn-ios__emoji {
+      font-size: 18px;
+      line-height: 1;
+      text-shadow: 0 1px 1px rgba(10, 25, 49, 0.35);
+    }
+
+    .btn-ios__label {
+      font-weight: 600;
+      letter-spacing: .2px;
+    }
+
+    /* Accent variant */
+    .btn-ios--accent {
+      background: linear-gradient(180deg, rgba(74, 127, 167, 0.85), rgba(26, 61, 99, 0.85));
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .btn-ios--accent:hover {
+      background: linear-gradient(180deg, rgba(74, 127, 167, 0.95), rgba(26, 61, 99, 0.95));
+    }
+
+    /* Tag-sized pill variant (same glass style, compact spacing) */
+    .btn-ios--tag {
+      padding: 8px 14px;
+      gap: 0;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    /* Remove editor-injected background highlights inside post content */
+    #post-content [style*="background-color"] {
+      background-color: transparent !important;
+    }
+
+    #post-content span[style*="background-color"],
+    #post-content strong[style*="background-color"],
+    #post-content em[style*="background-color"],
+    #post-content p[style*="background-color"] {
+      background-color: transparent !important;
+    }
+
+    /* Force white text in fetched content and ignore any inline color overrides */
+    #post-content,
+    #post-content * {
+      color: #ffffff !important;
+    }
+
+    #post-content [style*="color:"] {
+      color: #ffffff !important;
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+  <script src="firebase-config.js"></script>
+
 </head>
-<body class="bg-steel min-h-screen font-sans text-white">
-    <!-- Stickers -->
-    <div class="sticker sticker-1">
-        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="#B3CFE5"/>
-            <path d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 8.69 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16Z" fill="#4A7FA7"/>
-        </svg>
-    </div>
-    
-    <div class="sticker sticker-2">
-        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 2L7.17 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4H16.83L15 2H9ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17Z" fill="#F6FAFD"/>
-            <path d="M12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z" fill="#1A3D63"/>
-        </svg>
-    </div>
-    
-    <!-- Content -->
-    <div class="content-wrapper pb-16">
-        <div id="post-container" class="max-w-4xl mx-auto bg-deep/90 backdrop-blur-sm rounded-xl p-6 md:p-8 shadow-lg">
-        <main class="container mx-auto px-4 pt-8">
-            <!-- Featured Image -->
-            <div class="rounded-xl overflow-hidden shadow-xl mb-8">
-                <img id="post-image" src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-                     alt="Post image" 
-                     class="w-full h-64 md:h-96 object-cover">
-            </div>
-            
-            <!-- Article Content -->
-            <div class="rounded-xl p-6 md:p-8">
-                <article id="post-content" class="prose mx-auto">
-                <!-- Meta -->
-                <div class="flex items-center space-x-4 mb-6">
-                    <span id="post-date" class="text-sm font-medium text-steel"></span>
-                    <span class="w-1 h-1 rounded-full bg-steel"></span>
-                    <span id="post-author" class="text-sm font-medium text-steel"></span>
-                </div>
-                
-                <!-- Title -->
-                <h1 id="post-title" class="text-3xl md:text-4xl font-bold text-white mb-6"></h1>
-                
-                <!-- Content -->
-                <div id="post-body"></div>
-                </article>
-            </div>
-            
-            </div>
 
-            <!-- Tags -->
-            <div id="post-tags" class="flex flex-wrap gap-2 mt-12 justify-center">
-            </div>
+<body class="min-h-screen font-sans text-white">
+  <!-- Decorative floating stickers (optional) -->
+  <div class="sticker sticker-1">
+    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
+        fill="#B3CFE5" />
+      <path
+        d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 8.69 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16Z"
+        fill="#4A7FA7" />
+    </svg>
+  </div>
 
-            <!-- Reactions -->
-            <div class="mt-12 border-t border-light pt-8">
-                <h3 class="text-xl font-bold text-white mb-6">How did this article make you feel?</h3>
-                <div class="flex justify-center gap-8">
-                    <button class="reaction-btn group" data-reaction="thumbs-up">
-                        <div class="p-3 rounded-full bg-deep group-hover:bg-light transition-all duration-300">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M14 14V9H16C16.55 9 17 8.55 17 8V7C17 6.45 16.55 6 16 6H14V4C14 3.45 13.55 3 13 3H7V15H12L14 14ZM5 15H3V4C3 3.45 3.45 3 4 3H5V15Z" class="fill-steel group-hover:fill-deep transition-all duration-300"/>
-                            </svg>
-                        </div>
-                        <span class="text-sm font-medium text-steel mt-2 group-hover:text-white transition-all duration-300">Like</span>
-                    </button>
-                    <button class="reaction-btn group" data-reaction="heart">
-                        <div class="p-3 rounded-full bg-deep group-hover:bg-light transition-all duration-300">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.03L12 21.35Z" class="fill-steel group-hover:fill-deep transition-all duration-300"/>
-                            </svg>
-                        </div>
-                        <span class="text-sm font-medium text-steel mt-2 group-hover:text-white transition-all duration-300">Love</span>
-                    </button>
-                    <button class="reaction-btn group" data-reaction="celebrate">
-                        <div class="p-3 rounded-full bg-deep group-hover:bg-light transition-all duration-300">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z" class="fill-steel group-hover:fill-deep transition-all duration-300"/>
-                            </svg>
-                        </div>
-                        <span class="text-sm font-medium text-steel mt-2 group-hover:text-white transition-all duration-300">Celebrate</span>
-                    </button>
-                    <button class="reaction-btn group" data-reaction="bulb">
-                        <div class="p-3 rounded-full bg-deep group-hover:bg-light transition-all duration-300">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 3C8.69 3 6 5.69 6 9C6 11.05 7.23 12.81 9 13.63V15C9 15.55 9.45 16 10 16H14C14.55 16 15 15.55 15 15V13.63C16.77 12.81 18 11.05 18 9C18 5.69 15.31 3 12 3ZM14 14H10V13.5C10 13.22 10.22 13 10.5 13H13.5C13.78 13 14 13.22 14 13.5V14ZM10 18H14V19C14 19.55 13.55 20 13 20H11C10.45 20 10 19.55 10 19V18Z" class="fill-steel group-hover:fill-deep transition-all duration-300"/>
-                            </svg>
-                        </div>
-                        <span class="text-sm font-medium text-steel mt-2 group-hover:text-white transition-all duration-300">Insightful</span>
-                    </button>
-                </div>
-            </div>
+  <div class="sticker sticker-2">
+    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M9 2L7.17 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4H16.83L15 2H9ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17Z"
+        fill="#F6FAFD" />
+      <path d="M12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z"
+        fill="#1A3D63" />
+    </svg>
+  </div>
 
-            <!-- Comments Section -->
-            <div id="comments-section" class="mt-12 border-t border-light pt-8 px-4 md:px-6">
-                <h3 class="text-xl font-bold text-white mb-6">Comments</h3>
-                
-                <!-- Comment Form -->
-                <div class="mb-8">
-                    <textarea id="comment-input" class="w-full p-4 border border-light rounded-lg focus:outline-none focus:ring-2 focus:ring-light bg-deep text-white" rows="4" placeholder="Share your thoughts..."></textarea>
-                    <button id="post-comment-btn" class="mt-3 px-6 py-2 bg-light text-steel rounded-lg hover:bg-white transition">Post Comment</button>
-                </div>
-
-                <!-- Comments List -->
-                <div id="comments-list" class="space-y-6">
-                    <!-- Comments will be dynamically inserted here -->
-                </div>
-            </div>
-        </main>
+  <!-- Content -->
+  <div class="content-wrapper pt-12 md:pt-16 pb-16">
+    <div id="post-container"
+      class="max-w-3xl mx-auto rounded-2xl p-6 md:p-10 shadow-2xl bg-gradient-to-b from-[#0A1931]/90 via-[#14385f]/85 to-[#1A3D63]/90 border border-white/10 ring-1 ring-white/10 backdrop-blur">
+      <main class="px-4 pt-8">
+        <!-- Featured Image -->
+        <div class="rounded-xl overflow-hidden shadow-xl mb-8">
+          <img id="post-image"
+            src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+            alt="Post image" class="w-full h-64 md:h-96 object-cover">
         </div>
+
+        <!-- Article Content -->
+        <div class="rounded-xl p-6 md:p-8 px-6 md:px-8">
+          <!-- Title and meta placeholders used by combined.min.js -->
+          <h1 id="post-title" class="text-3xl md:text-4xl font-bold text-white mb-2">Loading title…</h1>
+          <p id="post-meta" class="text-sm font-medium text-[#B3CFE5]/90 mb-6">Loading author and date…</p>
+
+          <!-- Content container populated by combined.min.js -->
+          <article id="post-content" class="prose mx-auto"></article>
+        </div>
+
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', async function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const postId = urlParams.get('id');
+    <!-- Tags (placeholder chips visible until real tags load) -->
+    <div id="post-tags" class="flex flex-wrap gap-2 mt-12 justify-center">
+      <!-- Placeholder tags -->
+      <span class="btn-ios btn-ios--tag">campus</span>
+      <span class="btn-ios btn-ios--tag">life</span>
+      <span class="btn-ios btn-ios--tag">community</span>
+    </div>
 
-            if (!postId) {
-                document.getElementById('post-container').innerHTML = '<h1 class="text-white text-center text-2xl">Post not found. Please provide a post ID.</h1>';
-                return;
-            }
+    <!-- Reactions (iOS-inspired) -->
+    <div class="mt-12 border-t border-light/30 pt-8 px-6 md:px-8 max-w-3xl mx-auto">
+      <h3 class="text-xl font-bold text-white mb-6 text-center">How did this article make you feel?</h3>
+      <div class="flex flex-wrap justify-center gap-4 md:gap-6">
+        <button class="reaction-btn btn-ios" data-reaction="thumbs-up" aria-label="Like">
+          <span class="btn-ios__emoji" aria-hidden="true">👍</span>
 
-            try {
-                const post = await getPostById(postId);
+        </button>
 
-                if (post) {
-                    document.title = post.title + " | Oceanic Blog";
-                    document.getElementById('post-title').textContent = post.title;
-                    document.getElementById('post-image').src = post.photoUrl || 'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80';
-                    document.getElementById('post-image').alt = post.title;
-                    document.getElementById('post-date').textContent = post.createdAt.toDate().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-                    document.getElementById('post-author').textContent = `By ${post.authorName}`;
-                    document.getElementById('post-body').innerHTML = post.content;
+        <button class="reaction-btn btn-ios" data-reaction="heart" aria-label="Love">
+          <span class="btn-ios__emoji" aria-hidden="true">❤️</span>
 
-                    const tagsContainer = document.getElementById('post-tags');
-                    tagsContainer.innerHTML = '';
-                    if (post.tags && post.tags.length > 0) {
-                        post.tags.forEach(tag => {
-                            const tagElement = document.createElement('span');
-                            tagElement.className = 'px-3 py-1 bg-light text-steel rounded-full text-sm font-medium hover:bg-white transition';
-                            tagElement.textContent = tag;
-                            tagsContainer.appendChild(tagElement);
-                        });
-                    }
-                } else {
-                    document.getElementById('post-container').innerHTML = '<h1 class="text-white text-center text-2xl">Post not found or you do not have permission to view it.</h1>';
-                }
-            } catch (error) {
-                console.error("Error fetching post:", error);
-                document.getElementById('post-container').innerHTML = '<h1 class="text-white text-center text-2xl">Error loading the post.</h1>';
-            }
+        </button>
 
-            const replyButtons = document.querySelectorAll('[data-reply]');
-            
-            replyButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const commentId = this.getAttribute('data-reply');
-                    const replyForm = document.querySelector(`#reply-form-${commentId}`);
-                    
-                    // Create form if it doesn't exist
-                    if (!replyForm) {
-                        const commentContainer = this.closest('.bg-deep');
-                        const newForm = document.createElement('div');
-                        newForm.id = `reply-form-${commentId}`;
-                        newForm.className = 'mt-4 pl-4 border-l-2 border-steel';
-                        newForm.innerHTML = `
+        <button class="reaction-btn btn-ios" data-reaction="celebrate" aria-label="Celebrate">
+          <span class="btn-ios__emoji" aria-hidden="true">🎉</span>
+
+        </button>
+
+        <button class="reaction-btn btn-ios" data-reaction="bulb" aria-label="Insightful">
+          <span class="btn-ios__emoji" aria-hidden="true">💡</span>
+
+        </button>
+      </div>
+      <!-- Note: hook your reaction handlers to [data-reaction] buttons above -->
+    </div>
+    </main>
+  </div>
+  </div>
+
+  <script>
+    // Disable custom loader; use combined.min.js single-post logic
+    document.addEventListener('DOMContentLoaded', async function () {
+      return; /* combined.min.js handles single post loading */
+      const urlParams = new URLSearchParams(window.location.search);
+      const postId = urlParams.get('id');
+
+      if (!postId) {
+        document.getElementById('post-container').innerHTML = '<h1 class="text-white text-center text-2xl">Post not found. Please provide a post ID.</h1>';
+        return;
+      }
+
+      try {
+        let postData = null;
+
+        // Prefer bundled helper if available
+        if (typeof getPostById === 'function') {
+          const result = await getPostById(postId);
+          if (result && result.success && result.post) {
+            postData = result.post;
+          }
+        } else if (typeof firebase !== 'undefined' && firebase.firestore) {
+          // Fallback: query Firestore directly
+          const docSnap = await firebase.firestore().collection('posts').doc(postId).get();
+          if (docSnap.exists) {
+            postData = { id: docSnap.id, ...docSnap.data() };
+          }
+        }
+
+        if (postData) {
+          // Title
+          document.title = (postData.title || 'Post') + " | Oceanic Blog";
+          document.getElementById('post-title').textContent = postData.title || '';
+
+          // Image (support alternate field names)
+          document.getElementById('post-image').src = postData.photoUrl || postData.coverImage || 'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80';
+          document.getElementById('post-image').alt = postData.title || 'Post image';
+
+          // Meta
+          const createdAt = postData.createdAt && typeof postData.createdAt.toDate === 'function'
+            ? postData.createdAt.toDate()
+            : (postData.createdAt ? new Date(postData.createdAt) : new Date());
+          document.getElementById('post-date').textContent = createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+          document.getElementById('post-author').textContent = postData.authorName ? `By ${postData.authorName}` : '';
+
+          // Body
+          document.getElementById('post-body').innerHTML = postData.content || '';
+
+          // Tags
+          const tagsContainer = document.getElementById('post-tags');
+          tagsContainer.innerHTML = '';
+          if (Array.isArray(postData.tags) && postData.tags.length > 0) {
+            postData.tags.forEach(tag => {
+              const tagElement = document.createElement('span');
+              tagElement.className = 'btn-ios btn-ios--tag';
+              tagElement.textContent = tag;
+              tagsContainer.appendChild(tagElement);
+            });
+          }
+        } else {
+          document.getElementById('post-container').innerHTML = '<h1 class="text-white text-center text-2xl">Post not found or you do not have permission to view it.</h1>';
+        }
+      } catch (error) {
+        console.error("Error fetching post:", error);
+        document.getElementById('post-container').innerHTML = '<h1 class="text-white text-center text-2xl">Error loading the post.</h1>';
+      }
+
+      const replyButtons = document.querySelectorAll('[data-reply]');
+
+      replyButtons.forEach(button => {
+        button.addEventListener('click', function () {
+          const commentId = this.getAttribute('data-reply');
+          const replyForm = document.querySelector(`#reply-form-${commentId}`);
+
+          // Create form if it doesn't exist
+          if (!replyForm) {
+            const commentContainer = this.closest('.bg-deep');
+            const newForm = document.createElement('div');
+            newForm.id = `reply-form-${commentId}`;
+            newForm.className = 'mt-4 pl-4 border-l-2 border-steel';
+            newForm.innerHTML = `
                             <div class="mb-3">
                                 <textarea class="w-full p-3 border border-light rounded-lg focus:outline-none focus:ring-2 focus:ring-light bg-deep text-white" rows="3" placeholder="Write your reply..."></textarea>
                                 <div class="flex gap-2 mt-2">
-                                    <button class="px-4 py-1 bg-light text-steel rounded hover:bg-white transition" data-submit-reply="${commentId}">Post</button>
-                                    <button class="px-4 py-1 border border-light text-white rounded hover:bg-deep transition" data-cancel-reply="${commentId}">Cancel</button>
+                                    <button class="btn-ios btn-ios--accent" data-submit-reply="${commentId}">Post</button>
+                                    <button class="btn-ios" data-cancel-reply="${commentId}">Cancel</button>
                                 </div>
                             </div>
                         `;
-                        commentContainer.appendChild(newForm);
-                    }
-                    
-                    replyForm?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                });
-            });
+            commentContainer.appendChild(newForm);
+          }
 
-            // Handle form submission and cancellation
-            document.addEventListener('click', function(e) {
-                if (e.target.hasAttribute('data-submit-reply')) {
-                    const commentId = e.target.getAttribute('data-submit-reply');
-                    const textarea = document.querySelector(`#reply-form-${commentId} textarea`);
-                    const replyText = textarea.value.trim();
-                    
-                    if (replyText) {
-                        // In a real app, you would send this to your backend
-                        alert(`Reply posted to comment ${commentId}: ${replyText}`);
-                        document.querySelector(`#reply-form-${commentId}`).remove();
-                    }
-                }
-                
-                if (e.target.hasAttribute('data-cancel-reply')) {
-                    const commentId = e.target.getAttribute('data-cancel-reply');
-                    document.querySelector(`#reply-form-${commentId}`).remove();
-                }
-            });
+          replyForm?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         });
-    </script>
+      });
+
+      // Handle form submission and cancellation
+      document.addEventListener('click', function (e) {
+        if (e.target.hasAttribute('data-submit-reply')) {
+          const commentId = e.target.getAttribute('data-submit-reply');
+          const textarea = document.querySelector(`#reply-form-${commentId} textarea`);
+          const replyText = textarea.value.trim();
+
+          if (replyText) {
+            // Placeholder action: integrate with backend to persist reply
+            alert(`Reply posted to comment ${commentId}: ${replyText}`);
+            document.querySelector(`#reply-form-${commentId}`).remove();
+          }
+        }
+
+        if (e.target.hasAttribute('data-cancel-reply')) {
+          const commentId = e.target.getAttribute('data-cancel-reply');
+          document.querySelector(`#reply-form-${commentId}`).remove();
+        }
+      });
+    });
+  </script>
+
+  <!-- Comments Section (with placeholder examples) -->
+  <section class="max-w-3xl mx-auto">
+    <div id="comments-section"
+      class="mt-12 pt-8 pb-16 px-6 md:px-8 rounded-2xl bg-gradient-to-b from-[#0A1931]/85 via-[#14385f]/80 to-[#1A3D63]/85 backdrop-blur border border-white/10 ring-1 ring-white/10 shadow-xl">
+      <h3 class="text-xl font-bold text-white mb-6">Comments</h3>
+
+      <!-- Comment Form -->
+      <div class="mb-8">
+        <textarea id="comment-input"
+          class="w-full p-4 border border-light rounded-lg focus:outline-none focus:ring-2 focus:ring-light bg-deep text-white"
+          rows="4" placeholder="Share your thoughts..."></textarea>
+        <button id="post-comment-btn" class="mt-3 btn-ios btn-ios--accent">Post Comment</button>
+      </div>
+
+      <!-- Comments List (placeholder items below; replace with dynamic list when backend is ready) -->
+      <div id="comments-list" class="space-y-6">
+        <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-full bg-[#4A7FA7]/40"></div>
+            <div class="text-sm text-[#B3CFE5] font-medium">Placeholder User</div>
+            <div class="ml-auto text-xs text-[#B3CFE5]/70">2h ago</div>
+          </div>
+          <p class="text-[#E3F2FD]/85">This is a placeholder comment to demonstrate layout. Replace with real comments
+            when integrated.</p>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-full bg-[#4A7FA7]/40"></div>
+            <div class="text-sm text-[#B3CFE5] font-medium">Another User</div>
+            <div class="ml-auto text-xs text-[#B3CFE5]/70">1d ago</div>
+          </div>
+          <p class="text-[#E3F2FD]/85">Great read! The new design feels cohesive with the rest of the site.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sanitize fetched post content to remove inline color/highlight while keeping semantic formatting -->
+  <script>
+    (function () {
+      function sanitizePostContent() {
+        var container = document.getElementById('post-content');
+        if (!container) return;
+        var elements = container.querySelectorAll('*');
+        elements.forEach(function (el) {
+          if (el.style) {
+            el.style.backgroundColor = '';
+            el.style.background = '';
+            el.style.color = '';
+          }
+        });
+      }
+
+      // Run once after load (combined.min.js populates content asynchronously)
+      window.addEventListener('load', function () {
+        setTimeout(sanitizePostContent, 0);
+      });
+
+      // Keep content sanitized if dynamic changes occur
+      var target = document.getElementById('post-content');
+      if (target && window.MutationObserver) {
+        var observer = new MutationObserver(function () {
+          sanitizePostContent();
+        });
+        observer.observe(target, { childList: true, subtree: true });
+      }
+    })();
+  </script>
+  <script src="combined.min.js?v=1.8"></script>
 </body>
+
 </html>
