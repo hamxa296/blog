@@ -1,0 +1,2233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Posts - GIKI Chronicles</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico?v=1.8">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png?v=1.8">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png?v=1.8">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicons/favicon-48x48.png?v=1.8">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png?v=1.8">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicons/favicon-192x192.png?v=1.8">
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicons/favicon-512x512.png?v=1.8">
+  <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg?v=1.8" color="#0A1931">
+  <meta name="msapplication-TileColor" content="#0A1931">
+  <meta name="msapplication-TileImage" content="/favicons/mstile-150x150.png?v=1.8">
+  <meta name="theme-color" content="#0A1931">
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.8">
+  <link rel="manifest" href="/site.webmanifest?v=1.8">
+  <link rel="icon" type="image/png" href="/logo.png?v=1.8">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?v=1.8"></script>
+  <!-- Fallback to local Tailwind if CDN fails -->
+  <script>
+    if (typeof window.tailwind === 'undefined') {
+      console.warn('Tailwind CDN failed to load, using fallback styles');
+      const fallbackCSS = document.createElement('link');
+      fallbackCSS.rel = 'stylesheet';
+      fallbackCSS.href = 'tailwind-fallback.css?v=1.8';
+      document.head.appendChild(fallbackCSS);
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&family=Rock+Salt&family=Special+Elite&family=Indie+Flower&display=swap&v=1.8"
+    rel="stylesheet">
+
+  <!-- Apply theme immediately to prevent flash -->
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem('selected-theme') || 'basic-dark';
+      if (document.documentElement) {
+        document.documentElement.classList.add(`theme-${savedTheme}`);
+      }
+      if (document.body) {
+        document.body.classList.add(`theme-${savedTheme}`);
+      } else {
+        document.addEventListener('DOMContentLoaded', function () {
+          if (document.body) {
+            document.body.classList.add(`theme-${savedTheme}`);
+          }
+        });
+      }
+    })();
+  </script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css?v=1.8">
+
+  <!-- Posts page specific styles -->
+  <style>
+    :root {
+      --c-navy: #0A1931;
+      --c-deep: #1A3D63;
+      --c-steel: #4A7FA7;
+      --c-light: #B3CFE5;
+      --c-snow: #F6FAFD;
+    }
+
+    body {
+      background: url('background.jpeg?v=1.8') no-repeat center center fixed !important;
+      background-size: cover !important;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(10, 25, 49, 0.3) 0%, rgba(26, 61, 99, 0.25) 50%, rgba(10, 25, 49, 0.3) 100%);
+      z-index: -1;
+    }
+
+    /* Ensure border displays properly */
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    /* Main content area styling */
+    #main-content {
+      margin: 0;
+      padding: 0;
+      min-height: calc(100vh - 80px); /* Account for navbar height */
+      position: relative;
+    }
+
+    /* Header styling */
+    header {
+      position: relative;
+      z-index: 10;
+    }
+
+
+
+    .post-card {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .post-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 1);
+    }
+
+    /* New post card design matching the image exactly */
+    .post-card-image-style {
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+    }
+
+    .post-card-image-style:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(74, 127, 167, 0.2);
+    }
+
+    /* Bluish gradient panel styling */
+    .post-card-image-style .bg-gradient-to-br {
+      background: linear-gradient(135deg, #0A1931 0%, #1A3D63 50%, #0A1931 100%) !important;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(74, 127, 167, 0.3);
+    }
+
+    /* Subtle texture overlay for main panel */
+    .post-card-image-style .bg-gradient-to-br::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(74, 127, 167, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(26, 61, 99, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+      border-radius: 0.75rem;
+    }
+
+    /* White content box styling - positioned in center */
+    .post-card-image-style .bg-white {
+      position: relative;
+      z-index: 2;
+      border: 1px solid #e5e7eb;
+      background: #ffffff !important;
+    }
+
+    /* Gray navigation bar styling - spans full width */
+    .post-card-image-style .bg-gray-600 {
+      background: linear-gradient(135deg, #4B5563, #374151);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Circular element styling */
+    .post-card-image-style .rounded-full {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Interactive icons hover effects */
+    .post-card-image-style button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(74, 127, 167, 0.3);
+    }
+
+    /* Side ribbon styling */
+    .post-card-image-style .absolute.-right-3 {
+      background: linear-gradient(135deg, #4A7FA7, #1A3D63);
+      border: 1px solid rgba(74, 127, 167, 0.3);
+      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Enhanced shadows and depth */
+    .post-card-image-style .shadow-2xl {
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(74, 127, 167, 0.1);
+    }
+
+    /* Text styling to match image */
+    .post-card-image-style .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-weight: 700;
+      color: #000000;
+    }
+
+    .post-card-image-style .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      color: #1f2937;
+      line-height: 1.6;
+    }
+
+    /* Typography matching image */
+    .post-card-image-style h3 {
+      font-family: 'Lora', serif;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .post-card-image-style p {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+    }
+
+    /* Navigation bar text styling */
+    .post-card-image-style .bg-gray-600 .text-white {
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.75rem;
+    }
+
+    /* Square elements in navigation bar */
+    .post-card-image-style .bg-white.rounded {
+      transition: all 0.3s ease;
+    }
+
+    .post-card-image-style .bg-white.rounded:hover {
+      transform: scale(1.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Circular element enhancement */
+    .post-card-image-style .rounded-full span {
+      font-family: 'Special Elite', cursive;
+      font-weight: 700;
+    }
+
+    /* Lorem ipsum text styling */
+    .post-card-image-style .text-white p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    /* Mobile-specific post card styles */
+    .post-card-mobile {
+      transition: all 0.3s ease;
+      cursor: pointer;
+      margin-bottom: 1rem;
+    }
+
+    .post-card-mobile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .post-card-mobile .bg-gradient-to-br {
+      background: linear-gradient(135deg, #0A1931 0%, #1A3D63 100%);
+      border: 1px solid rgba(74, 127, 167, 0.3);
+      padding: 1rem;
+      min-height: auto;
+    }
+
+    .post-card-mobile .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .post-card-image-style {
+        margin-bottom: 1.5rem;
+      }
+      
+      .post-card-image-style .bg-gradient-to-br {
+        padding: 1rem;
+        min-height: 400px;
+      }
+      
+      .post-card-image-style .bg-white {
+        padding: 1rem;
+        width: 100% !important;
+        float: none !important;
+        margin-right: 0 !important;
+        margin-bottom: 1rem;
+      }
+
+      /* Adjust main content padding for mobile */
+      #main-content {
+        padding-top: 6rem !important;
+      }
+
+      /* Mobile search bar adjustments */
+      .search-container {
+        padding: 0.5rem;
+      }
+
+      .search-container input {
+        font-size: 1rem;
+        padding: 0.75rem;
+      }
+    }
+
+    /* Extra small mobile devices */
+    @media (max-width: 480px) {
+      #main-content {
+        padding-top: 5rem !important;
+      }
+
+      .post-card-mobile .bg-gradient-to-br {
+        padding: 0.75rem;
+      }
+
+      .post-card-mobile h3 {
+        font-size: 1rem;
+      }
+
+      .post-card-mobile p {
+        font-size: 0.875rem;
+      }
+    }
+
+    .featured-post {
+      background: linear-gradient(135deg, rgba(10, 25, 49, 0.95), rgba(26, 61, 99, 0.9));
+      color: white;
+      border: 2px solid var(--c-steel);
+    }
+
+    .featured-post:hover {
+      background: linear-gradient(135deg, rgba(10, 25, 49, 1), rgba(26, 61, 99, 1));
+    }
+
+    .tag {
+      background: linear-gradient(135deg, var(--c-steel), var(--c-light));
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    .tag:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(74, 127, 167, 0.4);
+    }
+
+    .skeleton {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skeleton::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+      animation: shimmer 1.2s infinite;
+    }
+
+    @keyframes shimmer {
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    .modal-backdrop {
+      background-color: rgba(0, 0, 0, 0.8);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+    }
+
+    /* Line clamp utilities */
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Enhanced Search Bar Styles */
+    #search-input {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #search-input:focus {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 25px rgba(74, 127, 167, 0.2);
+    }
+
+    #search-input::placeholder {
+      transition: all 0.3s ease;
+    }
+
+    #search-input:focus::placeholder {
+      opacity: 0.4;
+      transform: translateX(5px);
+    }
+
+    /* Search Button Animation */
+    #search-btn {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #search-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    #search-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Clear Button Animation */
+    #clear-search {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #clear-search:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: scale(1.1);
+    }
+
+    /* Search Container Glow Animation */
+    @keyframes searchGlow {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(74, 127, 167, 0.3);
+      }
+      50% {
+        box-shadow: 0 0 30px rgba(74, 127, 167, 0.5);
+      }
+    }
+
+    .group:focus-within {
+      animation: searchGlow 2s ease-in-out infinite;
+    }
+
+    /* Search Icon Hover Effect (No Pulse) */
+    .group:focus-within svg {
+      transform: scale(1.1);
+    }
+
+    /* Enhanced Filter Controls */
+    select {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    select:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 15px rgba(74, 127, 167, 0.2);
+    }
+
+    select:focus {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 25px rgba(74, 127, 167, 0.3);
+    }
+
+    /* Clear Filters Button */
+    #clear-filters {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #clear-filters::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    #clear-filters:hover::before {
+      left: 100%;
+    }
+
+    #clear-filters:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 15px rgba(74, 127, 167, 0.2);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-[#1A3D63] shadow-sm sticky top-0 z-50">
+    <nav class="container mx-auto px-6 py-4 flex items-center">
+      <!-- Left side: Hamburger + Logo -->
+      <div class="flex items-center space-x-4">
+        <!-- Hamburger Menu Button -->
+        <button id="sidebar-toggle" onclick="console.log('Button clicked!'); if(window.toggleSidebar) { window.toggleSidebar(); } else { console.error('toggleSidebar not available'); const sidebar = document.getElementById('sidebar'); if(sidebar) { sidebar.classList.toggle('-translate-x-full'); } }" class="text-white hover:text-[#4A7FA7] focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+          </svg>
+        </button>
+
+        <a href="index.html?v=1.8" class="flex flex-col items-center">
+          <img src="logo.png?v=1.8" alt="GIKI Chronicles Logo" class="h-16 w-auto">
+          <span class="text-lg font-bold text-white mt-1">GIKI Chronicles</span>
+        </a>
+      </div>
+
+      <!-- Right side: Navigation -->
+      <div class="hidden md:flex items-center space-x-6 ml-auto">
+        <!-- <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a> -->
+        <a href="about.html?v=1.8" class="text-white hover:text-[#4A7FA7] transition duration-300">About</a>
+        <!-- <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a> -->
+        <a href="gallery.html?v=1.8"
+          class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+          <span class="relative z-10">Gallery</span>
+        </a>
+
+        <a href="guide.html?v=1.8"
+          class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+          <span class="relative z-10">Freshmen Guide</span>
+        </a>
+
+        <a href="calendar.html?v=1.8"
+          class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+          <span class="relative z-10">Calendar</span>
+        </a>
+        <!-- GUEST NAVIGATION (DESKTOP) -->
+        <div id="guest-nav" class="flex items-center space-x-6">
+          <a href="login.html?v=1.8" class="text-white hover:text-[#4A7FA7] transition duration-300">Login</a>
+          <!-- <a href="signup.html"
+            class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">Sign Up</a> -->
+        </div>
+
+        <!-- USER NAVIGATION (DESKTOP) -->
+        <div id="user-nav" class="hidden md:flex items-center space-x-6">
+          <!-- <a href="profile.html" class="text-gray-600 hover:text-blue-600">My Profile</a> -->
+          <!-- <a href="gallery.html" class="text-gray-600 hover:text-blue-600">Gallery</a> -->
+          <!-- <a href="contact.html" class="text-gray-600 hover:text-blue-600">Contact</a> -->
+
+          <!-- <button id="logout-button"
+                        class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300">Logout</button> -->
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Sidebar -->
+  <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-[#1A3D63] shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+    <div class="flex items-center justify-between p-6 border-b border-white/20">
+      <h2 class="text-xl font-bold text-white">Menu</h2>
+      <button id="sidebar-close" onclick="window.closeSidebar()" class="text-white hover:text-[#4A7FA7] focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    
+    <nav class="p-6 flex-1 overflow-y-auto">
+      <div class="space-y-4">
+        <!-- Main Navigation -->
+        <div>
+          <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">Main</h3>
+          <div class="space-y-2">
+            <a href="index.html" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+              </svg>
+              Home
+            </a>
+            <a href="browse.html?v=1.8" class="flex items-center px-3 py-2 text-white bg-white/20 text-[#4A7FA7] rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+              </svg>
+              All Posts
+            </a>
+            <a href="about.html?v=1.8" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              About
+            </a>
+            <a href="contact.html?v=1.8" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              </svg>
+              Contact
+            </a>
+            <a href="gallery.html?v=1.8" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z"></path>
+              </svg>
+              Gallery
+            </a>
+          </div>
+        </div>
+
+        <!-- Resources -->
+        <div>
+          <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">Resources</h3>
+          <div class="space-y-2">
+            <a href="guide.html?v=1.8" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+              Freshman Guide
+            </a>
+            <!-- Calendar Dropdown for Mobile -->
+            <div class="relative">
+              <button id="sidebar-calendar-dropdown-toggle" class="w-full flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                Calendar
+                <svg class="w-4 h-4 ml-auto transition-transform duration-200" id="sidebar-calendar-dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              
+              <!-- Mobile Calendar Dropdown Menu -->
+              <div id="sidebar-calendar-dropdown" class="hidden pl-8 mt-2 space-y-1">
+                <a href="calendar.html?v=1.8" class="block px-3 py-2 text-sm text-white/80 hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
+                  <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  Calendar View
+                </a>
+                <a href="calendar.html?v=1.8#events" class="block px-3 py-2 text-sm text-white/80 hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
+                  <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                  </svg>
+                  View Events
+                </a>
+                <a href="calendar.html?v=1.8#submit" class="block px-3 py-2 text-sm text-white/80 hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
+                  <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                  </svg>
+                  Submit Event
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        
+
+        <!-- User Section -->
+        <div id="sidebar-guest-nav">
+          <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">Account</h3>
+          <div class="space-y-2">
+            <a href="login.html?v=1.8" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+              </svg>
+              Login
+            </a>
+          </div>
+        </div>
+
+        <div id="sidebar-user-nav" class="hidden">
+          <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">My Account</h3>
+          <div class="space-y-2">
+            <a href="browse.html?v=1.8" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+              My Profile
+            </a>
+            <a href="browse.html?v=1.8" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+              </svg>
+              Write Post
+            </a>
+            <button id="sidebar-admin-access-btn" class="hidden md:flex w-full items-center px-3 py-2 text-white hover:bg-red-500/20 rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+              </svg>
+              🔐 Admin Portal
+            </button>
+            <button id="sidebar-logout-button" class="w-full flex items-center px-3 py-2 text-red-400 hover:bg-red-500/20 rounded-lg transition duration-200">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+              </svg>
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Sidebar Overlay -->
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+
+
+
+  <!-- Main Content -->
+  <main class="min-h-screen pt-20 pb-16 transition-all duration-300" id="main-content">
+    <!-- Hero Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 mt-8">
+      <div class="text-center">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 mt-4 handwriting-title">
+          Stories That Matter
+        </h1>
+        <p class="text-lg sm:text-xl text-white/90 mb-8 max-w-3xl mx-auto px-4">
+          Discover authentic stories, academic insights, and campus experiences shared by GIKI students.
+        </p>
+      </div>
+    </div>
+
+    <!-- Posts Grid Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="mb-8">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+          <div class="text-center sm:text-left">
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2 font-lora">Latest Posts</h2>
+            <p class="text-white/80 text-sm sm:text-base px-4 sm:px-0">Explore our collection of student-written articles and stories</p>
+          </div>
+          
+          <!-- Posts Count -->
+          <div class="mt-4 sm:mt-0">
+            <span id="posts-count" class="text-white/80 text-sm">
+              <span id="filtered-count">0</span> of <span id="total-count">0</span> posts
+            </span>
+          </div>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="mb-8">
+          <div class="relative max-w-3xl mx-auto">
+            <!-- Search Container with Enhanced Styling -->
+            <div class="relative group">
+              <!-- Background Glow Effect -->
+              <div class="absolute -inset-1 bg-gradient-to-r from-[#4A7FA7] via-[#1A3D63] to-[#4A7FA7] rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+              
+              <!-- Main Search Container -->
+              <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-2xl overflow-hidden">
+                <!-- Search Icon with Animation -->
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg class="h-6 w-6 text-white/70 group-hover:text-[#4A7FA7] transition-all duration-300 transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                </div>
+                
+                <!-- Search Input -->
+                <input 
+                  type="text" 
+                  id="search-input" 
+                  placeholder="Search by author, genre, keywords, or title..." 
+                  class="w-full pl-14 pr-16 py-4 bg-transparent text-white placeholder-white/60 focus:outline-none text-lg font-medium transition-all duration-300"
+                >
+                
+                <!-- Clear Button with Enhanced Styling -->
+                <button 
+                  id="clear-search" 
+                  class="absolute inset-y-0 right-0 pr-4 flex items-center text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-all duration-300 transform hover:scale-110 hidden group"
+                >
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+                
+                <!-- Search Button -->
+                <button 
+                  id="search-btn" 
+                  class="absolute inset-y-0 right-0 pr-2 flex items-center text-white/70 hover:text-white transition-all duration-300 transform hover:scale-110"
+                >
+                  <div class="bg-[#4A7FA7] hover:bg-[#1A3D63] rounded-xl p-2 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                  </div>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Enhanced Help Text -->
+            <div class="mt-4 text-center">
+
+            </div>
+          </div>
+        </div>
+        
+        <!-- Filter Controls -->
+        <div class="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
+          <select id="genre-filter" class="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#4A7FA7]">
+            <option value="">All Genres</option>
+            <option value="Academic">Academic</option>
+            <option value="Campus Life">Campus Life</option>
+            <option value="Technology">Technology</option>
+            <option value="Personal">Personal</option>
+            <option value="General">General</option>
+          </select>
+          
+          <select id="sort-filter" class="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#4A7FA7]">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="title">Title A-Z</option>
+          </select>
+          
+          <button 
+            id="clear-filters" 
+            class="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white hover:bg-white/20 transition duration-200 text-sm"
+          >
+            Clear All Filters
+          </button>
+        </div>
+      </div>
+
+      <!-- Posts Container -->
+      <div id="posts-container" class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <!-- Posts will be loaded here -->
+      </div>
+
+      <!-- Loading State -->
+      <div id="loading-state" class="text-center py-12">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+        <p class="text-white/80 mt-4">Loading posts...</p>
+        <p class="text-white/60 text-sm mt-2">Fetching from database...</p>
+        <div class="mt-4">
+          <div class="w-64 bg-gray-700 rounded-full h-2 mx-auto">
+            <div id="loading-progress" class="bg-[#4A7FA7] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skeleton Loading State -->
+      <div id="skeleton-loading" class="hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div class="animate-pulse">
+            <div class="bg-gradient-to-br from-gray-700 to-gray-800 p-4 rounded-xl">
+              <div class="bg-gray-600 h-48 rounded-lg mb-4"></div>
+              <div class="bg-gray-600 h-4 rounded mb-2"></div>
+              <div class="bg-gray-600 h-4 rounded w-3/4 mb-4"></div>
+              <div class="bg-gray-600 h-8 rounded"></div>
+            </div>
+          </div>
+          <div class="animate-pulse">
+            <div class="bg-gradient-to-br from-gray-700 to-gray-800 p-4 rounded-xl">
+              <div class="bg-gray-600 h-48 rounded-lg mb-4"></div>
+              <div class="bg-gray-600 h-4 rounded mb-2"></div>
+              <div class="bg-gray-600 h-4 rounded w-3/4 mb-4"></div>
+              <div class="bg-gray-600 h-8 rounded"></div>
+            </div>
+          </div>
+          <div class="animate-pulse">
+            <div class="bg-gradient-to-br from-gray-700 to-gray-800 p-4 rounded-xl">
+              <div class="bg-gray-600 h-48 rounded-lg mb-4"></div>
+              <div class="bg-gray-600 h-4 rounded mb-2"></div>
+              <div class="bg-gray-600 h-4 rounded w-3/4 mb-4"></div>
+              <div class="bg-gray-600 h-8 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Posts State -->
+      <div id="no-posts-state" class="hidden text-center py-12">
+        <div class="text-white/60 text-lg">
+          <svg class="mx-auto h-12 w-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <p>No posts found</p>
+          <p class="text-sm mt-2">Check back later for new content!</p>
+        </div>
+      </div>
+
+      <!-- Load More Button -->
+      <div id="load-more-container" class="hidden text-center mt-12">
+        <button id="load-more-btn" class="px-8 py-3 bg-[#4A7FA7] text-white rounded-lg hover:bg-[#1A3D63] transition duration-300 font-semibold">
+          Load More Posts
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Post Detail Modal -->
+  <div id="post-modal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-backdrop absolute inset-0"></div>
+    <div class="relative z-10 flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+          <h3 class="text-2xl font-bold text-gray-900">Post Details</h3>
+          <button id="close-modal" class="text-gray-400 hover:text-gray-600 transition duration-200">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Modal Content -->
+        <div id="modal-content" class="p-6">
+          <!-- Post content will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  
+  <!-- Load Firebase config first -->
+  <script src="firebase-config-vercel.js"></script>
+  
+  <!-- Initialize Firebase before loading combined.min.js -->
+  <script>
+    // Ensure Firebase is properly initialized before loading other scripts
+    if (typeof window.firebaseConfig === 'undefined') {
+      console.error('Firebase config not loaded properly');
+    } else {
+      console.log('Firebase config loaded successfully');
+      
+      // Wait for Firebase SDK to be fully loaded
+      if (typeof firebase !== 'undefined') {
+        console.log('Firebase SDK loaded successfully');
+      } else {
+        console.error('Firebase SDK not loaded');
+      }
+    }
+  </script>
+  
+  <!-- Load combined.min.js for all functionality with a small delay -->
+  <script>
+    // Small delay to ensure Firebase SDK is fully loaded
+    setTimeout(() => {
+      const script = document.createElement('script');
+      script.src = 'combined.min.js';
+      document.head.appendChild(script);
+    }, 100);
+  </script>
+
+     <!-- Posts page specific JavaScript -->
+   <script>
+     // Wrap everything in a try-catch to prevent variable conflicts
+     (function() {
+       try {
+         // Posts page functionality
+         let allPosts = [];
+         let filteredPosts = [];
+         let postsCurrentPage = 0;
+         const postsPerPage = 9;
+         let currentSearchQuery = '';
+         let currentGenreFilter = '';
+         let currentSortFilter = 'newest';
+         
+         // Global sidebar state restoration function
+         window.restoreSidebarState = function() {
+           try {
+             const sidebar = document.getElementById('sidebar');
+             const mainContent = document.getElementById('main-content');
+             const sidebarOverlay = document.getElementById('sidebar-overlay');
+             
+             if (!sidebar || !mainContent) return;
+             
+             // Keep sidebar closed by default on all screen sizes
+               sidebar.classList.add('-translate-x-full');
+               if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
+               mainContent.classList.remove('ml-64');
+             console.log('Global sidebar state restored: closed by default');
+           } catch (error) {
+             console.error('Error in restoreSidebarState:', error);
+           }
+         };
+
+         // Wait for Firebase to be fully initialized
+         function waitForFirebase() {
+           return new Promise((resolve, reject) => {
+             let attempts = 0;
+             const maxAttempts = 100; // 10 seconds max wait
+             
+             const checkFirebase = () => {
+               attempts++;
+               
+               if (attempts >= maxAttempts) {
+                 console.error('Firebase initialization timeout after 10 seconds');
+                 reject(new Error('Firebase initialization timeout'));
+                 return;
+               }
+               
+               if (typeof firebase !== 'undefined' && 
+                   typeof firebase.firestore !== 'undefined' && 
+                   typeof firebase.auth !== 'undefined' &&
+                   typeof db !== 'undefined' &&
+                   typeof auth !== 'undefined' &&
+
+                   typeof getApprovedPosts === 'function') {
+                 console.log('Firebase and required functions are ready');
+                 resolve();
+               } else {
+                 console.log(`Waiting for Firebase and functions... (attempt ${attempts}/${maxAttempts})`, {
+                   firebase: typeof firebase,
+                   firestore: typeof firebase?.firestore,
+                   auth: typeof firebase?.auth,
+                   db: typeof db,
+                   authService: typeof auth,
+
+                   getApprovedPosts: typeof getApprovedPosts
+                 });
+                 setTimeout(checkFirebase, 100);
+               }
+             };
+             checkFirebase();
+           });
+         }
+
+         async function initializePostsPage() {
+           try {
+             console.log('Starting posts page initialization...');
+             
+             // Load sample posts immediately for fast display
+             console.log('Loading sample posts for immediate display...');
+             loadSamplePosts();
+             
+                          // Try to load real posts in background
+             try {
+               console.log('Waiting for Firebase...');
+               await waitForFirebase();
+               console.log('Firebase is ready!');
+               
+               console.log('Loading real posts from database...');
+               await loadApprovedPosts();
+               console.log('Real posts loaded successfully');
+               
+             } catch (firebaseError) {
+               console.log('Firebase loading failed, keeping sample posts:', firebaseError.message);
+               // Keep the sample posts that are already loaded
+             }
+             
+             // Hide loading state
+             document.getElementById('loading-state').classList.add('hidden');
+             console.log('Posts page initialization complete');
+             
+           } catch (error) {
+             console.error('Error initializing posts page:', error);
+             document.getElementById('loading-state').classList.add('hidden');
+             
+             // Show detailed error message for debugging
+             const postsContainer = document.getElementById('posts-container');
+             if (postsContainer) {
+               postsContainer.innerHTML = `
+                 <div class="col-span-full text-center py-12">
+                   <div class="text-white/60 text-lg">
+                     <svg class="mx-auto h-12 w-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                     </svg>
+                     <p class="text-xl font-semibold mb-2">Unable to Load Posts</p>
+                     <p class="text-sm mb-4">Error: ${error.message}</p>
+                     <p class="text-xs mb-4 text-white/40">Check browser console for more details</p>
+                     <div class="space-x-4">
+                     <button onclick="location.reload()" class="px-6 py-2 bg-[#4A7FA7] text-white rounded-lg hover:bg-[#1A3D63] transition duration-300">
+                       Try Again
+                     </button>
+                       <button onclick="loadSamplePosts()" class="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition duration-300">
+                         Load Sample Posts
+                       </button>
+                     </div>
+                   </div>
+                 </div>
+               `;
+             } else {
+               // Fallback to no-posts state if container not found
+               document.getElementById('no-posts-state').classList.remove('hidden');
+             }
+           }
+         }
+
+
+
+         async function loadApprovedPosts() {
+           try {
+             console.log('Calling getApprovedPosts...');
+             
+             // Update progress
+             updateLoadingProgress(20);
+             
+             // Check if function is available
+             if (typeof getApprovedPosts !== 'function') {
+               console.error('getApprovedPosts function not available');
+               throw new Error('Required function not available');
+             }
+             
+             updateLoadingProgress(40);
+             console.log('getApprovedPosts function found, calling it...');
+             
+             // Add timeout to prevent hanging
+             const timeoutPromise = new Promise((_, reject) => {
+               setTimeout(() => reject(new Error('Loading timeout - please refresh the page')), 15000);
+             });
+             
+             const loadPromise = getApprovedPosts();
+             const result = await Promise.race([loadPromise, timeoutPromise]);
+             
+             updateLoadingProgress(80);
+             console.log('Approved posts result:', result);
+             
+             if (result && result.success) {
+               allPosts = result.posts || [];
+               filteredPosts = [...allPosts];
+               updateLoadingProgress(100);
+               console.log('Posts loaded successfully:', allPosts.length);
+               
+               if (allPosts.length === 0) {
+                 console.log('No posts found in database');
+                 document.getElementById('no-posts-state').classList.remove('hidden');
+               } else {
+                 displayPosts();
+               }
+             } else {
+               console.error('getApprovedPosts returned unsuccessful result:', result);
+               throw new Error(result?.error || 'Failed to load posts - no success response');
+             }
+           } catch (error) {
+             console.error('Error loading posts:', error);
+             throw error;
+           }
+         }
+
+         function updateLoadingProgress(percentage) {
+           const progressBar = document.getElementById('loading-progress');
+           if (progressBar) {
+             progressBar.style.width = percentage + '%';
+           }
+         }
+
+         // Fallback function to load sample posts if Firebase fails
+         function loadSamplePosts() {
+           console.log('Loading sample posts as fallback...');
+           allPosts = [
+             {
+               id: 'sample-1',
+               title: 'Welcome to GIKI Chronicles',
+               description: 'This is a sample post to demonstrate the layout. In a real scenario, this would be loaded from the database. GIKI Chronicles is your gateway to campus stories, academic insights, and student experiences.',
+               authorName: 'GIKI Team',
+               authorId: 'sample-author',
+               genre: 'General',
+               photoUrl: null,
+               createdAt: { toDate: () => new Date() }
+             },
+             {
+               id: 'sample-2',
+               title: 'Campus Life at GIKI',
+               description: 'Discover what makes GIKI a unique place to study and grow. From academic excellence to vibrant campus culture, explore the diverse experiences that shape our community.',
+               authorName: 'Student Reporter',
+               authorId: 'sample-author-2',
+               genre: 'Campus Life',
+               photoUrl: null,
+               createdAt: { toDate: () => new Date() }
+             },
+             {
+               id: 'sample-3',
+               title: 'Academic Excellence at GIKI',
+               description: 'Learn about the rigorous academic programs, world-class faculty, and innovative research opportunities that make GIKI a leading institution in engineering and technology.',
+               authorName: 'Academic Affairs',
+               authorId: 'sample-author-3',
+               genre: 'Academics',
+               photoUrl: null,
+               createdAt: { toDate: () => new Date() }
+             },
+             {
+               id: 'sample-4',
+               title: 'Student Clubs and Societies',
+               description: 'Join the vibrant community of student organizations at GIKI. From technical clubs to cultural societies, there\'s something for everyone to explore and contribute to.',
+               authorName: 'Student Activities',
+               authorId: 'sample-author-4',
+               genre: 'Student Life',
+               photoUrl: null,
+               createdAt: { toDate: () => new Date() }
+             },
+             {
+               id: 'sample-5',
+               title: 'Research Opportunities',
+               description: 'Explore cutting-edge research projects and opportunities for undergraduate and graduate students. GIKI provides state-of-the-art facilities and mentorship for aspiring researchers.',
+               authorName: 'Research Office',
+               authorId: 'sample-author-5',
+               genre: 'Research',
+               photoUrl: null,
+               createdAt: { toDate: () => new Date() }
+             },
+             {
+               id: 'sample-6',
+               title: 'Career Development at GIKI',
+               description: 'Discover how GIKI prepares students for successful careers through industry partnerships, internship programs, and career counseling services.',
+               authorName: 'Career Services',
+               authorId: 'sample-author-6',
+               genre: 'Career',
+               photoUrl: null,
+               createdAt: { toDate: () => new Date() }
+             }
+           ];
+           filteredPosts = [...allPosts];
+           displayPosts();
+           document.getElementById('loading-state').classList.add('hidden');
+           document.getElementById('skeleton-loading').classList.add('hidden');
+         }
+
+         function openPostModal(postId) {
+           const post = allPosts.find(p => p.id === postId);
+           if (!post) return;
+
+           const modal = document.getElementById('post-modal');
+           const modalContent = document.getElementById('modal-content');
+           
+           if (!modal || !modalContent) return;
+
+           const postDate = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : 'N/A';
+           
+           modalContent.innerHTML = `
+             ${post.photoUrl ? `
+               <div class="mb-6">
+                 <img src="${post.photoUrl}" alt="${post.title}" class="w-full h-64 object-cover rounded-lg">
+               </div>
+             ` : ''}
+             <h1 class="text-3xl font-bold text-gray-900 mb-4">${post.title}</h1>
+             <div class="flex items-center space-x-4 mb-6 text-sm text-gray-500">
+               <span>By ${post.authorName}</span>
+               <span>•</span>
+               <span>${postDate}</span>
+               ${post.genre ? `<span>•</span><span>${post.genre}</span>` : ''}
+             </div>
+             ${post.tags && post.tags.length > 0 ? `
+               <div class="flex flex-wrap gap-2 mb-6">
+                 ${post.tags.map(tag => `
+                   <span class="tag px-3 py-1 rounded-full text-sm font-medium">${tag}</span>
+                 `).join('')}
+               </div>
+             ` : ''}
+             <div class="prose max-w-none">
+               ${post.content}
+             </div>
+           `;
+           
+           modal.classList.remove('hidden');
+         }
+
+         // Share post function
+         window.sharePost = function(postId, postTitle) {
+           const post = allPosts.find(p => p.id === postId);
+           if (!post) return;
+
+           const shareUrl = `${window.location.origin}${window.location.pathname}#post-${postId}`;
+           const shareText = `Check out this post from GIKI Chronicles: "${postTitle}"`;
+
+           if (navigator.share) {
+             // Use native share API if available
+             navigator.share({
+               title: postTitle,
+               text: shareText,
+               url: shareUrl
+             }).catch(err => {
+               console.log('Error sharing:', err);
+               fallbackShare(shareUrl, shareText);
+             });
+           } else {
+             // Fallback to copying to clipboard
+             fallbackShare(shareUrl, shareText);
+           }
+         }
+
+         function fallbackShare(url, text) {
+           const fullText = `${text}\n${url}`;
+           
+           if (navigator.clipboard) {
+             navigator.clipboard.writeText(fullText).then(() => {
+               showShareNotification('Post link copied to clipboard!');
+             }).catch(() => {
+               showShareNotification('Unable to copy link. Please copy manually: ' + url);
+             });
+           } else {
+             showShareNotification('Share this post: ' + url);
+           }
+         }
+
+         window.showShareNotification = function(message) {
+           // Create a temporary notification
+           const notification = document.createElement('div');
+           notification.className = 'fixed top-4 right-4 bg-[#4A7FA7] text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300';
+           notification.textContent = message;
+           document.body.appendChild(notification);
+
+           // Remove after 3 seconds
+           setTimeout(() => {
+             notification.style.opacity = '0';
+             notification.style.transform = 'translateX(100%)';
+             setTimeout(() => {
+               document.body.removeChild(notification);
+             }, 300);
+           }, 3000);
+         }
+
+         // View post image function - Make globally accessible
+         window.viewPostImage = function(postId) {
+           const post = allPosts.find(p => p.id === postId);
+           if (!post) return;
+
+           if (post.photoUrl) {
+             // Create image modal
+             const modal = document.createElement('div');
+             modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75';
+             modal.innerHTML = `
+               <div class="relative max-w-4xl max-h-[90vh] p-4">
+                 <button onclick="this.closest('.fixed').remove()" class="absolute top-2 right-2 text-white text-2xl hover:text-gray-300 z-10">
+                   ×
+                 </button>
+                 <img src="${post.photoUrl}" alt="${post.title}" class="max-w-full max-h-full object-contain rounded-lg">
+                 <div class="absolute bottom-4 left-4 text-white bg-black bg-opacity-50 px-3 py-2 rounded">
+                   <p class="font-semibold">${post.title}</p>
+                 </div>
+               </div>
+             `;
+             
+             // Close on background click
+             modal.addEventListener('click', (e) => {
+               if (e.target === modal) {
+                 modal.remove();
+               }
+             });
+             
+             document.body.appendChild(modal);
+           } else {
+             showShareNotification('No image available for this post');
+           }
+         };
+
+         // View author profile function - Make globally accessible
+         window.viewAuthorProfile = function(authorId, authorName) {
+           // Create author profile modal
+           const modal = document.createElement('div');
+           modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75';
+           modal.innerHTML = `
+             <div class="bg-gradient-to-br from-pink-100 to-purple-100 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-pink-200">
+               <div class="flex items-center justify-between mb-4">
+                 <h3 class="text-xl font-bold text-purple-800">Author Profile</h3>
+                 <button onclick="this.closest('.fixed').remove()" class="text-purple-600 hover:text-purple-800 text-2xl transition-colors duration-200">
+                   ×
+                 </button>
+               </div>
+               <div class="text-center">
+                 <div class="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                   <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                   </svg>
+                 </div>
+                 <h4 class="text-lg font-semibold text-purple-800 mb-2">${authorName}</h4>
+                 <p class="text-purple-600 mb-4 font-medium">GIKI Student & Blogger</p>
+                 <div class="text-sm text-purple-700 bg-white/50 rounded-lg p-3 mb-4">
+                   <p class="mb-1"><span class="font-medium">Author ID:</span> ${authorId}</p>
+                   <p><span class="font-medium">Posts:</span> ${allPosts.filter(p => p.authorId === authorId).length}</p>
+                 </div>
+                 <button onclick="this.closest('.fixed').remove()" class="mt-4 px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                   Close
+                 </button>
+               </div>
+             </div>
+           `;
+           
+           // Close on background click
+           modal.addEventListener('click', (e) => {
+             if (e.target === modal) {
+               modal.remove();
+             }
+           });
+           
+           document.body.appendChild(modal);
+         };
+
+
+
+         function displayPosts() {
+           const container = document.getElementById('posts-container');
+           if (!container) return;
+
+           container.innerHTML = '';
+
+           // Update posts count
+           updatePostsCount();
+
+           if (filteredPosts.length === 0) {
+             document.getElementById('no-posts-state').classList.remove('hidden');
+             return;
+           }
+
+           // Show current page of posts
+           const startIndex = postsCurrentPage * postsPerPage;
+           const endIndex = startIndex + postsPerPage;
+           const postsToShow = filteredPosts.slice(startIndex, endIndex);
+
+           postsToShow.forEach(post => {
+             const postElement = createPostCard(post);
+             container.appendChild(postElement);
+           });
+
+           // Show/hide load more button
+           const loadMoreContainer = document.getElementById('load-more-container');
+           if (endIndex < filteredPosts.length) {
+             loadMoreContainer.classList.remove('hidden');
+           } else {
+             loadMoreContainer.classList.add('hidden');
+           }
+         }
+
+         function updatePostsCount() {
+           const filteredCountElement = document.getElementById('filtered-count');
+           const totalCountElement = document.getElementById('total-count');
+           
+           if (filteredCountElement) {
+             filteredCountElement.textContent = filteredPosts.length;
+           }
+           if (totalCountElement) {
+             totalCountElement.textContent = allPosts.length;
+           }
+         }
+
+         // Function to detect mobile device
+         function isMobile() {
+           return window.innerWidth < 768; // md breakpoint
+         }
+
+         // Handle window resize for responsive design
+         function handleResize() {
+           // Re-render posts when switching between mobile and desktop
+           if (allPosts.length > 0) {
+             displayPosts();
+           }
+         }
+
+         // Add resize event listener
+         window.addEventListener('resize', handleResize);
+
+
+
+         function createPostCard(post) {
+           const postDate = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : 'N/A';
+           
+           const card = document.createElement('div');
+           
+           // Use mobile-specific styling for mobile devices
+           if (isMobile()) {
+             card.className = 'post-card-mobile relative overflow-hidden';
+           } else {
+             card.className = 'post-card-image-style relative overflow-hidden';
+           }
+           
+           // Create different HTML structure for mobile vs desktop
+           if (isMobile()) {
+           card.innerHTML = `
+              <!-- Mobile-optimized post card -->
+              <div class="bg-gradient-to-br from-[#0A1931] to-[#1A3D63] p-4 rounded-xl shadow-2xl relative border border-[#4A7FA7]/30">
+                
+                <!-- Image section -->
+                <div class="mb-4">
+             ${post.photoUrl ? `
+                    <div class="h-48 overflow-hidden rounded-lg mb-4">
+                      <img src="${post.photoUrl}" alt="${post.title}" class="w-full h-full object-cover">
+               </div>
+                  ` : `
+                    <div class="h-48 bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
+                      <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z"></path>
+                      </svg>
+               </div>
+                  `}
+                </div>
+
+                <!-- Title and author info -->
+                <div class="mb-4">
+                  <h3 class="text-lg font-bold text-white mb-2 line-clamp-2">${post.title}</h3>
+                  <div class="flex items-center space-x-2 text-sm text-white/80 mb-2">
+                    <span class="font-medium">By ${post.authorName}</span>
+                    <span>•</span>
+                    <span>${postDate}</span>
+                 </div>
+                </div>
+
+                <!-- Description -->
+                <div class="text-white text-sm leading-relaxed mb-4">
+                  <p>${post.description || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'}</p>
+                </div>
+
+                <!-- Genre bar -->
+                <div class="bg-gray-600 rounded-lg p-3 mb-4 flex items-center justify-between">
+                  <span class="text-sm text-white font-semibold">${post.genre || 'General'}</span>
+                  <div class="flex space-x-2">
+                    <div class="w-3 h-3 bg-white rounded-sm"></div>
+                    <div class="w-3 h-3 bg-white rounded-sm"></div>
+                  </div>
+                </div>
+
+                <!-- Interactive icons -->
+                <div class="flex items-center justify-center space-x-4 mb-4">
+                  <button onclick="viewPostImage('${post.id}')" class="w-10 h-10 bg-[#4A7FA7] hover:bg-[#1A3D63] rounded-full flex items-center justify-center transition-all duration-300" title="View Post Image">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                  </button>
+                  
+                  <button onclick="viewAuthorProfile('${post.authorId}', '${post.authorName}')" class="w-10 h-10 bg-[#4A7FA7] hover:bg-[#1A3D63] rounded-full flex items-center justify-center transition-all duration-300" title="View Author Profile">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                  </button>
+                  
+                  <button onclick="sharePost('${post.id}', '${post.title}')" class="w-10 h-10 bg-[#4A7FA7] hover:bg-[#1A3D63] rounded-full flex items-center justify-center transition-all duration-300" title="Share This Post">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Read More button -->
+                <div class="text-center">
+                  <button onclick="openPostModal('${post.id}')" class="bg-[#4A7FA7] hover:bg-[#1A3D63] text-white px-6 py-2 rounded-lg transition-all duration-300 text-sm font-medium">
+                   Read More
+                 </button>
+               </div>
+              </div>
+            `;
+           } else {
+             card.innerHTML = `
+            <!-- Desktop version - Main bluish gradient panel container - matches image proportions -->
+            <div class="bg-gradient-to-br from-[#0A1931] to-[#1A3D63] p-8 rounded-xl shadow-2xl relative min-h-[500px] border border-[#4A7FA7]/30">
+              
+              <!-- Content box positioned in the center -->
+              <div class="bg-white rounded-lg p-6 shadow-lg w-4/5 h-80 mx-auto border border-gray-200 mb-8">
+             ${post.photoUrl ? `
+                  <div class="h-40 overflow-hidden rounded-lg mb-4">
+                    <img src="${post.photoUrl}" alt="${post.title}" class="w-full h-full object-cover">
+               </div>
+                ` : `
+                  <!-- Placeholder for image if no photo -->
+                  <div class="h-40 bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
+                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z"></path>
+                    </svg>
+               </div>
+                `}
+                
+                <!-- Post content -->
+                <div>
+                  <h3 class="text-2xl font-bold text-black mb-3 line-clamp-2">${post.title}</h3>
+                  <div class="flex items-center space-x-3 text-sm text-black">
+                    <span class="font-medium">By ${post.authorName}</span>
+                    <span>•</span>
+                    <span>${postDate}</span>
+                 </div>
+                </div>
+              </div>
+              
+              <!-- Post description text moved from content box -->
+              <div class="text-white text-sm leading-relaxed mb-4">
+                <p>${post.description || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.'}</p>
+              </div>
+              
+              <!-- Gray navigation bar spanning full width below content -->
+              <div class="bg-gray-600 rounded-lg p-4 mb-4 flex items-center justify-between">
+                <!-- Left side: Two squares -->
+                <div class="flex space-x-3">
+                  <div class="w-8 h-8 bg-white rounded opacity-80"></div>
+                  <div class="w-8 h-8 bg-white rounded opacity-60"></div>
+                </div>
+                
+                <!-- Center: Circular element -->
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                  <span class="text-gray-600 font-bold text-xl">o</span>
+                </div>
+                
+                <!-- Right side: Navigation indicator -->
+                <div class="text-white text-sm font-medium">
+                  ${post.genre || 'POST'}
+                </div>
+              </div>
+              
+              <!-- Interactive icons at the bottom -->
+              <div class="flex items-center justify-end space-x-4">
+                <!-- Camera icon - View Post Image -->
+                <button onclick="viewPostImage('${post.id}')" class="w-12 h-12 bg-[#4A7FA7] hover:bg-[#1A3D63] rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110" title="View Post Image">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  </svg>
+                </button>
+                
+                <!-- Person/Profile icon - View Author Profile -->
+                <button onclick="viewAuthorProfile('${post.authorId}', '${post.authorName}')" class="w-12 h-12 bg-[#4A7FA7] hover:bg-[#1A3D63] rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110" title="View Author Profile">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  </svg>
+                </button>
+                
+                <!-- Share icon - Share Post -->
+                <button onclick="sharePost('${post.id}', '${post.title}')" class="w-12 h-12 bg-[#4A7FA7] hover:bg-[#1A3D63] rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110" title="Share This Post">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                  </svg>
+                 </button>
+               </div>
+              
+              <!-- Side ribbon/tab on the right edge -->
+              <div class="absolute top-6 -right-3 w-6 h-20 bg-[#4A7FA7] rounded-l-lg shadow-lg"></div>
+             </div>
+           `;
+           
+           return card;
+         }
+
+         function setupEventListeners() {
+           console.log('Setting up event listeners...');
+           
+           // Sidebar toggle
+           const sidebarToggle = document.getElementById('sidebar-toggle');
+           const sidebar = document.getElementById('sidebar');
+           const sidebarClose = document.getElementById('sidebar-close');
+           const sidebarOverlay = document.getElementById('sidebar-overlay');
+           const mainContent = document.getElementById('main-content');
+           
+           console.log('Sidebar elements found:', {
+             sidebarToggle: !!sidebarToggle,
+             sidebar: !!sidebar,
+             sidebarClose: !!sidebarClose,
+             sidebarOverlay: !!sidebarOverlay,
+             mainContent: !!mainContent
+           });
+           
+           // Robust sidebar state restoration function
+           function restoreSidebarState() {
+             if (!sidebar || !mainContent) return;
+             
+             // Keep sidebar closed by default on all screen sizes
+               sidebar.classList.add('-translate-x-full');
+               sidebarOverlay.classList.add('hidden');
+               mainContent.classList.remove('ml-64');
+             console.log('Sidebar state restored: closed by default');
+           }
+           
+           // Check if sidebar should be open by default on desktop
+           function checkSidebarState() {
+             restoreSidebarState();
+           }
+           
+           // Initial check
+           checkSidebarState();
+           
+           // Check on window resize
+           window.addEventListener('resize', checkSidebarState);
+           
+           // Also check when page becomes visible (for when returning from other pages)
+           document.addEventListener('visibilitychange', () => {
+             if (!document.hidden) {
+               setTimeout(checkSidebarState, 200); // Increased delay to ensure DOM is ready
+             }
+           });
+           
+           // Check when page gains focus (alternative method)
+           window.addEventListener('focus', () => {
+             setTimeout(checkSidebarState, 200);
+           });
+           
+           // Check when page loads (for browser back/forward navigation)
+           window.addEventListener('pageshow', (event) => {
+             if (event.persisted) {
+               // Page was loaded from back-forward cache
+               setTimeout(checkSidebarState, 300);
+             }
+           });
+           
+           // Check when page is fully loaded
+           window.addEventListener('load', () => {
+             setTimeout(checkSidebarState, 100);
+           });
+           
+           // Handle browser back/forward navigation
+           window.addEventListener('popstate', () => {
+             setTimeout(restoreSidebarState, 200);
+           });
+           
+           // Handle when page becomes active again
+           document.addEventListener('DOMContentLoaded', () => {
+             setTimeout(restoreSidebarState, 100);
+           });
+           
+           // Additional check for when page is fully ready
+           if (document.readyState === 'loading') {
+             document.addEventListener('DOMContentLoaded', restoreSidebarState);
+           } else {
+             // DOM is already loaded
+             restoreSidebarState();
+           }
+           
+           if (sidebarToggle) {
+             console.log('Adding sidebar toggle event listener...');
+             sidebarToggle.addEventListener('click', (e) => {
+               e.preventDefault();
+               e.stopPropagation();
+               console.log('Sidebar toggle clicked!');
+               
+               const isOpen = !sidebar.classList.contains('-translate-x-full');
+               console.log('Current sidebar state - isOpen:', isOpen);
+               
+               if (isOpen) {
+                 // Close sidebar
+                 console.log('Closing sidebar...');
+                 sidebar.classList.add('-translate-x-full');
+                 sidebarOverlay.classList.add('hidden');
+                 if (window.innerWidth < 768) {
+                   mainContent.classList.remove('ml-64');
+                 }
+               } else {
+                 // Open sidebar
+                 console.log('Opening sidebar...');
+                 sidebar.classList.remove('-translate-x-full');
+                 if (window.innerWidth < 768) {
+                   sidebarOverlay.classList.remove('hidden');
+                   mainContent.classList.remove('ml-64');
+                 }
+               }
+             });
+             console.log('Sidebar toggle event listener added successfully');
+           } else {
+             console.error('Sidebar toggle button not found!');
+           }
+
+           if (sidebarClose) {
+             console.log('Adding sidebar close event listener...');
+             sidebarClose.addEventListener('click', (e) => {
+               e.preventDefault();
+               e.stopPropagation();
+               console.log('Sidebar close clicked!');
+               sidebar.classList.add('-translate-x-full');
+               sidebarOverlay.classList.add('hidden');
+               if (window.innerWidth < 768) {
+                 mainContent.classList.remove('ml-64');
+               }
+             });
+             console.log('Sidebar close event listener added successfully');
+           } else {
+             console.error('Sidebar close button not found!');
+           }
+
+           // Close sidebar when clicking overlay (mobile only)
+           if (sidebarOverlay) {
+             sidebarOverlay.addEventListener('click', () => {
+               sidebar.classList.add('-translate-x-full');
+               sidebarOverlay.classList.add('hidden');
+               if (window.innerWidth < 768) {
+                 mainContent.classList.remove('ml-64');
+               }
+             });
+           }
+
+           // Close sidebar when clicking outside (only on mobile)
+           document.addEventListener('click', (e) => {
+             if (window.innerWidth < 768 && sidebar && !sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+               sidebar.classList.add('-translate-x-full');
+               sidebarOverlay.classList.add('hidden');
+               mainContent.classList.remove('ml-64');
+             }
+           });
+
+           // Modal close
+           const closeModal = document.getElementById('close-modal');
+           const postModal = document.getElementById('post-modal');
+           
+           if (closeModal) {
+             closeModal.addEventListener('click', () => {
+               postModal.classList.add('hidden');
+             });
+           }
+
+           // Close modal when clicking outside
+           if (postModal) {
+             postModal.addEventListener('click', (e) => {
+               if (e.target === postModal) {
+                 postModal.classList.add('hidden');
+               }
+             });
+           }
+
+           // Search functionality
+           const searchInput = document.getElementById('search-input');
+           const clearSearchBtn = document.getElementById('clear-search');
+           
+           if (searchInput) {
+             // Real-time search with debouncing
+             let searchTimeout;
+             searchInput.addEventListener('input', (e) => {
+               clearTimeout(searchTimeout);
+               searchTimeout = setTimeout(() => {
+                 applyFilters();
+                 
+                 // Show/hide clear search button
+                 if (clearSearchBtn) {
+                   if (e.target.value.trim() !== '') {
+                     clearSearchBtn.classList.remove('hidden');
+                   } else {
+                     clearSearchBtn.classList.add('hidden');
+                   }
+                 }
+               }, 300); // 300ms delay for better performance
+             });
+             
+             // Search on Enter key
+             searchInput.addEventListener('keypress', (e) => {
+               if (e.key === 'Enter') {
+                 clearTimeout(searchTimeout);
+                 applyFilters();
+               }
+             });
+           }
+           
+           if (clearSearchBtn) {
+             clearSearchBtn.addEventListener('click', () => {
+               if (searchInput) {
+                 searchInput.value = '';
+                 clearSearchBtn.classList.add('hidden');
+                 applyFilters();
+               }
+             });
+           }
+
+           // Search button functionality
+           const searchBtn = document.getElementById('search-btn');
+           if (searchBtn) {
+             searchBtn.addEventListener('click', () => {
+               clearTimeout(searchTimeout);
+               applyFilters();
+             });
+           }
+
+           // Filters
+           const genreFilter = document.getElementById('genre-filter');
+           const sortFilter = document.getElementById('sort-filter');
+           const clearFiltersBtn = document.getElementById('clear-filters');
+           
+           if (genreFilter) {
+             genreFilter.addEventListener('change', applyFilters);
+           }
+           
+           if (sortFilter) {
+             sortFilter.addEventListener('change', applyFilters);
+           }
+           
+           if (clearFiltersBtn) {
+             clearFiltersBtn.addEventListener('click', clearAllFilters);
+           }
+
+           // Load more button
+           const loadMoreBtn = document.getElementById('load-more-btn');
+           if (loadMoreBtn) {
+             loadMoreBtn.addEventListener('click', loadMorePosts);
+           }
+
+           // Calendar dropdown toggle
+           const calendarDropdownToggle = document.getElementById('sidebar-calendar-dropdown-toggle');
+           const calendarDropdown = document.getElementById('sidebar-calendar-dropdown');
+           const calendarDropdownArrow = document.getElementById('sidebar-calendar-dropdown-arrow');
+           
+           console.log('Calendar dropdown elements:', {
+             toggle: calendarDropdownToggle,
+             dropdown: calendarDropdown,
+             arrow: calendarDropdownArrow
+           });
+           
+           if (calendarDropdownToggle && calendarDropdown && calendarDropdownArrow) {
+             calendarDropdownToggle.addEventListener('click', (e) => {
+               e.preventDefault();
+               e.stopPropagation();
+               console.log('Calendar dropdown clicked');
+               calendarDropdown.classList.toggle('hidden');
+               calendarDropdownArrow.classList.toggle('rotate-180');
+             });
+             console.log('Calendar dropdown event listener attached');
+           } else {
+             console.warn('Calendar dropdown elements not found:', {
+               toggle: !!calendarDropdownToggle,
+               dropdown: !!calendarDropdown,
+               arrow: !!calendarDropdownArrow
+             });
+           }
+
+           // Admin access button
+           const adminAccessBtn = document.getElementById('sidebar-admin-access-btn');
+           if (adminAccessBtn) {
+             adminAccessBtn.addEventListener('click', () => {
+               // Redirect to admin panel or open admin modal
+               window.location.href = 'admin.html?v=1.8';
+             });
+           }
+         }
+
+         function searchPosts(query) {
+           if (!query || query.trim() === '') {
+             return allPosts;
+           }
+
+           const searchTerm = query.toLowerCase().trim();
+           
+           return allPosts.filter(post => {
+             // Search in title
+             const titleMatch = post.title.toLowerCase().includes(searchTerm);
+             
+             // Search in author name
+             const authorMatch = post.authorName.toLowerCase().includes(searchTerm);
+             
+             // Search in genre
+             const genreMatch = post.genre && post.genre.toLowerCase().includes(searchTerm);
+             
+             // Search in description
+             const descriptionMatch = post.description && post.description.toLowerCase().includes(searchTerm);
+             
+             // Search in tags
+             const tagsMatch = post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+             
+             // Search in content (first 500 characters to avoid performance issues)
+             const contentMatch = post.content && post.content.toLowerCase().substring(0, 500).includes(searchTerm);
+             
+             return titleMatch || authorMatch || genreMatch || descriptionMatch || tagsMatch || contentMatch;
+           });
+         }
+
+         function applyFilters() {
+           const genreFilter = document.getElementById('genre-filter');
+           const sortFilter = document.getElementById('sort-filter');
+           const searchInput = document.getElementById('search-input');
+           
+           if (!genreFilter || !sortFilter || !searchInput) return;
+
+           const selectedGenre = genreFilter.value;
+           const selectedSort = sortFilter.value;
+           const searchQuery = searchInput.value;
+
+           // Update current filter states
+           currentGenreFilter = selectedGenre;
+           currentSortFilter = selectedSort;
+           currentSearchQuery = searchQuery;
+
+           // Start with all posts
+           let results = [...allPosts];
+
+           // Apply search filter
+           if (searchQuery.trim() !== '') {
+             results = searchPosts(searchQuery);
+           }
+
+           // Apply genre filter
+           if (selectedGenre) {
+             results = results.filter(post => post.genre === selectedGenre);
+           }
+
+           // Sort posts
+           switch (selectedSort) {
+             case 'oldest':
+               results.sort((a, b) => {
+                 const dateA = a.createdAt ? a.createdAt.toDate() : new Date(0);
+                 const dateB = b.createdAt ? b.createdAt.toDate() : new Date(0);
+                 return dateA - dateB;
+               });
+               break;
+             case 'title':
+               results.sort((a, b) => a.title.localeCompare(b.title));
+               break;
+             default: // newest
+               results.sort((a, b) => {
+                 const dateA = a.createdAt ? a.createdAt.toDate() : new Date(0);
+                 const dateB = b.createdAt ? b.createdAt.toDate() : new Date(0);
+                 return dateB - dateA;
+               });
+           }
+
+           filteredPosts = results;
+
+           // Reset to first page and display
+           postsCurrentPage = 0;
+           displayPosts();
+         }
+
+         function clearAllFilters() {
+           const genreFilter = document.getElementById('genre-filter');
+           const sortFilter = document.getElementById('sort-filter');
+           const searchInput = document.getElementById('search-input');
+           const clearSearchBtn = document.getElementById('clear-search');
+           
+           if (genreFilter) genreFilter.value = '';
+           if (sortFilter) sortFilter.value = 'newest';
+           if (searchInput) searchInput.value = '';
+           if (clearSearchBtn) clearSearchBtn.classList.add('hidden');
+           
+           currentSearchQuery = '';
+           currentGenreFilter = '';
+           currentSortFilter = 'newest';
+           
+           applyFilters();
+         }
+
+         function loadMorePosts() {
+           postsCurrentPage++;
+           displayPosts();
+         }
+
+         // Handle authentication state changes
+         if (typeof auth !== 'undefined') {
+           auth.onAuthStateChanged(function(user) {
+             const guestNav = document.getElementById('guest-nav');
+             const userNav = document.getElementById('user-nav');
+             const sidebarGuestNav = document.getElementById('sidebar-guest-nav');
+             const sidebarUserNav = document.getElementById('sidebar-user-nav');
+             
+             if (user) {
+               // User is signed in
+               if (guestNav) guestNav.classList.add('hidden');
+               if (userNav) userNav.classList.remove('hidden');
+               if (sidebarGuestNav) sidebarGuestNav.classList.add('hidden');
+               if (sidebarUserNav) sidebarUserNav.classList.remove('hidden');
+               
+               // Add logout functionality
+               const logoutBtn = document.getElementById('logout-button');
+               const sidebarLogoutBtn = document.getElementById('sidebar-logout-button');
+               
+               if (logoutBtn) {
+                 logoutBtn.addEventListener('click', () => auth.signOut());
+               }
+               
+               if (sidebarLogoutBtn) {
+                 sidebarLogoutBtn.addEventListener('click', () => auth.signOut());
+               }
+             } else {
+               // User is signed out
+               if (guestNav) guestNav.classList.remove('hidden');
+               if (userNav) userNav.classList.add('hidden');
+               if (sidebarGuestNav) sidebarGuestNav.classList.remove('hidden');
+               if (sidebarUserNav) sidebarUserNav.classList.add('hidden');
+             }
+           });
+         }
+
+         // Initialize the page when DOM is loaded
+         document.addEventListener('DOMContentLoaded', function() {
+           console.log('DOM loaded, initializing posts page...');
+           console.log('Current page URL:', window.location.href);
+           console.log('Page title:', document.title);
+           
+           // Show debug info on page
+           const loadingState = document.getElementById('loading-state');
+           if (loadingState) {
+             loadingState.innerHTML = `
+               <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+               <p class="text-white/80 mt-4">Loading posts...</p>
+               <p class="text-white/60 text-sm mt-2">Loading sample posts immediately...</p>
+             `;
+           }
+           
+           // Initialize the page
+           initializePostsPage();
+           
+           // Set up event listeners
+           setupEventListeners();
+           
+           // Comprehensive sidebar state restoration
+           function ensureSidebarState() {
+             const sidebar = document.getElementById('sidebar');
+             const mainContent = document.getElementById('main-content');
+             if (sidebar && mainContent) {
+               // Keep sidebar closed by default on all screen sizes
+               sidebar.classList.add('-translate-x-full');
+               mainContent.classList.remove('ml-64');
+               console.log('Sidebar state restored: closed by default');
+             }
+           }
+           
+           // Multiple attempts to restore sidebar state
+           setTimeout(ensureSidebarState, 100);
+           setTimeout(ensureSidebarState, 500);
+           setTimeout(ensureSidebarState, 1000);
+           
+           // Add comprehensive event listeners for navigation
+           document.addEventListener('visibilitychange', () => {
+             if (!document.hidden) {
+               setTimeout(ensureSidebarState, 200);
+             }
+           });
+           
+           window.addEventListener('focus', () => {
+             setTimeout(ensureSidebarState, 200);
+           });
+           
+           window.addEventListener('pageshow', (event) => {
+             if (event.persisted) {
+               setTimeout(ensureSidebarState, 300);
+             }
+           });
+           
+           window.addEventListener('popstate', () => {
+             setTimeout(ensureSidebarState, 200);
+           });
+           
+           // Fallback: Ensure calendar dropdown works after a short delay
+           setTimeout(() => {
+             console.log('Setting up fallback calendar dropdown...');
+             const calendarDropdownToggle = document.getElementById('sidebar-calendar-dropdown-toggle');
+             const calendarDropdown = document.getElementById('sidebar-calendar-dropdown');
+             const calendarDropdownArrow = document.getElementById('sidebar-calendar-dropdown-arrow');
+             
+             if (calendarDropdownToggle && calendarDropdown && calendarDropdownArrow) {
+               // Remove any existing listeners
+               calendarDropdownToggle.replaceWith(calendarDropdownToggle.cloneNode(true));
+               
+               // Get the new element and attach listener
+               const newToggle = document.getElementById('sidebar-calendar-dropdown-toggle');
+               newToggle.addEventListener('click', (e) => {
+                 e.preventDefault();
+                 e.stopPropagation();
+                 console.log('Fallback calendar dropdown clicked');
+                 calendarDropdown.classList.toggle('hidden');
+                 calendarDropdownArrow.classList.toggle('rotate-180');
+               });
+               console.log('Fallback calendar dropdown event listener attached');
+             }
+           }, 1000);
+         });
+         
+       } catch (error) {
+         console.error('Error in posts page script:', error);
+       }
+     })();
+
+     // Global sidebar functions (outside IIFE)
+     window.toggleSidebar = function() {
+       console.log('toggleSidebar function called!');
+       
+       const sidebar = document.getElementById('sidebar');
+       const sidebarOverlay = document.getElementById('sidebar-overlay');
+       const mainContent = document.getElementById('main-content');
+       
+       console.log('Elements found:', {
+         sidebar: !!sidebar,
+         sidebarOverlay: !!sidebarOverlay,
+         mainContent: !!mainContent
+       });
+       
+       if (!sidebar) {
+         console.error('Sidebar element not found');
+         return;
+       }
+       
+       const isOpen = !sidebar.classList.contains('-translate-x-full');
+       console.log('Current sidebar state - isOpen:', isOpen);
+       
+       if (isOpen) {
+         console.log('Closing sidebar...');
+         sidebar.classList.add('-translate-x-full');
+         if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
+         if (window.innerWidth < 768 && mainContent) {
+           mainContent.classList.remove('ml-64');
+         }
+       } else {
+         console.log('Opening sidebar...');
+         sidebar.classList.remove('-translate-x-full');
+         if (window.innerWidth < 768) {
+           if (sidebarOverlay) sidebarOverlay.classList.remove('hidden');
+           if (mainContent) mainContent.classList.remove('ml-64');
+         }
+       }
+       
+       console.log('Sidebar toggle complete');
+     };
+
+     window.closeSidebar = function() {
+       console.log('closeSidebar function called!');
+       const sidebar = document.getElementById('sidebar');
+       const sidebarOverlay = document.getElementById('sidebar-overlay');
+       const mainContent = document.getElementById('main-content');
+       
+       if (sidebar) {
+         sidebar.classList.add('-translate-x-full');
+         if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
+         if (window.innerWidth < 768 && mainContent) {
+           mainContent.classList.remove('ml-64');
+         }
+       }
+     };
+
+     // Test function availability immediately
+     console.log('Global functions available:', {
+       toggleSidebar: typeof window.toggleSidebar,
+       closeSidebar: typeof window.closeSidebar
+     });
+   </script>
+</body>
+
+</html>
