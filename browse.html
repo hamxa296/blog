@@ -355,6 +355,96 @@
       }
     }
 
+    /* Aesthetic card redesign for browse page */
+    .aesthetic-card {
+      background: linear-gradient(135deg, rgba(8, 28, 52, 0.65), rgba(4, 16, 32, 0.65));
+      border: 1px solid rgba(230, 243, 255, 0.18);
+      border-radius: 1rem;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .aesthetic-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(600px 200px at 100% 0%, rgba(74, 127, 167, 0.18), transparent 60%),
+                  radial-gradient(400px 200px at 0% 100%, rgba(179, 207, 229, 0.12), transparent 60%);
+      opacity: 0.6;
+    }
+
+    .aesthetic-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    .aesthetic-card .cover {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0A1931, #1A3D63);
+    }
+
+    .aesthetic-card .cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transform: scale(1.02);
+      transition: transform 0.6s ease;
+    }
+
+    .aesthetic-card:hover .cover img {
+      transform: scale(1.06);
+    }
+
+    .aesthetic-card .cover-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0) 20%, rgba(0,0,0,0.25) 60%, rgba(0,0,0,0.45) 100%);
+      pointer-events: none;
+    }
+
+    .aesthetic-card .cover-badge {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      z-index: 2;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 9999px;
+      padding: 0.25rem 0.6rem;
+      background: linear-gradient(135deg, var(--c-steel), var(--c-light));
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    }
+
+    .icon-btn {
+      width: 2.25rem;
+      height: 2.25rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #F6FAFD;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 9999px;
+      transition: all 0.25s ease;
+    }
+
+    .icon-btn:hover {
+      transform: translateY(-2px);
+      background: #4A7FA7;
+      border-color: rgba(255,255,255,0.35);
+      box-shadow: 0 8px 18px rgba(74,127,167,0.35);
+    }
+
     .featured-post {
       background: linear-gradient(135deg, rgba(10, 25, 49, 0.95), rgba(26, 61, 99, 0.9));
       color: white;
@@ -626,7 +716,7 @@
             </a>
             <a href="gallery.html?v=1.8" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
               </svg>
               Gallery
             </a>
@@ -849,7 +939,7 @@
       </div>
 
       <!-- Posts Container -->
-      <div id="posts-container" class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div id="posts-container" class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         <!-- Posts will be loaded here -->
       </div>
 
@@ -1276,41 +1366,144 @@
            modal.classList.remove('hidden');
          }
 
-         // Share post function
+         // Share post function → opens custom share modal with options
          window.sharePost = function(postId, postTitle) {
            const post = allPosts.find(p => p.id === postId);
            if (!post) return;
+           window.openShareModal(post);
+         }
 
+         // Share modal with copy link, social options, and repost
+         window.openShareModal = function(post) {
+           const postId = post.id;
            const shareUrl = `${window.location.origin}${window.location.pathname}#post-${postId}`;
-           const shareText = `Check out this post from GIKI Chronicles: "${postTitle}"`;
+           const shareText = `Check out this post from GIKI Chronicles: "${post.title}"`;
 
-           if (navigator.share) {
-             // Use native share API if available
-             navigator.share({
-               title: postTitle,
-               text: shareText,
-               url: shareUrl
-             }).catch(err => {
-               console.log('Error sharing:', err);
-               fallbackShare(shareUrl, shareText);
+           const modal = document.createElement('div');
+           modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75';
+           modal.innerHTML = `
+             <div class="w-full max-w-md mx-4 rounded-2xl overflow-hidden theme-card contact-surface">
+               <div class="px-5 py-4 flex items-center justify-between border-b border-white/10">
+                 <h3 class="text-lg font-semibold text-white">Share Post</h3>
+                 <button class="text-white/70 hover:text-white" aria-label="Close" onclick="this.closest('.fixed').remove()">×</button>
+               </div>
+               <div class="p-5 space-y-5">
+                 <div>
+                   <label class="block text-sm font-medium text-white/90 mb-2">Share link</label>
+                   <div class="flex items-stretch gap-2">
+                     <input id="share-link-input" type="text" readonly value="${shareUrl}" class="flex-1 rounded-lg border border-white/20 px-3 py-2 text-sm text-white bg-white/10 backdrop-blur-md" />
+                     <button id="copy-share-link" class="px-3 py-2 rounded-lg bg-[#4A7FA7] text-white text-sm hover:bg-[#1A3D63]">Copy</button>
+                   </div>
+                 </div>
+                 <div>
+                   <label class="block text-sm font-medium text-white/90 mb-3">Share to</label>
+                   <div class="grid grid-cols-4 gap-3">
+                     <a target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}" class="w-12 h-12 rounded-full bg-green-500/90 hover:bg-green-500 flex items-center justify-center border border-white/20" title="WhatsApp">
+                       <svg viewBox="0 0 32 32" class="w-6 h-6 text-white" fill="currentColor"><path d="M19.11 17.23c-.3-.15-1.76-.86-2.03-.96-.27-.1-.46-.15-.66.15-.2.3-.76.95-.93 1.15-.17.2-.34.22-.64.08-.3-.15-1.28-.47-2.43-1.5-.9-.8-1.5-1.78-1.67-2.08-.17-.3-.02-.46.13-.61.13-.13.3-.34.45-.51.15-.17.2-.3.3-.5.1-.2.05-.38-.02-.53-.07-.15-.66-1.6-.9-2.2-.24-.58-.49-.5-.66-.5-.17 0-.36-.02-.56-.02-.2 0-.53.08-.8.38-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.48.71.31 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.42.25-.7.25-1.3.17-1.42-.08-.12-.27-.19-.57-.34z"/><path d="M26.88 5.12C24.11 2.35 20.68 1 17.02 1 9.73 1 3.96 6.77 3.96 14.06c0 2.21.58 4.36 1.69 6.26L4 27l6.85-1.61c1.82 1 3.88 1.54 6.16 1.54 7.28 0 13.06-5.77 13.06-13.06 0-3.66-1.35-7.09-4.12-9.76zM17.02 24.9c-2.01 0-3.97-.54-5.66-1.56l-.41-.24-4.06.96.97-3.96-.26-.41c-1.05-1.71-1.6-3.68-1.6-5.63 0-6.02 4.9-10.92 10.92-10.92 2.92 0 5.66 1.14 7.72 3.2 2.06 2.06 3.2 4.8 3.2 7.72 0 6.02-4.9 10.92-10.92 10.92z"/></svg>
+                     </a>
+                     <a target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" class="w-12 h-12 rounded-full bg-blue-600/90 hover:bg-blue-600 flex items-center justify-center border border-white/20" title="Facebook">
+                       <svg viewBox="0 0 24 24" class="w-6 h-6 text-white" fill="currentColor"><path d="M22 12a10 10 0 10-11.5 9.95v-7.04H7.9V12h2.6V9.8c0-2.57 1.53-3.99 3.87-3.99 1.12 0 2.29.2 2.29.2v2.52h-1.29c-1.27 0-1.66.79-1.66 1.6V12h2.83l-.45 2.91h-2.38v7.04A10 10 0 0022 12"/></svg>
+                     </a>
+                     <a target="_blank" rel="noopener" href="mailto:?subject=${encodeURIComponent(post.title)}&body=${encodeURIComponent(shareText + '\n' + shareUrl)}" class="w-12 h-12 rounded-full bg-gray-600/90 hover:bg-gray-600 flex items-center justify-center border border-white/20" title="Email">
+                       <svg viewBox="0 0 24 24" class="w-6 h-6 text-white" fill="currentColor"><path d="M12 13.065L.322 6.273A1 1 0 011 5h22a1 1 0 01.678 1.273L12 13.065z"/><path d="M23 7.74l-10.36 5.907a1 1 0 01-.98 0L1 7.74V19a1 1 0 001 1h20a1 1 0 001-1V7.74z"/></svg>
+                     </a>
+                     <a target="_blank" rel="noopener" href="https://www.instagram.com/" class="w-12 h-12 rounded-full bg-pink-500/90 hover:bg-pink-500 flex items-center justify-center border border-white/20" title="Instagram (paste link)">
+                       <svg viewBox="0 0 24 24" class="w-6 h-6 text-white" fill="currentColor"><path d="M7 2C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5H7zm10 2a3 3 0 013 3v10a3 3 0 01-3 3H7a3 3 0 01-3-3V7a3 3 0 013-3h10zm-5 3.5A5.5 5.5 0 1112 19.5 5.5 5.5 0 0112 7.5zm0 2A3.5 3.5 0 1015.5 13 3.5 3.5 0 0012 9.5zM18 6.5a1 1 0 11-1 1 1 1 0 011-1z"/></svg>
+                     </a>
+                   </div>
+                 </div>
+                 <button id="repost-button" class="w-full px-3 py-2 rounded-lg bg-[#4A7FA7] text-white text-sm hover:bg-[#1A3D63] border border-white/20">Repost to my profile</button>
+               </div>
+             </div>
+           `;
+
+           const destroy = () => modal.remove();
+
+           modal.addEventListener('click', (e) => {
+             if (e.target === modal) destroy();
+           });
+
+           document.body.appendChild(modal);
+
+           // Copy link
+           const copyBtn = modal.querySelector('#copy-share-link');
+           const inputEl = modal.querySelector('#share-link-input');
+           if (copyBtn && inputEl) {
+             copyBtn.addEventListener('click', async () => {
+               try {
+                 if (navigator.clipboard) {
+                   await navigator.clipboard.writeText(shareUrl);
+                 } else {
+                   inputEl.select();
+                   document.execCommand('copy');
+                 }
+                 showShareNotification('Link copied to clipboard');
+               } catch (_) {
+                 showShareNotification('Unable to copy. Select the link and copy.');
+               }
              });
-           } else {
-             // Fallback to copying to clipboard
-             fallbackShare(shareUrl, shareText);
+           }
+
+           // Repost
+           const repostBtn = modal.querySelector('#repost-button');
+           if (repostBtn) {
+             repostBtn.addEventListener('click', async () => {
+               try {
+                 await window.repostPost(postId);
+                 showShareNotification('Reposted to your profile');
+               } catch (err) {
+                 showShareNotification(err && err.message ? err.message : 'Repost failed');
+               }
+             });
            }
          }
 
-         function fallbackShare(url, text) {
-           const fullText = `${text}\n${url}`;
-           
-           if (navigator.clipboard) {
-             navigator.clipboard.writeText(fullText).then(() => {
-               showShareNotification('Post link copied to clipboard!');
-             }).catch(() => {
-               showShareNotification('Unable to copy link. Please copy manually: ' + url);
-             });
-           } else {
-             showShareNotification('Share this post: ' + url);
+         // Repost the post to the current user's profile (saves reference under users/{uid}/reposts)
+         window.repostPost = async function(postId) {
+           try {
+             if (typeof auth === 'undefined' || !auth.currentUser) {
+               throw new Error('Please log in to repost');
+             }
+             const user = auth.currentUser;
+             const post = allPosts.find(p => p.id === postId);
+             if (!post) throw new Error('Post not found');
+             if (typeof db === 'undefined') throw new Error('Database not available');
+
+             const data = {
+               postId: postId,
+               originalTitle: post.title || '',
+               originalAuthorId: post.authorId || '',
+               originalAuthorName: post.authorName || '',
+               createdAt: (firebase && firebase.firestore && firebase.firestore.FieldValue) ? firebase.firestore.FieldValue.serverTimestamp() : new Date(),
+             };
+             await db.collection('users').doc(user.uid).collection('reposts').doc(postId).set(data, { merge: true });
+             return true;
+           } catch (err) {
+             console.error('repostPost error:', err);
+             throw err;
+           }
+         }
+
+         // Open a post from URL hash (#post-<id>)
+         function openPostFromHash() {
+           try {
+             const hash = (window.location.hash || '').trim();
+             const match = hash.match(/^#post-(.+)$/);
+             if (match && match[1]) {
+               const targetId = match[1];
+               // If posts already loaded, open directly; otherwise, try after a short delay
+               if ((allPosts || []).some(p => p.id === targetId)) {
+                 window.openPostModal(targetId);
+               } else {
+                 setTimeout(() => {
+                   if ((allPosts || []).some(p => p.id === targetId)) {
+                     window.openPostModal(targetId);
+                   }
+                 }, 600);
+               }
+             }
+           } catch (e) {
+             console.warn('openPostFromHash error', e);
            }
          }
 
@@ -1341,13 +1534,15 @@
              const modal = document.createElement('div');
              modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75';
              modal.innerHTML = `
-               <div class="relative max-w-4xl max-h-[90vh] p-4">
-                 <button onclick="this.closest('.fixed').remove()" class="absolute top-2 right-2 text-white text-2xl hover:text-gray-300 z-10">
-                   ×
-                 </button>
-                 <img src="${post.photoUrl}" alt="${post.title}" class="max-w-full max-h-full object-contain rounded-lg">
-                 <div class="absolute bottom-4 left-4 text-white bg-black bg-opacity-50 px-3 py-2 rounded">
-                   <p class="font-semibold">${post.title}</p>
+               <div class="max-w-4xl max-h-[90vh] p-4">
+                 <div class="relative">
+                   <img src="${post.photoUrl}" alt="${post.title}" class="block max-w-full max-h-[80vh] object-contain rounded-lg">
+                   <button onclick="this.closest('.fixed').remove()" class="absolute top-2 right-2 inline-flex items-center justify-center w-9 h-9 rounded-full bg-black/60 text-white hover:bg-black/70 focus:outline-none z-10">
+                     ×
+                   </button>
+                   <div class="absolute bottom-3 left-3 text-white bg-black bg-opacity-50 px-3 py-2 rounded">
+                     <p class="font-semibold">${post.title}</p>
+                   </div>
                  </div>
                </div>
              `;
@@ -1371,26 +1566,24 @@
            const modal = document.createElement('div');
            modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75';
            modal.innerHTML = `
-             <div class="bg-gradient-to-br from-pink-100 to-purple-100 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-pink-200">
+             <div class="theme-card contact-surface rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl border border-white/20 relative overflow-hidden">
                <div class="flex items-center justify-between mb-4">
-                 <h3 class="text-xl font-bold text-purple-800">Author Profile</h3>
-                 <button onclick="this.closest('.fixed').remove()" class="text-purple-600 hover:text-purple-800 text-2xl transition-colors duration-200">
-                   ×
-                 </button>
+                 <h3 class="text-xl font-bold text-white">Author Profile</h3>
+                 <button onclick="this.closest('.fixed').remove()" class="text-white/80 hover:text-white text-2xl transition-colors duration-200">×</button>
                </div>
                <div class="text-center">
-                 <div class="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                 <div class="w-20 h-20 bg-gradient-to-br from-[#1A3D63] to-[#0A1931] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg border border-white/20">
                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                    </svg>
                  </div>
-                 <h4 class="text-lg font-semibold text-purple-800 mb-2">${authorName}</h4>
-                 <p class="text-purple-600 mb-4 font-medium">GIKI Student & Blogger</p>
-                 <div class="text-sm text-purple-700 bg-white/50 rounded-lg p-3 mb-4">
-                   <p class="mb-1"><span class="font-medium">Author ID:</span> ${authorId}</p>
-                   <p><span class="font-medium">Posts:</span> ${allPosts.filter(p => p.authorId === authorId).length}</p>
+                 <h4 class="text-lg font-semibold text-white mb-2">${authorName}</h4>
+                 <p class="text-[#B3CFE5] mb-4 font-medium">GIKI Student & Blogger</p>
+                 <div class="text-sm text-white bg-white/5 rounded-lg p-3 mb-4 border border-white/10">
+                   <p class="mb-1"><span class="font-medium text-white/90">Author ID:</span> ${authorId}</p>
+                   <p><span class="font-medium text-white/90">Posts:</span> ${allPosts.filter(p => p.authorId === authorId).length}</p>
                  </div>
-                 <button onclick="this.closest('.fixed').remove()" class="mt-4 px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                 <button onclick="this.closest('.fixed').remove()" class="mt-4 px-6 py-2 bg-[#4A7FA7] hover:bg-[#1A3D63] text-white rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
                    Close
                  </button>
                </div>
@@ -1477,173 +1670,64 @@
            
            const card = document.createElement('div');
            
-           // Use mobile-specific styling for mobile devices
-           if (isMobile()) {
-             card.className = 'post-card-mobile relative overflow-hidden';
-           } else {
-             card.className = 'post-card-image-style relative overflow-hidden';
-           }
+           // Unified aesthetic card style
+           card.className = 'aesthetic-card';
            
            // Create different HTML structure for mobile vs desktop
            if (isMobile()) {
            card.innerHTML = `
-              <!-- Mobile-optimized post card -->
-              <div class="bg-gradient-to-br from-[#0A1931] to-[#1A3D63] p-4 rounded-xl shadow-2xl relative border border-[#4A7FA7]/30">
-                
-                <!-- Image section -->
-                <div class="mb-4">
-             ${post.photoUrl ? `
-                    <div class="h-48 overflow-hidden rounded-lg mb-4">
-                      <img src="${post.photoUrl}" alt="${post.title}" class="w-full h-full object-cover">
+               <div class="cover">
+                 ${post.photoUrl ? `<img src="${post.photoUrl}" alt="${post.title}">` : `<div class="w-full h-full flex items-center justify-center"><svg class="w-10 h-10 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2z"></path></svg></div>`}
+                 <span class="cover-badge">${post.genre || 'General'}</span>
+                 <div class="cover-overlay"></div>
                </div>
-                  ` : `
-                    <div class="h-48 bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
-                      <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z"></path>
-                      </svg>
-               </div>
-                  `}
-                </div>
-
-                <!-- Title and author info -->
-                <div class="mb-4">
-                  <h3 class="text-lg font-bold text-white mb-2 line-clamp-2">${post.title}</h3>
-                  <div class="flex items-center space-x-2 text-sm text-white/80 mb-2">
-                    <span class="font-medium">By ${post.authorName}</span>
-                    <span>•</span>
-                    <span>${postDate}</span>
-                 </div>
-                </div>
-
-                <!-- Description -->
-                <div class="text-white text-sm leading-relaxed mb-4">
-                  <p>${post.description || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'}</p>
-                </div>
-
-                <!-- Genre bar -->
-                <div class="bg-gray-600 rounded-lg p-3 mb-4 flex items-center justify-between">
-                  <span class="text-sm text-white font-semibold">${post.genre || 'General'}</span>
-                  <div class="flex space-x-2">
-                    <div class="w-3 h-3 bg-white rounded-sm"></div>
-                    <div class="w-3 h-3 bg-white rounded-sm"></div>
-                  </div>
-                </div>
-
-                <!-- Interactive icons -->
-                <div class="flex items-center justify-center space-x-4 mb-4">
-                  <button onclick="viewPostImage('${post.id}')" class="w-10 h-10 bg-[#4A7FA7] hover:bg-[#1A3D63] rounded-full flex items-center justify-center transition-all duration-300" title="View Post Image">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
+               <div class="p-4">
+                 <h3 class="text-white text-lg font-bold mb-1 line-clamp-2">${post.title}</h3>
+                 <div class="text-white/70 text-xs mb-3">By ${post.authorName} • ${postDate}</div>
+                 <p class="text-[#B3CFE5] text-sm line-clamp-3 mb-4">${post.description || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'}</p>
+                 <div class="flex items-center justify-between">
+                   <div class="flex items-center gap-2">
+                     <button onclick="viewPostImage('${post.id}')" class="icon-btn" title="View image">
+                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                   </button>
-                  
-                  <button onclick="viewAuthorProfile('${post.authorId}', '${post.authorName}')" class="w-10 h-10 bg-[#4A7FA7] hover:bg-[#1A3D63] rounded-full flex items-center justify-center transition-all duration-300" title="View Author Profile">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                    </svg>
+                     <button onclick="viewAuthorProfile('${post.authorId}', '${post.authorName}')" class="icon-btn" title="Author profile">
+                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                   </button>
-                  
-                  <button onclick="sharePost('${post.id}', '${post.title}')" class="w-10 h-10 bg-[#4A7FA7] hover:bg-[#1A3D63] rounded-full flex items-center justify-center transition-all duration-300" title="Share This Post">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
-                    </svg>
+                     <button onclick="sharePost('${post.id}', '${post.title}')" class="icon-btn" title="Share">
+                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path></svg>
                   </button>
                 </div>
-
-                <!-- Read More button -->
-                <div class="text-center">
-                  <button onclick="openPostModal('${post.id}')" class="bg-[#4A7FA7] hover:bg-[#1A3D63] text-white px-6 py-2 rounded-lg transition-all duration-300 text-sm font-medium">
-                   Read More
-                 </button>
+                   <button onclick="openPostModal('${post.id}')" class="px-3 py-1.5 bg-[#4A7FA7] hover:bg-[#1A3D63] text-white rounded-md text-xs font-medium transition-colors">Read</button>
                </div>
               </div>
             `;
            } else {
              card.innerHTML = `
-            <!-- Desktop version - Main bluish gradient panel container - matches image proportions -->
-            <div class="bg-gradient-to-br from-[#0A1931] to-[#1A3D63] p-8 rounded-xl shadow-2xl relative min-h-[500px] border border-[#4A7FA7]/30">
-              
-              <!-- Content box positioned in the center -->
-              <div class="bg-white rounded-lg p-6 shadow-lg w-4/5 h-80 mx-auto border border-gray-200 mb-8">
-             ${post.photoUrl ? `
-                  <div class="h-40 overflow-hidden rounded-lg mb-4">
-                    <img src="${post.photoUrl}" alt="${post.title}" class="w-full h-full object-cover">
+               <div class="cover">
+                 ${post.photoUrl ? `<img src="${post.photoUrl}" alt="${post.title}">` : `<div class="w-full h-full flex items-center justify-center"><svg class="w-12 h-12 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2z"></path></svg></div>`}
+                 <span class="cover-badge">${post.genre || 'General'}</span>
+                 <div class="cover-overlay"></div>
                </div>
-                ` : `
-                  <!-- Placeholder for image if no photo -->
-                  <div class="h-40 bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
-                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z"></path>
-                    </svg>
-               </div>
-                `}
-                
-                <!-- Post content -->
-                <div>
-                  <h3 class="text-2xl font-bold text-black mb-3 line-clamp-2">${post.title}</h3>
-                  <div class="flex items-center space-x-3 text-sm text-black">
-                    <span class="font-medium">By ${post.authorName}</span>
-                    <span>•</span>
-                    <span>${postDate}</span>
-                 </div>
-                </div>
-              </div>
-              
-              <!-- Post description text moved from content box -->
-              <div class="text-white text-sm leading-relaxed mb-4">
-                <p>${post.description || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.'}</p>
-              </div>
-              
-              <!-- Gray navigation bar spanning full width below content -->
-              <div class="bg-gray-600 rounded-lg p-4 mb-4 flex items-center justify-between">
-                <!-- Left side: Two squares -->
-                <div class="flex space-x-3">
-                  <div class="w-8 h-8 bg-white rounded opacity-80"></div>
-                  <div class="w-8 h-8 bg-white rounded opacity-60"></div>
-                </div>
-                
-                <!-- Center: Circular element -->
-                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                  <span class="text-gray-600 font-bold text-xl">o</span>
-                </div>
-                
-                <!-- Right side: Navigation indicator -->
-                <div class="text-white text-sm font-medium">
-                  ${post.genre || 'POST'}
-                </div>
-              </div>
-              
-              <!-- Interactive icons at the bottom -->
-              <div class="flex items-center justify-end space-x-4">
-                <!-- Camera icon - View Post Image -->
-                <button onclick="viewPostImage('${post.id}')" class="w-12 h-12 bg-[#4A7FA7] hover:bg-[#1A3D63] rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110" title="View Post Image">
-                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  </svg>
+               <div class="p-5">
+                 <h3 class="text-white text-xl font-bold mb-2 line-clamp-2">${post.title}</h3>
+                 <div class="text-white/70 text-sm mb-4">By ${post.authorName} • ${postDate}</div>
+                 <p class="text-[#B3CFE5] text-base leading-relaxed line-clamp-3 mb-5">${post.description || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'}</p>
+                 <div class="flex items-center justify-between">
+                   <div class="flex items-center gap-2">
+                     <button onclick="viewPostImage('${post.id}')" class="icon-btn" title="View image">
+                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 </button>
-                
-                <!-- Person/Profile icon - View Author Profile -->
-                <button onclick="viewAuthorProfile('${post.authorId}', '${post.authorName}')" class="w-12 h-12 bg-[#4A7FA7] hover:bg-[#1A3D63] rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110" title="View Author Profile">
-                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                  </svg>
+                     <button onclick="viewAuthorProfile('${post.authorId}', '${post.authorName}')" class="icon-btn" title="Author profile">
+                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                 </button>
-                
-                <!-- Share icon - Share Post -->
-                <button onclick="sharePost('${post.id}', '${post.title}')" class="w-12 h-12 bg-[#4A7FA7] hover:bg-[#1A3D63] rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110" title="Share This Post">
-                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
-                  </svg>
+                     <button onclick="sharePost('${post.id}', '${post.title}')" class="icon-btn" title="Share">
+                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path></svg>
                  </button>
                </div>
-              
-              <!-- Side ribbon/tab on the right edge -->
-              <div class="absolute top-6 -right-3 w-6 h-20 bg-[#4A7FA7] rounded-l-lg shadow-lg"></div>
+                   <button onclick="openPostModal('${post.id}')" class="px-4 py-2 bg-[#4A7FA7] hover:bg-[#1A3D63] text-white rounded-md text-sm font-semibold transition-colors">Read More</button>
+                 </div>
              </div>
            `;
-           
            }
            
            return card;
@@ -2229,6 +2313,45 @@
        toggleSidebar: typeof window.toggleSidebar,
        closeSidebar: typeof window.closeSidebar
      });
+
+     window.openPostModal = function(postId) {
+       const post = allPosts.find(p => p.id === postId);
+       if (!post) return;
+
+       const modal = document.getElementById('post-modal');
+       const modalContent = document.getElementById('modal-content');
+       
+       if (!modal || !modalContent) return;
+
+       const postDate = post.createdAt ? post.createdAt.toDate().toLocaleDateString() : 'N/A';
+       
+       modalContent.innerHTML = `
+         ${post.photoUrl ? `
+           <div class="mb-6">
+             <img src="${post.photoUrl}" alt="${post.title}" class="w-full h-64 object-cover rounded-lg">
+           </div>
+         ` : ''}
+         <h1 class="text-3xl font-bold text-gray-900 mb-4">${post.title}</h1>
+         <div class="flex items-center space-x-4 mb-6 text-sm text-gray-500">
+           <span>By ${post.authorName}</span>
+           <span>•</span>
+           <span>${postDate}</span>
+           ${post.genre ? `<span>•</span><span>${post.genre}</span>` : ''}
+         </div>
+         ${post.tags && post.tags.length > 0 ? `
+           <div class="flex flex-wrap gap-2 mb-6">
+             ${post.tags.map(tag => `
+               <span class="tag px-3 py-1 rounded-full text-sm font-medium">${tag}</span>
+             `).join('')}
+           </div>
+         ` : ''}
+         <div class="prose max-w-none">
+           ${post.content}
+         </div>
+       `;
+       
+       modal.classList.remove('hidden');
+     };
    </script>
 </body>
 
