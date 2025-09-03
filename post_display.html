@@ -523,6 +523,177 @@
       }
     })();
   </script>
+  <script>
+    // Comments: real-time load and posting
+    (function () {
+      var __commentsInitDone = false;
+      var __commentsUnsub = null;
+      function formatRelativeTime(date) {
+        if (!date) return '';
+        const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+        const intervals = [
+          { sec: 31536000, label: 'y' },
+          { sec: 2592000, label: 'mo' },
+          { sec: 604800, label: 'w' },
+          { sec: 86400, label: 'd' },
+          { sec: 3600, label: 'h' },
+          { sec: 60, label: 'm' },
+        ];
+        for (const it of intervals) {
+          const count = Math.floor(seconds / it.sec);
+          if (count >= 1) return `${count}${it.label} ago`;
+        }
+        return 'just now';
+      }
+
+      function renderComments(listEl, comments) {
+        if (!listEl) return;
+        if (!Array.isArray(comments) || comments.length === 0) {
+          listEl.innerHTML = '<div class="text-[#B3CFE5]/80">No comments yet. Be the first to share your thoughts.</div>';
+          return;
+        }
+
+        listEl.innerHTML = '';
+        comments.forEach((c) => {
+          const createdAt = c.createdAt && typeof c.createdAt.toDate === 'function' ? c.createdAt.toDate() : (c.createdAt ? new Date(c.createdAt) : null);
+          const wrapper = document.createElement('div');
+          wrapper.className = 'bg-white/5 border border-white/10 rounded-xl p-4';
+          wrapper.innerHTML = `
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-8 h-8 rounded-full overflow-hidden bg-[#4A7FA7]/40">
+                ${c.authorPhotoURL ? `<img src="${c.authorPhotoURL}" alt="" class="w-full h-full object-cover">` : ''}
+              </div>
+              <div class="text-sm text-[#B3CFE5] font-medium">${(c.authorName || 'User')}</div>
+              <div class="ml-auto text-xs text-[#B3CFE5]/70">${formatRelativeTime(createdAt)}</div>
+            </div>
+            <p class="text-[#E3F2FD]/85 whitespace-pre-wrap"></p>
+          `;
+          // Use textContent to avoid injecting HTML
+          wrapper.querySelector('p').textContent = c.content || '';
+          listEl.appendChild(wrapper);
+        });
+      }
+
+      function getEffectivePostId(argPostId) {
+        if (argPostId) return argPostId;
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const id = params.get('id');
+          return id || '';
+        } catch (_) {
+          return '';
+        }
+      }
+
+      function setupPostHandler(postId) {
+        const input = document.getElementById('comment-input');
+        const btn = document.getElementById('post-comment-btn');
+        if (!btn || !input) return;
+
+        const postAction = async () => {
+          const user = firebase.auth().currentUser;
+          if (!user) {
+            alert('Please sign in to post a comment.');
+            return;
+          }
+          const content = (input.value || '').trim();
+          if (!content) return;
+          btn.disabled = true;
+          try {
+            await firebase.firestore().collection('comments').add({
+              postId: postId,
+              authorId: user.uid,
+              authorName: user.displayName || user.email?.split('@')[0] || 'User',
+              authorPhotoURL: user.photoURL || '',
+              content: content,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            });
+            input.value = '';
+          } catch (err) {
+            console.error('Error posting comment:', err);
+            alert('Failed to post comment. Please try again.');
+          } finally {
+            btn.disabled = false;
+          }
+        };
+
+        btn.addEventListener('click', postAction);
+        input.addEventListener('keydown', (e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            postAction();
+          }
+        });
+      }
+
+      function subscribeToComments(postId) {
+        const listEl = document.getElementById('comments-list');
+        if (!listEl || !postId) return;
+
+        if (typeof __commentsUnsub === 'function') {
+          try { __commentsUnsub(); } catch (e) {}
+          __commentsUnsub = null;
+        }
+
+        // Real-time listener without orderBy to avoid index requirements
+        __commentsUnsub = firebase.firestore()
+          .collection('comments')
+          .where('postId', '==', postId)
+          .onSnapshot((snap) => {
+            const items = [];
+            snap.forEach((doc) => items.push({ id: doc.id, ...doc.data() }));
+            // Sort client-side by createdAt desc
+            items.sort((a, b) => {
+              const ad = a.createdAt && typeof a.createdAt.toDate === 'function' ? a.createdAt.toDate().getTime() : 0;
+              const bd = b.createdAt && typeof b.createdAt.toDate === 'function' ? b.createdAt.toDate().getTime() : 0;
+              return bd - ad;
+            });
+            renderComments(listEl, items);
+          }, (error) => {
+            console.error('Comments listener error:', error);
+          });
+        return __commentsUnsub;
+      }
+
+      // Expose for combined.min.js
+      window.initializeCommentsAndReactions = function (incomingPostId) {
+        const postId = getEffectivePostId(incomingPostId);
+        if (!postId) {
+          console.warn('No postId found for comments initialization');
+          return;
+        }
+
+        if (__commentsInitDone) {
+          return;
+        }
+
+        // Enable/disable post UI based on auth state
+        firebase.auth().onAuthStateChanged(() => {
+          const input = document.getElementById('comment-input');
+          const btn = document.getElementById('post-comment-btn');
+          if (input && btn) {
+            const signedIn = !!firebase.auth().currentUser;
+            input.disabled = !signedIn;
+            btn.disabled = !signedIn;
+            input.placeholder = signedIn ? 'Share your thoughts...' : 'Sign in to comment';
+          }
+        });
+
+        setupPostHandler(postId);
+        subscribeToComments(postId);
+        __commentsInitDone = true;
+      };
+
+      // Fallback: if combined.min.js does not invoke initializer, run it ASAP after DOM is ready
+      window.addEventListener('DOMContentLoaded', function () {
+        if (!__commentsInitDone) {
+          const pid = getEffectivePostId();
+          if (pid) {
+            try { window.initializeCommentsAndReactions(pid); } catch (e) { /* noop */ }
+          }
+        }
+      });
+    })();
+  </script>
   <script src="combined.min.js?v=1.8"></script>
 </body>
 
