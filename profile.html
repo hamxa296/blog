@@ -5,14 +5,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Profile - GIKI Chronicles</title>
-  <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico?v=1.8">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png?v=1.8">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png?v=1.8">
-  <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png?v=1.8">
-  <link rel="manifest" href="/site.webmanifest?v=1.8">
+  <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico?v=1.9">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png?v=1.9">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png?v=1.9">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png?v=1.9">
+  <link rel="manifest" href="/site.webmanifest?v=1.9">
 
   <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com?v=1.8"></script>
+  <script src="https://cdn.tailwindcss.com?v=1.9"></script>
 
   <!-- Apply saved theme ASAP -->
   <script>
@@ -25,7 +25,7 @@
     })();
   </script>
 
-  <link rel="stylesheet" href="styles.css?v=1.8">
+  <link rel="stylesheet" href="styles.css?v=1.9">
 
   <style>
     /* Reuse the site palette background overlays used on index/about */
@@ -57,6 +57,14 @@
     }
     .metric-card { transition: transform .2s ease; }
     .metric-card:hover { transform: translateY(-2px); }
+    /* Guest avatar fallback */
+    .guest-avatar {
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; height: 100%;
+      background: #4A7FA7; color: #ffffff;
+      font-weight: 800; font-size: 2rem;
+    }
+    @media (min-width: 768px) { .guest-avatar { font-size: 2.25rem; } }
   </style>
 </head>
 
@@ -70,23 +78,23 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
           </svg>
         </button>
-        <a href="index.html?v=1.8" class="flex flex-col items-center">
-          <img src="logo.png?v=1.8" alt="GIKI Chronicles Logo" class="h-16 w-auto">
+        <a href="index.html?v=1.9" class="flex flex-col items-center">
+          <img src="logo.png?v=1.9" alt="GIKI Chronicles Logo" class="h-16 w-auto">
           <span class="text-lg font-bold text-white mt-1">GIKI Chronicles</span>
         </a>
       </div>
 
       <div class="hidden md:flex items-center space-x-6 ml-auto">
-        <a href="about.html?v=1.8" class="text-white hover:text-[#4A7FA7] transition duration-300">About</a>
-        <a href="gallery.html?v=1.8" class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full"><span class="relative z-10">Gallery</span></a>
-        <a href="guide.html?v=1.8" class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full"><span class="relative z-10">Freshmen Guide</span></a>
-        <a href="calendar.html?v=1.8" class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full"><span class="relative z-10">Calendar</span></a>
+        <a href="about.html?v=1.9" class="text-white hover:text-[#4A7FA7] transition duration-300">About</a>
+        <a href="gallery.html?v=1.9" class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full"><span class="relative z-10">Gallery</span></a>
+        <a href="guide.html?v=1.9" class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full"><span class="relative z-10">Freshmen Guide</span></a>
+        <a href="calendar.html?v=1.9" class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full"><span class="relative z-10">Calendar</span></a>
 
         <div id="guest-nav" class="flex items-center space-x-6">
-          <a href="login.html?v=1.8" class="text-white hover:text-[#4A7FA7] transition duration-300">Login</a>
+          <a href="login.html?v=1.9" class="text-white hover:text-[#4A7FA7] transition duration-300">Login</a>
         </div>
         <div id="user-nav" class="hidden md:flex items-center space-x-6">
-          <a href="profile.html?v=1.8" class="text-white hover:text-[#4A7FA7] transition duration-300">My Profile</a>
+          <a href="profile.html?v=1.9" class="text-white hover:text-[#4A7FA7] transition duration-300">My Profile</a>
         </div>
       </div>
     </nav>
@@ -119,7 +127,7 @@
               </svg>
               Home
             </a>
-            <a href="launching-soon.html?v=1.8"
+            <a href="launching-soon.html?v=1.9"
               class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -128,7 +136,7 @@
               </svg>
               All Posts
             </a>
-            <a href="about.html?v=1.8"
+            <a href="about.html?v=1.9"
               class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -145,7 +153,7 @@
               </svg>
               Contact
             </a>
-            <a href="gallery.html?v=1.8"
+            <a href="gallery.html?v=1.9"
               class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -162,7 +170,7 @@
         <div>
           <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">Resources</h3>
           <div class="space-y-2">
-            <a href="guide.html?v=1.8"
+            <a href="guide.html?v=1.9"
               class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -186,7 +194,7 @@
 
               <!-- Mobile Calendar Dropdown Menu -->
               <div id="sidebar-calendar-dropdown" class="hidden pl-8 mt-2 space-y-1">
-                <a href="calendar.html?v=1.8"
+                <a href="calendar.html?v=1.9"
                   class="block px-3 py-2 text-sm text-white/80 hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
                   <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -194,7 +202,7 @@
                   </svg>
                   Calendar View
                 </a>
-                <a href="calendar.html?v=1.8#events"
+                <a href="calendar.html?v=1.9#events"
                   class="block px-3 py-2 text-sm text-white/80 hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
                   <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -203,7 +211,7 @@
                   </svg>
                   View Events
                 </a>
-                <a href="calendar.html?v=1.8#submit"
+                <a href="calendar.html?v=1.9#submit"
                   class="block px-3 py-2 text-sm text-white/80 hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
                   <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -222,7 +230,7 @@
         <div id="sidebar-guest-nav">
           <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">Account</h3>
           <div class="space-y-2">
-            <a href="login.html?v=1.8"
+            <a href="login.html?v=1.9"
               class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -243,7 +251,7 @@
         <div id="sidebar-user-nav" class="hidden">
           <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">My Account</h3>
           <div class="space-y-2">
-            <a href="profile.html?v=1.8"
+            <a href="profile.html?v=1.9"
               class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -251,7 +259,7 @@
               </svg>
               My Profile
             </a>
-            <a href="launching-soon.html?v=1.8"
+            <a href="launching-soon.html?v=1.9"
               class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -292,7 +300,8 @@
       <div class="flex items-start md:items-center gap-6 md:gap-8 flex-col md:flex-row">
         <div class="flex-shrink-0">
           <div id="pfp" class="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden ring-2 ring-[#4A7FA7]">
-            <img id="pfp-img" src="pfps/pfp1.jpg" alt="Profile" class="w-full h-full object-cover">
+            <div id="guest-avatar" class="guest-avatar">G</div>
+            <img id="pfp-img" src="" alt="Profile" class="w-full h-full object-cover" style="display:none;">
           </div>
         </div>
         <div class="flex-1">
@@ -346,23 +355,49 @@
     </section>
   </main>
 
+  <!-- Edit Profile Modal -->
+  <div id="edit-profile-modal" class="fixed inset-0 modal-backdrop hidden">
+    <div class="rounded-3xl max-w-lg w-[90%] p-6 theme-surface">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold">Edit Profile</h2>
+        <button id="edit-profile-close" class="text-sm text-[#B3CFE5] hover:text-white">Close</button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm mb-1">Display Name</label>
+          <input id="edit-display-name" type="text" class="w-full rounded-md border border-gray-300 px-3 py-2 bg-transparent" placeholder="Your name" />
+        </div>
+        <div>
+          <label class="block text-sm mb-1">Bio</label>
+          <textarea id="edit-bio" rows="4" class="w-full rounded-md border border-gray-300 px-3 py-2 bg-transparent" placeholder="Tell us about yourself"></textarea>
+        </div>
+      </div>
+      <div class="mt-6 flex justify-end gap-3">
+        <button id="edit-profile-save" class="px-4 py-2 rounded-full bg-[#4A7FA7] text-white hover:bg-[#1A3D63] transition">Save</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js?v=1.8"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js?v=1.8"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js?v=1.8"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js?v=1.9"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js?v=1.9"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js?v=1.9"></script>
 
   <!-- Secure Firebase Config (prod-ready variant used elsewhere) -->
   <script src="firebase-config-vercel.js"></script>
 
   <!-- Theme manager -->
-  <script src="theme-manager.js?v=1.8"></script>
+  <script src="theme-manager.js?v=1.9"></script>
 
   <!-- Shared bundle (contains sidebar/menu handlers etc.) -->
-  <script src="combined.min.js?v=1.8"></script>
-  <script src="notifications.js?v=1.8"></script>
-  <script src="firebase-error-handler.js?v=1.8"></script>
+  <script src="combined.min.js?v=1.9"></script>
+  <script src="notifications.js?v=1.9"></script>
+  <script src="firebase-error-handler.js?v=1.9"></script>
 
   <script>
+    // In-flight guards to prevent duplicate rendering from concurrent calls
+    let postsLoadVersion = 0;
+    let bookmarksLoadVersion = 0;
     // Simple tab logic
     document.addEventListener('DOMContentLoaded', function () {
       const tabs = document.querySelectorAll('.tab-btn');
@@ -376,6 +411,9 @@
         tabs.forEach(t => t.classList.add('border-transparent'));
         tabs.forEach(t => { if (t.dataset.tab === tab) { t.classList.remove('border-transparent'); t.classList.add('border-[#4A7FA7]'); } });
         Object.keys(panels).forEach(k => panels[k].classList.toggle('hidden', k !== tab));
+        if (tab === 'bookmarks') {
+          loadBookmarks();
+        }
       }
       tabs.forEach(btn => btn.addEventListener('click', () => activate(btn.dataset.tab)));
       activate('posts');
@@ -384,27 +422,48 @@
     // Load profile info and stats. Uses Firebase if available; falls back to placeholders.
     async function loadProfile() {
       try {
-        if (!firebase || !firebase.apps || !firebase.apps.length) return;
+        if (!firebase || !firebase.apps || !firebase.apps.length) {
+          // Ensure guest avatar shows when Firebase isn't present
+          const guestEl = document.getElementById('guest-avatar');
+          const imgEl = document.getElementById('pfp-img');
+          if (guestEl) guestEl.style.display = '';
+          if (imgEl) imgEl.style.display = 'none';
+          return;
+        }
         const auth = firebase.auth();
         const db = firebase.firestore();
 
         await new Promise(resolve => setTimeout(resolve, 100));
         const user = auth.currentUser;
 
+        const guestEl = document.getElementById('guest-avatar');
+        const imgEl = document.getElementById('pfp-img');
+
         if (!user) {
-          // Guest fallback
+          // Guest fallback visuals
           document.getElementById('profile-name').textContent = 'Welcome, Guest!';
           document.getElementById('member-since').textContent = 'Login to view your profile';
+          if (guestEl) guestEl.style.display = '';
+          if (imgEl) {
+            imgEl.removeAttribute('src');
+            imgEl.style.display = 'none';
+          }
           return;
         }
+
+        // Authenticated user visuals
+        if (guestEl) guestEl.style.display = 'none';
+        if (imgEl) imgEl.style.display = '';
 
         document.getElementById('profile-name').textContent = user.displayName || user.email || 'Member';
         const since = user.metadata && (user.metadata.creationTime || '').split(' ')[0];
         document.getElementById('member-since').textContent = since ? `Member since ${new Date(since).getFullYear()}` : 'Member';
         if (user.photoURL) {
-          const img = document.getElementById('pfp-img');
-          img.src = user.photoURL;
-          img.referrerPolicy = 'no-referrer';
+          imgEl.src = user.photoURL;
+          imgEl.referrerPolicy = 'no-referrer';
+        } else {
+          // Use a neutral local fallback image only for logged-in users without photo
+          imgEl.src = 'pfps/pfp1.jpg';
         }
 
         // Fetch profile doc (bio etc.)
@@ -413,42 +472,44 @@
           const snap = await docRef.get();
           const bio = (snap.exists && snap.data().bio) ? snap.data().bio : 'No bio yet.';
           document.getElementById('profile-bio').textContent = bio;
+          // Prefill edit modal
+          const dn = user.displayName || '';
+          const bioInput = document.getElementById('edit-bio');
+          const dnInput = document.getElementById('edit-display-name');
+          if (dnInput) dnInput.value = dn;
+          if (bioInput) bioInput.value = bio !== 'No bio yet.' ? bio : '';
         } catch (_) {}
 
-        // Aggregate stats (best-effort, keeps page working without data)
+        // Version this load to prevent duplicate rendering from concurrent calls
+        // Aggregate stats (best-effort)
         let posts = 0, comments = 0, reactions = 0;
-        try {
-          const postsSnap = await db.collection('posts').where('authorId', '==', user.uid).get();
-          posts = postsSnap.size;
-        } catch (_) {}
-        try {
-          const commentsSnap = await db.collection('comments').where('authorId', '==', user.uid).get();
-          comments = commentsSnap.size;
-        } catch (_) {}
-        try {
-          const reactionsSnap = await db.collection('reactions').where('targetAuthorId', '==', user.uid).get();
-          reactions = reactionsSnap.size;
-        } catch (_) {}
+        try { const postsSnap = await db.collection('posts').where('authorId', '==', user.uid).get(); posts = postsSnap.size; } catch (_) {}
+        try { const commentsSnap = await db.collection('comments').where('authorId', '==', user.uid).get(); comments = commentsSnap.size; } catch (_) {}
+        try { const reactionsSnap = await db.collection('reactions').where('targetAuthorId', '==', user.uid).get(); reactions = reactionsSnap.size; } catch (_) {}
 
         document.getElementById('posts-count').textContent = posts;
         document.getElementById('comments-count').textContent = comments;
         document.getElementById('reactions-count').textContent = reactions;
 
-        // Load lists (limit for performance)
+        // Load lists (limit for performance) with version guard
+        const myVersion = ++postsLoadVersion;
         const postsList = document.getElementById('posts-list');
         postsList.innerHTML = '';
         try {
           const qs = await db.collection('posts').where('authorId', '==', user.uid).orderBy('createdAt', 'desc').limit(9).get();
+          if (myVersion !== postsLoadVersion) return; // stale
           if (qs.empty) {
-            document.getElementById('posts-loading').textContent = 'No posts yet.';
+            const pl = document.getElementById('posts-loading');
+            if (pl) pl.textContent = 'No posts yet.';
           } else {
-            document.getElementById('posts-loading').remove();
+            const loading = document.getElementById('posts-loading');
+            if (loading) loading.remove();
             qs.forEach(doc => {
               const p = doc.data();
               const card = document.createElement('a');
               card.href = `post.html?id=${doc.id}`;
               card.className = 'block rounded-lg theme-surface p-4 hover:shadow-md';
-              card.innerHTML = `<div class="font-semibold line-clamp-1">${p.title || 'Untitled Post'}</div><div class="text-sm text-gray-500 mt-1 line-clamp-2">${p.excerpt || ''}</div>`;
+              card.innerHTML = `<div class=\"font-semibold line-clamp-1\">${p.title || 'Untitled Post'}</div><div class=\"text-sm text-gray-500 mt-1 line-clamp-2\">${p.excerpt || ''}</div>`;
               postsList.appendChild(card);
             });
           }
@@ -459,8 +520,137 @@
       }
     }
 
+    // Load bookmarks for current user; supports multiple schemas gracefully
+    async function loadBookmarks() {
+      try {
+        if (!firebase || !firebase.apps || !firebase.apps.length) return;
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const user = auth.currentUser;
+        const list = document.getElementById('bookmarks-list');
+        const loading = document.getElementById('bookmarks-loading');
+        if (!list) return;
+        const myVersion = ++bookmarksLoadVersion;
+        list.innerHTML = '';
+        if (!user) {
+          if (loading) loading.textContent = 'Login to view bookmarks.';
+          return;
+        }
+
+        let postIds = [];
+        // Try users/{uid}/bookmarks subcollection
+        try {
+          const sub = await db.collection('users').doc(user.uid).collection('bookmarks').orderBy('createdAt', 'desc').limit(24).get();
+          if (!sub.empty) postIds = sub.docs.map(d => d.data().postId).filter(Boolean);
+        } catch (_) {}
+        // Fallback: root bookmarks collection
+        if (postIds.length === 0) {
+          try {
+            const root = await db.collection('bookmarks').where('userId', '==', user.uid).orderBy('createdAt', 'desc').limit(24).get();
+            if (!root.empty) postIds = root.docs.map(d => (d.data().postId || d.data().postRefId)).filter(Boolean);
+          } catch (_) {}
+        }
+
+        if (myVersion !== bookmarksLoadVersion) return; // stale
+        if (postIds.length === 0) {
+          if (loading) loading.textContent = 'No bookmarks yet.';
+          return;
+        }
+        if (loading) loading.remove();
+
+        // Fetch posts
+        for (const pid of postIds) {
+          try {
+            const snap = await db.collection('posts').doc(pid).get();
+            if (myVersion !== bookmarksLoadVersion) return; // stale
+            if (!snap.exists) continue;
+            const p = snap.data();
+            const a = document.createElement('a');
+            a.href = `post.html?id=${snap.id}`;
+            a.className = 'block rounded-lg theme-surface p-4 hover:shadow-md';
+            a.innerHTML = `<div class=\"font-semibold line-clamp-1\">${p.title || 'Untitled Post'}</div><div class=\"text-sm text-gray-500 mt-1 line-clamp-2\">${p.excerpt || ''}</div>`;
+            list.appendChild(a);
+          } catch (_) {}
+        }
+      } catch (e) {
+        console.warn('Bookmarks load failed:', e);
+      }
+    }
+
     document.getElementById('refresh-stats').addEventListener('click', loadProfile);
     document.addEventListener('DOMContentLoaded', loadProfile);
+
+    // Refresh stats automatically when auth state changes (e.g., first login)
+    (function attachAuthListener() {
+      let attempts = 0;
+      let lastUserId = null;
+      function safeAttach() {
+        try {
+          if (window.firebase && firebase.apps && firebase.apps.length && firebase.auth) {
+            firebase.auth().onAuthStateChanged(function(user) {
+              const newId = user ? user.uid : null;
+              if (newId !== lastUserId) {
+                lastUserId = newId;
+                loadProfile();
+                // Also refresh bookmarks if the tab is active
+                const tabBookmarks = document.getElementById('tab-bookmarks');
+                if (tabBookmarks && !tabBookmarks.classList.contains('hidden')) {
+                  loadBookmarks();
+                }
+              }
+            });
+            return true;
+          }
+        } catch (_) {}
+        return false;
+      }
+      if (!safeAttach()) {
+        const t = setInterval(function() {
+          attempts++;
+          if (safeAttach() || attempts > 50) clearInterval(t);
+        }, 100);
+      }
+    })();
+
+    // Wire buttons
+    document.getElementById('bookmarks-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      // Switch to bookmarks tab (this will load via activate)
+      const btn = document.querySelector('[data-tab="bookmarks"]');
+      if (btn) btn.click();
+    });
+
+    // Edit Profile modal controls
+    (function() {
+      const openBtn = document.getElementById('edit-profile-btn');
+      const modal = document.getElementById('edit-profile-modal');
+      const closeBtn = document.getElementById('edit-profile-close');
+      const saveBtn = document.getElementById('edit-profile-save');
+      function open() { if (modal) { modal.classList.remove('hidden'); if (window.__showModal) window.__showModal(modal); } }
+      function close() { if (modal) { if (window.__hideModal) window.__hideModal(modal); else modal.classList.add('hidden'); } }
+      if (openBtn) openBtn.addEventListener('click', function(e){ e.preventDefault(); open(); });
+      if (closeBtn) closeBtn.addEventListener('click', function(e){ e.preventDefault(); close(); });
+      if (saveBtn) saveBtn.addEventListener('click', async function(){
+        try {
+          if (!firebase || !firebase.apps || !firebase.apps.length) return close();
+          const auth = firebase.auth();
+          const db = firebase.firestore();
+          const user = auth.currentUser;
+          if (!user) return close();
+          const name = (document.getElementById('edit-display-name').value || '').trim();
+          const bio = (document.getElementById('edit-bio').value || '').trim();
+          if (name && user.updateProfile) {
+            await user.updateProfile({ displayName: name });
+          }
+          await db.collection('profiles').doc(user.uid).set({ bio: bio || '' }, { merge: true });
+          await loadProfile();
+          close();
+        } catch (e) {
+          console.warn('Save profile failed', e);
+          close();
+        }
+      });
+    })();
   </script>
 
 </body>

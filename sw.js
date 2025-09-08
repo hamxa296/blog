@@ -3,8 +3,8 @@
  * Provides basic offline functionality without complex message handling
  */
 
-const CACHE_NAME = 'giki-chronicles-v1.4';
-const STATIC_CACHE = 'giki-static-v1.4';
+const CACHE_NAME = 'giki-chronicles-v1.5';
+const STATIC_CACHE = 'giki-static-v1.5';
 
 // Files to cache immediately (only local files)
 const STATIC_FILES = [
@@ -64,49 +64,35 @@ self.addEventListener('fetch', event => {
     // Skip external resources to avoid CORS issues
     if (!request.url.startsWith(self.location.origin)) return;
     
-    event.respondWith(
-        caches.match(request)
-            .then(cachedResponse => {
-                        if (cachedResponse) {
-            return cachedResponse;
+    // Network-first for HTML documents to avoid stale UI
+    if (request.destination === 'document' || request.headers.get('accept')?.includes('text/html')) {
+      event.respondWith((async () => {
+        try {
+          const fresh = await fetch(request, { cache: 'no-store' });
+          const respClone = fresh.clone();
+          caches.open(STATIC_CACHE).then(cache => cache.put(request, respClone)).catch(()=>{});
+          return fresh;
+        } catch (err) {
+          const cached = await caches.match(request);
+          if (cached) return cached;
+          return new Response('<html><body><h1>Offline</h1><p>Please check your internet connection.</p></body></html>', { headers: { 'Content-Type': 'text/html' } });
         }
-                
-                return fetch(request)
-                    .then(response => {
-                        // Don't cache failed responses
-                        if (!response || response.status !== 200) {
-                            return response;
-                        }
-                        
-                        // Clone the response before caching
-                        const responseToCache = response.clone();
-                        
-                        caches.open(STATIC_CACHE)
-                            .then(cache => {
-                                cache.put(request, responseToCache);
-                            })
-                            .catch(error => {
-                                console.warn('Service Worker: Failed to cache response:', error);
-                            });
-                        
-                        return response;
-                    })
-                    .catch(error => {
-                        console.warn('Service Worker: Fetch failed, returning offline response:', error);
-                        
-                        // Return a simple offline response for navigation requests
-                        if (request.destination === 'document') {
-                            return new Response(
-                                '<html><body><h1>Offline</h1><p>Please check your internet connection.</p></body></html>',
-                                {
-                                    headers: { 'Content-Type': 'text/html' }
-                                }
-                            );
-                        }
-                        
-                        throw error;
-                    });
-            })
+      })());
+      return;
+    }
+
+    // Cache-first for other GETs
+    event.respondWith(
+      caches.match(request).then(cached => {
+        if (cached) return cached;
+        return fetch(request).then(response => {
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(STATIC_CACHE).then(cache => cache.put(request, clone)).catch(()=>{});
+          }
+          return response;
+        })
+      })
     );
 });
 
