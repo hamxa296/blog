@@ -2353,6 +2353,59 @@
        modal.classList.remove('hidden');
      };
    </script>
+
+  <!-- Write CTA: invite users to contribute -->
+  <section class="container mx-auto px-6 pb-16">
+    <div class="mt-10 bg-gradient-to-r from-[#1A3D63] to-[#0A1931] rounded-2xl border border-white/20 shadow-xl overflow-hidden">
+      <div class="p-8 md:p-12 text-center">
+        <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3">Got a story to share?</h2>
+        <p class="text-[#B3CFE5] text-base md:text-lg mb-6">Join GIKI Chronicles and turn your ideas into posts read across campus.</p>
+        <button id="write-cta-button"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#4A7FA7] hover:bg-[#0A1931] text-white font-semibold border border-white/20 transition-colors">
+          ✍️ Write a Post
+        </button>
+        <p id="write-cta-hint" class="mt-3 text-sm text-white/70 hidden">Please log in to start writing.</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (function(){
+      var button = document.getElementById('write-cta-button');
+      var hint = document.getElementById('write-cta-hint');
+      if (!button) return;
+
+      function attachHandler(currentUser){
+        // Replace any previous listeners to avoid duplicates
+        var cloned = button.cloneNode(true);
+        button.parentNode.replaceChild(cloned, button);
+        var target = document.getElementById('write-cta-button');
+        if (!target) return;
+
+        target.addEventListener('click', function(){
+          var userNow = (typeof auth !== 'undefined' && auth && auth.currentUser) ? auth.currentUser : currentUser;
+          if (userNow) {
+            window.location.href = 'write.html?v=1.8';
+          } else {
+            if (hint) hint.classList.remove('hidden');
+            // Redirect to login with return URL
+            var returnUrl = encodeURIComponent('write.html?v=1.8');
+            window.location.href = 'login.html?v=1.8&next=' + returnUrl;
+          }
+        });
+      }
+
+      // If Firebase auth is available, bind based on auth state
+      if (typeof auth !== 'undefined' && auth && typeof auth.onAuthStateChanged === 'function') {
+        auth.onAuthStateChanged(function(user){
+          attachHandler(user);
+        });
+      } else {
+        // Fallback: attach generic handler that prompts login
+        attachHandler(null);
+      }
+    })();
+  </script>
 </body>
 
 </html>
