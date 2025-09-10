@@ -18,7 +18,7 @@
     <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Lora:wght@400;600;700&display=swap&v=1.8" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Lora:wght@400;600;700&family=Rock+Salt&family=Special+Elite&family=Indie+Flower&display=swap&v=1.8" rel="stylesheet">
 
     <!-- Quill Rich Text Editor CSS -->
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-dev.4/dist/quill.snow.css?v=2.0.0-dev.4" rel="stylesheet">
@@ -90,13 +90,29 @@
         .ql-toolbar {
             border-top-left-radius: 0.75rem;
             border-top-right-radius: 0.75rem;
-            border-color: #e5e7eb !important;
+            border-color: rgba(255,255,255,0.3) !important;
+            background: rgba(10,25,49,0.8);
+            color: #EAF6FF;
+        }
+
+        .ql-toolbar .ql-picker, .ql-toolbar button {
+            color: #EAF6FF !important;
+        }
+        .ql-toolbar .ql-stroke {
+            stroke: #EAF6FF !important;
+        }
+        .ql-toolbar .ql-fill {
+            fill: #EAF6FF !important;
         }
 
         .ql-container {
             border-bottom-left-radius: 0.75rem;
             border-bottom-right-radius: 0.75rem;
-            border-color: #e5e7eb !important;
+            border-color: rgba(255,255,255,0.3) !important;
+            background: rgba(255,255,255,0.96);
+        }
+        .ql-editor {
+            color: #0A1931;
         }
 
         /* Image upload styles */
@@ -121,6 +137,20 @@
         
         .preview-image {
             transition: opacity 0.3s ease;
+        }
+        
+        /* Handwriting title style to match calendar/gallery */
+        .handwriting-title {
+            font-family: 'Rock Salt', 'Special Elite', 'Indie Flower', cursive;
+        }
+        
+        /* Force title textbox to navy translucent background */
+        #post-title {
+            background-color: rgba(10, 25, 49, 0.82) !important;
+            color: #FFFFFF !important;
+        }
+        #post-title::placeholder {
+            color: rgba(234, 246, 255, 0.75) !important;
         }
         
         /* Theme-aware button styling */
@@ -191,17 +221,17 @@
                 <a href="about.html?v=1.8" class="text-white hover:text-[#4A7FA7] transition duration-300">About</a>
                 <!-- <a href="contact.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Contact</a> -->
                 <a href="gallery.html?v=1.8"
-                  class="relative px-6 py-2.5 text-white font-semibold border-2 border-white rounded-full overflow-hidden hover:text-[#1A3D63] transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-white before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+                  class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
                   <span class="relative z-10">Gallery</span>
                 </a>
 
                 <a href="guide.html?v=1.8"
-                  class="relative px-6 py-2.5 text-white font-semibold border-2 border-white rounded-full overflow-hidden hover:text-[#1A3D63] transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-white before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+                  class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
                   <span class="relative z-10">Freshmen Guide</span>
                 </a>
 
                 <a href="calendar.html?v=1.8"
-                  class="relative px-6 py-2.5 text-white font-semibold border-2 border-white rounded-full overflow-hidden hover:text-[#1A3D63] transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-white before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+                  class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
                   <span class="relative z-10">Calendar</span>
                 </a>
                 <!-- GUEST NAVIGATION (DESKTOP) -->
@@ -226,9 +256,10 @@
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-12">
         <div class="text-center max-w-3xl mx-auto mb-12">
-            <h2 id="page-title" class="text-5xl font-extrabold tracking-tight">Blog Editor</h2>
-            <p id="page-subtitle" class="mt-4 text-lg text-gray-500">
-                Your one-stop hub for student life, engineering marvels, and campus tales at GIKI Institute.
+            <h2 id="page-title" class="text-4xl md:text-5xl font-bold handwriting-title mb-4 text-white">Life &amp; Letters at GIKI</h2>
+            <div class="mx-auto h-1.5 w-28 rounded-full bg-gradient-to-r from-[#4A7FA7] via-[#B3CFE5] to-[#4A7FA7] mb-5"></div>
+            <p id="page-subtitle" class="mt-0 text-base md:text-lg text-[#B3CFE5] font-semibold">
+                From first lectures to final lights-out—your spark, our ink, the GIKI story.
             </p>
         </div>
 
@@ -236,38 +267,50 @@
             <!-- Hidden input to store the post ID when editing -->
             <input type="hidden" id="post-id">
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-10 max-w-7xl mx-auto">
 
                 <!-- Left Column: Title and Content -->
                 <div class="lg:col-span-2 space-y-6">
                     <input type="text" id="post-title" name="title" placeholder="Your Amazing Blog Title..."
-                        class="w-full text-4xl font-extrabold border-0 focus:ring-0 p-0 bg-transparent" required>
+                        class="w-full text-4xl font-extrabold px-4 py-3 rounded-lg border border-white/30 bg-[#0A1931]/70 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#4A7FA7]/40" required>
 
-                    <div class="bg-white rounded-xl shadow-lg">
+                    <div class="bg-[#0A1931]/70 backdrop-blur-md border border-white/30 rounded-2xl shadow-xl">
                         <div id="editor-container">
                             <!-- Quill editor will be initialized here by app.js -->
                         </div>
                     </div>
+
+                    <!-- Actions: Desktop/Tablet under editor; hidden on mobile -->
+                    <div class="w-full hidden md:grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button type="submit" id="submit-post-button"
+                            class="w-full bg-[#4A7FA7] hover:bg-[#0A1931] text-white font-bold py-3 px-4 rounded-full transition duration-300 text-lg">
+                            Submit for Review
+                        </button>
+                        <button type="button" id="preview-post-button"
+                            class="w-full bg-white/10 hover:bg-white/20 text-white font-semibold py-3 px-4 rounded-full transition duration-300 border border-white/20 theme-aware-button">
+                            Preview
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Right Column: Details, Tags, and Actions -->
-                <div class="space-y-6">
-                    <div class="bg-white rounded-xl shadow-lg">
-                        <div class="p-6 border-b">
-                            <h3 class="text-xl font-semibold">Post Details</h3>
+                <div class="space-y-6 lg:sticky lg:top-24 h-fit">
+                    <div class="bg-[#0A1931]/70 backdrop-blur-md border border-white/30 rounded-xl md:rounded-2xl shadow-lg md:shadow-xl">
+                        <div class="p-4 md:p-6 border-b border-white/30">
+                            <h3 class="text-lg md:text-xl font-semibold">Post Details</h3>
                         </div>
-                        <div class="p-6 space-y-4">
+                        <div class="p-4 md:p-6 space-y-3 md:space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Featured Photo</label>
+                                <label class="block text-sm font-medium text-white/80 mb-1">Featured Photo</label>
                                 
                                 <!-- Image Upload Options -->
                                 <div class="space-y-3">
                                     <!-- Option Tabs -->
-                                    <div class="flex border border-gray-300 rounded-lg overflow-hidden">
+                                    <div class="flex border border-white/20 rounded-lg overflow-hidden">
                                         <button type="button" id="url-tab" class="flex-1 py-2 px-3 text-sm font-medium bg-blue-600 text-white transition-colors">
                                             Add URL
                                         </button>
-                                        <button type="button" id="upload-tab" class="flex-1 py-2 px-3 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+                                        <button type="button" id="upload-tab" class="flex-1 py-2 px-3 text-sm font-medium bg-white/10 text-white hover:bg-white/20 transition-colors">
                                             Upload Image
                                         </button>
                                     </div>
@@ -276,39 +319,39 @@
                                     <div id="url-section" class="space-y-2">
                                         <input type="url" id="post-photo-url" name="photoUrl"
                                             placeholder="https://example.com/photo.jpg"
-                                            class="w-full p-2 border border-gray-300 rounded-lg">
-                                        <p class="text-xs text-gray-500">Paste a direct link to an image</p>
+                                            class="w-full p-2 border border-white/30 rounded-lg bg-white/95 text-[#0A1931] placeholder-gray-500 text-sm md:text-base">
+                                        <p class="text-xs text-white/70">Paste a direct link to an image</p>
                                     </div>
                                     
                                     <!-- Upload Section -->
                                     <div id="upload-section" class="space-y-3 hidden">
-                                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-400 transition-colors">
+                                        <div class="border-2 border-dashed border-white/30 rounded-lg p-4 text-center hover:border-blue-400 hover:bg-white/10 transition-colors">
                                             <input type="file" id="post-photo-file" accept="image/*" class="hidden">
                                             <label for="post-photo-file" class="cursor-pointer">
-                                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                                <svg class="mx-auto h-12 w-12 text-white/70" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                                                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                                 </svg>
-                                                <p class="mt-2 text-sm text-gray-600">Click to upload an image</p>
-                                                <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                                                <p class="mt-2 text-sm text-white/80">Click to upload an image</p>
+                                                <p class="text-xs text-white/60">PNG, JPG, GIF up to 10MB</p>
                                             </label>
                                         </div>
                                         
                                         <!-- Upload Progress -->
                                         <div id="upload-progress" class="hidden">
                                             <div class="flex items-center space-x-2">
-                                                <div class="flex-1 bg-gray-200 rounded-full h-2">
+                                                <div class="flex-1 bg-white/20 rounded-full h-2">
                                                     <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
                                                 </div>
-                                                <span id="progress-text" class="text-sm text-gray-600">0%</span>
+                                                <span id="progress-text" class="text-sm text-white/80">0%</span>
                                             </div>
-                                            <p id="upload-status" class="text-sm text-gray-600 mt-1">Preparing upload...</p>
+                                            <p id="upload-status" class="text-sm text-white/80 mt-1">Preparing upload...</p>
                                         </div>
                                         
                                         <!-- Uploaded Image Preview -->
                                         <div id="upload-preview" class="hidden">
                                             <img id="preview-image" src="" alt="Preview" class="w-full h-32 object-cover rounded-lg">
                                             <div class="flex justify-between items-center mt-2">
-                                                <span id="uploaded-url" class="text-sm text-gray-600 truncate"></span>
+                                                <span id="uploaded-url" class="text-sm text-white/80 truncate"></span>
                                                 <button type="button" id="remove-upload" class="text-red-600 hover:text-red-800 text-sm">Remove</button>
                                             </div>
                                         </div>
@@ -316,17 +359,17 @@
                                 </div>
                             </div>
                             <div>
-                                <label for="post-description" class="block text-sm font-medium text-gray-700 mb-1">Short
+                                <label for="post-description" class="block text-sm font-medium text-white/80 mb-1">Short
                                     Description</label>
                                 <textarea id="post-description" name="description" rows="3"
                                     placeholder="A brief, catchy description..."
-                                    class="w-full p-2 border border-gray-300 rounded-lg"></textarea>
+                                    class="w-full p-2 border border-white/30 rounded-lg bg-white/95 text-[#0A1931] placeholder-gray-500 text-sm md:text-base"></textarea>
                             </div>
                             <div>
-                                <label for="post-genre" class="block text-sm font-medium text-gray-700 mb-1">Genre /
+                                <label for="post-genre" class="block text-sm font-medium text-white/80 mb-1">Genre /
                                     Category</label>
                                 <select id="post-genre" name="genre"
-                                    class="w-full p-2 border border-gray-300 rounded-lg">
+                                    class="w-full p-2 border border-white/30 rounded-lg bg-white/95 text-[#0A1931] text-sm md:text-base">
                                     <option value="General">General</option>
                                     <option value="Engineering">Engineering</option>
                                     <option value="Campus Life">Campus Life</option>
@@ -337,26 +380,30 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-xl shadow-lg">
-                        <div class="p-6 border-b">
-                            <h3 class="text-xl font-semibold">Tags</h3>
+                    <div class="bg-[#0A1931]/70 backdrop-blur-md border border-white/30 rounded-xl md:rounded-2xl shadow-lg md:shadow-xl">
+                        <div class="p-4 md:p-6 border-b border-white/30">
+                            <h3 class="text-lg md:text-xl font-semibold">Tags</h3>
                         </div>
-                        <div class="p-6 space-y-4">
+                        <div class="p-4 md:p-6 space-y-3 md:space-y-4">
                             <input type="text" id="post-tags" name="tags" placeholder="e.g., AI, GIKI, Projects"
-                                class="w-full p-2 border border-gray-300 rounded-lg">
-                            <p class="text-xs text-gray-500">Separate tags with commas.</p>
+                                class="w-full p-2 border border-white/30 rounded-lg bg-white/95 text-[#0A1931] placeholder-gray-500 text-sm md:text-base">
+                            <p class="text-xs text-white/70">Separate tags with commas.</p>
                         </div>
                     </div>
 
-                    <div class="flex flex-col gap-4">
-                        <div id="form-message" class="text-center min-h-[1.25rem] py-2 px-3 rounded-lg transition-all duration-300"></div>
-                        <button type="submit" id="submit-post-button"
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full transition duration-300 text-lg">
-                            Submit for Review
-                        </button>
-                        <button type="button" id="preview-post-button"
-                            class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-full transition duration-300 border border-gray-300 theme-aware-button">
+                    <div id="form-message" class="text-center min-h-[1.25rem] py-2 px-3 rounded-lg transition-all duration-300"></div>
+                </div>
+
+                <!-- Mobile-only actions at the very end after details & tags -->
+                <div class="md:hidden col-span-1 space-y-4">
+                    <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <button type="button" id="preview-post-button-mobile"
+                            class="w-full bg-white/10 hover:bg-white/20 text-white font-semibold py-3 px-4 rounded-full transition duration-300 border border-white/20 theme-aware-button">
                             Preview
+                        </button>
+                        <button type="submit" id="submit-post-button-mobile"
+                            class="w-full bg-[#4A7FA7] hover:bg-[#0A1931] text-white font-bold py-3 px-4 rounded-full transition duration-300 text-lg">
+                            Submit for Review
                         </button>
                     </div>
                 </div>
