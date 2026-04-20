@@ -1140,25 +1140,14 @@
          async function initializePostsPage() {
            try {
              console.log('Starting posts page initialization...');
+
+             console.log('Waiting for Firebase...');
+             await waitForFirebase();
+             console.log('Firebase is ready!');
              
-             // Load sample posts immediately for fast display
-             console.log('Loading sample posts for immediate display...');
-             loadSamplePosts();
-             
-                          // Try to load real posts in background
-             try {
-               console.log('Waiting for Firebase...');
-               await waitForFirebase();
-               console.log('Firebase is ready!');
-               
-               console.log('Loading real posts from database...');
-               await loadApprovedPosts();
-               console.log('Real posts loaded successfully');
-               
-             } catch (firebaseError) {
-               console.log('Firebase loading failed, keeping sample posts:', firebaseError.message);
-               // Keep the sample posts that are already loaded
-             }
+             console.log('Loading real posts from database...');
+             await loadApprovedPosts();
+             console.log('Real posts loaded successfully');
              
              // Hide loading state
              document.getElementById('loading-state').classList.add('hidden');
@@ -1167,6 +1156,7 @@
            } catch (error) {
              console.error('Error initializing posts page:', error);
              document.getElementById('loading-state').classList.add('hidden');
+             document.getElementById('skeleton-loading').classList.add('hidden');
              
              // Show detailed error message for debugging
              const postsContainer = document.getElementById('posts-container');
@@ -1184,9 +1174,6 @@
                      <button onclick="location.reload()" class="px-6 py-2 bg-[#4A7FA7] text-white rounded-lg hover:bg-[#1A3D63] transition duration-300">
                        Try Again
                      </button>
-                       <button onclick="loadSamplePosts()" class="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition duration-300">
-                         Load Sample Posts
-                       </button>
                      </div>
                    </div>
                  </div>
@@ -1254,77 +1241,6 @@
            if (progressBar) {
              progressBar.style.width = percentage + '%';
            }
-         }
-
-         // Fallback function to load sample posts if Firebase fails
-         function loadSamplePosts() {
-           console.log('Loading sample posts as fallback...');
-           allPosts = [
-             {
-               id: 'sample-1',
-               title: 'Welcome to GIKI Chronicles',
-               description: 'This is a sample post to demonstrate the layout. In a real scenario, this would be loaded from the database. GIKI Chronicles is your gateway to campus stories, academic insights, and student experiences.',
-               authorName: 'GIKI Team',
-               authorId: 'sample-author',
-               genre: 'General',
-               photoUrl: null,
-               createdAt: { toDate: () => new Date() }
-             },
-             {
-               id: 'sample-2',
-               title: 'Campus Life at GIKI',
-               description: 'Discover what makes GIKI a unique place to study and grow. From academic excellence to vibrant campus culture, explore the diverse experiences that shape our community.',
-               authorName: 'Student Reporter',
-               authorId: 'sample-author-2',
-               genre: 'Campus Life',
-               photoUrl: null,
-               createdAt: { toDate: () => new Date() }
-             },
-             {
-               id: 'sample-3',
-               title: 'Academic Excellence at GIKI',
-               description: 'Learn about the rigorous academic programs, world-class faculty, and innovative research opportunities that make GIKI a leading institution in engineering and technology.',
-               authorName: 'Academic Affairs',
-               authorId: 'sample-author-3',
-               genre: 'Academics',
-               photoUrl: null,
-               createdAt: { toDate: () => new Date() }
-             },
-             {
-               id: 'sample-4',
-               title: 'Student Clubs and Societies',
-               description: 'Join the vibrant community of student organizations at GIKI. From technical clubs to cultural societies, there\'s something for everyone to explore and contribute to.',
-               authorName: 'Student Activities',
-               authorId: 'sample-author-4',
-               genre: 'Student Life',
-               photoUrl: null,
-               createdAt: { toDate: () => new Date() }
-             },
-             {
-               id: 'sample-5',
-               title: 'Research Opportunities',
-               description: 'Explore cutting-edge research projects and opportunities for undergraduate and graduate students. GIKI provides state-of-the-art facilities and mentorship for aspiring researchers.',
-               authorName: 'Research Office',
-               authorId: 'sample-author-5',
-               genre: 'Research',
-               photoUrl: null,
-               createdAt: { toDate: () => new Date() }
-             },
-             {
-               id: 'sample-6',
-               title: 'Career Development at GIKI',
-               description: 'Discover how GIKI prepares students for successful careers through industry partnerships, internship programs, and career counseling services.',
-               authorName: 'Career Services',
-               authorId: 'sample-author-6',
-               genre: 'Career',
-               photoUrl: null,
-               createdAt: { toDate: () => new Date() }
-             }
-           ];
-           filteredPosts = [...allPosts];
-           displayPosts();
-           document.getElementById('loading-state').classList.add('hidden');
-           document.getElementById('skeleton-loading').classList.add('hidden');
          }
 
          function openPostModal(postId) {
@@ -2174,7 +2090,7 @@
              loadingState.innerHTML = `
                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
                <p class="text-white/80 mt-4">Loading posts...</p>
-               <p class="text-white/60 text-sm mt-2">Loading sample posts immediately...</p>
+               <p class="text-white/60 text-sm mt-2">Fetching approved posts from Firebase...</p>
              `;
            }
            
