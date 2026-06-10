@@ -1,0 +1,30 @@
+# Environment Variables Template for GIKI Chronicles
+# 
+# IMPORTANT: This is a template file. For production deployment:
+# 1. Set these environment variables in your hosting platform (Vercel, Netlify, etc.)
+# 2. Or directly edit firebase-config-secure.js with your actual Firebase values
+# 
+# For development, you can directly edit firebase-config-secure.js with your values
+# NEVER commit the actual .env files to version control
+
+# Firebase Configuration
+FIREBASE_API_KEY=your_actual_api_key_here
+FIREBASE_AUTH_DOMAIN=giki-chronicles.firebaseapp.com
+FIREBASE_PROJECT_ID=giki-chronicles
+FIREBASE_STORAGE_BUCKET=giki-chronicles.firebasestorage.app
+FIREBASE_MESSAGING_SENDER_ID=80968785263
+FIREBASE_APP_ID=1:80968785263:web:666d2e69fef2ef6f5a5c9a
+
+# Security Settings
+NODE_ENV=production
+ENABLE_CSP=true
+ENABLE_SECURITY_OVERRIDES=true
+
+# Environment Settings
+DEBUG=false
+CACHE_BUSTING=true
+MINIFY=true
+
+# Optional: Analytics and Monitoring
+GOOGLE_ANALYTICS_ID=your_ga_id_here
+SENTRY_DSN=your_sentry_dsn_here

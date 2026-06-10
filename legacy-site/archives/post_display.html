@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script type="text/javascript" src="/___vscode_livepreview_injected_script"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oceanic Blog</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#0A1931',
+            deep: '#1A3D63',
+            steel: '#4A7FA7',
+            light: '#B3CFE5',
+            snow: '#F6FAFD',
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Fonts and global styles -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&display=swap&v=1.8"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=1.8">
+  <style>
+    /* Page background to match site theme */
+    :root {
+      --c-navy: #0A1931;
+      --c-deep: #1A3D63;
+      --c-steel: #4A7FA7;
+      --c-light: #B3CFE5;
+      --c-snow: #F6FAFD;
+    }
+
+    body {
+      background: url('background.jpeg?v=1.8') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(10, 25, 49, 0.35) 0%, rgba(26, 61, 99, 0.28) 50%, rgba(10, 25, 49, 0.35) 100%);
+      z-index: -1;
+    }
+  </style>
+  <style>
+    .reaction-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .reaction-btn:hover {
+      transform: translateY(-3px);
+    }
+
+    .reaction-btn:active {
+      transform: translateY(0);
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+
+      100% {
+        transform: translateY(0px);
+      }
+    }
+
+    .sticker {
+      position: absolute;
+      opacity: 0.8;
+      z-index: 10;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .sticker-1 {
+      top: 10%;
+      left: 5%;
+      animation-delay: 0s;
+    }
+
+    .sticker-2 {
+      bottom: 15%;
+      right: 5%;
+      animation-delay: 2s;
+      display: none; /* hide camera icon on mobile */
+    }
+
+    .content-wrapper {
+      position: relative;
+    }
+
+    @media (min-width: 768px) {
+      .sticker-1 {
+        top: 15%;
+        left: 10%;
+      }
+
+      .sticker-2 {
+        bottom: 20%;
+        right: 10%;
+        display: block; /* show camera icon on desktop */
+      }
+    }
+
+    .prose {
+      max-width: 65ch;
+    }
+
+    .prose p {
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .prose h2 {
+      margin-top: 2.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      padding-left: 1rem;
+    }
+
+    .prose h2::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #4A7FA7;
+      border-radius: 2px;
+    }
+
+    /* iOS-inspired pill buttons (theme-aware, glass finish) */
+    .btn-ios {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 9999px;
+      color: #EAF6FF;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 6px 20px rgba(2, 10, 20, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -1px 0 rgba(2, 10, 20, 0.18);
+      -webkit-backdrop-filter: saturate(180%) blur(12px);
+      backdrop-filter: saturate(180%) blur(12px);
+      transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-ios::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 55%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0));
+      border-top-left-radius: inherit;
+      border-top-right-radius: inherit;
+      opacity: .35;
+      pointer-events: none;
+    }
+
+    .btn-ios:hover {
+      background: linear-gradient(180deg, rgba(74, 127, 167, 0.35), rgba(74, 127, 167, 0.2));
+      box-shadow: 0 16px 36px rgba(2, 10, 20, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-ios:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 18px rgba(2, 10, 20, 0.26), inset 0 0 0 rgba(255, 255, 255, 0);
+    }
+
+    .btn-ios__emoji {
+      font-size: 18px;
+      line-height: 1;
+      text-shadow: 0 1px 1px rgba(10, 25, 49, 0.35);
+    }
+
+    .btn-ios__label {
+      font-weight: 600;
+      letter-spacing: .2px;
+    }
+
+    /* Accent variant */
+    .btn-ios--accent {
+      background: linear-gradient(180deg, rgba(74, 127, 167, 0.85), rgba(26, 61, 99, 0.85));
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .btn-ios--accent:hover {
+      background: linear-gradient(180deg, rgba(74, 127, 167, 0.95), rgba(26, 61, 99, 0.95));
+    }
+
+    /* Tag-sized pill variant (same glass style, compact spacing) */
+    .btn-ios--tag {
+      padding: 8px 14px;
+      gap: 0;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    /* Remove editor-injected background highlights inside post content */
+    #post-content [style*="background-color"] {
+      background-color: transparent !important;
+    }
+
+    #post-content span[style*="background-color"],
+    #post-content strong[style*="background-color"],
+    #post-content em[style*="background-color"],
+    #post-content p[style*="background-color"] {
+      background-color: transparent !important;
+    }
+
+    /* Force white text in fetched content and ignore any inline color overrides */
+    #post-content,
+    #post-content * {
+      color: #ffffff !important;
+    }
+
+    #post-content [style*="color:"] {
+      color: #ffffff !important;
+    }
+
+    .skeleton {
+      position: relative;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .skeleton::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+      animation: shimmer 1.25s infinite;
+    }
+
+    @keyframes shimmer {
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    #post-image-shell {
+      height: clamp(16rem, 56vw, 32rem);
+      background: rgba(8, 22, 40, 0.82);
+    }
+
+    #post-image-skeleton,
+    #post-image {
+      width: 100%;
+      height: 100%;
+    }
+
+    #post-image {
+      object-fit: contain;
+      background: rgba(8, 22, 40, 0.92);
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+  <script src="firebase-config.js"></script>
+
+</head>
+
+<body class="min-h-screen font-sans text-white">
+  <!-- Decorative floating stickers (optional) -->
+  <div class="sticker sticker-1">
+    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
+        fill="#B3CFE5" />
+      <path
+        d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 8.69 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16Z"
+        fill="#4A7FA7" />
+    </svg>
+  </div>
+
+  <div class="sticker sticker-2">
+    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M9 2L7.17 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4H16.83L15 2H9ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17Z"
+        fill="#F6FAFD" />
+      <path d="M12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z"
+        fill="#1A3D63" />
+    </svg>
+  </div>
+
+  <!-- Content -->
+  <div class="content-wrapper pt-12 md:pt-16 pb-16">
+    <div id="post-container"
+      class="max-w-3xl mx-auto rounded-2xl p-6 md:p-10 shadow-2xl bg-gradient-to-b from-[#0A1931]/90 via-[#14385f]/85 to-[#1A3D63]/90 border border-white/10 ring-1 ring-white/10 backdrop-blur">
+      <main class="px-4 pt-8">
+        <!-- Featured Image -->
+        <div id="post-image-shell" class="rounded-xl overflow-hidden shadow-xl mb-8 relative">
+          <div id="post-image-skeleton" class="skeleton"></div>
+          <img id="post-image"
+            alt="Post image" class="hidden">
+        </div>
+
+        <!-- Article Content -->
+        <div class="rounded-xl p-6 md:p-8 px-6 md:px-8">
+          <!-- Title and meta placeholders used by combined.min.js -->
+          <h1 id="post-title" class="text-3xl md:text-4xl font-bold text-white mb-2">Loading title…</h1>
+          <p id="post-meta" class="text-sm font-medium text-[#B3CFE5]/90 mb-6">Loading author and date…</p>
+
+          <!-- Content container populated by combined.min.js -->
+          <article id="post-content" class="prose mx-auto"></article>
+        </div>
+
+    </div>
+
+    <div id="post-tags-section" class="hidden mt-12">
+      <div id="post-tags" class="flex flex-wrap gap-2 justify-center"></div>
+    </div>
+
+    <!-- Reactions (iOS-inspired) -->
+    <div class="mt-12 border-t border-light/30 pt-8 px-6 md:px-8 max-w-3xl mx-auto">
+      <h3 class="text-xl font-bold text-white mb-6 text-center">How did this article make you feel?</h3>
+      <div class="flex flex-wrap justify-center gap-4 md:gap-6">
+        <button class="reaction-btn btn-ios" data-reaction="thumbs-up" aria-label="Like">
+          <span class="btn-ios__emoji" aria-hidden="true">👍</span>
+
+        </button>
+
+        <button class="reaction-btn btn-ios" data-reaction="heart" aria-label="Love">
+          <span class="btn-ios__emoji" aria-hidden="true">❤️</span>
+
+        </button>
+
+        <button class="reaction-btn btn-ios" data-reaction="celebrate" aria-label="Celebrate">
+          <span class="btn-ios__emoji" aria-hidden="true">🎉</span>
+
+        </button>
+
+        <button class="reaction-btn btn-ios" data-reaction="bulb" aria-label="Insightful">
+          <span class="btn-ios__emoji" aria-hidden="true">💡</span>
+
+        </button>
+      </div>
+      <!-- Note: hook your reaction handlers to [data-reaction] buttons above -->
+    </div>
+    </main>
+  </div>
+  </div>
+
+  <script>
+    // Disable custom loader; use combined.min.js single-post logic
+    document.addEventListener('DOMContentLoaded', async function () {
+      return; /* combined.min.js handles single post loading */
+      const urlParams = new URLSearchParams(window.location.search);
+      const postId = urlParams.get('id');
+
+      if (!postId) {
+        document.getElementById('post-container').innerHTML = '<h1 class="text-white text-center text-2xl">Post not found. Please provide a post ID.</h1>';
+        return;
+      }
+
+      try {
+        let postData = null;
+
+        // Prefer bundled helper if available
+        if (typeof getPostById === 'function') {
+          const result = await getPostById(postId);
+          if (result && result.success && result.post) {
+            postData = result.post;
+          }
+        } else if (typeof firebase !== 'undefined' && firebase.firestore) {
+          // Fallback: query Firestore directly
+          const docSnap = await firebase.firestore().collection('posts').doc(postId).get();
+          if (docSnap.exists) {
+            postData = { id: docSnap.id, ...docSnap.data() };
+          }
+        }
+
+        if (postData) {
+          // Title
+          document.title = (postData.title || 'Post') + " | Oceanic Blog";
+          document.getElementById('post-title').textContent = postData.title || '';
+
+          // Image (support alternate field names)
+          document.getElementById('post-image').src = postData.photoUrl || postData.coverImage || '';
+          document.getElementById('post-image').alt = postData.title || 'Post image';
+
+          // Meta
+          const createdAt = postData.createdAt && typeof postData.createdAt.toDate === 'function'
+            ? postData.createdAt.toDate()
+            : (postData.createdAt ? new Date(postData.createdAt) : new Date());
+          document.getElementById('post-date').textContent = createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+          document.getElementById('post-author').textContent = postData.authorName ? `By ${postData.authorName}` : '';
+
+          // Body
+          document.getElementById('post-body').innerHTML = postData.content || '';
+
+          // Tags
+          const tagsContainer = document.getElementById('post-tags');
+          tagsContainer.innerHTML = '';
+          if (Array.isArray(postData.tags) && postData.tags.length > 0) {
+            postData.tags.forEach(tag => {
+              const tagElement = document.createElement('span');
+              tagElement.className = 'btn-ios btn-ios--tag';
+              tagElement.textContent = tag;
+              tagsContainer.appendChild(tagElement);
+            });
+          }
+        } else {
+          document.getElementById('post-container').innerHTML = '<h1 class="text-white text-center text-2xl">Post not found or you do not have permission to view it.</h1>';
+        }
+      } catch (error) {
+        console.error("Error fetching post:", error);
+        document.getElementById('post-container').innerHTML = '<h1 class="text-white text-center text-2xl">Error loading the post.</h1>';
+      }
+
+      const replyButtons = document.querySelectorAll('[data-reply]');
+
+      replyButtons.forEach(button => {
+        button.addEventListener('click', function () {
+          const commentId = this.getAttribute('data-reply');
+          const replyForm = document.querySelector(`#reply-form-${commentId}`);
+
+          // Create form if it doesn't exist
+          if (!replyForm) {
+            const commentContainer = this.closest('.bg-deep');
+            const newForm = document.createElement('div');
+            newForm.id = `reply-form-${commentId}`;
+            newForm.className = 'mt-4 pl-4 border-l-2 border-steel';
+            newForm.innerHTML = `
+                            <div class="mb-3">
+                                <textarea class="w-full p-3 border border-light rounded-lg focus:outline-none focus:ring-2 focus:ring-light bg-deep text-white" rows="3" placeholder="Write your reply..."></textarea>
+                                <div class="flex gap-2 mt-2">
+                                    <button class="btn-ios btn-ios--accent" data-submit-reply="${commentId}">Post</button>
+                                    <button class="btn-ios" data-cancel-reply="${commentId}">Cancel</button>
+                                </div>
+                            </div>
+                        `;
+            commentContainer.appendChild(newForm);
+          }
+
+          replyForm?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      });
+
+      // Handle form submission and cancellation
+      document.addEventListener('click', function (e) {
+        if (e.target.hasAttribute('data-submit-reply')) {
+          const commentId = e.target.getAttribute('data-submit-reply');
+          const textarea = document.querySelector(`#reply-form-${commentId} textarea`);
+          const replyText = textarea.value.trim();
+
+          if (replyText) {
+            // TODO: integrate reply persistence with backend when replies are enabled
+            alert(`Reply posted to comment ${commentId}: ${replyText}`);
+            document.querySelector(`#reply-form-${commentId}`).remove();
+          }
+        }
+
+        if (e.target.hasAttribute('data-cancel-reply')) {
+          const commentId = e.target.getAttribute('data-cancel-reply');
+          document.querySelector(`#reply-form-${commentId}`).remove();
+        }
+      });
+    });
+  </script>
+
+  <section class="max-w-3xl mx-auto">
+    <div id="comments-section"
+      class="mt-12 pt-8 pb-16 px-6 md:px-8 rounded-2xl bg-gradient-to-b from-[#0A1931]/85 via-[#14385f]/80 to-[#1A3D63]/85 backdrop-blur border border-white/10 ring-1 ring-white/10 shadow-xl">
+      <h3 class="text-xl font-bold text-white mb-6">Comments</h3>
+
+      <!-- Comment Form -->
+      <div class="mb-8">
+        <textarea id="comment-input"
+          class="w-full p-4 border border-light rounded-lg focus:outline-none focus:ring-2 focus:ring-light bg-deep text-white"
+          rows="4" placeholder="Share your thoughts..."></textarea>
+        <button id="post-comment-btn" class="mt-3 btn-ios btn-ios--accent">Post Comment</button>
+      </div>
+
+      <div id="comments-list" class="space-y-6"></div>
+    </div>
+  </section>
+
+  <!-- Sanitize fetched post content to remove inline color/highlight while keeping semantic formatting -->
+  <script>
+    (function () {
+      function showImageSkeleton() {
+        var image = document.getElementById('post-image');
+        var skeleton = document.getElementById('post-image-skeleton');
+        if (image) {
+          image.classList.add('hidden');
+          image.removeAttribute('src');
+        }
+        if (skeleton) skeleton.classList.remove('hidden');
+      }
+
+      function revealPostImage() {
+        var image = document.getElementById('post-image');
+        var skeleton = document.getElementById('post-image-skeleton');
+        if (image) image.classList.remove('hidden');
+        if (skeleton) skeleton.classList.add('hidden');
+      }
+
+      window.__postDisplayShowImageSkeleton = showImageSkeleton;
+      window.__postDisplayRevealPostImage = revealPostImage;
+
+      document.addEventListener('DOMContentLoaded', function () {
+        var image = document.getElementById('post-image');
+        if (!image) return;
+
+        showImageSkeleton();
+        image.addEventListener('load', revealPostImage);
+        image.addEventListener('error', showImageSkeleton);
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      function renderTags(post) {
+        var section = document.getElementById('post-tags-section');
+        var container = document.getElementById('post-tags');
+        if (!section || !container) return;
+
+        const tags = Array.isArray(post && post.tags) ? post.tags.filter(Boolean) : [];
+        if (!tags.length) {
+          section.classList.add('hidden');
+          container.innerHTML = '';
+          return;
+        }
+
+        container.innerHTML = '';
+        tags.forEach(function (tag) {
+          var chip = document.createElement('span');
+          chip.className = 'btn-ios btn-ios--tag';
+          chip.textContent = tag;
+          container.appendChild(chip);
+        });
+        section.classList.remove('hidden');
+      }
+
+      function getEffectivePostId() {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          return params.get('id') || '';
+        } catch (_) {
+          return '';
+        }
+      }
+
+      async function loadLivePostData() {
+        const postId = getEffectivePostId();
+        if (!postId) return;
+
+        let post = null;
+        try {
+          if (typeof getPostById === 'function') {
+            const result = await getPostById(postId);
+            if (result && result.success && result.post) {
+              post = result.post;
+            }
+          } else if (typeof firebase !== 'undefined' && firebase.firestore) {
+            const snap = await firebase.firestore().collection('posts').doc(postId).get();
+            if (snap.exists) {
+              post = { id: snap.id, ...snap.data() };
+            }
+          }
+        } catch (error) {
+          console.error('Error loading post metadata for tags/image:', error);
+        }
+
+        if (!post) return;
+
+        renderTags(post);
+
+        const image = document.getElementById('post-image');
+        const imageShell = document.getElementById('post-image-shell');
+        const imageUrl = post.photoUrl || post.coverImage || '';
+        if (!image) return;
+
+        if (imageUrl) {
+          if (typeof window.__postDisplayShowImageSkeleton === 'function') {
+            window.__postDisplayShowImageSkeleton();
+          }
+          image.src = imageUrl;
+          image.alt = post.title || 'Post image';
+        } else {
+          image.classList.add('hidden');
+          if (imageShell) imageShell.classList.add('hidden');
+        }
+      }
+
+      window.addEventListener('DOMContentLoaded', function () {
+        loadLivePostData();
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      function sanitizePostContent() {
+        var container = document.getElementById('post-content');
+        if (!container) return;
+        var elements = container.querySelectorAll('*');
+        elements.forEach(function (el) {
+          if (el.style) {
+            el.style.backgroundColor = '';
+            el.style.background = '';
+            el.style.color = '';
+          }
+        });
+      }
+
+      // Run once after load (combined.min.js populates content asynchronously)
+      window.addEventListener('load', function () {
+        setTimeout(sanitizePostContent, 0);
+      });
+
+      // Keep content sanitized if dynamic changes occur
+      var target = document.getElementById('post-content');
+      if (target && window.MutationObserver) {
+        var observer = new MutationObserver(function () {
+          sanitizePostContent();
+        });
+        observer.observe(target, { childList: true, subtree: true });
+      }
+    })();
+  </script>
+  <script>
+    // Comments: real-time load and posting
+    (function () {
+      var __commentsInitDone = false;
+      var __commentsUnsub = null;
+      function formatRelativeTime(date) {
+        if (!date) return '';
+        const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+        const intervals = [
+          { sec: 31536000, label: 'y' },
+          { sec: 2592000, label: 'mo' },
+          { sec: 604800, label: 'w' },
+          { sec: 86400, label: 'd' },
+          { sec: 3600, label: 'h' },
+          { sec: 60, label: 'm' },
+        ];
+        for (const it of intervals) {
+          const count = Math.floor(seconds / it.sec);
+          if (count >= 1) return `${count}${it.label} ago`;
+        }
+        return 'just now';
+      }
+
+      function renderComments(listEl, comments) {
+        if (!listEl) return;
+        if (!Array.isArray(comments) || comments.length === 0) {
+          listEl.innerHTML = '<div class="text-[#B3CFE5]/80">No comments yet. Be the first to share your thoughts.</div>';
+          return;
+        }
+
+        listEl.innerHTML = '';
+        comments.forEach((c) => {
+          const createdAt = c.createdAt && typeof c.createdAt.toDate === 'function' ? c.createdAt.toDate() : (c.createdAt ? new Date(c.createdAt) : null);
+          const wrapper = document.createElement('div');
+          wrapper.className = 'bg-white/5 border border-white/10 rounded-xl p-4';
+          wrapper.innerHTML = `
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-8 h-8 rounded-full overflow-hidden bg-[#4A7FA7]/40">
+                ${c.authorPhotoURL ? `<img src="${c.authorPhotoURL}" alt="" class="w-full h-full object-cover">` : ''}
+              </div>
+              <div class="text-sm text-[#B3CFE5] font-medium">${(c.authorName || 'User')}</div>
+              <div class="ml-auto text-xs text-[#B3CFE5]/70">${formatRelativeTime(createdAt)}</div>
+            </div>
+            <p class="text-[#E3F2FD]/85 whitespace-pre-wrap"></p>
+          `;
+          // Use textContent to avoid injecting HTML
+          wrapper.querySelector('p').textContent = c.content || '';
+          listEl.appendChild(wrapper);
+        });
+      }
+
+      function getEffectivePostId(argPostId) {
+        if (argPostId) return argPostId;
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const id = params.get('id');
+          return id || '';
+        } catch (_) {
+          return '';
+        }
+      }
+
+      function setupPostHandler(postId) {
+        const input = document.getElementById('comment-input');
+        const btn = document.getElementById('post-comment-btn');
+        if (!btn || !input) return;
+
+        const postAction = async () => {
+          const user = firebase.auth().currentUser;
+          if (!user) {
+            alert('Please sign in to post a comment.');
+            return;
+          }
+          const content = (input.value || '').trim();
+          if (!content) return;
+          btn.disabled = true;
+          try {
+            await firebase.firestore().collection('comments').add({
+              postId: postId,
+              authorId: user.uid,
+              authorName: user.displayName || user.email?.split('@')[0] || 'User',
+              authorPhotoURL: user.photoURL || '',
+              content: content,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            });
+            input.value = '';
+          } catch (err) {
+            console.error('Error posting comment:', err);
+            alert('Failed to post comment. Please try again.');
+          } finally {
+            btn.disabled = false;
+          }
+        };
+
+        btn.addEventListener('click', postAction);
+        input.addEventListener('keydown', (e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            postAction();
+          }
+        });
+      }
+
+      function subscribeToComments(postId) {
+        const listEl = document.getElementById('comments-list');
+        if (!listEl || !postId) return;
+
+        if (typeof __commentsUnsub === 'function') {
+          try { __commentsUnsub(); } catch (e) {}
+          __commentsUnsub = null;
+        }
+
+        // Real-time listener without orderBy to avoid index requirements
+        __commentsUnsub = firebase.firestore()
+          .collection('comments')
+          .where('postId', '==', postId)
+          .onSnapshot((snap) => {
+            const items = [];
+            snap.forEach((doc) => items.push({ id: doc.id, ...doc.data() }));
+            // Sort client-side by createdAt desc
+            items.sort((a, b) => {
+              const ad = a.createdAt && typeof a.createdAt.toDate === 'function' ? a.createdAt.toDate().getTime() : 0;
+              const bd = b.createdAt && typeof b.createdAt.toDate === 'function' ? b.createdAt.toDate().getTime() : 0;
+              return bd - ad;
+            });
+            renderComments(listEl, items);
+          }, (error) => {
+            console.error('Comments listener error:', error);
+            listEl.innerHTML = '<div class="text-[#B3CFE5]/80">Unable to load comments right now.</div>';
+          });
+        return __commentsUnsub;
+      }
+
+      // Expose for combined.min.js
+      window.initializeCommentsAndReactions = function (incomingPostId) {
+        const postId = getEffectivePostId(incomingPostId);
+        if (!postId) {
+          console.warn('No postId found for comments initialization');
+          return;
+        }
+
+        if (__commentsInitDone) {
+          return;
+        }
+
+        // Enable/disable post UI based on auth state
+        firebase.auth().onAuthStateChanged(() => {
+          const input = document.getElementById('comment-input');
+          const btn = document.getElementById('post-comment-btn');
+          if (input && btn) {
+            const signedIn = !!firebase.auth().currentUser;
+            input.disabled = !signedIn;
+            btn.disabled = !signedIn;
+            input.placeholder = signedIn ? 'Share your thoughts...' : 'Sign in to comment';
+          }
+        });
+
+        setupPostHandler(postId);
+        subscribeToComments(postId);
+        __commentsInitDone = true;
+      };
+
+      // Fallback: if combined.min.js does not invoke initializer, run it ASAP after DOM is ready
+      window.addEventListener('DOMContentLoaded', function () {
+        if (!__commentsInitDone) {
+          const pid = getEffectivePostId();
+          if (pid) {
+            try { window.initializeCommentsAndReactions(pid); } catch (e) { /* noop */ }
+          }
+        }
+      });
+    })();
+  </script>
+  <script src="combined.min.js?v=1.8"></script>
+</body>
+
+</html>

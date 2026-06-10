@@ -1,0 +1,205 @@
+[
+    {
+      "id": "hostels-11-12",
+      "label": "Hostels 11 & 12",
+      "left": "15.92061162292944%",
+      "top": "38.68849859366925%",
+      "type": "hostel"
+    },
+    {
+      "id": "senior-hostels",
+      "label": "Senior Hostels",
+      "left": "6.0881282289480625%",
+      "top": "74.15294095466088%",
+      "type": "hostel"
+    },
+    {
+      "id": "new-girls-hostel",
+      "label": "New Girls Hostel",
+      "left": "61.76627138459413%",
+      "top": "30.235453693132897%",
+      "type": "hostel"
+    },
+    {
+      "id": "central-library",
+      "label": "Central Library",
+      "left": "36.64311715826894%",
+      "top": "42.027392691190464%",
+      "type": "academic"
+    },
+    {
+      "id": "new-academic",
+      "label": "New Academic Block",
+      "left": "29.632920664411905%",
+      "top": "52.21316963558702%",
+      "type": "academic"
+    },
+    {
+      "id": "fbs",
+      "label": "FBS",
+      "left": "26.5549889293209%",
+      "top": "66.77050046877696%",
+      "type": "academic"
+    },
+    {
+      "id": "fcse",
+      "label": "FCSE",
+      "left": "33.72978874523745%",
+      "top": "79.63933270829745%",
+      "type": "academic"
+    },
+    {
+      "id": "fmce",
+      "label": "FMCE",
+      "left": "55.91478505501103%",
+      "top": "57.67761199657861%",
+      "type": "academic"
+    },
+    {
+      "id": "fme",
+      "label": "FME",
+      "left": "54.822286900124205%",
+      "top": "74.1857769443966%",
+      "type": "academic"
+    },
+    {
+      "id": "giki-main",
+      "label": "GIKI Main",
+      "left": "39.52731273170891%",
+      "top": "63.223880034214105%",
+      "type": "admin"
+    },
+    {
+      "id": "oric",
+      "label": "ORIC",
+      "left": "55.47613049282162%",
+      "top": "32.39197069134495%",
+      "type": "admin"
+    },
+    {
+      "id": "brabers",
+      "label": "Brabers Building",
+      "left": "45.59299480052458%",
+      "top": "34.02586010109704%",
+      "type": "admin"
+    },
+    {
+      "id": "medical-center",
+      "label": "Medical Center",
+      "left": "63.73561531315578%",
+      "top": "41.71589128485976%",
+      "type": "medical"
+    },
+    {
+      "id": "faculty-club",
+      "label": "Faculty Club",
+      "left": "26.102694648743864%",
+      "top": "18.776119965785732%",
+      "type": "facility"
+    },
+    {
+      "id": "central-mess",
+      "label": "Central Mess",
+      "left": "19.817916974185536%",
+      "top": "64.91799812489234%",
+      "type": "dining"
+    },
+    {
+      "id": "tuck",
+      "label": "Tuck",
+      "left": "72.64311715826899%",
+      "top": "45.98911340290929%",
+      "type": "dining"
+    },
+    {
+      "id": "residential-villas",
+      "label": "C-type Residential Villas",
+      "left": "73.6300073804528%",
+      "top": "9.803336458512607%",
+      "type": "residential"
+    },
+    {
+      "id": "residential-area",
+      "label": "Residential Area",
+      "left": "86.27458118070126%",
+      "top": "10.929060920446648%",
+      "type": "residential"
+    },
+    {
+      "id": "helipad",
+      "label": "Helipad",
+      "left": "41.0068198591938%",
+      "top": "17.006465025274267%",
+      "type": "special"
+    },
+    {
+      "id": "sports-complex",
+      "label": "Sports Complex",
+      "left": "3.8120904062671888%",
+      "top": "92.91799812489229%",
+      "type": "facility"
+    },
+    {
+      "id": "main-ground",
+      "label": "Main Ground",
+      "left": "20.910415129072337%",
+      "top": "89.22949953122307%",
+      "type": "facility"
+    },
+    {
+      "id": "student-mosque",
+      "label": "Student Mosque",
+      "left": "18%",
+      "top": "78%",
+      "type": "facility"
+    },
+    {
+      "id": "tuck-mosque",
+      "label": "Tuck Mosque",
+      "left": "79.0014566419796%",
+      "top": "66.99455670145468%",
+      "type": "facility"
+    },
+    {
+      "id": "residential-mosque",
+      "label": "Residential Area Mosque",
+      "left": "95.74289852305363%",
+      "top": "16.612116215570612%",
+      "type": "facility"
+    },
+    {
+      "id": "hbl-bank",
+      "label": "HBL Bank",
+      "left": "64.63146402243237%",
+      "top": "73.46444236099153%",
+      "type": "facility"
+    },
+    {
+      "id": "giki-school",
+      "label": "GIKI School and College",
+      "left": "74.35833948371067%",
+      "top": "76.0928884721983%",
+      "type": "academic"
+    },
+    {
+      "id": "admin-block",
+      "label": "Admin Block",
+      "left": "38.28186439059916%",
+      "top": "93.05460918391717%",
+      "type": "admin"
+    },
+    {
+      "id": "logik",
+      "label": "LOGIK",
+      "left": "44.36707933558809%",
+      "top": "91.96172071171881%",
+      "type": "admin"
+    },
+    {
+      "id": "giki-guest-house",
+      "label": "GIKI Guest House",
+      "left": "51.21326903782444%",
+      "top": "91.72575615522146%",
+      "type": "hostel"
+    }
+  ]

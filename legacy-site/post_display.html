@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post | GIKI Chronicles</title>
+  <link rel="icon" type="image/png" href="/logo.png?v=1.8">
+  <script src="https://cdn.tailwindcss.com?v=1.8"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#0A1931',
+            deep: '#1A3D63',
+            steel: '#4A7FA7',
+            light: '#B3CFE5',
+            snow: '#F6FAFD'
+          },
+          boxShadow: {
+            glass: '0 24px 60px rgba(2, 10, 20, 0.38)'
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:wght@400;600;700&display=swap&v=1.8" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=1.8">
+  <style>
+    :root {
+      --c-navy: #0A1931;
+      --c-deep: #1A3D63;
+      --c-steel: #4A7FA7;
+      --c-light: #B3CFE5;
+      --c-snow: #F6FAFD;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: url('background.jpeg?v=1.8') no-repeat center center fixed;
+      background-size: cover;
+      color: var(--c-snow);
+    }
+
+    .page-shell::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(135deg, rgba(10, 25, 49, 0.55), rgba(26, 61, 99, 0.45), rgba(10, 25, 49, 0.58));
+      z-index: -1;
+    }
+
+    .glass-card {
+      background: linear-gradient(180deg, rgba(8, 22, 40, 0.88), rgba(15, 43, 73, 0.82));
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 24px 60px rgba(2, 10, 20, 0.38);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .post-prose {
+      max-width: none;
+      color: #ecf7ff;
+      font-size: 1.05rem;
+      line-height: 1.85;
+    }
+
+    .post-prose h1,
+    .post-prose h2,
+    .post-prose h3,
+    .post-prose h4,
+    .post-prose h5,
+    .post-prose h6 {
+      font-family: 'Lora', serif;
+      color: #ffffff;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .post-prose p,
+    .post-prose li,
+    .post-prose blockquote {
+      color: #ebf5ff !important;
+    }
+
+    .post-prose a {
+      color: #bfe4ff !important;
+      text-decoration: underline;
+    }
+
+    .post-prose img {
+      max-width: 100%;
+      border-radius: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .post-prose [style*="background"],
+    .post-prose [style*="color"] {
+      background: transparent !important;
+      color: inherit !important;
+    }
+
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.55rem 0.95rem;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #f6fafd;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .reaction-btn {
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .reaction-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .reaction-btn.is-active {
+      border-color: rgba(191, 228, 255, 0.9);
+      background: rgba(74, 127, 167, 0.26);
+    }
+
+    .skeleton {
+      position: relative;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .skeleton::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+      animation: shimmer 1.25s infinite;
+    }
+
+    @keyframes shimmer {
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    #post-image-shell {
+      height: clamp(16rem, 56vw, 32rem);
+      background: rgba(8, 22, 40, 0.82);
+    }
+
+    #post-image-skeleton,
+    #post-image {
+      width: 100%;
+      height: 100%;
+    }
+
+    #post-image {
+      object-fit: contain;
+      background: rgba(8, 22, 40, 0.92);
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+  <script src="firebase-config-vercel.js"></script>
+</head>
+<body class="min-h-screen text-white">
+  <div class="page-shell relative min-h-screen">
+    <header class="bg-[#1A3D63] shadow-sm sticky top-0 z-50">
+      <nav class="container mx-auto px-6 py-4 flex items-center">
+        <div class="flex items-center space-x-4">
+          <button id="sidebar-toggle" class="text-white hover:text-[#4A7FA7] focus:outline-none" aria-label="Open menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+          </button>
+
+          <a href="index.html?v=1.8" class="flex flex-col items-center">
+            <img src="logo.png?v=1.8" alt="GIKI Chronicles Logo" class="h-16 w-auto">
+            <span class="text-lg font-bold text-white mt-1">GIKI Chronicles</span>
+          </a>
+        </div>
+
+        <div class="hidden md:flex items-center space-x-6 ml-auto">
+          <a href="about.html?v=1.8" class="text-white hover:text-[#4A7FA7] transition duration-300">About</a>
+          <a href="gallery.html?v=1.8"
+            class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+            <span class="relative z-10">Gallery</span>
+          </a>
+          <a href="guide.html?v=1.8"
+            class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+            <span class="relative z-10">Freshmen Guide</span>
+          </a>
+          <a href="calendar.html?v=1.8"
+            class="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full">
+            <span class="relative z-10">Calendar</span>
+          </a>
+
+          <div id="guest-nav" class="flex items-center space-x-6">
+            <a href="login.html?v=1.8" class="text-white hover:text-[#4A7FA7] transition duration-300">Login</a>
+          </div>
+
+          <div id="user-nav" class="hidden md:flex items-center space-x-6">
+            <a href="profile.html?v=1.8" class="text-white hover:text-[#4A7FA7] transition duration-300">My Profile</a>
+            <a href="write.html?v=1.8" class="text-white hover:text-[#4A7FA7] transition duration-300">Write</a>
+            <button id="logout-button" class="text-red-300 hover:text-red-400 transition duration-300">Logout</button>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-[#1A3D63] shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+      <div class="flex items-center justify-between p-6 border-b border-white/20">
+        <h2 class="text-xl font-bold text-white">Menu</h2>
+        <button id="sidebar-close" class="text-white hover:text-[#4A7FA7] focus:outline-none" aria-label="Close menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="p-6 flex-1 overflow-y-auto">
+        <div class="space-y-4">
+          <div>
+            <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">Main</h3>
+            <div class="space-y-2">
+              <a href="index.html?v=1.8" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                </svg>
+                Home
+              </a>
+              <a href="browse.html?v=1.8" class="flex items-center px-3 py-2 text-white bg-white/20 text-[#4A7FA7] rounded-lg transition duration-200">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                </svg>
+                All Posts
+              </a>
+              <a href="about.html?v=1.8" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                About
+              </a>
+              <a href="contact.html?v=1.8" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                Contact
+              </a>
+              <a href="gallery.html?v=1.8" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                Gallery
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">Resources</h3>
+            <div class="space-y-2">
+              <a href="guide.html?v=1.8" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                </svg>
+                Freshman Guide
+              </a>
+              <div class="relative">
+                <button id="sidebar-calendar-dropdown-toggle" class="w-full flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  Calendar
+                  <svg class="w-4 h-4 ml-auto transition-transform duration-200" id="sidebar-calendar-dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+                <div id="sidebar-calendar-dropdown" class="hidden pl-8 mt-2 space-y-1">
+                  <a href="calendar.html?v=1.8" class="block px-3 py-2 text-sm text-white/80 hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
+                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    Calendar View
+                  </a>
+                  <a href="calendar.html?v=1.8#events" class="block px-3 py-2 text-sm text-white/80 hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
+                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                    </svg>
+                    View Events
+                  </a>
+                  <a href="calendar.html?v=1.8#submit" class="block px-3 py-2 text-sm text-white/80 hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 flex items-center">
+                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Submit Event
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="sidebar-guest-nav">
+            <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">Account</h3>
+            <div class="space-y-2">
+              <a href="login.html?v=1.8" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                </svg>
+                Login
+              </a>
+            </div>
+          </div>
+
+          <div id="sidebar-user-nav" class="hidden">
+            <h3 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">My Account</h3>
+            <div class="space-y-2">
+              <a href="profile.html?v=1.8" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                My Profile
+              </a>
+              <a href="write.html?v=1.8" class="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+                Write Post
+              </a>
+              <button id="sidebar-admin-access-btn" class="hidden md:flex w-full items-center px-3 py-2 text-white hover:bg-red-500/20 rounded-lg transition duration-200">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+                Admin Portal
+              </button>
+              <button id="sidebar-logout-button" class="w-full flex items-center px-3 py-2 text-red-400 hover:bg-red-500/20 rounded-lg transition duration-200">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                </svg>
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+
+    <main id="main-content" class="mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-6 lg:px-8">
+      <section class="mx-auto max-w-5xl">
+        <div class="glass-card rounded-[2rem] p-4 sm:p-6 lg:p-8">
+          <div class="space-y-8">
+            <div id="post-image-shell" class="overflow-hidden rounded-[1.6rem] border border-white/10">
+              <div class="relative h-full">
+                <div id="post-image-skeleton" class="skeleton"></div>
+                <div id="post-image-empty" class="hidden absolute inset-0 flex items-center justify-center bg-[#081628] text-sm text-white/60">
+                  No cover image available
+                </div>
+                <img
+                  id="post-image"
+                  alt="Post cover"
+                  class="hidden"
+                >
+                <div class="absolute inset-0 bg-gradient-to-t from-[#081628] via-[#081628]/30 to-transparent"></div>
+                <div class="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+                  <h1 id="post-title" class="max-w-3xl font-['Lora'] text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
+                    Loading post...
+                  </h1>
+                </div>
+              </div>
+            </div>
+
+            <section class="rounded-[1.6rem] border border-white/10 bg-white/5 p-6 sm:p-8">
+              <div class="mb-6">
+                <div id="post-tags" class="flex flex-wrap gap-3"></div>
+              </div>
+              <div class="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-[#B3CFE5]">Post Details</div>
+              <p id="post-meta" class="text-base leading-7 text-white/85">Fetching author and publish info...</p>
+              <div class="mt-6 flex flex-wrap gap-3">
+                <a href="browse.html?v=1.8" class="rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-white/85 transition hover:border-white/30 hover:bg-white/5">Back to posts</a>
+              </div>
+            </section>
+
+            <article class="rounded-[1.6rem] border border-white/10 bg-white/5 p-6 sm:p-8 lg:p-10">
+              <div id="post-content" class="post-prose">
+                <div class="flex items-center justify-center py-12">
+                  <div class="h-10 w-10 animate-spin rounded-full border-4 border-white/15 border-t-[#B3CFE5]"></div>
+                </div>
+              </div>
+            </article>
+
+            <section class="rounded-[1.6rem] border border-white/10 bg-white/5 p-6">
+              <h2 class="font-['Lora'] text-2xl font-semibold text-white">Discussion</h2>
+              <div class="mt-5">
+                <textarea
+                  id="comment-input"
+                  rows="4"
+                  class="w-full rounded-2xl border border-white/10 bg-[#081628]/70 p-4 text-white placeholder:text-white/35 focus:border-[#B3CFE5] focus:outline-none"
+                  placeholder="Sign in to join the conversation"
+                ></textarea>
+                <button id="post-comment-btn" class="mt-3 rounded-full bg-[#4A7FA7] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#5d96c3] disabled:cursor-not-allowed disabled:opacity-50">
+                  Post Comment
+                </button>
+              </div>
+              <div id="comments-list" class="mt-6 space-y-4"></div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="combined.min.js?v=1.8"></script>
+  <script>
+    (function () {
+      function getUrlPostId() {
+        try {
+          return new URLSearchParams(window.location.search).get('id') || '';
+        } catch (error) {
+          return '';
+        }
+      }
+
+      function normalizeDate(value) {
+        if (!value) return null;
+        if (value instanceof Date) return value;
+        if (value && typeof value.toDate === 'function') return value.toDate();
+        const parsed = new Date(value);
+        return Number.isNaN(parsed.getTime()) ? null : parsed;
+      }
+
+      function formatDisplayDate(value) {
+        const date = normalizeDate(value);
+        if (!date) return 'Date unavailable';
+        return date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      }
+
+      function formatRelativeTime(value) {
+        const date = normalizeDate(value);
+        if (!date) return 'just now';
+        const seconds = Math.max(1, Math.floor((Date.now() - date.getTime()) / 1000));
+        const intervals = [
+          { seconds: 31536000, label: 'y ago' },
+          { seconds: 2592000, label: 'mo ago' },
+          { seconds: 86400, label: 'd ago' },
+          { seconds: 3600, label: 'h ago' },
+          { seconds: 60, label: 'm ago' }
+        ];
+        for (const interval of intervals) {
+          const count = Math.floor(seconds / interval.seconds);
+          if (count >= 1) return count + interval.label;
+        }
+        return 'just now';
+      }
+
+      function escapeHtml(value) {
+        return String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function renderTags(tags) {
+        const container = document.getElementById('post-tags');
+        if (!container) return;
+        const safeTags = Array.isArray(tags) ? tags.filter(Boolean) : [];
+        if (!safeTags.length) {
+          container.innerHTML = '';
+          container.parentElement.classList.add('hidden');
+          return;
+        }
+        container.parentElement.classList.remove('hidden');
+        const markup = safeTags.map(function (tag) {
+          return '<span class="tag-pill">' + escapeHtml(tag) + '</span>';
+        }).join('');
+        container.innerHTML = markup;
+      }
+
+      function showImageSkeleton() {
+        const postImage = document.getElementById('post-image');
+        const imageSkeleton = document.getElementById('post-image-skeleton');
+        const emptyState = document.getElementById('post-image-empty');
+        if (postImage) {
+          postImage.classList.add('hidden');
+          postImage.style.display = 'none';
+        }
+        if (emptyState) emptyState.classList.add('hidden');
+        if (imageSkeleton) imageSkeleton.classList.remove('hidden');
+      }
+
+      function revealImage() {
+        const postImage = document.getElementById('post-image');
+        const imageSkeleton = document.getElementById('post-image-skeleton');
+        const imageShell = document.getElementById('post-image-shell');
+        const emptyState = document.getElementById('post-image-empty');
+        if (imageShell) imageShell.classList.remove('hidden');
+        if (postImage) {
+          postImage.classList.remove('hidden');
+          postImage.style.display = 'block';
+        }
+        if (emptyState) emptyState.classList.add('hidden');
+        if (imageSkeleton) imageSkeleton.classList.add('hidden');
+      }
+
+      function hideImageShell() {
+        const imageShell = document.getElementById('post-image-shell');
+        const postImage = document.getElementById('post-image');
+        const imageSkeleton = document.getElementById('post-image-skeleton');
+        const emptyState = document.getElementById('post-image-empty');
+        if (imageShell) imageShell.classList.remove('hidden');
+        if (postImage) {
+          postImage.classList.add('hidden');
+          postImage.style.display = 'none';
+        }
+        if (imageSkeleton) imageSkeleton.classList.add('hidden');
+        if (emptyState) emptyState.classList.remove('hidden');
+      }
+
+      function syncImageVisibility() {
+        const postImage = document.getElementById('post-image');
+        const imageShell = document.getElementById('post-image-shell');
+        if (!postImage) return;
+
+        const currentSrc = postImage.getAttribute('src');
+        if (!currentSrc) {
+          showImageSkeleton();
+          return;
+        }
+
+        if (postImage.complete && postImage.naturalWidth > 0) {
+          if (imageShell) imageShell.classList.remove('hidden');
+          revealImage();
+        }
+      }
+
+      function renderPost(post) {
+        const title = post.title || 'Untitled Post';
+        const authorName = post.authorName || 'Unknown author';
+        const authorId = post.authorId || '';
+        const dateLabel = formatDisplayDate(post.createdAt);
+        const image = post.photoUrl || post.coverImage || '';
+        const content = post.content || '';
+
+        document.title = title + ' | GIKI Chronicles';
+        const postTitle = document.getElementById('post-title');
+        const postMeta = document.getElementById('post-meta');
+        const postImage = document.getElementById('post-image');
+        const postContent = document.getElementById('post-content');
+
+        if (postTitle) postTitle.textContent = title;
+        if (postMeta) postMeta.textContent = 'Posted by ' + authorName + ' on ' + dateLabel;
+        if (postImage) {
+          if (image) {
+            const imageShell = document.getElementById('post-image-shell');
+            showImageSkeleton();
+            if (imageShell) imageShell.classList.remove('hidden');
+            postImage.onload = revealImage;
+            postImage.onerror = hideImageShell;
+            postImage.src = image;
+            postImage.alt = title;
+          } else {
+            hideImageShell();
+          }
+        }
+        if (postContent) postContent.innerHTML = content;
+
+        renderTags(post.tags);
+      }
+
+      function renderComments(comments) {
+        const list = document.getElementById('comments-list');
+        if (!list) return;
+
+        const source = Array.isArray(comments) ? comments : [];
+        if (!source.length) {
+          list.innerHTML = '<div class="text-sm leading-6 text-white/65">No comments yet. Be the first to share your thoughts.</div>';
+          return;
+        }
+
+        list.innerHTML = source.map(function (comment) {
+          return [
+            '<div class="rounded-2xl border border-white/10 bg-white/5 p-4">',
+            '<div class="mb-2 flex items-center justify-between gap-3">',
+            '<div class="text-sm font-semibold text-[#B3CFE5]">' + escapeHtml(comment.authorName || 'Reader') + '</div>',
+            '<div class="text-xs text-white/45">' + escapeHtml(formatRelativeTime(comment.createdAt)) + '</div>',
+            '</div>',
+            '<p class="text-sm leading-6 text-white/80 whitespace-pre-wrap">' + escapeHtml(comment.content || '') + '</p>',
+            '</div>'
+          ].join('');
+        }).join('');
+      }
+
+      let commentsInitializedFor = '';
+      let commentsUnsubscribe = null;
+
+      function setCommentComposerState(isSignedIn) {
+        const input = document.getElementById('comment-input');
+        const button = document.getElementById('post-comment-btn');
+        if (!input || !button) return;
+        input.disabled = !isSignedIn;
+        button.disabled = !isSignedIn;
+        input.placeholder = isSignedIn ? 'Share your thoughts about this post...' : 'Sign in to join the conversation';
+      }
+
+      function loadPlaceholderState() {
+        const postTitle = document.getElementById('post-title');
+        const postMeta = document.getElementById('post-meta');
+        const postContent = document.getElementById('post-content');
+        const comments = document.getElementById('comments-list');
+        if (postTitle) postTitle.textContent = 'Post not found';
+        if (postMeta) postMeta.textContent = 'This post could not be loaded.';
+        if (postContent) postContent.innerHTML = '<p>The requested post is unavailable or no longer exists.</p>';
+        if (comments) comments.innerHTML = '<div class="text-sm leading-6 text-white/65">Comments are unavailable because the post could not be loaded.</div>';
+        hideImageShell();
+        renderTags([]);
+      }
+
+      window.initializeCommentsAndReactions = function (incomingPostId) {
+        const postId = incomingPostId || getUrlPostId();
+        const hasFirebase = typeof firebase !== 'undefined' && firebase.auth && firebase.firestore;
+
+        if (!hasFirebase || !postId) {
+          setCommentComposerState(false);
+          renderComments([]);
+          return;
+        }
+
+        if (commentsInitializedFor === postId) {
+          return;
+        }
+
+        commentsInitializedFor = postId;
+
+        if (typeof commentsUnsubscribe === 'function') {
+          try {
+            commentsUnsubscribe();
+          } catch (error) {
+            console.warn('Failed to unsubscribe previous comments listener:', error);
+          }
+          commentsUnsubscribe = null;
+        }
+
+        firebase.auth().onAuthStateChanged(function (user) {
+          setCommentComposerState(!!user);
+        });
+
+        const input = document.getElementById('comment-input');
+        const button = document.getElementById('post-comment-btn');
+
+        async function submitComment() {
+          const user = firebase.auth().currentUser;
+          const content = input ? input.value.trim() : '';
+          if (!user) {
+            alert('Please sign in to post a comment.');
+            return;
+          }
+          if (!content) {
+            return;
+          }
+
+          button.disabled = true;
+          try {
+            await firebase.firestore().collection('comments').add({
+              postId: postId,
+              authorId: user.uid,
+              authorName: user.displayName || (user.email ? user.email.split('@')[0] : 'User'),
+              authorPhotoURL: user.photoURL || '',
+              content: content,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            input.value = '';
+          } catch (error) {
+            console.error('Error posting comment:', error);
+            alert('Failed to post comment. Please try again.');
+          } finally {
+            button.disabled = false;
+          }
+        }
+
+        if (button && !button.dataset.boundCommentSubmit) {
+          button.dataset.boundCommentSubmit = 'true';
+          button.addEventListener('click', submitComment);
+        }
+
+        if (input && !input.dataset.boundCommentShortcut) {
+          input.dataset.boundCommentShortcut = 'true';
+          input.addEventListener('keydown', function (event) {
+            if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+              submitComment();
+            }
+          });
+        }
+
+        commentsUnsubscribe = firebase.firestore()
+          .collection('comments')
+          .where('postId', '==', postId)
+          .onSnapshot(function (snapshot) {
+            const items = [];
+            snapshot.forEach(function (doc) {
+              items.push({ id: doc.id, ...doc.data() });
+            });
+            items.sort(function (a, b) {
+              const dateA = normalizeDate(a.createdAt);
+              const dateB = normalizeDate(b.createdAt);
+              return (dateB ? dateB.getTime() : 0) - (dateA ? dateA.getTime() : 0);
+            });
+            renderComments(items);
+          }, function (error) {
+            console.error('Comments listener error:', error);
+            renderComments([]);
+          });
+      };
+
+      async function attemptLivePostLoad() {
+        const postId = getUrlPostId();
+        if (!postId) {
+          loadPlaceholderState();
+          return;
+        }
+
+        if (typeof getPostById !== 'function') {
+          loadPlaceholderState();
+          return;
+        }
+
+        try {
+          const result = await getPostById(postId);
+          if (result && result.success && result.post) {
+            renderPost(result.post);
+            window.initializeCommentsAndReactions(postId);
+            return;
+          }
+        } catch (error) {
+          console.error('Fallback live post load failed:', error);
+        }
+
+        loadPlaceholderState();
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        showImageSkeleton();
+        renderTags([]);
+        renderComments([]);
+
+        const postImage = document.getElementById('post-image');
+        if (postImage) {
+          const imageObserver = new MutationObserver(function () {
+            syncImageVisibility();
+          });
+          imageObserver.observe(postImage, {
+            attributes: true,
+            attributeFilter: ['src']
+          });
+
+          postImage.addEventListener('load', revealImage);
+          postImage.addEventListener('error', hideImageShell);
+
+          setTimeout(syncImageVisibility, 300);
+          setTimeout(syncImageVisibility, 1200);
+        }
+
+        setTimeout(function () {
+          const title = (document.getElementById('post-title') || {}).textContent || '';
+          if (!title || title === 'Loading post...' || title === 'Post not found!' || title === 'Error') {
+            attemptLivePostLoad();
+          } else {
+            const postId = getUrlPostId();
+            syncImageVisibility();
+            if (postId) {
+              if (typeof getPostById === 'function') {
+                getPostById(postId).then(function (result) {
+                  if (result && result.success && result.post) {
+                    renderTags(result.post.tags);
+                    const resolvedImage = result.post.photoUrl || result.post.coverImage || '';
+                    if (resolvedImage && !postImage.getAttribute('src')) {
+                      const imageShell = document.getElementById('post-image-shell');
+                      if (imageShell) imageShell.classList.remove('hidden');
+                      showImageSkeleton();
+                      postImage.src = resolvedImage;
+                      postImage.alt = result.post.title || 'Post cover';
+                    } else if (!resolvedImage) {
+                      hideImageShell();
+                    }
+                  }
+                }).catch(function (error) {
+                  console.error('Supplemental post image/tag load failed:', error);
+                });
+              }
+              window.initializeCommentsAndReactions(postId);
+            }
+          }
+        }, 900);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      function bindAuthNavigation() {
+        if (typeof auth === 'undefined' || !auth || typeof auth.onAuthStateChanged !== 'function') {
+          return;
+        }
+
+        auth.onAuthStateChanged(function (user) {
+          const guestNav = document.getElementById('guest-nav');
+          const userNav = document.getElementById('user-nav');
+          const sidebarGuestNav = document.getElementById('sidebar-guest-nav');
+          const sidebarUserNav = document.getElementById('sidebar-user-nav');
+          const logoutBtn = document.getElementById('logout-button');
+          const sidebarLogoutBtn = document.getElementById('sidebar-logout-button');
+
+          if (user) {
+            if (guestNav) guestNav.classList.add('hidden');
+            if (userNav) userNav.classList.remove('hidden');
+            if (sidebarGuestNav) sidebarGuestNav.classList.add('hidden');
+            if (sidebarUserNav) sidebarUserNav.classList.remove('hidden');
+          } else {
+            if (guestNav) guestNav.classList.remove('hidden');
+            if (userNav) userNav.classList.add('hidden');
+            if (sidebarGuestNav) sidebarGuestNav.classList.remove('hidden');
+            if (sidebarUserNav) sidebarUserNav.classList.add('hidden');
+          }
+
+          if (logoutBtn && !logoutBtn.dataset.boundLogout) {
+            logoutBtn.dataset.boundLogout = 'true';
+            logoutBtn.addEventListener('click', function () {
+              auth.signOut();
+            });
+          }
+
+          if (sidebarLogoutBtn && !sidebarLogoutBtn.dataset.boundLogout) {
+            sidebarLogoutBtn.dataset.boundLogout = 'true';
+            sidebarLogoutBtn.addEventListener('click', function () {
+              auth.signOut();
+            });
+          }
+        });
+      }
+
+      function bindSidebarDropdown() {
+        const toggle = document.getElementById('sidebar-calendar-dropdown-toggle');
+        const dropdown = document.getElementById('sidebar-calendar-dropdown');
+        const arrow = document.getElementById('sidebar-calendar-dropdown-arrow');
+
+        if (!toggle || !dropdown || !arrow || toggle.dataset.boundDropdown) {
+          return;
+        }
+
+        toggle.dataset.boundDropdown = 'true';
+        toggle.addEventListener('click', function (event) {
+          event.preventDefault();
+          dropdown.classList.toggle('hidden');
+          arrow.classList.toggle('rotate-180');
+        });
+      }
+
+      window.toggleSidebar = function () {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        if (!sidebar) return;
+
+        const isOpen = !sidebar.classList.contains('-translate-x-full');
+        if (isOpen) {
+          sidebar.classList.add('-translate-x-full');
+          if (overlay) overlay.classList.add('hidden');
+        } else {
+          sidebar.classList.remove('-translate-x-full');
+          if (overlay) overlay.classList.remove('hidden');
+        }
+      };
+
+      window.closeSidebar = function () {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        if (sidebar) sidebar.classList.add('-translate-x-full');
+        if (overlay) overlay.classList.add('hidden');
+      };
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebarClose = document.getElementById('sidebar-close');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+        if (sidebarToggle && !sidebarToggle.dataset.boundToggle) {
+          sidebarToggle.dataset.boundToggle = 'true';
+          sidebarToggle.addEventListener('click', function () {
+            window.toggleSidebar();
+          });
+        }
+
+        if (sidebarClose && !sidebarClose.dataset.boundClose) {
+          sidebarClose.dataset.boundClose = 'true';
+          sidebarClose.addEventListener('click', function () {
+            window.closeSidebar();
+          });
+        }
+
+        if (sidebarOverlay && !sidebarOverlay.dataset.boundOverlay) {
+          sidebarOverlay.dataset.boundOverlay = 'true';
+          sidebarOverlay.addEventListener('click', function () {
+            window.closeSidebar();
+          });
+        }
+
+        bindSidebarDropdown();
+        bindAuthNavigation();
+        window.closeSidebar();
+      });
+    })();
+  </script>
+</body>
+</html>

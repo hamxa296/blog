@@ -1,0 +1,46 @@
+{
+  "boysHostel": {
+    "media": [
+      {
+        "filename": "boys-room-1.jpg",
+        "type": "image",
+        "title": "Standard Boys Room",
+        "description": "A typical boys hostel room showing the basic furniture setup"
+      },
+      {
+        "filename": "boys-room-2.jpg",
+        "type": "image",
+        "title": "Room Layout",
+        "description": "Another view showing the room layout and storage space"
+      },
+      {
+        "filename": "boys-room-tour copy.mp4",
+        "type": "video",
+        "title": "Boys Hostel Room Tour",
+        "description": "A complete tour of a typical boys hostel room"
+      }
+    ]
+  },
+  "girlsHostel": {
+    "media": [
+      {
+        "filename": "girls-room-1.jpg",
+        "type": "image",
+        "title": "Standard Girls Room",
+        "description": "A typical girls hostel room with comfortable setup"
+      },
+      {
+        "filename": "girls-room-2.jpg",
+        "type": "image",
+        "title": "Room Interior",
+        "description": "Detailed view of the room interior and amenities"
+      },
+      {
+        "filename": "girls-room-tour.mp4",
+        "type": "video",
+        "title": "Girls Hostel Room Tour",
+        "description": "A complete tour of a typical girls hostel room"
+      }
+    ]
+  }
+}

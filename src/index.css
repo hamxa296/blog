@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&family=Rock+Salt&family=Special+Elite&family=Indie+Flower&display=swap');
+@import "tailwindcss";
+
+/* Custom fonts imported from google fonts */
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-serif: 'Lora', Georgia, serif;
+  --font-salt: 'Rock+Salt', cursive;
+  --font-elite: 'Special+Elite', cursive;
+  --font-handwriting: 'Indie+Flower', cursive;
+
+  --color-navy: #0A1931;
+  --color-deep: #1A3D63;
+  --color-steel: #4A7FA7;
+  --color-light: #B3CFE5;
+  --color-snow: #F6FAFD;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: url('/background.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+}
+
+/* Background overlay matching legacy site */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(10, 25, 49, 0.3) 0%, rgba(26, 61, 99, 0.25) 50%, rgba(10, 25, 49, 0.3) 100%);
+  z-index: -1;
+}
+
+.handwriting-title {
+  font-family: var(--font-handwriting);
+}
+
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
