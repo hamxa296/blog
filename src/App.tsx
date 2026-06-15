@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { logoutUser } from './services/firebase';
 
 // Pages
 import { Home } from './pages/Home';
@@ -22,17 +25,19 @@ import { BlogPostDetail } from './pages/BlogPostDetail';
 
 function AppContent() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user, profile } = useAuth();
   
-  // Mock User State - to be connected to Firebase AuthContext later by Developer C
-  const [mockUser, setMockUser] = useState<any>({
-    uid: 'mock-uid-123',
-    email: 'student@giki.edu.pk',
-    displayName: 'GIKian Student',
-    isAdmin: true, // Toggles Admin Portal visibility
-  });
+  // Merge Firebase user and Firestore profile details
+  const mergedUser = user ? {
+    uid: user.uid,
+    email: user.email,
+    displayName: profile?.displayName || user.displayName || user.email?.split('@')[0],
+    photoURL: profile?.photoURL || user.photoURL || '',
+    isAdmin: profile?.isAdmin || false,
+  } : null;
 
-  const handleLogout = () => {
-    setMockUser(null);
+  const handleLogout = async () => {
+    await logoutUser();
   };
 
   return (
@@ -41,14 +46,14 @@ function AppContent() {
         {/* Navigation Header */}
         <Navbar 
           onSidebarToggle={() => setSidebarOpen(true)} 
-          user={mockUser} 
+          user={mergedUser} 
         />
 
         {/* Sidebar Drawer */}
         <Sidebar 
           isOpen={sidebarOpen} 
           onClose={() => setSidebarOpen(false)} 
-          user={mockUser}
+          user={mergedUser}
           onLogout={handleLogout}
         />
 
@@ -64,9 +69,30 @@ function AppContent() {
             <Route path="/map" element={<CampusMap />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/write" element={<WritePost />} />
-            <Route path="/admin" element={<AdminPortal />} />
+            <Route 
+              path="/profile" 
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/write" 
+              element={
+                <ProtectedRoute>
+                  <WritePost />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin" 
+              element={
+                <ProtectedRoute requireAdmin={true}>
+                  <AdminPortal />
+                </ProtectedRoute>
+              } 
+            />
             <Route path="/browse" element={<BlogBrowse />} />
             <Route path="/posts/:id" element={<BlogPostDetail />} />
           </Routes>
@@ -79,9 +105,12 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </ThemeProvider>
   );
 }
 
 export default App;
+
