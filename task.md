@@ -26,20 +26,20 @@
   - [ ] Info panels with dismiss timers
 
 ## Portion 3: Auth, Blog, & Dashboards
-- [ ] Refactor Firestore API definitions to standard npm packages
-- [ ] Create `AuthContext` with state listeners
-- [ ] Migrate auth views:
-  - [ ] Login screen UI & logic
-  - [ ] Signup screen UI & logic
-- [ ] Migrate Profile & Write features:
-  - [ ] Profile editing dashboard with profile pic uploader
-  - [ ] Browse posts directory with local state filtering
-  - [ ] Write post editor screen
-- [ ] Migrate Admin portal dashboard & moderation panel
+- [x] Refactor Firestore API definitions to standard npm packages
+- [x] Create `AuthContext` with state listeners
+- [x] Migrate auth views:
+  - [x] Login screen UI & logic
+  - [x] Signup screen UI & logic
+- [x] Migrate Profile & Write features:
+  - [x] Profile editing dashboard with profile pic uploader
+  - [x] Browse posts directory with local state filtering
+  - [x] Write post editor screen
+- [x] Migrate Admin portal dashboard & moderation panel
 
 ## Final Integration & Verification
-- [ ] Connect all routes to Router in `App.tsx`
-- [ ] Replace mock JSON hooks with real Firebase collection queries
-- [ ] Test auth guards on private views
-- [ ] Verify PWA Service Worker caching
-- [ ] Production build and verification test runs
+- [x] Connect all routes to Router in `App.tsx`
+- [x] Replace mock JSON hooks with real Firebase collection queries
+- [x] Test auth guards on private views
+- [x] Verify PWA Service Worker caching
+- [x] Production build and verification test runs
