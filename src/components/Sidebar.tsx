@@ -31,7 +31,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, user, onLogou
       {/* Sidebar Panel */}
       <div
         id="sidebar"
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#1A3D63] shadow-lg transform ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#18181b] shadow-lg transform ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } transition-transform duration-300 ease-in-out flex flex-col`}
       >
@@ -376,7 +376,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, user, onLogou
         <div
           id="sidebar-overlay"
           onClick={onClose}
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="fixed inset-0 bg-transparent z-40"
         />
       )}
     </>

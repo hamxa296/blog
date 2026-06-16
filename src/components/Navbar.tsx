@@ -8,7 +8,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onSidebarToggle, user }) => {
   return (
-    <header className="bg-[#1A3D63] shadow-sm sticky top-0 z-40">
+    <header className="bg-[#18181b] shadow-sm sticky top-0 z-40">
       <nav className="container mx-auto px-6 py-4 flex items-center">
         {/* Left: Hamburger Button + Brand Logo */}
         <div className="flex items-center space-x-4">
@@ -37,23 +37,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onSidebarToggle, user }) => {
 
           <Link
             to="/gallery"
-            className="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full"
+            className="px-6 py-2.5 border-2 border-[#4A7FA7] text-[#4A7FA7] font-semibold rounded-full bg-transparent hover:bg-[#4A7FA7] hover:text-white transition-all duration-300"
           >
-            <span className="relative z-10">Gallery</span>
+            <span>Gallery</span>
           </Link>
 
           <Link
             to="/guide"
-            className="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full"
+            className="px-6 py-2.5 border-2 border-[#4A7FA7] text-[#4A7FA7] font-semibold rounded-full bg-transparent hover:bg-[#4A7FA7] hover:text-white transition-all duration-300"
           >
-            <span className="relative z-10">Freshmen Guide</span>
+            <span>Freshmen Guide</span>
           </Link>
 
           <Link
             to="/calendar"
-            className="relative px-6 py-2.5 text-[#4A7FA7] font-semibold border-2 border-[#4A7FA7] rounded-full overflow-hidden hover:text-white transition-all duration-300 before:absolute before:top-0 before:left-0 before:w-0 before:h-full before:bg-[#4A7FA7] before:rounded-full before:transition-all before:duration-300 hover:before:w-full"
+            className="px-6 py-2.5 border-2 border-[#4A7FA7] text-[#4A7FA7] font-semibold rounded-full bg-transparent hover:bg-[#4A7FA7] hover:text-white transition-all duration-300"
           >
-            <span className="relative z-10">Calendar</span>
+            <span>Calendar</span>
           </Link>
 
           {/* Conditional Guest/User links */}

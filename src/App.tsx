@@ -42,7 +42,10 @@ function AppContent() {
 
   return (
     <Router>
-      <div className="flex flex-col min-h-screen relative z-10">
+      <div className="flex flex-col h-screen relative z-10 overflow-hidden bg-[url('/background.jpeg')] bg-cover bg-center bg-no-repeat bg-fixed">
+        {/* Background Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1931]/30 via-[#1a3d63]/25 to-[#0a1931]/30 -z-10 pointer-events-none" />
+        
         {/* Navigation Header */}
         <Navbar 
           onSidebarToggle={() => setSidebarOpen(true)} 
@@ -58,7 +61,7 @@ function AppContent() {
         />
 
         {/* Dynamic Route Pages */}
-        <div className="flex-grow">
+        <div className="flex-grow min-h-0 overflow-y-auto">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />

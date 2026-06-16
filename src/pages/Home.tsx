@@ -98,32 +98,19 @@ export const Home: React.FC = () => {
   return (
     <main ref={scrollRef} className="home-scroll-root text-white relative z-10">
       {/* Dot navigation */}
-      <div className="fixed right-4 sm:right-8 top-1/2 -translate-y-1/2 z-30 hidden lg:flex flex-col items-center gap-3">
-        <p className="text-xs font-medium tracking-wider text-white/70 mb-1">Sections</p>
-        {HOME_SECTIONS.map((section) => (
+      <div className="fixed right-4 sm:right-8 top-1/2 -translate-y-1/2 z-30 hidden lg:flex flex-col gap-2">
+        {HOME_SECTIONS.slice(1, 5).map((section, i) => (
           <button
             key={section.id}
             type="button"
             onClick={() => scrollToSection(section.id)}
-            className={`section-dot ${activeSection === section.id ? 'section-dot-active' : ''}`}
-            title={section.label}
-            aria-label={`Go to ${section.label}`}
-          />
+            className={`sidebar-item w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
+              activeSection === section.id ? 'sidebar-item-active' : ''
+            }`}
+          >
+            {String(i + 1).padStart(2, '0')}
+          </button>
         ))}
-        <div className="mt-2 flex flex-col gap-1 text-[10px] text-white/50">
-          {HOME_SECTIONS.slice(1, 4).map((section, i) => (
-            <button
-              key={section.id}
-              type="button"
-              onClick={() => scrollToSection(section.id)}
-              className={`sidebar-item w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
-                activeSection === section.id ? 'sidebar-item-active' : ''
-              }`}
-            >
-              {String(i + 1).padStart(2, '0')}
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* Hero Section */}
