@@ -8,7 +8,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onSidebarToggle, user }) => {
   return (
-    <header className="bg-[#18181b] shadow-sm sticky top-0 z-40">
+    <header className="bg-[#18181b] shadow-sm sticky top-0 z-20">
       <nav className="container mx-auto px-6 py-4 flex items-center">
         {/* Left: Hamburger Button + Brand Logo */}
         <div className="flex items-center space-x-4">

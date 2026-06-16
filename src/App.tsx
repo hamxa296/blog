@@ -61,7 +61,7 @@ function AppContent() {
         />
 
         {/* Dynamic Route Pages */}
-        <div className="flex-grow min-h-0 overflow-y-auto">
+        <div className="flex-grow min-h-0 overflow-y-auto relative z-30">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />

@@ -292,8 +292,12 @@ export const Calendar: React.FC = () => {
 
       {/* Selected Day Events Modal */}
       {selectedDateStr && (
-        <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm z-50 animate-fade-in">
+        <div 
+          onClick={() => { setSelectedDateStr(null); setSelectedDayEvents([]); }}
+          className="fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm z-[9999] animate-fade-in"
+        >
           <div 
+            onClick={(e) => e.stopPropagation()}
             className="w-full max-w-lg rounded-3xl p-6 sm:p-8 border border-[#B3CFE5]/30 shadow-2xl relative text-white max-h-[85vh] overflow-y-auto"
             style={{
               background: 'linear-gradient(135deg, rgba(10,25,49,0.98), rgba(20,45,75,0.98))',
@@ -358,8 +362,12 @@ export const Calendar: React.FC = () => {
 
       {/* Submit Event Modal */}
       {isSubmitModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm z-50 animate-fade-in">
+        <div 
+          onClick={() => setIsSubmitModalOpen(false)}
+          className="fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm z-[9999] animate-fade-in"
+        >
           <div 
+            onClick={(e) => e.stopPropagation()}
             className="w-full max-w-md rounded-3xl p-8 border border-[#B3CFE5]/30 shadow-2xl relative text-white"
             style={{
               background: 'linear-gradient(135deg, rgba(10,25,49,0.98), rgba(20,45,75,0.98))',

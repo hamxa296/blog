@@ -329,16 +329,19 @@ export const Gallery: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedPhoto, filteredPhotos]);
 
+  // Optimize Cloudinary image URLs for fast thumbnail loads
+  const getThumbnailUrl = (url: string) => {
+    if (url && url.includes('cloudinary.com') && url.includes('/upload/')) {
+      return url.replace('/upload/', '/upload/q_auto,f_auto,w_600/');
+    }
+    return url;
+  };
+
   return (
     <div 
       className="min-h-screen text-white py-12 relative z-10 gallery-theme"
       style={{
-        background: `radial-gradient(300px 220px at 12% 18%, rgba(207,227,242,0.15), transparent 65%),
-                     radial-gradient(320px 230px at 86% 14%, rgba(187,214,236,0.12), transparent 62%),
-                     radial-gradient(360px 260px at 26% 82%, rgba(168,203,231,0.08), transparent 60%),
-                     radial-gradient(340px 240px at 76% 76%, rgba(141,181,217,0.08), transparent 58%),
-                     linear-gradient(160deg, rgba(255,255,255,0.06) 12%, transparent 12.5% 22%, rgba(255,255,255,0.05) 22.5% 32%, transparent 32.5% 44%, rgba(255,255,255,0.04) 44.5%)`,
-        backgroundBlendMode: 'screen, screen, overlay, overlay, overlay',
+        background: 'linear-gradient(to bottom, rgba(10, 25, 49, 0.45), rgba(10, 25, 49, 0.6))',
       }}
     >
       <div className="container mx-auto px-4 md:px-6 max-w-6xl">
@@ -363,70 +366,90 @@ export const Gallery: React.FC = () => {
           {highlightedLoading ? (
             <div className="w-full h-64 sm:h-[400px] animate-pulse rounded-[2.5rem] bg-[#1A3D63]/30 border border-white/5"></div>
           ) : highlightedPhotos.length > 0 ? (
-            <div 
-              className="relative h-64 sm:h-[420px] rounded-[2.5rem] overflow-hidden border border-[#B3CFE5]/25 shadow-2xl flex items-end justify-start p-6 sm:p-12 group"
-              style={{
-                backgroundImage: `linear-gradient(to top, rgba(10,25,49,0.95), rgba(10,25,49,0.3) 50%, rgba(10,25,49,0.1)), url(${highlightedPhotos[currentSlideIndex].fullSizeUrl})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                transition: 'background-image 0.5s ease-in-out'
-              }}
-            >
-              <div className="max-w-xl bg-black/45 backdrop-blur-md p-5 sm:p-8 rounded-[2rem] border border-white/10 shadow-2xl text-left">
+            <div className="flex flex-col border border-[#B3CFE5]/25 rounded-[2.5rem] overflow-hidden shadow-2xl bg-[#0E223C]/40">
+              {/* Clickable Image Container */}
+              <div 
+                onClick={() => setSelectedPhoto(highlightedPhotos[currentSlideIndex])}
+                className="relative h-64 sm:h-[380px] overflow-hidden cursor-pointer group"
+              >
+                <img 
+                  src={highlightedPhotos[currentSlideIndex].fullSizeUrl} 
+                  alt={highlightedPhotos[currentSlideIndex].caption} 
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.015]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent pointer-events-none" />
+
+                {/* Slider controls */}
+                {highlightedPhotos.length > 1 && (
+                  <>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrentSlideIndex(prev => (prev - 1 + highlightedPhotos.length) % highlightedPhotos.length);
+                      }}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/35 backdrop-blur-sm border border-white/10 text-white font-bold flex items-center justify-center cursor-pointer hover:bg-black/60 transition opacity-0 group-hover:opacity-100 z-10"
+                    >
+                      ‹
+                    </button>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrentSlideIndex(prev => (prev + 1) % highlightedPhotos.length);
+                      }}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/35 backdrop-blur-sm border border-white/10 text-white font-bold flex items-center justify-center cursor-pointer hover:bg-black/60 transition opacity-0 group-hover:opacity-100 z-10"
+                    >
+                      ›
+                    </button>
+                    <div className="absolute bottom-4 right-6 flex gap-1.5 z-10">
+                      {highlightedPhotos.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCurrentSlideIndex(i);
+                          }}
+                          className={`w-2 h-2 rounded-full cursor-pointer transition ${i === currentSlideIndex ? 'bg-white scale-125' : 'bg-white/40'}`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Details (Not covering photo) */}
+              <div className="p-6 sm:px-10 sm:py-5 border-t border-[#B3CFE5]/15 text-left bg-black/35 backdrop-blur-md">
                 <span className="text-[9px] font-bold text-[#B3CFE5]/60 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded uppercase tracking-wider mb-2.5 inline-block">
                   {highlightedPhotos[currentSlideIndex].category}
                 </span>
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 leading-tight">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-1.5 leading-tight font-serif">
                   "{highlightedPhotos[currentSlideIndex].caption}"
                 </h3>
                 <p className="text-xs text-[#B3CFE5]/80">
                   Shared by <strong className="text-white">{highlightedPhotos[currentSlideIndex].uploaderName}</strong> on {formatDate(highlightedPhotos[currentSlideIndex].createdAt)}
                 </p>
               </div>
-
-              {/* Slider controls */}
-              {highlightedPhotos.length > 1 && (
-                <>
-                  <button 
-                    onClick={() => setCurrentSlideIndex(prev => (prev - 1 + highlightedPhotos.length) % highlightedPhotos.length)}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/35 backdrop-blur-sm border border-white/10 text-white font-bold flex items-center justify-center cursor-pointer hover:bg-black/60 transition opacity-0 group-hover:opacity-100"
-                  >
-                    ‹
-                  </button>
-                  <button 
-                    onClick={() => setCurrentSlideIndex(prev => (prev + 1) % highlightedPhotos.length)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/35 backdrop-blur-sm border border-white/10 text-white font-bold flex items-center justify-center cursor-pointer hover:bg-black/60 transition opacity-0 group-hover:opacity-100"
-                  >
-                    ›
-                  </button>
-                  <div className="absolute bottom-6 right-6 flex gap-1.5 z-20">
-                    {highlightedPhotos.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setCurrentSlideIndex(i)}
-                        className={`w-2 h-2 rounded-full cursor-pointer transition ${i === currentSlideIndex ? 'bg-white scale-125' : 'bg-white/40'}`}
-                      />
-                    ))}
-                  </div>
-                </>
-              )}
             </div>
           ) : (
             // Fallback: If no highlighted posts, show first approved photo
             photos.length > 0 && photos[0].status === 'approved' ? (
-              <div 
-                className="relative h-64 sm:h-[420px] rounded-[2.5rem] overflow-hidden border border-[#B3CFE5]/25 shadow-2xl flex items-end justify-start p-6 sm:p-12 group"
-                style={{
-                  backgroundImage: `linear-gradient(to top, rgba(10,25,49,0.95), rgba(10,25,49,0.3) 50%, rgba(10,25,49,0.1)), url(${photos[0].fullSizeUrl})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center'
-                }}
-              >
-                <div className="max-w-xl bg-black/45 backdrop-blur-md p-5 sm:p-8 rounded-[2rem] border border-white/10 shadow-2xl text-left">
+              <div className="flex flex-col border border-[#B3CFE5]/25 rounded-[2.5rem] overflow-hidden shadow-2xl bg-[#0E223C]/40">
+                <div 
+                  onClick={() => setSelectedPhoto(photos[0])}
+                  className="relative h-64 sm:h-[380px] overflow-hidden cursor-pointer group"
+                >
+                  <img 
+                    src={photos[0].fullSizeUrl} 
+                    alt={photos[0].caption} 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.015]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent pointer-events-none" />
+                </div>
+
+                <div className="p-6 sm:px-10 sm:py-5 border-t border-[#B3CFE5]/15 text-left bg-black/35 backdrop-blur-md">
                   <span className="text-[9px] font-bold text-[#B3CFE5]/60 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded uppercase tracking-wider mb-2.5 inline-block">
                     {photos[0].category}
                   </span>
-                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 leading-tight">
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-1.5 leading-tight font-serif">
                     "{photos[0].caption}"
                   </h3>
                   <p className="text-xs text-[#B3CFE5]/80">
@@ -520,7 +543,7 @@ export const Gallery: React.FC = () => {
                 >
                   {/* Photo Image */}
                   <img
-                    src={photo.imageUrl}
+                    src={getThumbnailUrl(photo.imageUrl)}
                     alt={photo.caption}
                     className="w-full h-auto object-cover group-hover:scale-[1.01] transition-transform duration-500"
                     loading="lazy"
@@ -571,10 +594,16 @@ export const Gallery: React.FC = () => {
 
       {/* Lightbox / Slider Modal */}
       {selectedPhoto && (
-        <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/95 backdrop-blur-sm z-50 animate-fade-in">
+        <div 
+          onClick={() => setSelectedPhoto(null)}
+          className="fixed inset-0 flex items-center justify-center p-4 bg-black/95 backdrop-blur-sm z-[9999] animate-fade-in"
+        >
           {/* Previous image */}
           <button 
-            onClick={handlePrevLightbox}
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePrevLightbox();
+            }}
             className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/5 hover:bg-white/10 text-white font-bold flex items-center justify-center cursor-pointer border border-white/10 transition z-20 text-2xl"
           >
             ‹
@@ -582,7 +611,10 @@ export const Gallery: React.FC = () => {
 
           {/* Close Lightbox */}
           <button
-            onClick={() => setSelectedPhoto(null)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedPhoto(null);
+            }}
             className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 text-white font-bold flex items-center justify-center cursor-pointer border border-white/10 transition z-20 text-lg"
           >
             ✕
@@ -590,15 +622,23 @@ export const Gallery: React.FC = () => {
 
           {/* Next image */}
           <button 
-            onClick={handleNextLightbox}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleNextLightbox();
+            }}
             className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/5 hover:bg-white/10 text-white font-bold flex items-center justify-center cursor-pointer border border-white/10 transition z-20 text-2xl"
           >
             ›
           </button>
 
           {/* Main content drawer */}
-          <div className="max-w-4xl w-full flex flex-col items-center">
-            <div className="relative max-h-[70vh] rounded-2xl overflow-hidden bg-black/40 border border-white/10 shadow-2xl flex items-center justify-center">
+          <div 
+            className="max-w-4xl w-full flex flex-col items-center"
+          >
+            <div 
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-h-[70vh] rounded-2xl overflow-hidden bg-black/40 border border-white/10 shadow-2xl flex items-center justify-center"
+            >
               <img 
                 src={selectedPhoto.fullSizeUrl} 
                 alt={selectedPhoto.caption} 
@@ -607,7 +647,10 @@ export const Gallery: React.FC = () => {
             </div>
 
             {/* Photo metadata details */}
-            <div className="w-full max-w-2xl bg-[#0E223C]/90 border border-[#B3CFE5]/20 mt-4 p-5 rounded-2xl text-left backdrop-blur flex flex-col md:flex-row justify-between gap-4">
+            <div 
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-2xl bg-[#0E223C]/90 border border-[#B3CFE5]/20 mt-4 p-5 rounded-2xl text-left backdrop-blur flex flex-col md:flex-row justify-between gap-4"
+            >
               <div className="space-y-1">
                 <div className="flex gap-2 items-center flex-wrap">
                   <span className="text-[10px] font-bold text-[#B3CFE5] bg-[#4A7FA7]/20 border border-[#4A7FA7]/30 px-2 py-0.5 rounded uppercase tracking-wider">
