@@ -3,8 +3,8 @@
  * Provides basic offline functionality without complex message handling
  */
 
-const CACHE_NAME = 'giki-chronicles-v1.4';
-const STATIC_CACHE = 'giki-static-v1.4';
+const CACHE_NAME = 'giki-chronicles-v1.9';
+const STATIC_CACHE = 'giki-static-v1.9';
 
 // Files to cache immediately (only local files)
 const STATIC_FILES = [
