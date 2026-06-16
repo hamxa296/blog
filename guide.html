@@ -29,6 +29,13 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js?v=1.8"></script>
     <!-- Babel for JSX transpilation -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js?v=1.8"></script>
+    <script>
+        Babel.registerPreset("react-classic", {
+            presets: [
+                [Babel.availablePresets["react"], { runtime: "classic" }]
+            ]
+        });
+    </script>
     <!-- Custom Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -492,7 +499,8 @@
     <script src="notifications.js?v=1.8"></script>
 
     <!-- Your React Component -->
-    <script type="text/babel">
+    <script type="text/babel" data-presets="react-classic">
+        /** @jsxRuntime classic */
         const { useState, useEffect, useMemo, useRef } = React;
 
         // Use the global firebaseConfig from firebase-init.js
