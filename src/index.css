@@ -42,8 +42,15 @@ body::before {
   z-index: -1;
 }
 
+.font-lora {
+  font-family: 'Lora', serif;
+}
+
 .handwriting-title {
-  font-family: var(--font-handwriting);
+  font-family: 'Rock Salt', 'Special Elite', 'Indie Flower', cursive;
+  letter-spacing: 1px;
+  transform: rotate(-1deg) skew(-0.5deg);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
 }
 
 .hover-lift {
@@ -112,7 +119,54 @@ body::before {
 .guide-section-panel {
   background: linear-gradient(135deg, rgba(10, 25, 49, 0.9), rgba(26, 61, 99, 0.9));
   color: #F6FAFD;
-  border: 1px solid rgba(179, 207, 229, 0.15);
+  border: 1px solid rgba(179, 207, 229, 0.25);
+}
+
+.card-panel {
+  background:
+    radial-gradient(150px 110px at 14% 22%, rgba(207, 227, 242, 0.80), transparent 62%),
+    radial-gradient(130px 95px at 82% 18%, rgba(187, 214, 236, 0.65), transparent 60%),
+    radial-gradient(170px 120px at 30% 78%, rgba(168, 203, 231, 0.50), transparent 60%),
+    radial-gradient(190px 130px at 72% 72%, rgba(141, 181, 217, 0.45), transparent 58%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.08) 12%, transparent 12.5% 20%, rgba(255, 255, 255, 0.06) 20.5% 28%, transparent 28.5% 36%, rgba(255, 255, 255, 0.05) 36.5% 44%, transparent 44.5%),
+    linear-gradient(155deg, #CFE3F2 0%, #A7CBE6 58%, #8DB5D9 100%);
+  background-blend-mode: screen, screen, overlay, overlay, overlay, normal;
+  color: #1A3D63;
+  border: 1px solid rgba(26, 61, 99, 0.22);
+  box-shadow: 0 12px 30px rgba(10, 25, 49, 0.12);
+  transition: box-shadow 0.25s ease, transform 0.25s ease, background 0.3s ease;
+  will-change: transform;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    radial-gradient(6px 6px at 18% 30%, rgba(255, 255, 255, 0.35), transparent 60%),
+    radial-gradient(9px 9px at 26% 60%, rgba(207, 227, 242, 0.40), transparent 62%),
+    radial-gradient(7px 7px at 78% 48%, rgba(255, 255, 255, 0.28), transparent 62%),
+    radial-gradient(6px 6px at 64% 26%, rgba(207, 227, 242, 0.35), transparent 62%),
+    radial-gradient(5px 5px at 42% 18%, rgba(255, 255, 255, 0.25), transparent 62%);
+  mix-blend-mode: overlay;
+}
+
+.card-panel:hover {
+  border-color: rgba(26, 61, 99, 0.36);
+  box-shadow: 0 16px 40px rgba(10, 25, 49, 0.20);
+  background:
+    radial-gradient(150px 110px at 12% 20%, rgba(207, 227, 242, 0.88), transparent 62%),
+    radial-gradient(130px 95px at 84% 16%, rgba(187, 214, 236, 0.72), transparent 60%),
+    radial-gradient(170px 120px at 28% 76%, rgba(168, 203, 231, 0.56), transparent 60%),
+    radial-gradient(190px 130px at 74% 70%, rgba(141, 181, 217, 0.50), transparent 58%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.10) 10%, transparent 10.5% 22%, rgba(255, 255, 255, 0.08) 22.5% 32%, transparent 32.5% 44%, rgba(255, 255, 255, 0.06) 44.5%),
+    linear-gradient(155deg, #CFE3F2 0%, #9EC4E2 58%, #89B7DB 100%);
+  background-blend-mode: screen, screen, overlay, overlay, overlay, normal;
+  transform: translateY(-2px);
 }
 
 /* App Background & Overlay rules */

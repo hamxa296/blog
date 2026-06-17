@@ -29,8 +29,9 @@ export const essentialItems = [
   'Knife',
   'Slippers',
   'Clothes (casual + formal for presentations)',
-  'Sweaters/Jackets',
   'Mirror',
+  'Calculator',
+  'Kettle',
   'Iron',
   'Medicines',
 ];
@@ -272,7 +273,7 @@ export const dormMediaConfig: Record<DormHostelKey, { media: DormMediaItem[] }> 
   boysHostel: {
     media: [
       {
-        filename: 'boys-room-tour.mp4',
+        filename: 'boys-room-tour copy.mp4',
         type: 'video',
         title: 'Boys Hostel Room Tour',
         description: 'A complete tour of a typical boys hostel room',

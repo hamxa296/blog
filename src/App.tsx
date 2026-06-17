@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { logoutUser } from './services/firebase';
 
-// Pages
 import { Home } from './pages/Home';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
 import { FreshmanGuide } from './pages/FreshmanGuide';
+import { GuideErrorBoundary } from './components/guide/GuideErrorBoundary';
 import { Calendar } from './pages/Calendar';
 import { Gallery } from './pages/Gallery';
 import { CampusMap } from './pages/CampusMap';
@@ -22,95 +22,94 @@ import { AdminPortal } from './pages/AdminPortal';
 import { BlogBrowse } from './pages/BlogBrowse';
 import { BlogPostDetail } from './pages/BlogPostDetail';
 
-function AppContent() {
+function AppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, profile } = useAuth();
-  
-  // Merge Firebase user and Firestore profile details
-  const mergedUser = user ? {
-    uid: user.uid,
-    email: user.email,
-    displayName: profile?.displayName || user.displayName || user.email?.split('@')[0],
-    photoURL: profile?.photoURL || user.photoURL || '',
-    isAdmin: profile?.isAdmin || false,
-  } : null;
+
+  const mergedUser = user
+    ? {
+        uid: user.uid,
+        email: user.email,
+        displayName: profile?.displayName || user.displayName || user.email?.split('@')[0],
+        photoURL: profile?.photoURL || user.photoURL || '',
+        isAdmin: profile?.isAdmin || false,
+      }
+    : null;
 
   const handleLogout = async () => {
     await logoutUser();
   };
 
   return (
-    <Router>
-      <div className="flex flex-col h-screen relative z-10 overflow-hidden app-background bg-cover bg-center bg-no-repeat bg-fixed">
-        {/* Background Overlay */}
-        <div className="absolute inset-0 app-overlay -z-10 pointer-events-none" />
-        
-        {/* Navigation Header */}
-        <Navbar 
-          onSidebarToggle={() => setSidebarOpen(true)} 
-          user={mergedUser} 
-        />
+    <div className="flex flex-col h-screen relative z-10 overflow-hidden app-background bg-cover bg-center bg-no-repeat bg-fixed">
+      <div className="absolute inset-0 app-overlay -z-10 pointer-events-none" />
 
-        {/* Sidebar Drawer */}
-        <Sidebar 
-          isOpen={sidebarOpen} 
-          onClose={() => setSidebarOpen(false)} 
-          user={mergedUser}
-          onLogout={handleLogout}
-        />
+      <Navbar onSidebarToggle={() => setSidebarOpen(true)} user={mergedUser} />
 
-        {/* Dynamic Route Pages */}
-        <div className="flex-grow min-h-0 overflow-y-auto relative z-30">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/guide" element={<FreshmanGuide />} />
-            <Route path="/calendar" element={<Calendar />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/map" element={<CampusMap />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route 
-              path="/profile" 
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/write" 
-              element={
-                <ProtectedRoute>
-                  <WritePost />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/admin" 
-              element={
-                <ProtectedRoute requireAdmin={true}>
-                  <AdminPortal />
-                </ProtectedRoute>
-              } 
-            />
-            <Route path="/browse" element={<BlogBrowse />} />
-            <Route path="/posts/:id" element={<BlogPostDetail />} />
-          </Routes>
-        </div>
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        user={mergedUser}
+        onLogout={handleLogout}
+      />
+
+      <div className="flex-grow min-h-0 overflow-y-auto relative z-30">
+        <Outlet />
       </div>
-    </Router>
+    </div>
   );
 }
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <AppShell />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: 'about', element: <About /> },
+      { path: 'contact', element: <Contact /> },
+      { path: 'guide', element: <GuideErrorBoundary><FreshmanGuide /></GuideErrorBoundary> },
+      { path: 'calendar', element: <Calendar /> },
+      { path: 'gallery', element: <Gallery /> },
+      { path: 'map', element: <CampusMap /> },
+      { path: 'login', element: <Login /> },
+      { path: 'signup', element: <Signup /> },
+      {
+        path: 'profile',
+        element: (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'write',
+        element: (
+          <ProtectedRoute>
+            <WritePost />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'admin',
+        element: (
+          <ProtectedRoute requireAdmin={true}>
+            <AdminPortal />
+          </ProtectedRoute>
+        ),
+      },
+      { path: 'browse', element: <BlogBrowse /> },
+      { path: 'posts/:id', element: <BlogPostDetail /> },
+    ],
+  },
+]);
 
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <RouterProvider router={router} />
     </AuthProvider>
   );
 }
 
 export default App;
-
