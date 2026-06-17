@@ -48,30 +48,36 @@ export const HostelTours: React.FC = () => {
   return (
     <div>
       <h3 className="text-xl sm:text-2xl font-semibold font-serif text-[#B3CFE5] mb-2">
-        Room Tours & Videos
+        Room Tours & Photos
       </h3>
       <p className="text-sm text-[#B3CFE5] mb-6">
         Take a virtual tour of the hostel rooms and facilities to get a better idea of your new home.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <button
-          type="button"
-          onClick={() => openHostel('boys')}
-          className="bg-[#4A7FA7] hover:bg-[#1A3D63] cursor-pointer rounded-lg p-6 text-center transition-colors duration-200"
-        >
-          <div className="text-white text-lg font-semibold mb-2">Boys Hostel</div>
-          <div className="text-blue-100 text-sm">Click to view room tour video</div>
-        </button>
+      <div className="space-y-6">
+        <div>
+          <h5 className="text-md font-semibold text-gray-200 mb-4">Room Gallery</h5>
 
-        <button
-          type="button"
-          onClick={() => openHostel('girls')}
-          className="bg-[#1A3D63] hover:bg-[#4A7FA7] cursor-pointer rounded-lg p-6 text-center transition-colors duration-200"
-        >
-          <div className="text-white text-lg font-semibold mb-2">Girls Hostel</div>
-          <div className="text-pink-100 text-sm">Click to view room tour video</div>
-        </button>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <button
+              type="button"
+              onClick={() => openHostel('boys')}
+              className="bg-[#4A7FA7] hover:bg-[#1A3D63] cursor-pointer rounded-lg p-6 text-center transition-colors duration-200"
+            >
+              <div className="text-white text-lg font-semibold mb-2">Boys Hostel</div>
+              <div className="text-blue-100 text-sm">Click to view photos & videos</div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => openHostel('girls')}
+              className="bg-[#1A3D63] hover:bg-[#4A7FA7] cursor-pointer rounded-lg p-6 text-center transition-colors duration-200"
+            >
+              <div className="text-white text-lg font-semibold mb-2">Girls Hostel</div>
+              <div className="text-pink-100 text-sm">Click to view photos & videos</div>
+            </button>
+          </div>
+        </div>
       </div>
 
       {selectedHostel && currentMedia && (
