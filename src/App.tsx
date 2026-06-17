@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
@@ -42,9 +41,9 @@ function AppContent() {
 
   return (
     <Router>
-      <div className="flex flex-col h-screen relative z-10 overflow-hidden bg-[url('/background.jpeg')] bg-cover bg-center bg-no-repeat bg-fixed">
+      <div className="flex flex-col h-screen relative z-10 overflow-hidden app-background bg-cover bg-center bg-no-repeat bg-fixed">
         {/* Background Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1931]/30 via-[#1a3d63]/25 to-[#0a1931]/30 -z-10 pointer-events-none" />
+        <div className="absolute inset-0 app-overlay -z-10 pointer-events-none" />
         
         {/* Navigation Header */}
         <Navbar 
@@ -107,11 +106,9 @@ function AppContent() {
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </ThemeProvider>
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

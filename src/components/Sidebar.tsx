@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -10,7 +9,6 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, user, onLogout }) => {
-  const { theme, toggleTheme } = useTheme();
   const [calendarDropdownOpen, setCalendarDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -332,40 +330,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, user, onLogou
                   </>
                 )}
               </div>
-            </div>
-
-            {/* Theme Toggle Button */}
-            <div className="pt-4 border-t border-white/20">
-              <button
-                onClick={toggleTheme}
-                className="w-full flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200 text-left cursor-pointer"
-              >
-                {theme === 'basic-dark' ? (
-                  <>
-                    <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M8.12 8.12a4 4 0 115.76 5.76 4 4 0 01-5.76-5.76z"
-                      />
-                    </svg>
-                    Light Theme
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                      />
-                    </svg>
-                    Dark Theme
-                  </>
-                )}
-              </button>
             </div>
           </div>
         </nav>

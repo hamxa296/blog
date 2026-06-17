@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&family=Rock+Salt&family=Special+Elite&family=Indie+Flower&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;600;700&family=Rock+Salt&family=Special+Elite&family=Indie+Flower&family=Architects+Daughter&family=Kalam:wght@300;400;700&display=swap');
 @import "tailwindcss";
 
 /* Custom fonts imported from google fonts */
@@ -6,9 +6,10 @@
 @theme {
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-serif: 'Lora', Georgia, serif;
-  --font-salt: 'Rock+Salt', cursive;
-  --font-elite: 'Special+Elite', cursive;
-  --font-handwriting: 'Indie+Flower', cursive;
+  --font-salt: 'Rock Salt', cursive;
+  --font-elite: 'Special Elite', cursive;
+  --font-handwriting: 'Architects Daughter', 'Kalam', cursive;
+  --font-kalam: 'Kalam', cursive;
 
   --color-navy: #0A1931;
   --color-deep: #1A3D63;
@@ -76,34 +77,8 @@ body::before {
   text-shadow: 0 2px 10px rgba(74, 127, 167, 0.2);
 }
 
-.section-bg-1 {
-  background: linear-gradient(135deg, rgba(10, 25, 49, 0.75), rgba(26, 61, 99, 0.75));
+.home-content-section {
   position: relative;
-}
-
-.section-bg-1::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 20% 80%, rgba(74, 127, 167, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(179, 207, 229, 0.1) 0%, transparent 50%);
-  pointer-events: none;
-}
-
-.section-bg-2 {
-  background: linear-gradient(135deg, rgba(26, 61, 99, 0.75), rgba(74, 127, 167, 0.65));
-  position: relative;
-}
-
-.section-bg-2::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 80% 80%, rgba(179, 207, 229, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 20% 20%, rgba(74, 127, 167, 0.1) 0%, transparent 50%);
-  pointer-events: none;
 }
 
 .sidebar-item {
@@ -124,26 +99,6 @@ body::before {
   border-color: rgba(255, 255, 255, 0.4) !important;
 }
 
-.section-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-
-.section-dot:hover {
-  transform: scale(1.15);
-  background: rgba(255, 255, 255, 0.45);
-}
-
-.section-dot-active {
-  background: #B3CFE5;
-  border-color: #B3CFE5;
-  transform: scale(1.2);
-}
-
 /* Freshman guide panels */
 .chronicle-container {
   background: linear-gradient(135deg, rgba(10, 25, 49, 0.85), rgba(26, 61, 99, 0.85));
@@ -157,3 +112,64 @@ body::before {
   color: #F6FAFD;
   border: 1px solid rgba(179, 207, 229, 0.15);
 }
+
+/* App Background & Overlay rules */
+.app-background {
+  background-image: url('/background.jpeg');
+}
+
+.app-overlay {
+  background: linear-gradient(135deg, rgba(10, 25, 49, 0.35) 0%, rgba(26, 61, 99, 0.3) 50%, rgba(10, 25, 49, 0.35) 100%);
+}
+
+/* Dark Theme Overrides for standard Tailwind classes (default style) */
+body {
+  background-color: #1f2120 !important;
+  color: #f9fafb !important;
+}
+
+.bg-white {
+  background: linear-gradient(135deg, rgba(37, 39, 38, 0.95), rgba(45, 47, 46, 0.95)) !important;
+  background-color: #252726 !important;
+  color: #f9fafb !important;
+  border-color: #3a3c3b !important;
+}
+
+.bg-gray-50,
+.bg-gray-100 {
+  background: linear-gradient(135deg, rgba(21, 23, 22, 0.95), rgba(31, 33, 32, 0.95)) !important;
+  background-color: #151716 !important;
+  color: #f9fafb !important;
+  border-color: #3a3c3b !important;
+}
+
+.text-gray-900,
+.text-gray-800,
+.text-gray-700 {
+  color: #f9fafb !important;
+}
+
+.text-gray-600,
+.text-gray-500 {
+  color: #9ca3af !important;
+}
+
+.border-gray-100,
+.border-gray-200,
+.border-gray-300 {
+  border-color: #3a3c3b !important;
+}
+
+/* Header colors */
+header {
+  background: linear-gradient(135deg, rgba(21, 23, 22, 0.98), rgba(31, 33, 32, 0.98)) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(58, 60, 59, 0.4) !important;
+}
+
+/* Sidebar styling */
+#sidebar, .sidebar-drawer {
+  background: linear-gradient(135deg, rgba(21, 23, 22, 0.98), rgba(31, 33, 32, 0.98)) !important;
+  border-right: 1px solid rgba(58, 60, 59, 0.4) !important;
+}
+
