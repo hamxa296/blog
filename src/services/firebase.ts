@@ -62,6 +62,7 @@ export interface UserProfile {
   bio?: string;
   isAdmin?: boolean;
   isBlocked?: boolean;
+  role?: 'admin' | 'editor' | 'moderator' | 'author' | 'user';
   createdAt?: Timestamp;
   lastUpdated?: Timestamp;
 }
@@ -127,6 +128,7 @@ export async function signUpUser(email: string, password: string) {
       email: user.email || email,
       displayName: email.split('@')[0],
       photoURL: '',
+      role: isAdminUID(user.uid) ? 'admin' : 'author',
     };
 
     if (isAdminUID(user.uid)) {
@@ -183,6 +185,7 @@ export async function loginUser(email: string, password: string) {
         email: user.email || email,
         displayName: user.displayName || email.split('@')[0],
         photoURL: user.photoURL || '',
+        role: isAdminUID(user.uid) ? 'admin' : 'author',
       };
       if (isAdminUID(user.uid)) {
         userData.isAdmin = true;
@@ -234,6 +237,7 @@ export async function signInWithGoogle() {
         email: user.email || '',
         displayName: user.displayName || 'User',
         photoURL: user.photoURL || '',
+        role: isAdminUID(user.uid) ? 'admin' : 'author',
       };
       if (isAdminUID(user.uid)) {
         userData.isAdmin = true;
@@ -758,6 +762,56 @@ export async function toggleBlockUser(userId: string, isBlocked: boolean) {
       isBlocked,
       lastUpdated: serverTimestamp()
     });
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+// -------------------------------------------------------------
+// CMS / COMMENT MODERATION & ROLE MANAGEMENT UTILITIES
+// -------------------------------------------------------------
+
+export async function getAllComments() {
+  try {
+    const q = query(collection(db, 'comments'), orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(q);
+    const comments = snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        postId: data.postId,
+        authorId: data.authorId,
+        authorName: data.authorName,
+        authorPhotoURL: data.authorPhotoURL,
+        content: data.content || data.text || '',
+        createdAt: data.createdAt
+      };
+    });
+    return { success: true, comments };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function deleteComment(commentId: string) {
+  try {
+    await deleteDoc(doc(db, 'comments', commentId));
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function updateUserRole(uid: string, newRole: 'admin' | 'editor' | 'moderator' | 'author' | 'user') {
+  try {
+    const updateData: any = { role: newRole };
+    if (newRole === 'admin') {
+      updateData.isAdmin = true;
+    } else {
+      updateData.isAdmin = false;
+    }
+    await updateDoc(doc(db, 'users', uid), updateData);
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
