@@ -22,8 +22,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, user, onLogou
     navigate('/');
   };
 
-  const isAdmin = user?.isAdmin || false; // Standard admin check
-
   return (
     <>
       {/* Sidebar Panel */}
@@ -296,9 +294,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, user, onLogou
                       </svg>
                       Write Post
                     </Link>
-                    {isAdmin && (
+                    {user && ['admin', 'editor', 'moderator', 'author'].includes(user.role || (user.isAdmin ? 'admin' : '')) && (
                       <Link
-                        to="/admin"
+                        to="/cms"
                         onClick={handleLinkClick}
                         className="flex items-center px-3 py-2 text-white hover:bg-white/20 hover:text-[#4A7FA7] rounded-lg transition duration-200"
                       >
@@ -310,7 +308,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, user, onLogou
                             d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                           />
                         </svg>
-                        🔐 Admin Portal
+                        🛡️ CMS Panel
                       </Link>
                     )}
                     <button
