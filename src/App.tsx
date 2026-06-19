@@ -18,7 +18,8 @@ import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
 import { Profile } from './pages/Profile';
 import { WritePost } from './pages/WritePost';
-import { AdminPortal } from './pages/AdminPortal';
+import { CmsDashboard } from './pages/CmsDashboard';
+import { CmsRoute } from './components/CmsRoute';
 import { BlogBrowse } from './pages/BlogBrowse';
 import { BlogPostDetail } from './pages/BlogPostDetail';
 
@@ -33,6 +34,7 @@ function AppShell() {
         displayName: profile?.displayName || user.displayName || user.email?.split('@')[0],
         photoURL: profile?.photoURL || user.photoURL || '',
         isAdmin: profile?.isAdmin || false,
+        role: profile?.role || null,
       }
     : null;
 
@@ -91,11 +93,19 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: 'cms',
+        element: (
+          <CmsRoute>
+            <CmsDashboard />
+          </CmsRoute>
+        ),
+      },
+      {
         path: 'admin',
         element: (
-          <ProtectedRoute requireAdmin={true}>
-            <AdminPortal />
-          </ProtectedRoute>
+          <CmsRoute allowedRoles={['admin']}>
+            <CmsDashboard />
+          </CmsRoute>
         ),
       },
       { path: 'browse', element: <BlogBrowse /> },
