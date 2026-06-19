@@ -67,6 +67,8 @@ body::before {
   overflow-y: auto;
   height: 100%;
   scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  will-change: scroll-position;
   scroll-padding-top: 88px; /* Offset for sticky header/navbar */
 }
 

@@ -54,19 +54,28 @@ export const Home: React.FC = () => {
     const container = scrollRef.current;
     if (!container) return;
 
-    const handleScroll = () => {
-      const scrollPos = container.scrollTop + container.clientHeight / 2;
-      for (let i = HOME_SECTIONS.length - 1; i >= 0; i--) {
-        const el = document.getElementById(HOME_SECTIONS[i].id);
-        if (el && scrollPos >= el.offsetTop) {
-          setActiveSection(HOME_SECTIONS[i].id);
-          break;
-        }
-      }
+    const observerOptions = {
+      root: container,
+      rootMargin: '-40% 0px -40% 0px', // Triggers when section occupies the active middle portion
+      threshold: 0,
     };
 
-    container.addEventListener('scroll', handleScroll, { passive: true });
-    return () => container.removeEventListener('scroll', handleScroll);
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    HOME_SECTIONS.forEach((section) => {
+      const el = document.getElementById(section.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
   }, []);
 
   const formatDate = (seconds: number | undefined) => {
