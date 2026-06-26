@@ -1,23 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { 
   getGalleryPhotos, 
   uploadGalleryPhoto, 
-  getHighlightedPhotos, 
   togglePhotoHighlight, 
   updateGalleryPhotoStatus, 
   deleteGalleryPhoto,
   type GalleryPhoto 
 } from '../services/firebase';
+import StickyScroll from '../components/ui/sticky-scroll';
 
 export const Gallery: React.FC = () => {
   const { user, isAdmin } = useAuth();
   
   // States
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
-  const [highlightedPhotos, setHighlightedPhotos] = useState<GalleryPhoto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [highlightedLoading, setHighlightedLoading] = useState(true);
   
   // Filters
   const [categoryFilter, setCategoryFilter] = useState('all');
@@ -25,10 +22,6 @@ export const Gallery: React.FC = () => {
   
   // Admin stats
   const [stats, setStats] = useState({ approved: 0, pending: 0, rejected: 0 });
-  
-  // Highlight Carousel Index
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const slideshowTimer = useRef<any>(null);
 
   // Lightbox & Modal States
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryPhoto | null>(null);
@@ -47,7 +40,6 @@ export const Gallery: React.FC = () => {
 
   // Load photos based on status
   const loadPhotos = async () => {
-    setLoading(true);
     try {
       const res = await getGalleryPhotos(statusFilter);
       if (res.success && res.photos) {
@@ -55,8 +47,6 @@ export const Gallery: React.FC = () => {
       }
     } catch (err) {
       console.error("Error loading gallery photos:", err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -77,46 +67,19 @@ export const Gallery: React.FC = () => {
     }
   };
 
-  // Load highlighted photos for slideshow
-  const loadHighlighted = async () => {
-    setHighlightedLoading(true);
-    try {
-      const res = await getHighlightedPhotos();
-      if (res.success && res.photos) {
-        setHighlightedPhotos(res.photos);
-      }
-    } catch (err) {
-      console.error("Error loading highlighted photos:", err);
-    } finally {
-      setHighlightedLoading(false);
-    }
-  };
+
 
   useEffect(() => {
     loadPhotos();
   }, [statusFilter]);
 
   useEffect(() => {
-    loadHighlighted();
     if (isAdmin) {
       loadStats();
     }
   }, [isAdmin]);
 
-  // Slideshow Auto-Advance
-  useEffect(() => {
-    if (slideshowTimer.current) clearInterval(slideshowTimer.current);
-    
-    if (highlightedPhotos.length > 1) {
-      slideshowTimer.current = setInterval(() => {
-        setCurrentSlideIndex(prev => (prev + 1) % highlightedPhotos.length);
-      }, 5000);
-    }
 
-    return () => {
-      if (slideshowTimer.current) clearInterval(slideshowTimer.current);
-    };
-  }, [highlightedPhotos]);
 
   // Handle file input changes for preview
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -196,7 +159,6 @@ export const Gallery: React.FC = () => {
         if (selectedPhoto && selectedPhoto.id === id) {
           setSelectedPhoto(prev => prev ? { ...prev, isHighlighted: !currentHighlighted } : null);
         }
-        loadHighlighted();
         alert(`Photo ${!currentHighlighted ? 'added to' : 'removed from'} highlighted slideshow.`);
       } else {
         alert("Error updating highlight: " + res.error);
@@ -216,7 +178,6 @@ export const Gallery: React.FC = () => {
         setPhotos(prev => prev.filter(p => p.id !== id));
         setSelectedPhoto(null);
         loadPhotos();
-        loadHighlighted();
         loadStats();
         alert("Photo approved!");
       } else {
@@ -269,7 +230,6 @@ export const Gallery: React.FC = () => {
         setPhotos(prev => prev.filter(p => p.id !== id));
         setSelectedPhoto(null);
         loadPhotos();
-        loadHighlighted();
         loadStats();
         alert("Photo permanently deleted.");
       } else {
@@ -329,149 +289,18 @@ export const Gallery: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedPhoto, filteredPhotos]);
 
-  // Optimize Cloudinary image URLs for fast thumbnail loads
-  const getThumbnailUrl = (url: string) => {
-    if (url && url.includes('cloudinary.com') && url.includes('/upload/')) {
-      return url.replace('/upload/', '/upload/q_auto,f_auto,w_600/');
-    }
-    return url;
-  };
+
 
   return (
-    <div 
-      className="min-h-screen text-white py-12 relative z-10 gallery-theme"
-      style={{
-        background: 'linear-gradient(to bottom, rgba(10, 25, 49, 0.45), rgba(10, 25, 49, 0.6))',
-      }}
-    >
-      <div className="container mx-auto px-4 md:px-6 max-w-6xl">
-        {/* Title */}
-        <div className="text-center mb-10">
-          <h1 className="text-4xl sm:text-5xl font-bold font-serif mb-4 tracking-tight">
-            Campus <span className="text-[#B3CFE5]">Gallery</span>
-          </h1>
-          <p className="text-[#B3CFE5] max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-            Explore and upload visual snapshots from across the GIKI valley.
-          </p>
-        </div>
-
-        {/* Featured Slideshow */}
-        <section className="mb-14">
-          <div className="text-left mb-4 flex items-center gap-2">
-            <h2 className="text-xl font-bold font-serif text-white flex items-center gap-2">
-              ⭐ Featured <span className="text-[#B3CFE5]">Moments</span>
-            </h2>
-          </div>
-
-          {highlightedLoading ? (
-            <div className="w-full h-64 sm:h-[400px] animate-pulse rounded-[2.5rem] bg-[#1A3D63]/30 border border-white/5"></div>
-          ) : highlightedPhotos.length > 0 ? (
-            <div className="flex flex-col border border-[#B3CFE5]/25 rounded-[2.5rem] overflow-hidden shadow-2xl bg-[#0E223C]/40">
-              {/* Clickable Image Container */}
-              <div 
-                onClick={() => setSelectedPhoto(highlightedPhotos[currentSlideIndex])}
-                className="relative h-64 sm:h-[380px] overflow-hidden cursor-pointer group"
-              >
-                <img 
-                  src={highlightedPhotos[currentSlideIndex].fullSizeUrl} 
-                  alt={highlightedPhotos[currentSlideIndex].caption} 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.015]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent pointer-events-none" />
-
-                {/* Slider controls */}
-                {highlightedPhotos.length > 1 && (
-                  <>
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setCurrentSlideIndex(prev => (prev - 1 + highlightedPhotos.length) % highlightedPhotos.length);
-                      }}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/35 backdrop-blur-sm border border-white/10 text-white font-bold flex items-center justify-center cursor-pointer hover:bg-black/60 transition opacity-0 group-hover:opacity-100 z-10"
-                    >
-                      ‹
-                    </button>
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setCurrentSlideIndex(prev => (prev + 1) % highlightedPhotos.length);
-                      }}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/35 backdrop-blur-sm border border-white/10 text-white font-bold flex items-center justify-center cursor-pointer hover:bg-black/60 transition opacity-0 group-hover:opacity-100 z-10"
-                    >
-                      ›
-                    </button>
-                    <div className="absolute bottom-4 right-6 flex gap-1.5 z-10">
-                      {highlightedPhotos.map((_, i) => (
-                        <button
-                          key={i}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setCurrentSlideIndex(i);
-                          }}
-                          className={`w-2 h-2 rounded-full cursor-pointer transition ${i === currentSlideIndex ? 'bg-white scale-125' : 'bg-white/40'}`}
-                        />
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* Details (Not covering photo) */}
-              <div className="p-6 sm:px-10 sm:py-5 border-t border-[#B3CFE5]/15 text-left bg-black/35 backdrop-blur-md">
-                <span className="text-[9px] font-bold text-[#B3CFE5]/60 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded uppercase tracking-wider mb-2.5 inline-block">
-                  {highlightedPhotos[currentSlideIndex].category}
-                </span>
-                <h3 className="text-lg sm:text-xl font-bold text-white mb-1.5 leading-tight font-serif">
-                  "{highlightedPhotos[currentSlideIndex].caption}"
-                </h3>
-                <p className="text-xs text-[#B3CFE5]/80">
-                  Shared by <strong className="text-white">{highlightedPhotos[currentSlideIndex].uploaderName}</strong> on {formatDate(highlightedPhotos[currentSlideIndex].createdAt)}
-                </p>
-              </div>
-            </div>
-          ) : (
-            // Fallback: If no highlighted posts, show first approved photo
-            photos.length > 0 && photos[0].status === 'approved' ? (
-              <div className="flex flex-col border border-[#B3CFE5]/25 rounded-[2.5rem] overflow-hidden shadow-2xl bg-[#0E223C]/40">
-                <div 
-                  onClick={() => setSelectedPhoto(photos[0])}
-                  className="relative h-64 sm:h-[380px] overflow-hidden cursor-pointer group"
-                >
-                  <img 
-                    src={photos[0].fullSizeUrl} 
-                    alt={photos[0].caption} 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.015]"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent pointer-events-none" />
-                </div>
-
-                <div className="p-6 sm:px-10 sm:py-5 border-t border-[#B3CFE5]/15 text-left bg-black/35 backdrop-blur-md">
-                  <span className="text-[9px] font-bold text-[#B3CFE5]/60 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded uppercase tracking-wider mb-2.5 inline-block">
-                    {photos[0].category}
-                  </span>
-                  <h3 className="text-lg sm:text-xl font-bold text-white mb-1.5 leading-tight font-serif">
-                    "{photos[0].caption}"
-                  </h3>
-                  <p className="text-xs text-[#B3CFE5]/80">
-                    Shared by <strong className="text-white">{photos[0].uploaderName}</strong> on {formatDate(photos[0].createdAt)}
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="text-center py-16 border border-[#B3CFE5]/10 bg-[#0A1931]/30 rounded-[2.5rem] text-[#B3CFE5]/55 text-sm">
-                No gallery snapshots approved yet. Check back later!
-              </div>
-            )
-          )}
-        </section>
-
-        {/* Filter and Actions Row */}
-        <section className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+    <div className="min-h-screen text-white relative z-10 gallery-theme bg-transparent">
+      {/* Sticky top toolbar docked right below the main navbar */}
+      <div className="sticky top-0 z-30 bg-[#0A1931]/95 backdrop-blur-md border-b border-white/10 px-6 py-4 shadow-md">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex flex-wrap items-center gap-3">
             <select 
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="bg-[#0E223C] border border-[#B3CFE5]/30 text-white rounded-xl p-2.5 focus:outline-none focus:border-white transition-all text-sm font-semibold cursor-pointer"
+              className="bg-[#0E223C] border border-[#B3CFE5]/30 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-white transition-all text-sm font-semibold cursor-pointer"
             >
               <option value="all">All Categories</option>
               <option value="Academic Blocks">Academic Blocks</option>
@@ -480,9 +309,8 @@ export const Gallery: React.FC = () => {
               <option value="General">General</option>
             </select>
 
-            {/* Admin Tabs */}
             {isAdmin && (
-              <div className="flex items-center gap-1.5 bg-[#0E223C] border border-[#B3CFE5]/20 p-1 rounded-xl">
+              <div className="flex items-center gap-1 bg-[#0E223C] border border-[#B3CFE5]/20 p-1 rounded-xl">
                 <button
                   onClick={() => setStatusFilter('approved')}
                   className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${statusFilter === 'approved' ? 'bg-[#4A7FA7] text-white' : 'text-[#B3CFE5]/60 hover:text-white'}`}
@@ -505,7 +333,7 @@ export const Gallery: React.FC = () => {
             )}
           </div>
 
-          <div className="flex items-center gap-4 w-full sm:w-auto justify-end">
+          <div className="flex items-center gap-4">
             {user ? (
               <button
                 onClick={() => setIsSubmissionModalOpen(true)}
@@ -519,78 +347,10 @@ export const Gallery: React.FC = () => {
               </div>
             )}
           </div>
-        </section>
-
-        {/* Masonry Columns Layout */}
-        <section className="mb-16">
-          {loading ? (
-            <div className="columns-1 sm:columns-2 md:columns-3 gap-6 space-y-6">
-              <div className="h-64 animate-pulse rounded-3xl bg-[#1A3D63]/30 border border-white/5 break-inside-avoid"></div>
-              <div className="h-80 animate-pulse rounded-3xl bg-[#1A3D63]/30 border border-white/5 break-inside-avoid"></div>
-              <div className="h-72 animate-pulse rounded-3xl bg-[#1A3D63]/30 border border-white/5 break-inside-avoid"></div>
-            </div>
-          ) : filteredPhotos.length === 0 ? (
-            <div className="text-center py-16 border border-[#B3CFE5]/10 bg-white/5 rounded-3xl text-[#B3CFE5]/55 text-sm">
-              No photos found matching the selected filters.
-            </div>
-          ) : (
-            <div className="columns-1 sm:columns-2 md:columns-3 gap-6 space-y-6">
-              {filteredPhotos.map((photo) => (
-                <div
-                  key={photo.id}
-                  onClick={() => setSelectedPhoto(photo)}
-                  className="relative group rounded-3xl overflow-hidden border border-[#B3CFE5]/15 shadow-xl hover:shadow-2xl hover:border-[#B3CFE5]/30 cursor-pointer bg-[#0E223C]/50 transition duration-300 break-inside-avoid flex flex-col"
-                >
-                  {/* Photo Image */}
-                  <img
-                    src={getThumbnailUrl(photo.imageUrl)}
-                    alt={photo.caption}
-                    className="w-full h-auto object-cover group-hover:scale-[1.01] transition-transform duration-500"
-                    loading="lazy"
-                  />
-
-                  {/* Badges Overlay */}
-                  <div className="absolute top-3 left-3 flex items-center gap-1.5 pointer-events-none">
-                    <span className="bg-[#4A7FA7]/90 backdrop-blur-sm text-[9px] font-extrabold uppercase px-2 py-0.5 rounded shadow">
-                      {photo.category}
-                    </span>
-                    {photo.isHighlighted && (
-                      <span className="bg-yellow-500/90 text-black text-[9px] font-extrabold px-2 py-0.5 rounded shadow flex items-center gap-0.5">
-                        ⭐ Highlighted
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Delete button for uploader/admin */}
-                  {(isAdmin || (user && user.uid === photo.uploaderId)) && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeletePhoto(photo.id!);
-                      }}
-                      className="absolute top-3 right-3 w-8 h-8 rounded-full bg-red-600/80 hover:bg-red-700 backdrop-blur-sm text-white font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 cursor-pointer border border-red-500/30 shadow"
-                      title="Delete Permanently"
-                    >
-                      ✕
-                    </button>
-                  )}
-
-                  {/* Caption Footer Drawer */}
-                  <div className="p-4 bg-gradient-to-t from-black/80 to-black/30 group-hover:from-[#0A1931]/95 group-hover:to-[#0A1931]/75 border-t border-white/5 transition-colors">
-                    <h4 className="font-bold text-white text-sm leading-snug line-clamp-2">
-                      "{photo.caption}"
-                    </h4>
-                    <div className="flex justify-between items-center text-[10px] text-[#B3CFE5]/60 mt-2">
-                      <span>By <strong className="text-white">{photo.uploaderName}</strong></span>
-                      <span>{formatDate(photo.createdAt)}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
+        </div>
       </div>
+
+      <StickyScroll photos={filteredPhotos} onPhotoClick={setSelectedPhoto} />
 
       {/* Lightbox / Slider Modal */}
       {selectedPhoto && (
