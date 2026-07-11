@@ -12,30 +12,22 @@ export const Signup: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const handleRedirect = () => {
-    navigate('/');
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+      setError('Passwords do not match.');
       return;
     }
 
     setLoading(true);
-
     try {
       const res = await signUpUser(email, password);
-      if (res.success) {
-        handleRedirect();
-      } else {
-        setError(res.error || 'Signup failed.');
-      }
-    } catch (err: any) {
-      setError(err.message || 'An error occurred.');
+      if (res.success) navigate('/');
+      else setError(res.error || 'Signup failed.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred.');
     } finally {
       setLoading(false);
     }
@@ -44,58 +36,41 @@ export const Signup: React.FC = () => {
   const handleGoogleSignIn = async () => {
     setError('');
     setGoogleLoading(true);
-
     try {
       const res = await signInWithGoogle();
-      if (res.success) {
-        handleRedirect();
-      } else {
-        setError(res.error || 'Google sign-in failed.');
-      }
-    } catch (err: any) {
-      setError(err.message || 'An error occurred.');
+      if (res.success) navigate('/');
+      else setError(res.error || 'Google sign-in failed.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred.');
     } finally {
       setGoogleLoading(false);
     }
   };
 
-  return (
-    <main className="min-h-[calc(100vh-88px)] flex items-center justify-center px-6 py-12 text-white">
-      <div 
-        className="w-full max-w-md rounded-3xl p-8 border border-[#B3CFE5]/50 shadow-2xl backdrop-blur-md relative"
-        style={{
-          background: 'linear-gradient(135deg, rgba(26, 61, 99, 0.95) 0%, rgba(74, 127, 167, 0.9) 100%)',
-        }}
-      >
-        {/* Visual Texture overlay */}
-        <div 
-          className="absolute inset-0 opacity-[0.03] pointer-events-none rounded-3xl"
-          style={{
-            backgroundImage: 'repeating-linear-gradient(0deg, #fff 0px, #fff 1px, transparent 1px, transparent 2px)',
-            mixBlendMode: 'overlay',
-          }}
-        />
+  const inputClass =
+    'w-full bg-muted/50 border border-border rounded-xl p-3 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-all font-light';
 
-        {/* Logo and title */}
-        <div className="text-center mb-6 relative z-10">
+  return (
+    <main className="min-h-screen flex items-center justify-center px-6 py-12 bg-background pb-24">
+      <div className="w-full max-w-md rounded-3xl p-8 border border-border shadow-xl bg-background relative">
+        <div className="text-center mb-6">
           <Link to="/" className="inline-flex flex-col items-center">
             <img src="/logo.png" alt="GIKI Chronicles Logo" className="h-16 w-auto mb-2" />
-            <span className="text-xl font-bold tracking-wider font-serif text-[#F6FAFD]">GIKI Chronicles</span>
+            <span className="text-xl font-semibold tracking-widest uppercase text-foreground">GIKI Chronicles</span>
           </Link>
         </div>
 
-        <h2 className="text-2xl font-bold text-center mb-1 text-[#F6FAFD]">Create an Account</h2>
-        <p className="text-center text-[#B3CFE5]/80 mb-6 text-sm">Join the community!</p>
+        <h2 className="text-2xl font-semibold text-center mb-1 text-foreground tracking-tight">Create an Account</h2>
+        <p className="text-center text-muted-foreground mb-6 text-sm font-light">Join the community!</p>
 
-        {/* Google Sign-in */}
         <button
           type="button"
           onClick={handleGoogleSignIn}
           disabled={googleLoading || loading}
-          className="w-full flex items-center justify-center bg-white hover:bg-gray-50 text-gray-700 font-bold py-3 px-4 rounded-full transition duration-300 disabled:opacity-60 mb-4 cursor-pointer"
+          className="w-full flex items-center justify-center bg-background hover:bg-muted text-foreground font-medium py-3 px-4 rounded-full border border-border transition duration-300 disabled:opacity-60 mb-4 cursor-pointer"
         >
           {googleLoading ? (
-            <div className="w-5 h-5 border-2 border-gray-400 border-t-gray-800 rounded-full animate-spin mr-3"></div>
+            <div className="w-5 h-5 border-2 border-gray-400 border-t-gray-800 rounded-full animate-spin mr-3" />
           ) : (
             <svg className="w-5 h-5 mr-3" viewBox="0 0 48 48">
               <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
@@ -107,71 +82,48 @@ export const Signup: React.FC = () => {
           Sign up with Google
         </button>
 
-        <div className="flex items-center my-4 relative z-10">
-          <hr className="flex-grow border-t border-white/20" />
-          <span className="px-3 text-[#B3CFE5]/60 text-xs font-semibold">OR</span>
-          <hr className="flex-grow border-t border-white/20" />
+        <div className="flex items-center my-4">
+          <hr className="flex-grow border-t border-border" />
+          <span className="px-3 text-muted-foreground text-[10px] font-medium uppercase tracking-widest">OR</span>
+          <hr className="flex-grow border-t border-border" />
         </div>
 
-        {/* Credentials Form */}
-        <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-xs font-bold text-[#B3CFE5] uppercase tracking-wider mb-2">Email Address</label>
-            <input
-              type="email"
-              id="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="student@giki.edu.pk"
-              className="w-full bg-white/10 border border-[#B3CFE5]/30 rounded-xl p-3 text-white placeholder-white/40 focus:outline-none focus:border-white focus:ring-3 focus:ring-white/10 transition-all"
-            />
+            <label htmlFor="email" className="block text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-2">
+              Email Address
+            </label>
+            <input type="email" id="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="student@giki.edu.pk" className={inputClass} />
           </div>
-
           <div>
-            <label htmlFor="password" className="block text-xs font-bold text-[#B3CFE5] uppercase tracking-wider mb-2">Password</label>
-            <input
-              type="password"
-              id="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Min 6 characters"
-              className="w-full bg-white/10 border border-[#B3CFE5]/30 rounded-xl p-3 text-white placeholder-white/40 focus:outline-none focus:border-white focus:ring-3 focus:ring-white/10 transition-all"
-            />
+            <label htmlFor="password" className="block text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-2">
+              Password
+            </label>
+            <input type="password" id="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Min 6 characters" className={inputClass} />
           </div>
-
           <div>
-            <label htmlFor="confirmPassword" className="block text-xs font-bold text-[#B3CFE5] uppercase tracking-wider mb-2">Confirm Password</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              required
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full bg-white/10 border border-[#B3CFE5]/30 rounded-xl p-3 text-white placeholder-white/40 focus:outline-none focus:border-white focus:ring-3 focus:ring-white/10 transition-all"
-            />
+            <label htmlFor="confirmPassword" className="block text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-2">
+              Confirm Password
+            </label>
+            <input type="password" id="confirmPassword" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••" className={inputClass} />
           </div>
 
           {error && (
-            <div className="text-red-300 bg-red-950/20 border border-red-500/20 text-center py-2 px-3 rounded-lg text-sm transition-all duration-300">
-              {error}
-            </div>
+            <div className="text-red-600 bg-red-50 border border-red-200 text-center py-2 px-3 rounded-lg text-sm">{error}</div>
           )}
 
           <button
             type="submit"
             disabled={loading || googleLoading}
-            className="w-full font-bold py-3 px-4 rounded-full bg-[#4A7FA7] hover:bg-[#1A3D63] border border-[#B3CFE5]/40 text-white shadow-lg cursor-pointer transition-all duration-300 disabled:opacity-60"
+            className="w-full font-medium py-3 px-4 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer transition-all duration-300 disabled:opacity-60 text-xs uppercase tracking-widest"
           >
             {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>
 
-        <p className="text-center text-sm mt-6 text-[#B3CFE5]/80 relative z-10">
+        <p className="text-center text-sm mt-6 text-muted-foreground font-light">
           Already have an account?{' '}
-          <Link to="/login" className="text-white hover:underline font-semibold">
+          <Link to="/login" className="text-foreground hover:underline font-medium">
             Log in
           </Link>
         </p>
