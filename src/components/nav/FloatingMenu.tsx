@@ -230,7 +230,7 @@ export default function FloatingMenu() {
         </div>
 
         <motion.div
-          className="relative z-10 flex items-center justify-between w-full shrink-0 cursor-pointer"
+          className="absolute inset-x-0 bottom-0 z-10 flex h-12 items-center justify-between px-5"
           onClick={() => setIsOpen(!isOpen)}
           animate={{
             paddingLeft: isOpen ? 24 : 20,

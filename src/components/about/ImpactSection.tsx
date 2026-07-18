@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 
+
 const impactCards = [
   {
     id: 0,
@@ -35,7 +36,7 @@ const impactCards = [
     title: 'Community driven',
     description:
       'Built by students, for students. Every post, photo, and guide section grows with contributions from the GIKI community.',
-    image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80',
+    image: '/2.png',
   },
 ];
 

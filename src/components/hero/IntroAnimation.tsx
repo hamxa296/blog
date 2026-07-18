@@ -251,7 +251,7 @@ export default function IntroAnimation() {
   const contentY = useTransform(smoothMorph, [0.8, 1], [20, 0]);
 
   return (
-    <div ref={containerRef} className="relative w-full h-full bg-[#FAFAFA] overflow-hidden">
+    <div ref={containerRef} className="relative w-full h-full bg-black overflow-hidden">
       {/* Container */}
       <div className="flex h-full w-full flex-col items-center justify-center perspective-1000">
         {/* Intro Text (Fades out) */}
@@ -264,9 +264,9 @@ export default function IntroAnimation() {
                 : { opacity: 0, filter: 'blur(10px)' }
             }
             transition={{ duration: 1 }}
-            className="text-2xl font-medium tracking-tight text-gray-800 md:text-4xl"
+            className="text-2xl font-medium tracking-tight text-white-800 md:text-4xl"
           >
-            The future is built on AI.
+            GIKI Chronicles.
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
@@ -274,7 +274,7 @@ export default function IntroAnimation() {
               introPhase === 'circle' && morphValue < 0.5 ? { opacity: 0.5 - morphValue } : { opacity: 0 }
             }
             transition={{ duration: 1, delay: 0.2 }}
-            className="mt-4 text-xs font-bold tracking-[0.2em] text-gray-500"
+            className="mt-4 text-xs font-bold tracking-[0.2em] text-white-500"
           >
             SCROLL TO EXPLORE
           </motion.p>
@@ -285,12 +285,12 @@ export default function IntroAnimation() {
           style={{ opacity: contentOpacity, y: contentY }}
           className="absolute top-[10%] z-10 flex flex-col items-center justify-center text-center pointer-events-none px-4"
         >
-          <h2 className="text-3xl md:text-5xl font-semibold text-gray-900 tracking-tight mb-4">
+          <h2 className="text-3xl md:text-5xl font-semibold text-white-900 tracking-tight mb-4">
             Explore Our Vision
           </h2>
-          <p className="text-sm md:text-base text-gray-600 max-w-lg leading-relaxed">
-            Discover a world where technology meets creativity. <br className="hidden md:block" />
-            Scroll through our curated collection of innovations designed to shape the future.
+          <p className="text-sm md:text-base text-white-700 max-w-lg leading-relaxed">
+            Every story has a beginning. Every achievement deserves to be remembered. <br className="hidden md:block" />
+            
           </p>
         </motion.div>
 
