@@ -12,7 +12,18 @@
   --color-muted-foreground: #a3a3a3;
   --color-border: #262626;
   --color-accent: #404040;
+  --color-accent-foreground: #fafafa;
   --color-surface: #141414;
+  --color-card: #141414;
+  --color-card-foreground: #fafafa;
+  --color-secondary: #262626;
+  --color-secondary-foreground: #fafafa;
+  --color-input: #262626;
+  --color-ring: #fafafa;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #fafafa;
+  --color-sky-start: #7dd3fc;
+  --color-sky-end: #38bdf8;
 }
 
 html,

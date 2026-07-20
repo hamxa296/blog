@@ -5,6 +5,25 @@ import { subscribeGuideSections, updateGuideSection } from '../services/guideSer
 import type { GuideEditForm, GuideSection, SocietyCategoryMap } from '../types/guide';
 import { GuideEditModal } from '../components/guide/GuideEditModal';
 import { GuideSectionDetail } from '../components/guide/GuideSectionDetail';
+import { BentoGrid, BentoGridItem } from '../components/guide/BentoGrid';
+import { BookOpen, Compass, Home, Map, Package, Users, Phone, Sparkles } from 'lucide-react';
+
+const SECTION_ICONS: Record<string, React.ReactNode> = {
+  'campus-map': <Map className="h-4 w-4" />,
+  'dorm-room-info': <Home className="h-4 w-4" />,
+  'what-to-pack': <Package className="h-4 w-4" />,
+  'societies-events': <Users className="h-4 w-4" />,
+  'important-contacts': <Phone className="h-4 w-4" />,
+};
+
+const SECTION_HEADERS = [
+  'https://images.unsplash.com/photo-1562774053-701939374585?w=600&q=80',
+  'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&q=80',
+  'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&q=80',
+  'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80',
+  'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&q=80',
+  'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80',
+];
 
 type ConnectionStatus = 'connecting' | 'connected' | 'error';
 
@@ -223,139 +242,137 @@ export const FreshmanGuide: React.FC = () => {
   };
 
   return (
-    <main className="min-h-[calc(100vh-88px)] text-white relative z-10 pt-8 pb-16 px-2 sm:px-6">
-      <div className="max-w-5xl mx-auto">
-        <div className="bg-gradient-to-r from-[#0A1931] to-[#1A3D63] text-white p-4 sm:p-8 mb-4 sm:mb-8 rounded-xl shadow-lg text-center border border-[#B3CFE5]/30">
-          <h1 className="text-2xl sm:text-4xl font-bold font-lora handwriting-title">GIKI Freshman Guide</h1>
-          <p className="mt-2 text-base sm:text-lg text-[#B3CFE5]">
-            Your ultimate resource for a smooth start at GIKI.
+    <main className="min-h-[calc(100vh-88px)] bg-background text-foreground relative z-10 pt-10 pb-24 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-10 text-center sm:text-left">
+          <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-muted-foreground mb-3">
+            <Compass className="h-3.5 w-3.5" />
+            Freshman Guide
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-semibold tracking-tight">
+            Welcome to GIKI
+          </h1>
+          <p className="mt-3 text-muted-foreground max-w-2xl text-sm sm:text-base">
+            Your ultimate resource for a smooth start — essential info, tips, and
+            campus resources in one place.
           </p>
         </div>
 
-        <div className="chronicle-container p-3 sm:p-6 lg:p-10 rounded-xl sm:rounded-2xl shadow-xl">
-          {connectionStatus === 'error' && (
-            <div className="mb-4 p-3 bg-[#1A3D63] border border-[#4A7FA7] rounded-lg">
-              <div className="flex items-center justify-center">
-                <svg className="w-5 h-5 text-[#B3CFE5] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
-                </svg>
-                <span className="text-[#B3CFE5] text-sm">No internet connection - guide data unavailable</span>
-              </div>
-            </div>
-          )}
-
-          <div className="text-center mb-6 sm:mb-10">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold font-lora text-[#B3CFE5] handwriting-title">
-              Welcome to GIKI!
-            </h2>
-            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-[#B3CFE5] max-w-2xl mx-auto px-2">
-              Welcome to your new home! This guide is designed to help you navigate your first few weeks here.
-              We&apos;ve compiled essential information, tips, and resources to make your transition as smooth as possible.
-            </p>
+        {connectionStatus === 'error' && (
+          <div className="mb-6 rounded-lg border border-border bg-card p-4 text-sm text-muted-foreground flex items-center gap-2">
+            <Sparkles className="h-4 w-4" />
+            No internet connection — guide data unavailable
           </div>
+        )}
 
-          {expandedSection === null && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6">
-              {guideSections.length > 0 ? (
-                guideSections.map((section) => (
-                  <button
+        {expandedSection === null && (
+          <>
+            {guideSections.length > 0 ? (
+              <BentoGrid>
+                {guideSections.map((section, index) => (
+                  <BentoGridItem
                     key={section.id}
-                    type="button"
-                    className="p-4 sm:p-6 card-panel rounded-xl cursor-pointer transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-0.5 text-left"
+                    role="button"
+                    tabIndex={0}
                     onClick={() => handleTagClick(section.id)}
-                    title={section.shortDescription}
-                  >
-                    <h3 className="text-lg sm:text-xl font-semibold font-lora text-[#1A3D63]">{section.tag}</h3>
-                    <p className="mt-2 text-sm text-[#0A1931]/80">{section.shortDescription}</p>
-                  </button>
-                ))
-              ) : (
-                <div className="col-span-2 text-center">
-                  {connectionStatus === 'connecting' ? (
-                    <div className="p-6 bg-[#0A1931] border border-[#4A7FA7] rounded-lg">
-                      <div className="flex items-center justify-center mb-4">
-                        <svg className="animate-spin -ml-1 mr-3 h-8 w-8 text-[#B3CFE5]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                        <span className="text-[#B3CFE5] text-lg">Connecting to database...</span>
-                      </div>
-                      <p className="text-[#B3CFE5] text-sm">Please wait while we connect to the guide database.</p>
-                    </div>
-                  ) : connectionStatus === 'error' ? (
-                    <div className="p-8 bg-[#0A1931] border border-[#4A7FA7] rounded-lg">
-                      <div className="text-center">
-                        <svg className="w-16 h-16 text-[#B3CFE5] mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
-                        </svg>
-                        <h3 className="text-xl font-semibold text-[#B3CFE5] mb-2">No Internet Connection</h3>
-                        <p className="text-[#B3CFE5] mb-4">
-                          Unable to load the guide data. Please check your internet connection and try again.
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => window.location.reload()}
-                          className="px-6 py-3 bg-[#4A7FA7] text-white rounded-lg hover:bg-[#1A3D63] transition-colors font-semibold"
-                        >
-                          Retry Connection
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <p className="text-gray-500">Loading guide data...</p>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleTagClick(section.id);
+                      }
+                    }}
+                    className={`cursor-pointer ${
+                      index % 4 === 0 || index % 4 === 3 ? 'md:col-span-2' : ''
+                    }`}
+                    title={section.tag}
+                    description={section.shortDescription}
+                    icon={
+                      SECTION_ICONS[section.id] || (
+                        <BookOpen className="h-4 w-4" />
+                      )
+                    }
+                    header={
+                      <img
+                        src={SECTION_HEADERS[index % SECTION_HEADERS.length]}
+                        alt=""
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    }
+                  />
+                ))}
+              </BentoGrid>
+            ) : (
+              <div className="rounded-lg border border-border bg-card p-10 text-center">
+                {connectionStatus === 'connecting' ? (
+                  <p className="text-muted-foreground">Connecting to database...</p>
+                ) : connectionStatus === 'error' ? (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">No Internet Connection</h3>
+                    <p className="text-muted-foreground text-sm mb-4">
+                      Unable to load the guide data. Please check your connection.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => window.location.reload()}
+                      className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
+                    >
+                      Retry Connection
+                    </button>
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground">Loading guide data...</p>
+                )}
+              </div>
+            )}
+          </>
+        )}
 
-          {guideSections.map(
-            (section) =>
-              expandedSection === section.id && (
-                <GuideSectionDetail
-                  key={section.id}
-                  section={section}
-                  isAdmin={isAdmin}
-                  onEdit={handleEditClick}
-                  societySubCategories={societySubCategories}
-                  onPackingSessionChange={setHasPackingSessionChanges}
-                />
-              ),
-          )}
+        {guideSections.map(
+          (section) =>
+            expandedSection === section.id && (
+              <GuideSectionDetail
+                key={section.id}
+                section={section}
+                isAdmin={isAdmin}
+                onEdit={handleEditClick}
+                societySubCategories={societySubCategories}
+                onPackingSessionChange={setHasPackingSessionChanges}
+              />
+            ),
+        )}
 
-          {expandedSection !== null && (
-            <div className="text-center mt-6 sm:mt-12">
-              <button
-                type="button"
-                onClick={handleBackClick}
-                className="bg-[#4A7FA7] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-bold hover:bg-[#1A3D63] transition-colors shadow-md"
-              >
-                &larr; Back to all sections
-              </button>
-            </div>
-          )}
-        </div>
+        {expandedSection !== null && (
+          <div className="text-center mt-10">
+            <button
+              type="button"
+              onClick={handleBackClick}
+              className="rounded-lg border border-border bg-card px-6 py-3 text-sm font-medium hover:bg-secondary transition-colors"
+            >
+              ← Back to all sections
+            </button>
+          </div>
+        )}
       </div>
 
       {showExitModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="bg-gray-800 border border-gray-600 rounded-lg p-5 w-[90%] max-w-md shadow-xl">
-            <h4 className="text-lg font-semibold text-gray-100 mb-2">Save your progress?</h4>
-            <p className="text-sm text-gray-300 mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-card border border-border rounded-lg p-5 w-[90%] max-w-md shadow-xl">
+            <h4 className="text-lg font-semibold mb-2">Save your progress?</h4>
+            <p className="text-sm text-muted-foreground mb-4">
               You have changes in your packing list. Would you like to save before leaving?
             </p>
             <div className="flex gap-2 justify-end flex-wrap">
               <button
                 type="button"
                 onClick={handleStayOnPage}
-                className="px-3 py-2 text-sm bg-gray-700 text-gray-200 rounded hover:bg-gray-600"
+                className="px-3 py-2 text-sm rounded-md bg-secondary text-secondary-foreground hover:opacity-90"
               >
                 Stay
               </button>
               <button
                 type="button"
                 onClick={handleConfirmSaveAndExit}
-                className="px-3 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                className="px-3 py-2 text-sm rounded-md bg-primary text-primary-foreground"
                 disabled={isSaving}
               >
                 {isSaving ? 'Saving…' : 'Save & Leave'}
@@ -363,7 +380,7 @@ export const FreshmanGuide: React.FC = () => {
               <button
                 type="button"
                 onClick={handleLeaveWithoutSaving}
-                className="px-3 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                className="px-3 py-2 text-sm rounded-md border border-border hover:bg-secondary"
               >
                 Leave without saving
               </button>

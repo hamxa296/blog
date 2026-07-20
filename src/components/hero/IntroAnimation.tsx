@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, useTransform, useSpring, useMotionValue } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 
 // --- Types ---
 export type AnimationPhase = 'scatter' | 'line' | 'circle' | 'bottom-strip';
@@ -250,6 +252,15 @@ export default function IntroAnimation() {
   const contentOpacity = useTransform(smoothMorph, [0.8, 1], [0, 1]);
   const contentY = useTransform(smoothMorph, [0.8, 1], [20, 0]);
 
+  // Explore CTA appears once hero scroll is fully complete
+  const [showExplore, setShowExplore] = useState(false);
+  useEffect(() => {
+    const unsubscribe = virtualScroll.on('change', (v) => {
+      setShowExplore(v >= MAX_SCROLL - 20);
+    });
+    return () => unsubscribe();
+  }, [virtualScroll]);
+
   return (
     <div ref={containerRef} className="relative w-full h-full bg-black overflow-hidden">
       {/* Container */}
@@ -293,6 +304,24 @@ export default function IntroAnimation() {
             
           </p>
         </motion.div>
+
+        {/* Explore → blogs — only after hero scroll completes */}
+        {showExplore && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute bottom-28 left-1/2 z-30 -translate-x-1/2 pointer-events-auto"
+          >
+            <Link
+              to="/browse"
+              className="group inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-8 py-3.5 text-sm font-medium uppercase tracking-[0.2em] text-white backdrop-blur-md transition-colors hover:border-white/60 hover:bg-white/20"
+            >
+              Explore
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </motion.div>
+        )}
 
         {/* Main Container */}
         <div className="relative flex items-center justify-center w-full h-full">

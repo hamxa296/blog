@@ -22,7 +22,7 @@ import { BlogPostDetail } from './pages/BlogPostDetail';
 function AppShell() {
   return (
     <div className="flex flex-col min-h-screen relative z-10 bg-background text-foreground">
-      <div className="flex-grow min-h-0 overflow-y-auto relative z-30">
+      <div className="flex-grow relative z-30">
         <Outlet />
       </div>
       <FloatingMenu />

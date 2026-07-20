@@ -41,14 +41,14 @@ export const BlogBrowse: React.FC = () => {
 
   return (
     <main className="relative z-10 min-h-screen bg-background pb-24">
-      <div className="max-w-5xl mx-auto px-4 pt-8">
+      <div className="max-w-6xl mx-auto px-4 pt-8">
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search chronicles..."
-            className="flex-1 bg-background border border-border rounded-full px-5 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary text-sm font-light"
+            className="flex-1 bg-card/50 border border-border/50 backdrop-blur-sm rounded-full px-5 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary/50 text-sm font-light"
           />
           <div className="flex flex-wrap gap-2">
             {genres.map((genre) => (
@@ -59,7 +59,7 @@ export const BlogBrowse: React.FC = () => {
                 className={`px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-medium transition border ${
                   selectedGenre.toLowerCase() === genre.toLowerCase()
                     ? 'bg-primary text-primary-foreground border-primary'
-                    : 'bg-transparent text-muted-foreground border-border hover:border-primary/50'
+                    : 'bg-card/30 text-muted-foreground border-border/50 hover:border-primary/50 backdrop-blur-sm'
                 }`}
               >
                 {genre === 'all' ? 'All' : genre}
