@@ -1,36 +1,45 @@
 import React from 'react';
 import TeamMemberCard from '../components/about/TeamMemberCard';
 
+import img1 from "../assets/1.png";
+import img2 from "../assets/2.png";
+import img3 from "../assets/3.png";
+import img4 from "../assets/4.png";
+import img5 from "../assets/5.png";
+import img6 from "../assets/6.png";
+import img7 from "../assets/7.png";
+import img8 from "../assets/8.png";
+
 const TEAM = [
   {
     position: 'left' as const,
-    jobPosition: 'Founder & Editor',
-    firstName: 'Ayesha',
-    lastName: 'Khan',
+    jobPosition: 'we care about you!',
+    firstName: 'Your Complete Survival',
+    lastName: 'Freshmen Guide',
     imageUrl:
-      'https://images.unsplash.com/photo-1526510747491-58f928ec870f?fm=jpg&q=60&w=800',
+      img6,
     description:
-      'Ayesha leads the editorial vision for GIKI Chronicles — shaping stories that capture campus life, culture, and student voices across the valley.',
+      'From packing essentials to navigating campus life, our comprehensive guide covers everything you need to know as a new GIKI student. Discover hostel information, mess schedules, weekend travel options, and essential contacts to make your transition smooth and exciting.',
   },
   {
     position: 'right' as const,
-    jobPosition: 'Creative Director',
-    firstName: 'Hamza',
-    lastName: 'Ali',
+    jobPosition: 'Be yourself; everyone else is already taken',
+    firstName: 'GIKIs own',
+    lastName: 'Blogging app',
     imageUrl:
-      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80',
+      img7,
     description:
-      'Hamza crafts the visual language of the platform — from gallery curation to brand moments that make every chronicle feel cinematic and alive.',
+      'Every student has a story worth telling. Share your experiences, publish your ideas, and become part of the conversations shaping life at GIKI.',
   },
   {
     position: 'left' as const,
-    jobPosition: 'Community Lead',
-    firstName: 'Sara',
-    lastName: 'Malik',
+    jobPosition: 'Campus essentials, Ofcourse!',
+    firstName: 'Explore Our Campus',
+    lastName: 'Through the Lens',
     imageUrl:
-      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80',
+      img3,
     description:
-      'Sara builds bridges between writers, photographers, and readers — ensuring every freshman, senior, and alum finds a place in the chronicle.',
+      'From academic blocks and hostel life to sports facilities and campus events, capture the essence of student life and share your own moments with the community.',
   },
 ];
 
@@ -42,13 +51,13 @@ export const About: React.FC = () => {
           About Us
         </p>
         <h1 className="text-4xl sm:text-6xl font-extralight tracking-tight text-white mb-4">
-          The people behind
+          The idea behind
           <br />
           <span className="font-normal">GIKI Chronicles</span>
         </h1>
         <p className="text-zinc-400 max-w-xl text-sm sm:text-base leading-relaxed">
-          Three builders. One campus voice. We document the stories, places, and
-          people that make GIKI unforgettable.
+        Be Prepared For The Valley & Beyond!
+        Your one-stop hub for student life, engineering marvels, and campus tales at GIKI Institute.
         </p>
       </div>
 

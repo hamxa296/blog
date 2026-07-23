@@ -2,6 +2,23 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import bgImage from "../../assets/bgln.png";
+
+import img1 from "../../assets/1.png";
+import img2 from "../../assets/2.png";
+import img3 from "../../assets/3.png";
+import img4 from "../../assets/4.png";
+import img5 from "../../assets/5.png";
+import img6 from "../../assets/6.png";
+import img7 from "../../assets/7.png";
+import img8 from "../../assets/8.png";
+import img9 from "../../assets/img9.jpg";
+import img10 from "../../assets/img10.jpg";
+import img11 from "../../assets/11.jpeg";
+import img12 from "../../assets/12.jpeg";
+import img13 from "../../assets/13.jpeg";
+import img14 from "../../assets/14.png";
+import img15 from "../../assets/15.jpg";
 
 // --- Types ---
 export type AnimationPhase = 'scatter' | 'line' | 'circle' | 'bottom-strip';
@@ -80,26 +97,26 @@ const MAX_SCROLL = 3000; // Virtual scroll range
 
 // Unsplash Images
 const IMAGES = [
-  'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=300&q=80',
-  'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=300&q=80',
-  'https://images.unsplash.com/photo-1497366216548-37526070297c?w=300&q=80',
-  'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=300&q=80',
-  'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300&q=80',
-  'https://images.unsplash.com/photo-1506765515384-028b60a970df?w=300&q=80',
-  'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=300&q=80',
-  'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=300&q=80',
-  'https://images.unsplash.com/photo-1500485035595-cbe6f645feb1?w=300&q=80',
-  'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=300&q=80',
-  'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300&q=80',
-  'https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=300&q=80',
-  'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=300&q=80',
-  'https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=300&q=80',
-  'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=300&q=80',
-  'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=300&q=80',
-  'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=300&q=80',
-  'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=300&q=80',
-  'https://images.unsplash.com/photo-1523961131990-5ea7c61b2107?w=300&q=80',
-  'https://images.unsplash.com/photo-1496568816309-51d7c20e3b21?w=300&q=80',
+  img1,
+  img2,
+  img3,
+  img4,
+  img5,
+  img6,
+  img7,
+  img8,
+  img9,
+  img10,
+  img11,
+  img12,
+  img13,
+  img14,
+  img15,
+  img1,
+  img2,
+  img3,
+  img4,
+  img5
 ];
 
 // Helper for linear interpolation
@@ -256,13 +273,17 @@ export default function IntroAnimation() {
   const [showExplore, setShowExplore] = useState(false);
   useEffect(() => {
     const unsubscribe = virtualScroll.on('change', (v) => {
-      setShowExplore(v >= MAX_SCROLL - 20);
+      setShowExplore(v >= MAX_SCROLL * 0.7);
     });
     return () => unsubscribe();
   }, [virtualScroll]);
 
   return (
-    <div ref={containerRef} className="relative w-full h-full bg-black overflow-hidden">
+    <div
+      ref={containerRef}
+      className="relative w-full h-full overflow-hidden bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
       {/* Container */}
       <div className="flex h-full w-full flex-col items-center justify-center perspective-1000">
         {/* Intro Text (Fades out) */}

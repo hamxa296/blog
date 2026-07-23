@@ -10,6 +10,22 @@ import {
   type MotionValue,
 } from "framer-motion";
 
+import img1 from "../../assets/1.png";
+import img2 from "../../assets/2.png";
+import img3 from "../../assets/3.png";
+import img4 from "../../assets/4.png";
+import img5 from "../../assets/5.png";
+import img6 from "../../assets/6.png";
+import img7 from "../../assets/7.png";
+import img8 from "../../assets/8.png";
+import img9 from "../../assets/img9.jpg";
+import img10 from "../../assets/img10.jpg";
+import img11 from "../../assets/11.jpeg";
+import img12 from "../../assets/12.jpeg";
+import img13 from "../../assets/13.jpeg";
+import img14 from "../../assets/14.png";
+import img15 from "../../assets/15.jpg";
+
 export interface CollectionItem {
   id: number | string;
   image: string;
@@ -22,99 +38,52 @@ const ITEMS: CollectionItem[] = [
   {
     id: 1,
     image:
-      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80",
+      img13,
     title: "HERITAGE 01",
   },
   {
     id: 2,
     image:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80",
+      img6,
     title: "HERITAGE 02",
   },
   {
     id: 3,
     image:
-      "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&q=80",
+      img7,
     title: "HERITAGE 03",
   },
   {
     id: 4,
     image:
-      "https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?w=800&q=80",
+      img11,
     title: "HERITAGE 04",
   },
   {
     id: 5,
     image:
-      "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=800&q=80",
+      img12,
     title: "HERITAGE 05",
   },
   {
     id: 6,
     image:
-      "https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?w=800&q=80",
+      img4,
     title: "HERITAGE 06",
   },
   {
     id: 7,
     image:
-      "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=800&q=80",
+      img3,
     title: "HERITAGE 07",
   },
   {
     id: 8,
     image:
-      "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&q=80",
+      img8,
     title: "HERITAGE 08",
   },
-  {
-    id: 9,
-    image:
-      "https://images.unsplash.com/photo-1502716119720-b23a93e5fe1b?w=800&q=80",
-    title: "HERITAGE 09",
-  },
-  {
-    id: 10,
-    image:
-      "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=800&q=80",
-    title: "HERITAGE 10",
-  },
-  {
-    id: 11,
-    image:
-      "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80",
-    title: "HERITAGE 11",
-  },
-  {
-    id: 12,
-    image:
-      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800&q=80",
-    title: "HERITAGE 12",
-  },
-  {
-    id: 13,
-    image:
-      "https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=800&q=80",
-    title: "HERITAGE 13",
-  },
-  {
-    id: 14,
-    image:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80",
-    title: "HERITAGE 14",
-  },
-  {
-    id: 15,
-    image:
-      "https://images.unsplash.com/photo-1496217590455-aa63a8350eea?w=800&q=80",
-    title: "HERITAGE 15",
-  },
-  {
-    id: 16,
-    image:
-      "https://images.unsplash.com/photo-1571513722275-4b41940f54b8?w=800&q=80",
-    title: "HERITAGE 16",
-  },
+  
 ];
 
 interface CollectionSurferProps {
@@ -201,7 +170,7 @@ export function CollectionSurfer({
   };
 
   return (
-    <div className="relative bg-black text-white w-full">
+    <div className="relative bg-transparent text-white w-full">
       <div style={{ height: `${spacerHeight}px` }} className="w-full" />
 
       <div
@@ -227,7 +196,7 @@ export function CollectionSurfer({
         </div>
 
         <div
-          className="absolute inset-0 flex items-center justify-center pointer-events-auto"
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
           style={{
             perspective: "2000px",
             perspectiveOrigin: "10% 10%",
@@ -343,7 +312,7 @@ function SurferCard({
         {String((i % itemCount) + 1).padStart(2, "0")}
       </div>
 
-      <div className="relative w-full h-full brightness-75 group-hover:brightness-100 transition-all duration-300">
+      <div className="relative w-full h-full  duration-300">
         <img
           src={item.image}
           alt={item.title}
@@ -351,7 +320,7 @@ function SurferCard({
         />
       </div>
 
-      <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent pointer-events-none" />
+      
     </motion.div>
   );
 }

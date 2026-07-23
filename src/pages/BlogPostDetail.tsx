@@ -14,6 +14,7 @@ import {
 import { Badge } from '../components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import { Clock, ArrowLeft, BookOpen } from 'lucide-react';
+import bgImage from "../assets/bgblog.png"; // adjust the path if needed
 
 interface Comment {
   id: string;
@@ -192,7 +193,10 @@ export const BlogPostDetail: React.FC = () => {
   );
 
   return (
-    <main className="min-h-[calc(100vh-88px)] bg-background text-foreground py-12 relative z-10 pb-24">
+    <main
+      className="min-h-[calc(100vh-88px)] text-foreground py-12 relative z-10 pb-24 bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
       <div className="container mx-auto px-4 md:px-6 max-w-3xl">
         <div className="rounded-2xl border border-border/50 bg-card/30 backdrop-blur-md overflow-hidden shadow-xl shadow-primary/5">
           {post.photoUrl && (

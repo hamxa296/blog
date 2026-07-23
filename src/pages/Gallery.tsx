@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { CollectionSurfer, type CollectionItem } from '../components/gallery/CollectionSurfer';
 import { getGalleryPhotos, type GalleryPhoto } from '../services/firebase';
+import galleryBg from "../assets/bgblogs.png";
 
 const SPACER = 12000;
 
@@ -37,11 +38,15 @@ export const Gallery = () => {
 
   return (
     <main
-      ref={scrollRef}
-      className="relative z-10 h-[100dvh] overflow-y-auto bg-black text-white"
+    ref={scrollRef}
+    className="relative z-10 h-[100dvh] overflow-y-auto text-white"
+    style={{
+      backgroundImage: `url(${galleryBg})`,
+
+    }}
     >
       <CollectionSurfer
-        items={surferItems}
+        
         heading="GIKI"
         subheading="GALLERY"
         scrollContainerRef={scrollRef}

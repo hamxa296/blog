@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Plus, Minus, RotateCcw } from 'lucide-react';
+import mapbg from "../assets/bgblogs.png";
 
 interface Pin {
   id: string;
@@ -276,30 +278,41 @@ export const CampusMap: React.FC = () => {
   const activeLocation = activePinId ? LOCATIONS[activePinId] : null;
 
   return (
-    <main className="w-screen h-screen bg-[#0A1931] overflow-hidden select-none relative touch-none">
+    <main 
+    className="w-screen h-screen overflow-hidden select-none relative touch-none bg-cover bg-center bg-no-repeat"
+    style={{
+      backgroundImage: `url(${mapbg})`,
+    }}>
       {/* Controls Overlay */}
-      <div className="absolute top-4 right-4 flex flex-col gap-3 z-50">
-        <button
-          onClick={zoomIn}
-          className="w-12 h-12 bg-white/95 hover:bg-white rounded-full flex items-center justify-center text-2xl font-bold text-gray-800 shadow-xl transition active:scale-95"
-          title="Zoom In"
-        >
-          +
-        </button>
-        <button
-          onClick={zoomOut}
-          className="w-12 h-12 bg-white/95 hover:bg-white rounded-full flex items-center justify-center text-2xl font-bold text-gray-800 shadow-xl transition active:scale-95"
-          title="Zoom Out"
-        >
-          −
-        </button>
-        <button
-          onClick={resetView}
-          className="w-12 h-12 bg-white/95 hover:bg-white rounded-full flex items-center justify-center text-lg text-gray-800 shadow-xl transition active:scale-95"
-          title="Reset View"
-        >
-          🔄
-        </button>
+      {/* Controls Overlay */}
+      <div className="absolute top-6 right-6 z-50">
+        <div className="flex gap-2 rounded-full bg-black/40 backdrop-blur-xl border border-white/10 p-2 shadow-2xl">
+
+          <button
+            onClick={zoomIn}
+            className="w-10 h-10 rounded-full hover:bg-white/10 transition-all duration-200 active:scale-95 flex items-center justify-center"
+            title="Zoom In"
+          >
+            <Plus size={18} className="text-white" />
+          </button>
+
+          <button
+            onClick={zoomOut}
+            className="w-10 h-10 rounded-full hover:bg-white/10 transition-all duration-200 active:scale-95 flex items-center justify-center"
+            title="Zoom Out"
+          >
+            <Minus size={18} className="text-white" />
+          </button>
+
+          <button
+            onClick={resetView}
+            className="w-10 h-10 rounded-full hover:bg-white/10 transition-all duration-200 active:scale-95 flex items-center justify-center"
+            title="Reset View"
+          >
+            <RotateCcw size={18} className="text-white" />
+          </button>
+
+        </div>
       </div>
 
       {/* Map Container Viewport */}

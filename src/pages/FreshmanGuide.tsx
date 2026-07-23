@@ -7,6 +7,24 @@ import { GuideEditModal } from '../components/guide/GuideEditModal';
 import { GuideSectionDetail } from '../components/guide/GuideSectionDetail';
 import { BentoGrid, BentoGridItem } from '../components/guide/BentoGrid';
 import { BookOpen, Compass, Home, Map, Package, Users, Phone, Sparkles } from 'lucide-react';
+import img1 from "../assets/1.png";
+import img2 from "../assets/2.png";
+import img3 from "../assets/3.png";
+import img4 from "../assets/4.png";
+import img5 from "../assets/5.png";
+import img6 from "../assets/6.png";
+import img7 from "../assets/7.png";
+import img8 from "../assets/8.png";
+import img9 from "../assets/img9.jpg";
+import img10 from "../assets/img10.jpg";
+import img11 from "../assets/11.jpeg";
+import img12 from "../assets/12.jpeg";
+import img13 from "../assets/13.jpeg";
+import img14 from "../assets/14.png";
+import img15 from "../assets/15.jpg";
+
+
+
 
 const SECTION_ICONS: Record<string, React.ReactNode> = {
   'campus-map': <Map className="h-4 w-4" />,
@@ -17,12 +35,19 @@ const SECTION_ICONS: Record<string, React.ReactNode> = {
 };
 
 const SECTION_HEADERS = [
-  'https://images.unsplash.com/photo-1562774053-701939374585?w=600&q=80',
-  'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&q=80',
-  'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&q=80',
-  'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80',
-  'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&q=80',
-  'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80',
+  img10,
+  img3,
+  img2,
+  img14,
+  img12,
+  img11,
+  img7,
+  img15,
+  img9,
+  img4,
+  img13,
+  img10
+
 ];
 
 type ConnectionStatus = 'connecting' | 'connected' | 'error';

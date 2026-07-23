@@ -1,7 +1,7 @@
 "use client";
 
 import { GrainGradient } from "@paper-design/shaders-react";
-import { useState, type ReactNode, type FormEvent } from "react";
+import { useState, useEffect, type ReactNode, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 
 type AuthMode = "login" | "signup";
@@ -31,6 +31,10 @@ export default function AuthSection({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -176,9 +180,9 @@ export default function AuthSection({
 
           <div className="relative z-10 flex h-full w-full flex-col justify-between">
             <h2 className="max-w-[620px] pt-0 text-5xl font-medium tracking-[-0.05em] text-white sm:text-6xl lg:pt-16 lg:text-[64px] lg:leading-[0.98] xl:text-[70px]">
-              Think fast,
+              To Create,
               <br />
-              Build faster
+              Is to live twice
             </h2>
 
             <Link
@@ -186,7 +190,7 @@ export default function AuthSection({
               className="mb-0 inline-flex h-12 max-w-full items-center gap-3 rounded-[10px] border border-white/25 px-5 text-base font-medium text-white/85 backdrop-blur-sm transition-colors hover:border-white/45 hover:text-white xl:mb-32 xl:px-6 xl:text-2xl"
             >
               <span className="truncate whitespace-nowrap">
-                Back to GIKI Chronicles
+                Welcome to GIKI Chronicles
               </span>
             </Link>
           </div>
