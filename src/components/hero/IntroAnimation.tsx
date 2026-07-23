@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import bgImage from "../../assets/bgln.png";
+import bgImage from "../../assets/bgherofinal.png";
 
 import img1 from "../../assets/1.png";
 import img2 from "../../assets/2.png";
@@ -78,12 +78,11 @@ function FlipCard({ src, index, total: _total, phase: _phase, target }: FlipCard
 
         {/* Back Face */}
         <div
-          className="absolute inset-0 h-full w-full overflow-hidden rounded-xl shadow-lg bg-gray-900 flex flex-col items-center justify-center p-4 border border-gray-700"
+          className="absolute inset-0 h-full w-full overflow-hidden rounded-xl shadow-lg bg-black flex flex-col items-center justify-center p-4 border border-gray-700"
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
         >
           <div className="text-center">
-            <p className="text-[8px] font-bold text-blue-400 uppercase tracking-widest mb-1">View</p>
-            <p className="text-xs font-medium text-white">Details</p>
+
           </div>
         </div>
       </motion.div>
