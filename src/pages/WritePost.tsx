@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import writebg from "../assets/bgblog.png"
 import {
   createPost,
   updatePost,
@@ -223,8 +224,10 @@ export const WritePost: React.FC = () => {
     <main
       className="relative min-h-[100dvh] w-full bg-cover bg-center flex flex-col items-center pb-24"
       style={{
-        backgroundImage:
-          "url('https://pub-940ccf6255b54fa799a9b01050e6c227.r2.dev/ruixen_moon_2.png')",
+        backgroundImage: `url(${writebg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
         backgroundAttachment: 'fixed',
       }}
     >
