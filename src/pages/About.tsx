@@ -9,6 +9,7 @@ import img5 from "../assets/5.png";
 import img6 from "../assets/6.png";
 import img7 from "../assets/7.png";
 import img8 from "../assets/8.png";
+import img13 from "../assets/13.jpeg";
 
 const TEAM = [
   {
@@ -37,7 +38,7 @@ const TEAM = [
     firstName: 'Explore Our Campus',
     lastName: 'Through the Lens',
     imageUrl:
-      img3,
+      img13,
     description:
       'From academic blocks and hostel life to sports facilities and campus events, capture the essence of student life and share your own moments with the community.',
   },
