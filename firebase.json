@@ -6,6 +6,19 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "redirects": [
+      { "source": "/about*", "destination": "/index.html", "type": 302 },
+      { "source": "/calendar*", "destination": "/index.html", "type": 302 },
+      { "source": "/contact*", "destination": "/index.html", "type": 302 },
+      { "source": "/gallery*", "destination": "/index.html", "type": 302 },
+      { "source": "/guide*", "destination": "/index.html", "type": 302 },
+      { "source": "/launching-soon*", "destination": "/index.html", "type": 302 },
+      { "source": "/login*", "destination": "/index.html", "type": 302 },
+      { "source": "/newmap*", "destination": "/index.html", "type": 302 },
+      { "source": "/post*", "destination": "/index.html", "type": 302 },
+      { "source": "/signup*", "destination": "/index.html", "type": 302 },
+      { "source": "/trial*", "destination": "/index.html", "type": 302 }
+    ],
     "rewrites": [
       {
         "source": "**",
