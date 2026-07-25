@@ -1,7 +1,18 @@
 {
   "version": 2,
-  
-  
+  "redirects": [
+    { "source": "/about(.*)", "destination": "/", "permanent": false },
+    { "source": "/calendar(.*)", "destination": "/", "permanent": false },
+    { "source": "/contact(.*)", "destination": "/", "permanent": false },
+    { "source": "/gallery(.*)", "destination": "/", "permanent": false },
+    { "source": "/guide(.*)", "destination": "/", "permanent": false },
+    { "source": "/launching-soon(.*)", "destination": "/", "permanent": false },
+    { "source": "/login(.*)", "destination": "/", "permanent": false },
+    { "source": "/newmap(.*)", "destination": "/", "permanent": false },
+    { "source": "/post(.*)", "destination": "/", "permanent": false },
+    { "source": "/signup(.*)", "destination": "/", "permanent": false },
+    { "source": "/trial(.*)", "destination": "/", "permanent": false }
+  ],
   "headers": [
     {
       "source": "/(.*)",
