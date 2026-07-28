@@ -145,8 +145,8 @@ export function GalleryGridBlock({
 
         {/* Gallery Grid */}
         {loading ? (
-          <div className="grid gap-4 sm:grid-cols-2">
-            {[0, 1, 2, 3].map((i) => (
+          <div className="grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
               <div
                 key={i}
                 className="aspect-square animate-pulse rounded-lg bg-muted"
@@ -160,7 +160,7 @@ export function GalleryGridBlock({
         ) : (
           <motion.div
             layout
-            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            className="grid grid-cols-2 gap-3"
             role="list"
             aria-label="Gallery items"
           >

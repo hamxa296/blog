@@ -38,14 +38,14 @@ export function BlogSection({ posts, loading }: BlogSectionProps) {
       </div>
 
       {loading ? (
-        <div className="grid p-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid p-3 sm:p-4 grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
           {[0, 1, 2, 3, 4, 5].map((i) => (
             <div
               key={i}
               className="rounded-2xl border border-border/50 bg-card/30 overflow-hidden"
             >
               <div className="aspect-[16/9] bg-muted animate-pulse" />
-              <div className="p-5 space-y-3">
+              <div className="p-3 sm:p-5 space-y-3">
                 <div className="h-5 bg-muted rounded animate-pulse w-3/4" />
                 <div className="h-3 bg-muted rounded animate-pulse w-full" />
                 <div className="h-3 bg-muted rounded animate-pulse w-2/3" />
@@ -63,7 +63,7 @@ export function BlogSection({ posts, loading }: BlogSectionProps) {
           </p>
         </div>
       ) : (
-        <div className="grid p-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+        <div className="grid p-3 sm:p-4 grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 items-stretch">
           {posts.map((post, index) => (
             <GlassBlogCard
               key={post.id}
