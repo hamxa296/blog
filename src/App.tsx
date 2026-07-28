@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import FloatingMenu from './components/nav/FloatingMenu';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -20,12 +20,15 @@ import { BlogBrowse } from './pages/BlogBrowse';
 import { BlogPostDetail } from './pages/BlogPostDetail';
 
 function AppShell() {
+  const { pathname } = useLocation();
+  const hideNav = pathname === '/';
+
   return (
     <div className="flex flex-col min-h-screen relative z-10 bg-background text-foreground">
       <div className="flex-grow relative z-30">
         <Outlet />
       </div>
-      <FloatingMenu />
+      {!hideNav && <FloatingMenu />}
     </div>
   );
 }
