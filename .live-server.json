@@ -1,7 +1,7 @@
 {
   "port": 8080,
   "host": "localhost",
-  "root": "./",
+  "root": "./dist",
   "open": true,
   "file": "index.html",
   "wait": 1000,
@@ -11,5 +11,3 @@
   "injectBody": false,
   "injectHead": false
 }
-
-
