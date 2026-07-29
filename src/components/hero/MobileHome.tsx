@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
-import newerBg from '@/assets/randombg2.png';
+import newerBg from '@/assets/randombg2.webp';
 
 export default function MobileHome() {
   return (
