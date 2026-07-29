@@ -6,6 +6,7 @@ import { PhotoSubmitModal } from '../components/gallery/PhotoSubmitModal';
 import { getGalleryPhotos, type GalleryPhoto } from '../services/firebase';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import galleryBg from '../assets/bgblogs.png';
+import mobileBg from '../assets/randombg.png';
 
 const SPACER = 12000;
 
@@ -36,7 +37,12 @@ export const Gallery = () => {
 
   if (isMobile) {
     return (
-      <main className="relative z-10 min-h-[100dvh]">
+      <main
+        className="relative z-10 min-h-[100dvh] bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url(${mobileBg})`,
+        }}
+      >
         <GalleryGridBlock
           photos={photos}
           loading={loading}

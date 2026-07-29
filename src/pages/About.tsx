@@ -11,6 +11,8 @@ import img7 from "../assets/7.png";
 import img8 from "../assets/8.png";
 import img13 from "../assets/13.jpeg";
 
+import newBg from '../assets/randombg.png';
+
 const TEAM = [
   {
     position: 'left' as const,
@@ -46,7 +48,13 @@ const TEAM = [
 
 export const About: React.FC = () => {
   return (
-    <main className="relative z-10 min-h-screen pb-24 bg-background text-foreground">
+    <main
+      className="relative z-10 min-h-screen pb-24 text-foreground bg-cover bg-center"
+      style={{
+        backgroundImage: `url(${newBg})`,
+        backgroundAttachment: "fixed",
+      }}
+    >
       <div className="max-w-5xl mx-auto px-4 sm:px-8 pt-16 pb-8">
         <p className="text-xs font-medium tracking-[0.3em] text-zinc-500 uppercase mb-4">
           About Us

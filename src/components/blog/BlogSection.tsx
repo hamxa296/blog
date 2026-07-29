@@ -1,6 +1,7 @@
 import { GlassBlogCard } from './GlassBlogCard';
 import type { Post } from '../../services/firebase';
 
+
 interface BlogSectionProps {
   posts: Post[];
   loading?: boolean;

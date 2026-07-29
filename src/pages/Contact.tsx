@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import newBg from '../assets/randombg.png';
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -51,7 +52,12 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground pb-24">
+    <main
+      className="relative min-h-screen text-foreground pb-24 bg-cover bg-center bg-fixed"
+      style={{
+        backgroundImage: `url(${newBg})`,
+      }}
+    >
       <section className="border-b border-border relative py-16 md:py-24">
         <div className="container mx-auto px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">

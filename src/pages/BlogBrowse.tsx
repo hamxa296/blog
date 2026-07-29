@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { getApprovedPosts, type Post } from '../services/firebase';
 import { BlogSection } from '../components/blog/BlogSection';
 
+import mobileBg from "../assets/randombg.png"
+
 export const BlogBrowse: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +42,12 @@ export const BlogBrowse: React.FC = () => {
   });
 
   return (
-    <main className="relative z-10 min-h-screen bg-background pb-24">
+    <main
+      className="relative z-10 min-h-screen bg-cover bg-center bg-fixed bg-no-repeat pb-24"
+      style={{
+        backgroundImage: `url(${mobileBg})`,
+      }}
+    >
       <div className="max-w-6xl mx-auto px-4 pt-8">
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <input

@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Grid, Upload, X, ZoomIn } from "lucide-react";
 import { type KeyboardEvent, useMemo, useState } from "react";
 import type { GalleryPhoto } from "@/services/firebase";
+import mobileBg from '../../assets/randombg.png';
 
 export interface GalleryGridImage {
   id: string | number;
@@ -86,7 +87,10 @@ export function GalleryGridBlock({
 
   return (
     <section
-      className="w-full min-h-[100dvh] bg-background px-4 py-16 pb-32"
+      className="relative w-full min-h-[100dvh] px-4 py-16 pb-32 bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage: `url(${mobileBg})`,
+      }}
       aria-labelledby="gallery-heading"
     >
       <div className="mx-auto max-w-7xl">
@@ -106,7 +110,7 @@ export function GalleryGridBlock({
             id="gallery-heading"
             className="mb-4 text-4xl font-bold tracking-tight"
           >
-            Our Portfolio
+            Our gallery
           </h2>
           <p className="mx-auto max-w-2xl text-muted-foreground">
             Explore photos submitted by the GIKI community
