@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import bgImage from "../../assets/randombgpc3.webp";
+import bgImage from "../../assets/pcbg.webp";
 
 import img1 from "../../assets/1.png";
 import img2 from "../../assets/2.png";
