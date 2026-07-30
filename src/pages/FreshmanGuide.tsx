@@ -18,7 +18,7 @@ import img12 from "../assets/12.jpeg";
 import img13 from "../assets/13.jpeg";
 import img14 from "../assets/14.png";
 import img15 from "../assets/15.jpg";
-import newBg from '../assets/randombg.png';
+import newBg from '../assets/cleanerbg.png';
 
 
 
