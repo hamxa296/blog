@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Grid, Upload, X, ZoomIn } from "lucide-react";
 import { type KeyboardEvent, useMemo, useState } from "react";
 import type { GalleryPhoto } from "@/services/firebase";
-import mobileBg from '../../assets/randombg.png';
+import mobileBg from '../../assets/plainbg.png';
 
 export interface GalleryGridImage {
   id: string | number;
