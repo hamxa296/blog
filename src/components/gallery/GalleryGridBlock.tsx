@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Grid, Upload, X, ZoomIn } from "lucide-react";
 import { type KeyboardEvent, useMemo, useState } from "react";
 import type { GalleryPhoto } from "@/services/firebase";
-import mobileBg from '../../assets/plainbg.png';
+
 
 export interface GalleryGridImage {
   id: string | number;
@@ -86,13 +86,7 @@ export function GalleryGridBlock({
   };
 
   return (
-    <section
-      className="relative w-full min-h-[100dvh] px-4 py-16 pb-32 bg-cover bg-center bg-no-repeat"
-      style={{
-        backgroundImage: `url(${mobileBg})`,
-      }}
-      aria-labelledby="gallery-heading"
-    >
+    <section className="relative w-full min-h-[100dvh] px-4 py-16 pb-32">
       <div className="mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
