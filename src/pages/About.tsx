@@ -5,7 +5,7 @@ import img6 from "../assets/6.png";
 import img7 from "../assets/7.png";
 import img13 from "../assets/13.jpeg";
 
-import newBg from '../assets/randombg.png';
+import newBg from '../assets/cleanerbg.png';
 
 const TEAM = [
   {
