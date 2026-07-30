@@ -6,7 +6,7 @@ import { PhotoSubmitModal } from '../components/gallery/PhotoSubmitModal';
 import { getGalleryPhotos, type GalleryPhoto } from '../services/firebase';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import galleryBg from '../assets/bgblogs.png';
-import mobileBg from '../assets/randombg.png';
+import mobileBg from '../assets/plainbg.png';
 
 const SPACER = 12000;
 

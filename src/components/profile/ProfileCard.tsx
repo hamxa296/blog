@@ -43,9 +43,9 @@ export function ProfileCard({
   likes = 72900,
   posts = 828,
   views = 342900,
-  instagramUrl = "#",
-  twitterUrl = "#",
-  threadsUrl = "#",
+  instagramUrl = "https://www.instagram.com/giki.chronicles/",
+  twitterUrl = "https://www.instagram.com/giki.chronicles/",
+  threadsUrl = "https://www.instagram.com/giki.chronicles/",
   onEdit,
   editLabel = "Edit",
 }: ProfileCardProps) {
@@ -59,9 +59,9 @@ export function ProfileCard({
     const timer = setTimeout(() => {
       const interval = setInterval(() => {
         setExpProgress((prev) => {
-          if (prev >= 65) {
+          if (prev >= 100) {
             clearInterval(interval);
-            return 65;
+            return 100;
           }
           return prev + 1;
         });
@@ -155,7 +155,7 @@ export function ProfileCard({
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-sm text-muted-foreground font-light">
-                exp.
+                
               </span>
               <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
                 <div

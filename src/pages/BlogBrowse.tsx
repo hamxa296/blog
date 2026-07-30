@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getApprovedPosts, type Post } from '../services/firebase';
 import { BlogSection } from '../components/blog/BlogSection';
 
-import mobileBg from "../assets/randombg.png"
+import mobileBg from "../assets/plainbg.png"
 
 export const BlogBrowse: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
