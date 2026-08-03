@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider, Outlet, useLocation, useOutlet } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, useLocation, useOutlet } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import FloatingMenu from './components/nav/FloatingMenu';
