@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import FloatingMenu from './components/nav/FloatingMenu';
+import GlobalBackButton from './components/nav/GlobalBackButton';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 import { Home } from './pages/Home';
@@ -22,6 +23,7 @@ import { BlogPostDetail } from './pages/BlogPostDetail';
 function AppShell() {
   return (
     <div className="flex flex-col min-h-screen relative z-10 bg-background text-foreground">
+      <GlobalBackButton />
       <div className="flex-grow relative z-30">
         <Outlet />
       </div>
