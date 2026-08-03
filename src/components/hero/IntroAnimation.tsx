@@ -328,20 +328,34 @@ export default function IntroAnimation() {
           </p>
         </motion.div>
 
-        {/* Explore → blogs — only after hero scroll completes */}
+        {/* Explore → about, Read Stories → blogs — only after hero scroll completes */}
         {showExplore && (
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute bottom-28 left-1/2 z-30 -translate-x-1/2 pointer-events-auto"
+            className="absolute bottom-28 left-1/2 z-30 -translate-x-1/2 pointer-events-auto flex flex-col sm:flex-row gap-4 items-center"
           >
             <Link
-              to="/browse"
-              className="group inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-8 py-3.5 text-sm font-medium uppercase tracking-[0.2em] text-white backdrop-blur-md transition-colors hover:border-white/60 hover:bg-white/20"
+              to="/guide"
+              className="group inline-flex items-center justify-center gap-3 rounded-full border border-fuchsia-500/40 bg-fuchsia-500/10 px-8 py-3.5 text-sm font-medium uppercase tracking-[0.2em] text-fuchsia-50 backdrop-blur-md transition-colors hover:border-fuchsia-400 hover:bg-fuchsia-500/20 w-[280px] whitespace-nowrap"
+            >
+              Freshman Guide
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1 text-fuchsia-400" />
+            </Link>
+            <Link
+              to="/about"
+              className="group inline-flex items-center justify-center gap-3 rounded-full border border-white/30 bg-white/10 px-8 py-3.5 text-sm font-medium uppercase tracking-[0.2em] text-white backdrop-blur-md transition-colors hover:border-white/60 hover:bg-white/20 w-[280px] whitespace-nowrap"
             >
               Explore
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+            <Link
+              to="/browse"
+              className="group inline-flex items-center justify-center gap-3 rounded-full border border-cyan-500/40 bg-cyan-500/10 px-8 py-3.5 text-sm font-medium uppercase tracking-[0.2em] text-cyan-50 backdrop-blur-md transition-colors hover:border-cyan-400 hover:bg-cyan-500/20 w-[280px] whitespace-nowrap"
+            >
+              Read Stories
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1 text-cyan-400" />
             </Link>
           </motion.div>
         )}
