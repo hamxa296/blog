@@ -15,6 +15,7 @@ const TEAM = [
     imageUrl: img6,
     description:
       'From packing essentials to navigating campus life, our comprehensive guide covers everything you need to know as a new GIKI student. Discover hostel information, mess schedules, weekend travel options, and essential contacts to make your transition smooth and exciting.',
+    linkTo: '/guide',
   },
   {
     position: 'right' as const,
@@ -24,6 +25,7 @@ const TEAM = [
     imageUrl: img7,
     description:
       'Every student has a story worth telling. Share your experiences, publish your ideas, and become part of the conversations shaping life at GIKI.',
+    linkTo: '/browse',
   },
   {
     position: 'left' as const,
@@ -33,6 +35,7 @@ const TEAM = [
     imageUrl: img13,
     description:
       'From academic blocks and hostel life to sports facilities and campus events, capture the essence of student life and share your own moments with the community.',
+    linkTo: '/gallery',
   },
 ];
 
