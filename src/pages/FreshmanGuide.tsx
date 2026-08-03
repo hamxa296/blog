@@ -18,7 +18,7 @@ import img12 from "../assets/12.jpeg";
 import img13 from "../assets/13.jpeg";
 import img14 from "../assets/14.png";
 import img15 from "../assets/15.jpg";
-
+import newBg from '../assets/plainbg.png';
 
 
 
@@ -263,7 +263,13 @@ export const FreshmanGuide: React.FC = () => {
   };
 
   return (
-    <main className="min-h-[calc(100vh-88px)] bg-background text-foreground relative z-10 pt-10 pb-24 px-4 sm:px-6">
+    <main
+      className="relative z-10 min-h-[calc(100vh-88px)] pt-10 pb-24 px-4 sm:px-6
+                bg-cover bg-center bg-fixed"
+      style={{
+        backgroundImage: `url(${newBg})`,
+      }}
+    >
       <div className="max-w-6xl mx-auto">
         <div className="mb-10 text-center sm:text-left">
           <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-muted-foreground mb-3">

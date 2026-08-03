@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Minus, RotateCcw } from 'lucide-react';
-import mapbg from "../assets/bgblogs.png";
+import mapbg from "../assets/plainbg.png";
 
 interface Pin {
   id: string;

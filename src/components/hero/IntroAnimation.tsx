@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import bgImage from "../../assets/bgherofinal.png";
+import bgImage from "../../assets/pcbg.webp";
 
 import img1 from "../../assets/1.png";
 import img2 from "../../assets/2.png";
@@ -314,14 +314,17 @@ export default function IntroAnimation() {
         {/* Arc Active Content (Fades in) */}
         <motion.div
           style={{ opacity: contentOpacity, y: contentY }}
-          className="absolute top-[10%] z-10 flex flex-col items-center justify-center text-center pointer-events-none px-4"
+          className="absolute top-[40%] z-10 flex flex-col items-center justify-center text-center pointer-events-none px-4"
         >
           <h2 className="text-3xl md:text-5xl font-semibold text-white-900 tracking-tight mb-4">
-            Explore Our Vision
+            You asked for it - We Delivered
           </h2>
           <p className="text-sm md:text-base text-white-700 max-w-lg leading-relaxed">
             Every story has a beginning. Every achievement deserves to be remembered. <br className="hidden md:block" />
             
+          </p>
+          <p className="mt-4 text-xs md:text-sm text-white-500 tracking-widest uppercase animate-pulse">
+            Keep Scrolling ↓
           </p>
         </motion.div>
 
