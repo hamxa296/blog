@@ -2,6 +2,7 @@
 
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface TeamMemberCardProps {
@@ -12,6 +13,7 @@ interface TeamMemberCardProps {
   imageUrl?: string;
   description?: string;
   className?: string;
+  linkTo?: string;
 }
 
 export default function TeamMemberCard({
@@ -22,7 +24,9 @@ export default function TeamMemberCard({
   imageUrl = "https://images.unsplash.com/photo-1526510747491-58f928ec870f?fm=jpg&q=60",
   description = "Jennie is a skilled developer with expertise in modern web technologies and a passion for creating seamless user experiences.",
   className,
+  linkTo,
 }: TeamMemberCardProps) {
+  const navigate = useNavigate();
   const fullName = `${firstName} ${lastName}`;
   const isPositionRight = position === "right";
 
@@ -87,6 +91,7 @@ export default function TeamMemberCard({
             <motion.div
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => linkTo && navigate(linkTo)}
               className={cn(
                 "group flex h-16 w-16 sm:h-20 sm:w-20 shrink-0 cursor-pointer items-center justify-center rounded-full border border-zinc-300 transition-colors duration-300 hover:border-zinc-600 hover:bg-zinc-900 dark:border-white/20 dark:hover:border-white/60 dark:hover:bg-white/10",
                 isPositionRight && "md:order-1",
