@@ -48,7 +48,7 @@ export function GlassBlogCard({
   href,
 }: GlassBlogCardProps) {
   const inner = (
-    <Card className="group relative h-full overflow-hidden rounded-xl sm:rounded-2xl border-border/50 bg-card/30 backdrop-blur-md transition-all duration-300 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10">
+    <Card className="group relative flex flex-col h-full overflow-hidden rounded-xl sm:rounded-2xl border-border/50 bg-card/30 backdrop-blur-md transition-all duration-300 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10">
       <div className="relative aspect-[4/3] sm:aspect-[16/9] overflow-hidden">
         <motion.img
           src={image}
@@ -82,7 +82,7 @@ export function GlassBlogCard({
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 sm:gap-4 p-3 sm:p-5">
+      <div className="flex flex-col flex-1 gap-2 sm:gap-4 p-3 sm:p-5">
         <div className="space-y-1 sm:space-y-2">
           <h3 className="text-sm sm:text-xl font-semibold leading-tight tracking-tight text-foreground transition-colors group-hover:text-primary line-clamp-2">
             {title}
@@ -90,7 +90,7 @@ export function GlassBlogCard({
           <p className="line-clamp-2 text-xs sm:text-sm text-muted-foreground hidden sm:block">{excerpt}</p>
         </div>
 
-        <div className="flex items-center justify-between border-t border-border/50 pt-2 sm:pt-4">
+        <div className="mt-auto flex items-center justify-between border-t border-border/50 pt-2 sm:pt-4">
           <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
             <Avatar className="h-6 w-6 sm:h-8 sm:w-8 border border-border/50 shrink-0">
               <AvatarImage src={author.avatar} alt={author.name} />
