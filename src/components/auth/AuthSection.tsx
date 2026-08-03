@@ -44,8 +44,30 @@ export default function AuthSection({
   return (
     <section className="min-h-screen bg-white p-3 text-black antialiased [font-synthesis:none] dark:bg-[#050505] dark:text-white pb-24">
       <div className="grid min-h-[calc(100vh-1.5rem)] gap-6 lg:grid-cols-[0.94fr_1.06fr]">
-        <div className="flex min-h-[760px] items-start rounded-md border border-black/20 bg-white px-6 py-12 sm:px-10 dark:border-white/10 dark:bg-[#0a0a0a] lg:min-h-0 lg:px-14 lg:py-28 xl:px-20">
-          <div className="mx-auto w-full max-w-[590px]">
+        <div className="relative flex items-center overflow-hidden rounded-md border border-black/20 bg-white px-6 py-12 sm:px-10 dark:border-white/10 dark:bg-[#0a0a0a] lg:items-start lg:px-14 lg:py-28 xl:px-20">
+          
+          {/* Mobile top animation */}
+          <div className="absolute left-0 top-0 h-[400px] w-full pointer-events-none lg:hidden opacity-60 dark:opacity-80">
+            <GrainGradient
+              speed={1}
+              scale={1}
+              rotation={0}
+              offsetX={0}
+              offsetY={0}
+              softness={0.5}
+              intensity={0.5}
+              noise={0.25}
+              shape="corners"
+              frame={2854.5}
+              colors={["#FFFFFF", "#FC7819", "#FC7819", "#FFFFFF"]}
+              colorBack="#00000000"
+              className="absolute inset-0"
+            />
+            {/* Fade out mask */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 to-white dark:via-[#0a0a0a]/50 dark:to-[#0a0a0a]" />
+          </div>
+
+          <div className="relative z-10 mx-auto w-full max-w-[590px]">
             <div>
               <h1 className="whitespace-nowrap text-3xl font-medium tracking-[-0.04em] sm:text-4xl lg:text-[42px] lg:leading-[1.05] xl:text-[50px]">
                 {isSignup ? "Create an account" : "Welcome back"}
@@ -161,7 +183,7 @@ export default function AuthSection({
           </div>
         </div>
 
-        <div className="relative flex min-h-[720px] overflow-hidden rounded-md bg-black p-8 text-white sm:p-12 lg:min-h-0">
+        <div className="hidden lg:flex relative overflow-hidden rounded-md bg-black p-8 text-white sm:p-12 lg:min-h-0">
           <GrainGradient
             speed={1}
             scale={1}
