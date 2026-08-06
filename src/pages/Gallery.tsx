@@ -9,7 +9,7 @@ import {
 } from '../services/firebase';
 import { useAuth } from '../context/AuthContext';
 import { getOptimizedImageUrl, capImageResolution, uploadImageToCloudinary } from '../utils/imageOptimization';
-import galleryBg from "../assets/bgblogs.png";
+import galleryBg from "../assets/bgblogs.webp";
 import { 
   Camera, 
   Upload, 

@@ -14,7 +14,7 @@ import {
 import { Badge } from '../components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import { Clock, ArrowLeft, BookOpen } from 'lucide-react';
-import bgImage from "../assets/bgblog.png"; // adjust the path if needed
+import bgImage from "../assets/bgblog.webp"; // adjust the path if needed
 
 interface Comment {
   id: string;

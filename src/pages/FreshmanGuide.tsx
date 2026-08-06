@@ -7,18 +7,18 @@ import { GuideEditModal } from '../components/guide/GuideEditModal';
 import { GuideSectionDetail } from '../components/guide/GuideSectionDetail';
 import { BentoGrid, BentoGridItem } from '../components/guide/BentoGrid';
 import { BookOpen, Compass, Home, Map, Package, Users, Phone, Sparkles } from 'lucide-react';
-import img2 from "../assets/2.png";
-import img3 from "../assets/3.png";
-import img4 from "../assets/4.png";
-import img7 from "../assets/7.png";
-import img9 from "../assets/img9.jpg";
-import img10 from "../assets/img10.jpg";
-import img11 from "../assets/11.jpeg";
-import img12 from "../assets/12.jpeg";
-import img13 from "../assets/13.jpeg";
-import img14 from "../assets/14.png";
-import img15 from "../assets/15.jpg";
-import newBg from '../assets/plainbg.png';
+import img2 from "../assets/2.webp";
+import img3 from "../assets/3.webp";
+import img4 from "../assets/4.webp";
+import img7 from "../assets/7.webp";
+import img9 from "../assets/img9.webp";
+import img10 from "../assets/img10.webp";
+import img11 from "../assets/11.webp";
+import img12 from "../assets/12.webp";
+import img13 from "../assets/13.webp";
+import img14 from "../assets/14.webp";
+import img15 from "../assets/15.webp";
+import newBg from '../assets/plainbg.webp';
 
 
 

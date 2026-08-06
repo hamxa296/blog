@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Minus, RotateCcw } from 'lucide-react';
-import mapbg from "../assets/plainbg.png";
+import mapbg from "../assets/plainbg.webp";
 
 interface Pin {
   id: string;
@@ -348,7 +348,7 @@ export const CampusMap: React.FC = () => {
           {/* Background Map Image */}
           <div
             className="w-full h-full bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: `url('/map.png')` }}
+            style={{ backgroundImage: `url('/map.webp')` }}
           />
 
           {/* Dynamic Pin Markers */}

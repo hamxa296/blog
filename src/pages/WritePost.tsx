@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import writebg from "../assets/bgblog.png"
+import writebg from "../assets/bgblog.webp"
 import {
   createPost,
   updatePost,

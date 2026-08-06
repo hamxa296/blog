@@ -1,11 +1,11 @@
 import React from 'react';
 import TeamMemberCard from '../components/about/TeamMemberCard';
 
-import img6 from "../assets/6.png";
-import img7 from "../assets/7.png";
-import img13 from "../assets/13.jpeg";
+import img6 from "../assets/6.webp";
+import img7 from "../assets/7.webp";
+import img13 from "../assets/13.webp";
 
-import newBg from '../assets/plainbg.png';
+import newBg from '../assets/plainbg.webp';
 const TEAM = [
   {
     position: 'left' as const,

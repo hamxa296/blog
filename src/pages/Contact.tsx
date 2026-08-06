@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import newBg from '../assets/randombg.png';
+import newBg from '../assets/randombg.webp';
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -78,7 +78,7 @@ export const Contact: React.FC = () => {
                 style={{ borderRadius: '48% 48% 12px 12px' }}
                 onClick={() => setIsPhotoModalOpen(true)}
               >
-                <img src="/contact-hero.jpeg" alt="GIKI Campus View" className="w-full h-[320px] object-cover block grayscale hover:grayscale-0 transition-all duration-1000" />
+                <img src="/contact-hero.webp" alt="GIKI Campus View" className="w-full h-[320px] object-cover block grayscale hover:grayscale-0 transition-all duration-1000" />
               </div>
             </div>
           </div>
@@ -103,7 +103,7 @@ export const Contact: React.FC = () => {
             >
               ✕
             </button>
-            <img src="/contact-hero.jpeg" alt="GIKI Campus Enlarged" className="w-full h-auto max-h-[80vh] object-contain rounded-2xl" />
+            <img src="/contact-hero.webp" alt="GIKI Campus Enlarged" className="w-full h-auto max-h-[80vh] object-contain rounded-2xl" />
           </div>
         </div>
       )}

@@ -3,28 +3,49 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 
-createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById('root')
+if (!rootElement) {
+  throw new Error('Root element #root not found — ensure index.html contains <div id="root"></div>')
+}
+
+createRoot(rootElement).render(
   <StrictMode>
     <App />
   </StrictMode>,
 )
 
-// Unregister Service Worker completely to fix caching issues and ensure users get the latest version
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(registrations => {
-    for (const registration of registrations) {
-      registration.unregister().then(() => {
-        console.log('Unregistered service worker');
-      });
+async function clearLegacyServiceWorkerAndCaches() {
+  if ('serviceWorker' in navigator) {
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations()
+      const unregisterResults = await Promise.allSettled(
+        registrations.map((registration) => registration.unregister()),
+      )
+      unregisterResults.forEach((result, index) => {
+        if (result.status === 'rejected') {
+          console.warn('Failed to unregister service worker:', registrations[index]?.scope, result.reason)
+        }
+      })
+    } catch (err) {
+      console.warn('Failed to enumerate service worker registrations:', err)
     }
-  });
-  
-  // Clear all caches
-  if (window.caches) {
-    caches.keys().then(names => {
-      for (const name of names) {
-        caches.delete(name);
-      }
-    });
+  }
+
+  if ('caches' in window) {
+    try {
+      const names = await caches.keys()
+      const deleteResults = await Promise.allSettled(names.map((name) => caches.delete(name)))
+      deleteResults.forEach((result, index) => {
+        if (result.status === 'rejected') {
+          console.warn(`Failed to delete cache "${names[index]}":`, result.reason)
+        } else if (result.value === false) {
+          console.warn(`Cache "${names[index]}" was not found during deletion`)
+        }
+      })
+    } catch (err) {
+      console.warn('Failed to clear caches:', err)
+    }
   }
 }
+
+void clearLegacyServiceWorkerAndCaches()
