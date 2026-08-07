@@ -124,3 +124,7 @@ textarea,
 select {
   color-scheme: dark;
 }
+
+button {
+  cursor: pointer;
+}

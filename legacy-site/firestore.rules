@@ -32,7 +32,7 @@ service cloud.firestore {
 
     // Users collection
     match /users/{userId} {
-      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow read: if true; // Allow anyone to read user profiles (for blog authors)
       allow write: if isAuthenticated() && (isOwner(userId) || isAdmin());
       
       // User subcollections (like packing lists)
@@ -41,9 +41,15 @@ service cloud.firestore {
       }
     }
 
+    // Profiles collection (used by the new React app)
+    match /profiles/{userId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && (isOwner(userId) || isAdmin());
+    }
+
     // User profiles (for backward compatibility)
     match /userProfiles/{userId} {
-      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow read: if true;
       allow write: if isAuthenticated() && (isOwner(userId) || isAdmin());
     }
 
@@ -53,6 +59,12 @@ service cloud.firestore {
       allow create: if isAuthenticated();
       allow update: if isAuthenticated() && (resource.data.authorId == request.auth.uid || isAdmin());
       allow delete: if isAdmin();
+    }
+
+    // Waitlist / newsletter sign-ups (coming-soon / relaunch page)
+    match /waitlist/{docId} {
+      allow read, update, delete: if isAdmin(); // Only admins can read/manage
+      allow create: if true; // Anyone can join the waitlist (no auth needed)
     }
 
     // Contact form submissions

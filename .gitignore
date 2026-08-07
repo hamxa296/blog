@@ -58,3 +58,4 @@ dist-ssr
 *.sw?
 .env
 env.download
+serviceAccountKey.json

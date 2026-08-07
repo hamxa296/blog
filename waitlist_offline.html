@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waitlist Emails - Offline Admin</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --text: #f8fafc;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --border: #334155;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--surface);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    h1 {
+      margin-top: 0;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+    }
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      gap: 1rem;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+    }
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: var(--primary-hover);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      text-align: left;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      background-color: var(--bg);
+      font-weight: 600;
+      color: #94a3b8;
+    }
+    tr:hover {
+      background-color: var(--bg);
+    }
+    .count {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Waitlist Directory</h1>
+    <div class="count">Total emails: <span id="totalCount">18</span></div>
+    
+    <div class="toolbar">
+      <input type="text" id="searchInput" placeholder="Search emails...">
+      <button id="copyBtn">Copy All Filtered Emails</button>
+    </div>
+
+    <table id="emailTable">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Signup Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+          <tr>
+            <td class="email-cell">haleema.asif.29@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">heshammahsud5@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">hadiyahsattar1@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">raja.m.anas100@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">mahadnetflix123@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">mhaiderabdullah0@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">amaanoct123@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">hamzzarif296@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">abubakaramir437@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">hamzzarif296@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">jtennyson05@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">harisnetbackup@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">ibrahimkashif399@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">hadiyahsattar1@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">osamaahad282@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">marjanorakzai23@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">abdulrehman58ab@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+          <tr>
+            <td class="email-cell">ashman5793@gmail.com</td>
+            <td>N/A</td>
+          </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const table = document.getElementById('emailTable');
+    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+    const copyBtn = document.getElementById('copyBtn');
+    const totalCount = document.getElementById('totalCount');
+
+    searchInput.addEventListener('input', function() {
+      const filter = this.value.toLowerCase();
+      let visibleCount = 0;
+      
+      for (let i = 0; i < rows.length; i++) {
+        const email = rows[i].getElementsByClassName('email-cell')[0].innerText.toLowerCase();
+        if (email.includes(filter)) {
+          rows[i].style.display = '';
+          visibleCount++;
+        } else {
+          rows[i].style.display = 'none';
+        }
+      }
+      totalCount.innerText = visibleCount;
+    });
+
+    copyBtn.addEventListener('click', function() {
+      let emailsToCopy = [];
+      for (let i = 0; i < rows.length; i++) {
+        if (rows[i].style.display !== 'none') {
+          emailsToCopy.push(rows[i].getElementsByClassName('email-cell')[0].innerText);
+        }
+      }
+      
+      const textToCopy = emailsToCopy.join(', ');
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        const originalText = copyBtn.innerText;
+        copyBtn.innerText = 'Copied!';
+        copyBtn.style.backgroundColor = '#10b981';
+        setTimeout(() => {
+          copyBtn.innerText = originalText;
+          copyBtn.style.backgroundColor = '';
+        }, 2000);
+      });
+    });
+  </script>
+</body>
+</html>
+  

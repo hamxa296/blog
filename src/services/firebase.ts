@@ -60,11 +60,15 @@ export interface UserProfile {
   displayName: string;
   photoURL: string;
   bio?: string;
+  badge?: string;
   isAdmin?: boolean;
   isBlocked?: boolean;
   role?: 'admin' | 'editor' | 'moderator' | 'author' | 'user';
   createdAt?: Timestamp;
   lastUpdated?: Timestamp;
+  instagramUrl?: string;
+  twitterUrl?: string;
+  threadsUrl?: string;
 }
 
 export interface Post {

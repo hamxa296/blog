@@ -98,7 +98,8 @@ export const BlogPostDetail: React.FC = () => {
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !id || commentInput.trim() === '') return;
+    if (!user || commentInput.trim() === '' || !id) return;
+    if (post?.status === 'draft') return; // Double check in handler
 
     setCommentSubmitting(true);
 
@@ -276,36 +277,44 @@ export const BlogPostDetail: React.FC = () => {
                 Discussion
               </h2>
 
-              <form onSubmit={handleCommentSubmit} className="mb-6">
-                <textarea
-                  value={commentInput}
-                  onChange={(e) => setCommentInput(e.target.value)}
-                  disabled={!user || commentSubmitting}
-                  rows={4}
-                  placeholder={
-                    user
-                      ? 'Share your thoughts about this post...'
-                      : 'Sign in to join the conversation.'
-                  }
-                  className="w-full rounded-xl border border-border/50 bg-background/50 backdrop-blur-sm p-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all resize-none text-sm"
-                />
-                {user ? (
-                  <button
-                    type="submit"
-                    disabled={commentSubmitting || commentInput.trim() === ''}
-                    className="mt-3 rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/25 disabled:opacity-50"
-                  >
-                    {commentSubmitting ? 'Posting comment...' : 'Post Comment'}
-                  </button>
-                ) : (
-                  <Link
-                    to={`/login?next=${encodeURIComponent(window.location.pathname)}`}
-                    className="mt-3 inline-flex rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground"
-                  >
-                    Log in to Comment
-                  </Link>
-                )}
-              </form>
+              {post.status === 'draft' ? (
+                <div className="mb-6 rounded-xl border border-border/50 bg-background/50 backdrop-blur-sm p-4 text-center">
+                  <p className="text-muted-foreground text-sm">
+                    Comments are disabled while this post is a draft.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleCommentSubmit} className="mb-6">
+                  <textarea
+                    value={commentInput}
+                    onChange={(e) => setCommentInput(e.target.value)}
+                    disabled={!user || commentSubmitting}
+                    rows={4}
+                    placeholder={
+                      user
+                        ? 'Share your thoughts about this post...'
+                        : 'Sign in to join the conversation.'
+                    }
+                    className="w-full rounded-xl border border-border/50 bg-background/50 backdrop-blur-sm p-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all resize-none text-sm"
+                  />
+                  {user ? (
+                    <button
+                      type="submit"
+                      disabled={commentSubmitting || commentInput.trim() === ''}
+                      className="mt-3 rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/25 disabled:opacity-50"
+                    >
+                      {commentSubmitting ? 'Posting comment...' : 'Post Comment'}
+                    </button>
+                  ) : (
+                    <Link
+                      to={`/login?next=${encodeURIComponent(window.location.pathname)}`}
+                      className="mt-3 inline-flex rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground"
+                    >
+                      Log in to Comment
+                    </Link>
+                  )}
+                </form>
+              )}
 
               <div className="space-y-4">
                 {comments.length === 0 ? (

@@ -15,14 +15,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const location = useLocation();
 
   if (loading) {
-    return (
-      <div className="min-h-[calc(100vh-88px)] flex items-center justify-center bg-transparent text-white">
-        <div className="flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-[#B3CFE5] border-t-[#0A1931] rounded-full animate-spin"></div>
-          <p className="mt-4 text-[#B3CFE5] font-semibold tracking-wider animate-pulse">Initializing Session...</p>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   if (!user) {

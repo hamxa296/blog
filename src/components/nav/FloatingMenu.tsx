@@ -133,7 +133,6 @@ export default function FloatingMenu() {
         ]
       : [
           { label: 'Login', path: '/login' },
-          { label: 'Signup', path: '/signup' },
         ]),
   ];
 
