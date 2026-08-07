@@ -96,7 +96,7 @@ export default function FloatingMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { user, profile } = useAuth();
+  const { user, profile, loading } = useAuth();
 
   const isCms =
     profile?.isAdmin ||
@@ -117,7 +117,9 @@ export default function FloatingMenu() {
     { label: 'Blog', path: '/browse' },
     { label: 'Map', path: '/map' },
     { label: 'Contact', path: '/contact' },
-    ...(user
+    ...(loading
+      ? [] // Show nothing while auth state is resolving to prevent jitter
+      : user
       ? [
           { label: 'Profile', path: '/profile' },
           { label: 'Write', path: '/write' },

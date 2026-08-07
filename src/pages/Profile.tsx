@@ -90,7 +90,7 @@ export const Profile: React.FC = () => {
         where('authorId', '==', user.uid),
       );
       const postsSnap = await getDocs(postsQuery);
-      const postsCount = postsSnap.size;
+      const approvedPostsCount = postsSnap.docs.filter(d => d.data().status === 'approved').length;
 
       const commentsQuery = query(
         collection(db, 'comments'),
@@ -107,13 +107,13 @@ export const Profile: React.FC = () => {
       const reactionsCount = reactionsSnap.size;
 
       setStats({
-        posts: postsCount,
+        posts: approvedPostsCount, // Only show published posts in public stats
         comments: commentsCount,
         reactions: reactionsCount,
       });
 
       // Background check for Badge Upgrade
-      const score = (postsCount * 100) + (reactionsCount * 10) + commentsCount;
+      const score = (approvedPostsCount * 100) + (reactionsCount * 10) + commentsCount;
       const thresholds = [
         { name: "Novice", score: 0 },
         { name: "Contributor", score: 100 },
