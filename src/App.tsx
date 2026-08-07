@@ -4,22 +4,25 @@ import { AuthProvider } from './context/AuthContext';
 import FloatingMenu from './components/nav/FloatingMenu';
 import GlobalBackButton from './components/nav/GlobalBackButton';
 import { ProtectedRoute } from './components/ProtectedRoute';
-
-import { Home } from './pages/Home';
-import { About } from './pages/About';
-import { Contact } from './pages/Contact';
-import { FreshmanGuide } from './pages/FreshmanGuide';
-import { GuideErrorBoundary } from './components/guide/GuideErrorBoundary';
-import { Gallery } from './pages/Gallery';
-import { CampusMap } from './pages/CampusMap';
-import { Login } from './pages/Login';
-import { Signup } from './pages/Signup';
-import { Profile } from './pages/Profile';
-import { WritePost } from './pages/WritePost';
-import { CmsDashboard } from './pages/CmsDashboard';
 import { CmsRoute } from './components/CmsRoute';
-import { BlogBrowse } from './pages/BlogBrowse';
-import { BlogPostDetail } from './pages/BlogPostDetail';
+import { GuideErrorBoundary } from './components/guide/GuideErrorBoundary';
+
+import { lazy, Suspense } from 'react';
+
+const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
+const About = lazy(() => import('./pages/About').then(module => ({ default: module.About })));
+const Contact = lazy(() => import('./pages/Contact').then(module => ({ default: module.Contact })));
+const FreshmanGuide = lazy(() => import('./pages/FreshmanGuide').then(module => ({ default: module.FreshmanGuide })));
+const Gallery = lazy(() => import('./pages/Gallery').then(module => ({ default: module.Gallery })));
+const CampusMap = lazy(() => import('./pages/CampusMap').then(module => ({ default: module.CampusMap })));
+const Login = lazy(() => import('./pages/Login').then(module => ({ default: module.Login })));
+const Signup = lazy(() => import('./pages/Signup').then(module => ({ default: module.Signup })));
+const Profile = lazy(() => import('./pages/Profile').then(module => ({ default: module.Profile })));
+const WritePost = lazy(() => import('./pages/WritePost').then(module => ({ default: module.WritePost })));
+const CmsDashboard = lazy(() => import('./pages/CmsDashboard').then(module => ({ default: module.CmsDashboard })));
+const BlogBrowse = lazy(() => import('./pages/BlogBrowse').then(module => ({ default: module.BlogBrowse })));
+const BlogPostDetail = lazy(() => import('./pages/BlogPostDetail').then(module => ({ default: module.BlogPostDetail })));
+const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
 
 function AppShell() {
   const location = useLocation();
@@ -38,7 +41,9 @@ function AppShell() {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="flex-grow flex flex-col w-full"
           >
-            {outlet}
+            <Suspense fallback={<div className="flex-grow flex items-center justify-center p-8"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
+              {outlet}
+            </Suspense>
           </motion.div>
         </AnimatePresence>
       </div>
@@ -94,6 +99,7 @@ const router = createBrowserRouter([
       },
       { path: 'browse', element: <BlogBrowse /> },
       { path: 'posts/:id', element: <BlogPostDetail /> },
+      { path: '*', element: <NotFound /> },
     ],
   },
 ]);

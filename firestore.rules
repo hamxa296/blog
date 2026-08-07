@@ -1,0 +1,87 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Reusable function to check if user is logged in
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Reusable function to check if user is an admin
+    // Note: We check if they have the 'admin' role in their user document
+    // For initial setup, we also allow specific UIDs if needed
+    function isAdmin() {
+      return isAuthenticated() && (
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+    
+    // Users Collection
+    match /users/{userId} {
+      // Anyone can read public profiles
+      allow read: if true;
+      // Users can edit their own profiles, admins can edit any
+      allow write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+    }
+
+    // Posts Collection
+    match /posts/{postId} {
+      // Anyone can read approved posts
+      // Users can read their own drafts/pending posts
+      // Admins can read all posts
+      allow read: if resource.data.status == 'approved' || 
+                     (isAuthenticated() && resource.data.authorId == request.auth.uid) || 
+                     isAdmin();
+                     
+      // Logged in users can create posts (as drafts or pending)
+      allow create: if isAuthenticated() && request.resource.data.authorId == request.auth.uid;
+      
+      // Users can update their own posts (but cannot bypass approval logic without admin)
+      allow update: if isAuthenticated() && (
+        (resource.data.authorId == request.auth.uid) || isAdmin()
+      );
+      
+      // Users can delete their own posts, admins can delete any
+      allow delete: if isAuthenticated() && (resource.data.authorId == request.auth.uid || isAdmin());
+    }
+
+    // Gallery Photos Collection
+    match /galleryPhotos/{photoId} {
+      // Anyone can read approved photos
+      allow read: if resource.data.approved == true || 
+                     (isAuthenticated() && resource.data.uploaderId == request.auth.uid) || 
+                     isAdmin();
+                     
+      // Logged in users can upload photos
+      allow create: if isAuthenticated() && request.resource.data.uploaderId == request.auth.uid;
+      
+      // Only admins can approve or delete other's photos
+      allow update, delete: if isAuthenticated() && (
+        resource.data.uploaderId == request.auth.uid || isAdmin()
+      );
+    }
+
+    // Comments Collection
+    match /comments/{commentId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && request.resource.data.authorId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && (resource.data.authorId == request.auth.uid || isAdmin());
+    }
+
+    // Reactions Collection
+    match /reactions/{reactionId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    // Events Collection (Calendar)
+    match /events/{eventId} {
+      allow read: if true;
+      // Only admins can manage events
+      allow write: if isAdmin();
+    }
+  }
+}

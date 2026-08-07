@@ -48,6 +48,13 @@ export const BlogPostDetail: React.FC = () => {
         const res = await getPostById(id);
         if (res.success && res.post) {
           setPost(res.post);
+          
+          // Basic SEO
+          document.title = `${res.post.title} | GIKI Chronicles`;
+          const metaDesc = document.querySelector('meta[name="description"]');
+          if (metaDesc && res.post.summary) {
+            metaDesc.setAttribute('content', res.post.summary);
+          }
         } else {
           setPostError(res.error || 'Article not found.');
         }

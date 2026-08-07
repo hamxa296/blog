@@ -1,0 +1,36 @@
+rules_version = '2';
+
+// Craft rules based on the specific paths for the Firebase Storage bucket provided.
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Reusable function to check if user is logged in
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Avatar Uploads
+    // Users can upload to their own avatar path
+    match /avatars/{userId}/{fileName} {
+      allow read: if true;
+      allow write: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Post cover images and gallery photos
+    // In this app, many images are handled by Cloudinary, but if Firebase Storage is used for posts/gallery:
+    match /posts/{userId}/{fileName} {
+      allow read: if true;
+      allow write: if isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    match /gallery/{userId}/{fileName} {
+      allow read: if true;
+      allow write: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Default deny for everything else to keep it secure
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
