@@ -52,8 +52,8 @@ export const BlogPostDetail: React.FC = () => {
           // Basic SEO
           document.title = `${res.post.title} | GIKI Chronicles`;
           const metaDesc = document.querySelector('meta[name="description"]');
-          if (metaDesc && res.post.summary) {
-            metaDesc.setAttribute('content', res.post.summary);
+          if (metaDesc && res.post.description) {
+            metaDesc.setAttribute('content', res.post.description);
           }
         } else {
           setPostError(res.error || 'Article not found.');
