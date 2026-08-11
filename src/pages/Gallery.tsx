@@ -104,19 +104,7 @@ export const Gallery: React.FC = () => {
 
   // Top items for CollectionSurfer carousel
   // Desktop only
-  const surferItems: CollectionItem[] | undefined =
-    photos.length > 0
-      ? photos.slice(0, 16).map((p, i) => ({
-          id: p.id || String(i),
-          image: getOptimizedImageUrl(
-            p.imageUrl || p.fullSizeUrl,
-            800
-          ),
-          title:
-            p.caption ||
-            `GALLERY ${String(i + 1).padStart(2, '0')}`,
-        }))
-      : undefined;
+  
 
   // Handle file selection and preview generation
   const handleFileChange = (
