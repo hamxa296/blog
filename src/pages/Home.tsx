@@ -11,13 +11,14 @@ export const Home = () => {
   const isMobile = useIsMobile();
 
   return (
-    <main
-      className="relative z-10 w-full min-h-screen bg-cover bg-center md:bg-fixed text-white"
-      style={{
-        backgroundImage: `url(${backgroundImage})`,
-      }}
-    >
-      
+    <main className="relative z-10 w-full min-h-screen text-white overflow-hidden">
+      {/* Background */}
+      <div
+        className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat md:bg-fixed"
+        style={{
+          backgroundImage: `url(${backgroundImage})`,
+        }}
+      />
 
       {/* Page content */}
       <div className="relative z-10">
