@@ -1,7 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useBlocker } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { subscribeGuideSections, updateGuideSection } from '../services/guideService';
+import {
+  subscribeGuideSections,
+  updateGuideSection,
+} from '../services/guideService';
 import type {
   GuideEditForm,
   GuideSection,
@@ -109,7 +112,7 @@ export const FreshmanGuide: React.FC = () => {
           console.warn('Firestore listener error:', err);
           setConnectionStatus('error');
           setGuideSections([]);
-        },
+        }
       );
     } catch (e) {
       window.clearTimeout(timeoutId);
@@ -140,7 +143,7 @@ export const FreshmanGuide: React.FC = () => {
 
       return section.fullContent as SocietyCategoryMap;
     },
-    [guideSections],
+    [guideSections]
   );
 
   const blocker = useBlocker(
@@ -149,7 +152,7 @@ export const FreshmanGuide: React.FC = () => {
         user &&
           hasPackingSessionChanges &&
           currentLocation.pathname !== nextLocation.pathname
-      ),
+      )
   );
 
   useEffect(() => {
@@ -388,18 +391,23 @@ export const FreshmanGuide: React.FC = () => {
   };
 
   return (
-    <main
-      className="relative z-10 min-h-[calc(100vh-88px)] pt-10 pb-24 px-4 sm:px-6"
-    >
-      {/* Background */}
-      <div
-        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url(${isMobile ? mobileBg : newBg})`,
-        }}
+    <main className="relative z-10 min-h-[calc(100vh-88px)] pt-10 pb-24 px-4 sm:px-6">
+
+      {/* =========================================================
+          FIXED BACKGROUND
+          Stays locked to the viewport while the page scrolls.
+          Uses separate desktop/mobile images.
+          ========================================================= */}
+      <img
+        src={isMobile ? mobileBg : newBg}
+        alt=""
+        aria-hidden="true"
+        className="fixed inset-0 -z-10 h-full w-full object-cover object-center"
       />
 
+      {/* Page Content */}
       <div className="max-w-6xl mx-auto">
+
         <div className="mb-10 text-center sm:text-left">
           <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-muted-foreground mb-3">
             <Compass className="h-3.5 w-3.5" />
