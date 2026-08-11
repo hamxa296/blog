@@ -6,6 +6,7 @@ import { Footer } from '../components/nav/Footer';
 import { FeaturedPosts } from '../components/blog/FeaturedPosts';
 
 import backgroundImage from '../assets/homepc.webp';
+import mobileBackgroundImage from '../assets/mobfix.webp';
 
 export const Home = () => {
   const isMobile = useIsMobile();
@@ -15,17 +16,11 @@ export const Home = () => {
 
       {/* Background */}
       <div
-        className="
-          absolute inset-0 -z-10
-          bg-no-repeat
-          bg-center
-          bg-[length:100%_auto]
-          md:bg-cover
-          md:bg-center
-          md:bg-fixed
-        "
+        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url(${backgroundImage})`,
+          backgroundImage: `url(${
+            isMobile ? mobileBackgroundImage : backgroundImage
+          })`,
         }}
       />
 
