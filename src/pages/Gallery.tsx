@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { CollectionSurfer, type CollectionItem } from '../components/gallery/CollectionSurfer';
+import { CollectionSurfer } from '../components/gallery/CollectionSurfer';
 import {
   getGalleryPhotos,
   uploadGalleryPhoto,
