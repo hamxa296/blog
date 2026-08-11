@@ -2,14 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { getApprovedPosts, type Post } from '../services/firebase';
 import { BlogSection } from '../components/blog/BlogSection';
-import { useIsMobile } from '../hooks/useMediaQuery';
-
-import desktopBg from '../assets/homepc.webp';
-import mobileBg from '../assets/mobfix.webp';
 
 export const BlogBrowse: React.FC = () => {
-  const isMobile = useIsMobile();
-
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -61,11 +55,12 @@ export const BlogBrowse: React.FC = () => {
 
   return (
     <main className="relative z-10 min-h-screen pb-24">
-      {/* Responsive Background */}
+      {/* Solid Background */}
       <div
-        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
+        aria-hidden="true"
+        className="fixed inset-0 -z-10"
         style={{
-          backgroundImage: `url(${isMobile ? mobileBg : desktopBg})`,
+          backgroundColor: '#201e1c',
         }}
       />
 

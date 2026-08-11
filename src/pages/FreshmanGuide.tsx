@@ -24,9 +24,6 @@ import {
   Sparkles,
 } from 'lucide-react';
 
-import newBg from '../assets/homepc.webp';
-import mobileBg from '../assets/mobfix.webp';
-
 import guide1 from '../assets/guide1.png';
 import guide2 from '../assets/guide2new.png';
 import guide3 from '../assets/guide3new.png';
@@ -39,8 +36,6 @@ import guide9 from '../assets/guide9.png';
 import guide10 from '../assets/guide10new.png';
 import guide11 from '../assets/guide11new.png';
 import guide12 from '../assets/guide12.png';
-
-import { useIsMobile } from '../hooks/useMediaQuery';
 
 const SECTION_ICONS: Record<string, React.ReactNode> = {
   'campus-map': <Map className="h-4 w-4" />,
@@ -69,8 +64,6 @@ type ConnectionStatus = 'connecting' | 'connected' | 'error';
 
 export const FreshmanGuide: React.FC = () => {
   const { user, isAdmin } = useAuth();
-  const isMobile = useIsMobile();
-
   const [guideSections, setGuideSections] = useState<GuideSection[]>([]);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [connectionStatus, setConnectionStatus] =
@@ -395,14 +388,12 @@ export const FreshmanGuide: React.FC = () => {
 
       {/* =========================================================
           FIXED BACKGROUND
-          Stays locked to the viewport while the page scrolls.
-          Uses separate desktop/mobile images.
+          Solid background color: #201e1c
           ========================================================= */}
-      <img
-        src={isMobile ? mobileBg : newBg}
-        alt=""
+      <div
         aria-hidden="true"
-        className="fixed inset-0 -z-10 h-full w-full object-cover object-center"
+        className="fixed inset-0 -z-10"
+        style={{ backgroundColor: '#201e1c' }}
       />
 
       {/* Page Content */}
