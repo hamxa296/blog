@@ -6,27 +6,22 @@ import { Footer } from '../components/nav/Footer';
 import { FeaturedPosts } from '../components/blog/FeaturedPosts';
 
 import backgroundImage from '../assets/homepc.webp';
-import mobileBackgroundImage from '../assets/mobfix.webp';
+import mobileBackgroundImage from '../assets/mobplain.webp';
 
 export const Home = () => {
   const isMobile = useIsMobile();
 
   return (
-    <main className="relative z-10 w-full min-h-screen text-white overflow-hidden">
-
-      {/* Background */}
-      <div
-        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url(${
-            isMobile ? mobileBackgroundImage : backgroundImage
-          })`,
-        }}
-      />
-
+    <main
+      className="relative z-10 w-full min-h-screen bg-cover bg-center bg-fixed text-white"
+      style={{
+        backgroundImage: `url(${
+          isMobile ? mobileBackgroundImage : backgroundImage
+        })`,
+      }}
+    >
       {/* Page content */}
       <div className="relative z-10">
-
         {/* Hero / Animations */}
         <div className="relative h-[100dvh] w-full">
           {isMobile ? <MobileHome /> : <IntroAnimation />}
@@ -48,7 +43,6 @@ export const Home = () => {
             <Footer />
           </div>
         )}
-
       </div>
     </main>
   );
