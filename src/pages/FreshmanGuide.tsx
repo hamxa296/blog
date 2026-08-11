@@ -7,7 +7,7 @@ import { GuideEditModal } from '../components/guide/GuideEditModal';
 import { GuideSectionDetail } from '../components/guide/GuideSectionDetail';
 import { BentoGrid, BentoGridItem } from '../components/guide/BentoGrid';
 import { BookOpen, Compass, Home, Map, Package, Users, Phone, Sparkles } from 'lucide-react';
-import newBg from '../assets/plainbg.webp';
+import newBg from '../assets/homepc.webp';
 import guide1 from '../assets/guide1.png';
 import guide2 from '../assets/guide2new.png';
 import guide3 from '../assets/guide3new.png';

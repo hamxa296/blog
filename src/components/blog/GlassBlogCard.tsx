@@ -48,7 +48,7 @@ export function GlassBlogCard({
   href,
 }: GlassBlogCardProps) {
   const inner = (
-    <Card className="group relative flex flex-col h-full overflow-hidden rounded-xl sm:rounded-2xl border-border/50 bg-card/30 backdrop-blur-md transition-all duration-300 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10">
+    <Card className="group relative flex flex-col h-full overflow-hidden rounded-xl sm:rounded-2xl border border-border/50 bg-card/30 backdrop-blur-md transition-all duration-300 hover:border-white hover:shadow-[0_0_6px_rgba(255,255,255,1),0_0_15px_rgba(255,255,255,0.8),0_0_35px_rgba(255,255,255,0.4)]">
       <div className="relative aspect-[4/3] sm:aspect-[16/9] overflow-hidden">
         <motion.img
           src={image}
@@ -115,7 +115,14 @@ export function GlassBlogCard({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      whileHover={{
+        y: -8,
+        scale: 1.02,
+      }}
+      transition={{
+        duration: 0.35,
+        ease: [0.22, 1, 0.36, 1],
+      }}
       className={cn("w-full", className)}
     >
       {href ? (

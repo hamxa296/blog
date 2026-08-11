@@ -10,21 +10,18 @@ import {
   type MotionValue,
 } from "framer-motion";
 
-import img1 from "../../assets/1.webp";
-import img2 from "../../assets/2.webp";
+
 import img3 from "../../assets/3.webp";
 import img4 from "../../assets/4.webp";
-import img5 from "../../assets/5.webp";
+
 import img6 from "../../assets/6.webp";
 import img7 from "../../assets/7.webp";
-import img8 from "../../assets/8.webp";
-import img9 from "../../assets/img9.webp";
-import img10 from "../../assets/img10.webp";
+
+
 import img11 from "../../assets/11.webp";
 import img12 from "../../assets/12.webp";
 import img13 from "../../assets/13.webp";
-import img14 from "../../assets/14.webp";
-import img15 from "../../assets/15.webp";
+
 
 export interface CollectionItem {
   id: number | string;
@@ -76,15 +73,7 @@ const ITEMS: CollectionItem[] = [
     image:
       img3,
     title: "HERITAGE 07",
-  },
-  { id: 8, image: img8, title: "HERITAGE 08" },
-  { id: 9, image: img1, title: "HERITAGE 09" },
-  { id: 10, image: img2, title: "HERITAGE 10" },
-  { id: 11, image: img5, title: "HERITAGE 11" },
-  { id: 12, image: img9, title: "HERITAGE 12" },
-  { id: 13, image: img10, title: "HERITAGE 13" },
-  { id: 14, image: img14, title: "HERITAGE 14" },
-  { id: 15, image: img15, title: "HERITAGE 15" },
+  }
 ];
 
 interface CollectionSurferProps {
@@ -187,7 +176,7 @@ export function CollectionSurfer({
           <h1 className="font-bold text-[clamp(2rem,6vw,5rem)] leading-[0.9] tracking-tighter">
             {subheading}
             <span className="text-[0.4em] align-top relative top-[0.6em] ml-2 font-mono tabular-nums">
-              ({safeItems.length})
+              
             </span>
           </h1>
         </div>

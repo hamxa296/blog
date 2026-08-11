@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import newBg from '../assets/randombg.webp';
+import newBg from '../assets/homepc.webp';
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({

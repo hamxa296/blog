@@ -44,7 +44,7 @@ const FEATURE_CARDS: FeatureCardProps[] = [
 export const FeatureSection: React.FC = () => {
   return (
     <section className="w-full flex flex-col bg-transparent py-16 px-4 sm:px-6 lg:px-12 max-w-[1400px] mx-auto">
-      <div className="flex flex-col w-full gap-16">
+      <div className="grid grid-cols-1 md:grid-cols-3 w-full gap-6">
         {FEATURE_CARDS.map((card, index) => (
           <FeatureCard key={index} {...card} />
         ))}

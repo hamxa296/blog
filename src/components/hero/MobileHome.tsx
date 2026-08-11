@@ -10,7 +10,7 @@ export default function MobileHome() {
         className="relative h-[100dvh] w-full overflow-hidden bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${newerBg})` }}
       >
-        <div className="absolute inset-0 bg-black/35" aria-hidden />
+        
       </div>
 
     </div>
