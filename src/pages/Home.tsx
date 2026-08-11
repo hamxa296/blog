@@ -1,8 +1,9 @@
 import IntroAnimation from '../components/hero/IntroAnimation';
 import MobileHome from '../components/hero/MobileHome';
 import { useIsMobile } from '../hooks/useMediaQuery';
-import FeatureSection from '../components/feature/FeatureSection';
-import Footer from '../components/nav/Footer';
+import { FeatureSection } from '../components/feature/FeatureSection';
+import { Footer } from '../components/nav/Footer';
+import { FeaturedPosts } from '../components/blog/FeaturedPosts';
 
 export const Home = () => {
   const isMobile = useIsMobile();
@@ -15,8 +16,13 @@ export const Home = () => {
       </div>
       
       {/* Full-Width Feature Sections */}
-      <div className="relative z-20 bg-[#08080a]">
+      <div className="relative z-20">
         <FeatureSection />
+      </div>
+
+      {/* Featured Posts */}
+      <div className="relative z-20 mt-8">
+        <FeaturedPosts />
       </div>
 
       {/* Footer */}

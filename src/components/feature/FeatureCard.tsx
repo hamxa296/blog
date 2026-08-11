@@ -30,7 +30,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.1 }}
       transition={{ duration: 0.7, ease: "easeOut" }}
-      className="relative w-full min-h-[85vh] sm:min-h-[800px] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl flex flex-row group bg-[#08080a]"
+      className="relative w-full min-h-[60vh] sm:min-h-[500px] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl flex flex-row group bg-[#08080a]"
     >
       {/* Background Image Sizing & Alignment */}
       <div
