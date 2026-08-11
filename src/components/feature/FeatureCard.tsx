@@ -12,6 +12,8 @@ export interface FeatureCardProps {
   bgImage: string;
 }
 
+import { motion } from 'framer-motion';
+
 export const FeatureCard: React.FC<FeatureCardProps> = ({
   verticalTitle,
   topHeading,
@@ -23,7 +25,13 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
   bgImage,
 }) => {
   return (
-    <article className="relative w-full min-h-[560px] sm:min-h-[620px] rounded-3xl overflow-hidden border border-white/10 shadow-2xl flex flex-row group transition-all duration-500 hover:scale-[1.01] hover:border-white/20 bg-[#08080a]">
+    <motion.article 
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 0.7, ease: "easeOut" }}
+      className="relative w-full min-h-[85vh] sm:min-h-[800px] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl flex flex-row group bg-[#08080a]"
+    >
       {/* Background Image Sizing & Alignment */}
       <div
         className="card-bg transition-transform duration-700 group-hover:scale-105"
@@ -90,7 +98,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
 
       {/* Torn Paper Edge Masking at Bottom */}
       <div className="torn-paper-edge" aria-hidden="true" />
-    </article>
+    </motion.article>
   );
 };
 

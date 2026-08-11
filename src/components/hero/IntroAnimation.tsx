@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Link } from 'react-router-dom';
+
 import { motion, useTransform, useSpring, useMotionValue } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+
 import bgImage from "../../assets/pcbg.webp";
 
 import img1 from "../../assets/1.webp";
@@ -160,12 +160,30 @@ export default function IntroAnimation() {
     if (!container) return;
 
     const handleWheel = (e: WheelEvent) => {
-      // Prevent default to stop browser overscroll/bounce
-      e.preventDefault();
+      const newScroll = scrollRef.current + e.deltaY;
 
-      const newScroll = Math.min(Math.max(scrollRef.current + e.deltaY, 0), MAX_SCROLL);
-      scrollRef.current = newScroll;
-      virtualScroll.set(newScroll);
+      // Let the page scroll up if at the top
+      if (newScroll < 0 && window.scrollY <= 0) {
+        scrollRef.current = 0;
+        virtualScroll.set(0);
+        return;
+      }
+      // Let the page scroll down if animation finished
+      if (newScroll > MAX_SCROLL) {
+        scrollRef.current = MAX_SCROLL;
+        virtualScroll.set(MAX_SCROLL);
+        return;
+      }
+      // If the user has scrolled down the page natively, allow native scrolling (e.g. scrolling up)
+      if (window.scrollY > 0) {
+        return;
+      }
+
+      // Otherwise, prevent default and run virtual scroll
+      e.preventDefault();
+      const clamped = Math.min(Math.max(newScroll, 0), MAX_SCROLL);
+      scrollRef.current = clamped;
+      virtualScroll.set(clamped);
     };
 
     // Touch support
@@ -178,9 +196,27 @@ export default function IntroAnimation() {
       const deltaY = touchStartY - touchY;
       touchStartY = touchY;
 
-      const newScroll = Math.min(Math.max(scrollRef.current + deltaY, 0), MAX_SCROLL);
-      scrollRef.current = newScroll;
-      virtualScroll.set(newScroll);
+      const newScroll = scrollRef.current + deltaY;
+
+      if (newScroll < 0 && window.scrollY <= 0) {
+        scrollRef.current = 0;
+        virtualScroll.set(0);
+        return;
+      }
+      if (newScroll > MAX_SCROLL) {
+        scrollRef.current = MAX_SCROLL;
+        virtualScroll.set(MAX_SCROLL);
+        return;
+      }
+      if (window.scrollY > 0) {
+        return;
+      }
+
+      // Prevent native scroll to use virtual scroll
+      if (e.cancelable) e.preventDefault();
+      const clamped = Math.min(Math.max(newScroll, 0), MAX_SCROLL);
+      scrollRef.current = clamped;
+      virtualScroll.set(clamped);
     };
 
     // Attach listeners to container instead of window for portability
@@ -268,14 +304,7 @@ export default function IntroAnimation() {
   const contentOpacity = useTransform(smoothMorph, [0.8, 1], [0, 1]);
   const contentY = useTransform(smoothMorph, [0.8, 1], [20, 0]);
 
-  // Explore CTA appears once hero scroll is fully complete
-  const [showExplore, setShowExplore] = useState(false);
-  useEffect(() => {
-    const unsubscribe = virtualScroll.on('change', (v) => {
-      setShowExplore(v >= MAX_SCROLL * 0.7);
-    });
-    return () => unsubscribe();
-  }, [virtualScroll]);
+
 
   return (
     <div
@@ -328,37 +357,7 @@ export default function IntroAnimation() {
           </p>
         </motion.div>
 
-        {/* Explore → about, Read Stories → blogs — only after hero scroll completes */}
-        {showExplore && (
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute bottom-28 left-1/2 z-30 -translate-x-1/2 pointer-events-auto flex flex-col sm:flex-row gap-4 items-center"
-          >
-            <Link
-              to="/guide"
-              className="group inline-flex items-center justify-center gap-3 rounded-full border border-[#fd4378]/40 bg-[#fd4378]/10 px-8 py-3.5 text-sm font-medium uppercase tracking-[0.2em] text-[#fff0f5] backdrop-blur-md transition-colors hover:border-[#fd4378] hover:bg-[#fd4378]/20 w-[280px] whitespace-nowrap"
-            >
-              Freshman Guide
-              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1 text-[#fd4378]" />
-            </Link>
-            <Link
-              to="/about"
-              className="group inline-flex items-center justify-center gap-3 rounded-full border border-white/30 bg-white/10 px-8 py-3.5 text-sm font-medium uppercase tracking-[0.2em] text-white backdrop-blur-md transition-colors hover:border-white/60 hover:bg-white/20 w-[280px] whitespace-nowrap"
-            >
-              Explore
-              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-            <Link
-              to="/browse"
-              className="group inline-flex items-center justify-center gap-3 rounded-full border border-cyan-500/40 bg-cyan-500/10 px-8 py-3.5 text-sm font-medium uppercase tracking-[0.2em] text-cyan-50 backdrop-blur-md transition-colors hover:border-cyan-400 hover:bg-cyan-500/20 w-[280px] whitespace-nowrap"
-            >
-              Read Stories
-              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1 text-cyan-400" />
-            </Link>
-          </motion.div>
-        )}
+
 
         {/* Main Container */}
         <div className="relative flex items-center justify-center w-full h-full">

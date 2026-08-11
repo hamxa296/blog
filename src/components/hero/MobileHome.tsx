@@ -1,5 +1,5 @@
 import newerBg from '@/assets/mobbg.webp';
-import FeatureSection from '../feature/FeatureSection';
+
 
 
 export default function MobileHome() {
@@ -13,10 +13,6 @@ export default function MobileHome() {
         <div className="absolute inset-0 bg-black/35" aria-hidden />
       </div>
 
-
-      {/* Mobile Feature Landing Showcase */}
-      <FeatureSection />
     </div>
   );
 }
-
