@@ -2,12 +2,28 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useBlocker } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { subscribeGuideSections, updateGuideSection } from '../services/guideService';
-import type { GuideEditForm, GuideSection, SocietyCategoryMap } from '../types/guide';
+import type {
+  GuideEditForm,
+  GuideSection,
+  SocietyCategoryMap,
+} from '../types/guide';
 import { GuideEditModal } from '../components/guide/GuideEditModal';
 import { GuideSectionDetail } from '../components/guide/GuideSectionDetail';
 import { BentoGrid, BentoGridItem } from '../components/guide/BentoGrid';
-import { BookOpen, Compass, Home, Map, Package, Users, Phone, Sparkles } from 'lucide-react';
+import {
+  BookOpen,
+  Compass,
+  Home,
+  Map,
+  Package,
+  Users,
+  Phone,
+  Sparkles,
+} from 'lucide-react';
+
 import newBg from '../assets/homepc.webp';
+import mobileBg from '../assets/mobfix.webp';
+
 import guide1 from '../assets/guide1.png';
 import guide2 from '../assets/guide2new.png';
 import guide3 from '../assets/guide3new.png';
@@ -17,10 +33,11 @@ import guide6 from '../assets/guide6new.png';
 import guide7 from '../assets/guide7new.png';
 import guide8 from '../assets/guide8.png';
 import guide9 from '../assets/guide9.png';
-import guide10 from '../assets/guide10new.png';  import guide11 from '../assets/guide11new.png';
+import guide10 from '../assets/guide10new.png';
+import guide11 from '../assets/guide11new.png';
 import guide12 from '../assets/guide12.png';
 
-
+import { useIsMobile } from '../hooks/useMediaQuery';
 
 const SECTION_ICONS: Record<string, React.ReactNode> = {
   'campus-map': <Map className="h-4 w-4" />,
@@ -43,18 +60,20 @@ const SECTION_HEADERS = [
   guide10,
   guide11,
   guide12,
-
-
 ];
+
 type ConnectionStatus = 'connecting' | 'connected' | 'error';
 
 export const FreshmanGuide: React.FC = () => {
   const { user, isAdmin } = useAuth();
+  const isMobile = useIsMobile();
 
   const [guideSections, setGuideSections] = useState<GuideSection[]>([]);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
-  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('connecting');
+  const [connectionStatus, setConnectionStatus] =
+    useState<ConnectionStatus>('connecting');
   const [editingSection, setEditingSection] = useState<string | null>(null);
+
   const [editForm, setEditForm] = useState<GuideEditForm>({
     tag: '',
     shortDescription: '',
@@ -62,14 +81,20 @@ export const FreshmanGuide: React.FC = () => {
     faqs: [],
     warnings: [],
   });
-  const [hasPackingSessionChanges, setHasPackingSessionChanges] = useState(false);
+
+  const [hasPackingSessionChanges, setHasPackingSessionChanges] =
+    useState(false);
+
   const [showExitModal, setShowExitModal] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
+
     const timeoutId = window.setTimeout(() => {
-      setConnectionStatus((prev) => (prev === 'connecting' ? 'error' : prev));
+      setConnectionStatus((prev) =>
+        prev === 'connecting' ? 'error' : prev
+      );
     }, 10000);
 
     try {
@@ -99,17 +124,32 @@ export const FreshmanGuide: React.FC = () => {
     };
   }, []);
 
-  const societySubCategories = useMemo((): SocietyCategoryMap | undefined => {
-    const section = guideSections.find((s) => s.id === 'societies-events');
-    if (!section?.fullContent || typeof section.fullContent === 'string' || Array.isArray(section.fullContent)) {
-      return undefined;
-    }
-    return section.fullContent as SocietyCategoryMap;
-  }, [guideSections]);
+  const societySubCategories = useMemo(
+    (): SocietyCategoryMap | undefined => {
+      const section = guideSections.find(
+        (s) => s.id === 'societies-events'
+      );
+
+      if (
+        !section?.fullContent ||
+        typeof section.fullContent === 'string' ||
+        Array.isArray(section.fullContent)
+      ) {
+        return undefined;
+      }
+
+      return section.fullContent as SocietyCategoryMap;
+    },
+    [guideSections],
+  );
 
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
-      Boolean(user && hasPackingSessionChanges && currentLocation.pathname !== nextLocation.pathname),
+      Boolean(
+        user &&
+          hasPackingSessionChanges &&
+          currentLocation.pathname !== nextLocation.pathname
+      ),
   );
 
   useEffect(() => {
@@ -121,25 +161,42 @@ export const FreshmanGuide: React.FC = () => {
   useEffect(() => {
     const beforeUnload = (e: BeforeUnloadEvent) => {
       if (user && hasPackingSessionChanges) {
-        const message = 'You have unsaved packing progress. Save before exiting?';
+        const message =
+          'You have unsaved packing progress. Save before exiting?';
+
         e.preventDefault();
         e.returnValue = message;
+
         return message;
       }
     };
+
     window.addEventListener('beforeunload', beforeUnload);
-    return () => window.removeEventListener('beforeunload', beforeUnload);
+
+    return () =>
+      window.removeEventListener('beforeunload', beforeUnload);
   }, [user, hasPackingSessionChanges]);
 
   const handleTagClick = (sectionId: string) => {
     setExpandedSection(sectionId);
+
     window.setTimeout(() => {
       const element = document.getElementById(sectionId);
+
       if (element) {
         const header = document.querySelector('header');
         const headerHeight = header ? header.offsetHeight : 0;
-        const y = element.getBoundingClientRect().top + window.scrollY - headerHeight - 8;
-        window.scrollTo({ top: y, behavior: 'smooth' });
+
+        const y =
+          element.getBoundingClientRect().top +
+          window.scrollY -
+          headerHeight -
+          8;
+
+        window.scrollTo({
+          top: y,
+          behavior: 'smooth',
+        });
       }
     }, 100);
   };
@@ -149,10 +206,14 @@ export const FreshmanGuide: React.FC = () => {
   };
 
   const handleEditClick = (sectionId: string) => {
-    const currentData = guideSections.find((s) => s.id === sectionId);
+    const currentData = guideSections.find(
+      (s) => s.id === sectionId
+    );
+
     if (!currentData) return;
 
     setEditingSection(sectionId);
+
     const content =
       typeof currentData.fullContent === 'string'
         ? currentData.fullContent
@@ -170,12 +231,20 @@ export const FreshmanGuide: React.FC = () => {
   const handleSaveEdit = async () => {
     if (!editingSection) return;
 
-    let updatedContent: GuideSection['fullContent'] = editForm.fullContent;
-    if (editingSection === 'important-contacts' || editingSection === 'societies-events') {
+    let updatedContent: GuideSection['fullContent'] =
+      editForm.fullContent;
+
+    if (
+      editingSection === 'important-contacts' ||
+      editingSection === 'societies-events'
+    ) {
       try {
         updatedContent = JSON.parse(editForm.fullContent);
       } catch (e) {
-        console.error('Invalid JSON format for this section:', e);
+        console.error(
+          'Invalid JSON format for this section:',
+          e
+        );
         return;
       }
     }
@@ -187,58 +256,112 @@ export const FreshmanGuide: React.FC = () => {
       faqs: editForm.faqs,
       warnings: editForm.warnings,
     });
+
     setEditingSection(null);
   };
 
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleFormChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setEditForm((prev) => ({ ...prev, [name]: value }));
+
+    setEditForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleFaqChange = (index: number, field: 'question' | 'answer', value: string) => {
+  const handleFaqChange = (
+    index: number,
+    field: 'question' | 'answer',
+    value: string
+  ) => {
     setEditForm((prev) => {
       const newFaqs = [...prev.faqs];
-      newFaqs[index] = { ...newFaqs[index], [field]: value };
-      return { ...prev, faqs: newFaqs };
+
+      newFaqs[index] = {
+        ...newFaqs[index],
+        [field]: value,
+      };
+
+      return {
+        ...prev,
+        faqs: newFaqs,
+      };
     });
   };
 
   const handleAddFaq = () => {
-    setEditForm((prev) => ({ ...prev, faqs: [...prev.faqs, { question: '', answer: '' }] }));
+    setEditForm((prev) => ({
+      ...prev,
+      faqs: [
+        ...prev.faqs,
+        {
+          question: '',
+          answer: '',
+        },
+      ],
+    }));
   };
 
   const handleRemoveFaq = (index: number) => {
-    setEditForm((prev) => ({ ...prev, faqs: prev.faqs.filter((_, i) => i !== index) }));
+    setEditForm((prev) => ({
+      ...prev,
+      faqs: prev.faqs.filter((_, i) => i !== index),
+    }));
   };
 
-  const handleWarningChange = (index: number, value: string) => {
+  const handleWarningChange = (
+    index: number,
+    value: string
+  ) => {
     setEditForm((prev) => {
       const newWarnings = [...prev.warnings];
+
       newWarnings[index] = value;
-      return { ...prev, warnings: newWarnings };
+
+      return {
+        ...prev,
+        warnings: newWarnings,
+      };
     });
   };
 
   const handleAddWarning = () => {
-    setEditForm((prev) => ({ ...prev, warnings: [...prev.warnings, ''] }));
+    setEditForm((prev) => ({
+      ...prev,
+      warnings: [...prev.warnings, ''],
+    }));
   };
 
   const handleRemoveWarning = (index: number) => {
-    setEditForm((prev) => ({ ...prev, warnings: prev.warnings.filter((_, i) => i !== index) }));
+    setEditForm((prev) => ({
+      ...prev,
+      warnings: prev.warnings.filter((_, i) => i !== index),
+    }));
   };
 
   const handleConfirmSaveAndExit = useCallback(async () => {
     if (!user) return;
+
     setIsSaving(true);
+
     try {
       const packingProgress = (
-        window as Window & { packingProgress?: { save: () => Promise<void> } }
+        window as Window & {
+          packingProgress?: {
+            save: () => Promise<void>;
+          };
+        }
       ).packingProgress;
+
       if (packingProgress?.save) {
         await packingProgress.save();
       }
+
       setHasPackingSessionChanges(false);
       setShowExitModal(false);
+
       if (blocker.state === 'blocked') {
         blocker.proceed();
       }
@@ -250,6 +373,7 @@ export const FreshmanGuide: React.FC = () => {
   const handleLeaveWithoutSaving = () => {
     setShowExitModal(false);
     setHasPackingSessionChanges(false);
+
     if (blocker.state === 'blocked') {
       blocker.proceed();
     }
@@ -257,6 +381,7 @@ export const FreshmanGuide: React.FC = () => {
 
   const handleStayOnPage = () => {
     setShowExitModal(false);
+
     if (blocker.state === 'blocked') {
       blocker.reset();
     }
@@ -264,24 +389,30 @@ export const FreshmanGuide: React.FC = () => {
 
   return (
     <main
-      className="relative z-10 min-h-[calc(100vh-88px)] pt-10 pb-24 px-4 sm:px-6
-                bg-cover bg-center bg-fixed"
-      style={{
-        backgroundImage: `url(${newBg})`,
-      }}
+      className="relative z-10 min-h-[calc(100vh-88px)] pt-10 pb-24 px-4 sm:px-6"
     >
+      {/* Background */}
+      <div
+        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url(${isMobile ? mobileBg : newBg})`,
+        }}
+      />
+
       <div className="max-w-6xl mx-auto">
         <div className="mb-10 text-center sm:text-left">
           <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-muted-foreground mb-3">
             <Compass className="h-3.5 w-3.5" />
             Freshman Guide
           </div>
+
           <h1 className="text-3xl sm:text-5xl font-semibold tracking-tight">
             Welcome to GIKI
           </h1>
+
           <p className="mt-3 text-muted-foreground max-w-2xl text-sm sm:text-base">
-            Your ultimate resource for a smooth start — essential info, tips, and
-            campus resources in one place.
+            Your ultimate resource for a smooth start — essential info,
+            tips, and campus resources in one place.
           </p>
         </div>
 
@@ -309,7 +440,9 @@ export const FreshmanGuide: React.FC = () => {
                       }
                     }}
                     className={`cursor-pointer ${
-                      index % 4 === 0 || index % 4 === 3 ? 'md:col-span-2' : ''
+                      index % 4 === 0 || index % 4 === 3
+                        ? 'md:col-span-2'
+                        : ''
                     }`}
                     title={section.tag}
                     description={section.shortDescription}
@@ -320,7 +453,11 @@ export const FreshmanGuide: React.FC = () => {
                     }
                     header={
                       <img
-                        src={SECTION_HEADERS[index % SECTION_HEADERS.length]}
+                        src={
+                          SECTION_HEADERS[
+                            index % SECTION_HEADERS.length
+                          ]
+                        }
                         alt=""
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
@@ -331,13 +468,20 @@ export const FreshmanGuide: React.FC = () => {
             ) : (
               <div className="rounded-lg border border-border bg-card p-10 text-center">
                 {connectionStatus === 'connecting' ? (
-                  <p className="text-muted-foreground">Connecting to database...</p>
+                  <p className="text-muted-foreground">
+                    Connecting to database...
+                  </p>
                 ) : connectionStatus === 'error' ? (
                   <div>
-                    <h3 className="text-lg font-semibold mb-2">No Internet Connection</h3>
+                    <h3 className="text-lg font-semibold mb-2">
+                      No Internet Connection
+                    </h3>
+
                     <p className="text-muted-foreground text-sm mb-4">
-                      Unable to load the guide data. Please check your connection.
+                      Unable to load the guide data. Please check your
+                      connection.
                     </p>
+
                     <button
                       type="button"
                       onClick={() => window.location.reload()}
@@ -347,7 +491,9 @@ export const FreshmanGuide: React.FC = () => {
                     </button>
                   </div>
                 ) : (
-                  <p className="text-muted-foreground">Loading guide data...</p>
+                  <p className="text-muted-foreground">
+                    Loading guide data...
+                  </p>
                 )}
               </div>
             )}
@@ -363,9 +509,11 @@ export const FreshmanGuide: React.FC = () => {
                 isAdmin={isAdmin}
                 onEdit={handleEditClick}
                 societySubCategories={societySubCategories}
-                onPackingSessionChange={setHasPackingSessionChanges}
+                onPackingSessionChange={
+                  setHasPackingSessionChanges
+                }
               />
-            ),
+            )
         )}
 
         {expandedSection !== null && (
@@ -384,10 +532,15 @@ export const FreshmanGuide: React.FC = () => {
       {showExitModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div className="bg-card border border-border rounded-lg p-5 w-[90%] max-w-md shadow-xl">
-            <h4 className="text-lg font-semibold mb-2">Save your progress?</h4>
+            <h4 className="text-lg font-semibold mb-2">
+              Save your progress?
+            </h4>
+
             <p className="text-sm text-muted-foreground mb-4">
-              You have changes in your packing list. Would you like to save before leaving?
+              You have changes in your packing list. Would you like to
+              save before leaving?
             </p>
+
             <div className="flex gap-2 justify-end flex-wrap">
               <button
                 type="button"
@@ -396,6 +549,7 @@ export const FreshmanGuide: React.FC = () => {
               >
                 Stay
               </button>
+
               <button
                 type="button"
                 onClick={handleConfirmSaveAndExit}
@@ -404,6 +558,7 @@ export const FreshmanGuide: React.FC = () => {
               >
                 {isSaving ? 'Saving…' : 'Save & Leave'}
               </button>
+
               <button
                 type="button"
                 onClick={handleLeaveWithoutSaving}
