@@ -12,7 +12,7 @@ export const Home = () => {
 
   return (
     <main
-      className="relative z-10 w-full min-h-screen bg-cover bg-center bg-fixed text-white"
+      className="relative z-10 w-full min-h-screen bg-cover bg-center md:bg-fixed text-white"
       style={{
         backgroundImage: `url(${backgroundImage})`,
       }}
