@@ -12,9 +12,18 @@ export const Home = () => {
 
   return (
     <main className="relative z-10 w-full min-h-screen text-white overflow-hidden">
+
       {/* Background */}
       <div
-        className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat md:bg-fixed"
+        className="
+          absolute inset-0 -z-10
+          bg-no-repeat
+          bg-center
+          bg-[length:100%_auto]
+          md:bg-cover
+          md:bg-center
+          md:bg-fixed
+        "
         style={{
           backgroundImage: `url(${backgroundImage})`,
         }}
@@ -22,6 +31,7 @@ export const Home = () => {
 
       {/* Page content */}
       <div className="relative z-10">
+
         {/* Hero / Animations */}
         <div className="relative h-[100dvh] w-full">
           {isMobile ? <MobileHome /> : <IntroAnimation />}
@@ -43,6 +53,7 @@ export const Home = () => {
             <Footer />
           </div>
         )}
+
       </div>
     </main>
   );
