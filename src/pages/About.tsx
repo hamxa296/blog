@@ -4,7 +4,7 @@ import aboutBg from '../assets/about_bg.webp';
 import meetTheTeamBg from '../assets/meet_the_team.webp';
 import zaraBg from '../assets/zara.webp';
 import hamzaBg from '../assets/hamza.webp';
-import harisBg from '../assets/haris.webp';
+import harisBg from '../assets/haris2.webp';
 import Footer from '../components/nav/Footer';
 
 export const About: React.FC = () => {
