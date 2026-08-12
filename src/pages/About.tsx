@@ -1,7 +1,7 @@
 import React from 'react';
 import randomBg from '../assets/randombg.webp';
 import aboutBg from '../assets/about_bg.webp';
-import meetTheTeamBg from '../assets/team3.webp';
+import meetTheTeamBg from '../assets/team 3.webp';
 import zaraBg from '../assets/zara.webp';
 import hamzaBg from '../assets/hamza.webp';
 import harisBg from '../assets/haris2.webp';
