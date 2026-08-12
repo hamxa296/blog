@@ -68,10 +68,7 @@ export default function AuthSection({
                 shape="corners"
                 frame={2854.5}
                 colors={[
-                  "#FFFFFF",
-                  "#E9A8C9",
-                  "#E9A8C9",
-                  "#FFFFFF",
+                  "#FFFFFF", "#ff2273", "#ff2273", "#FFFFFF"
                 ]}
                 colorBack="#00000000"
                 className="absolute inset-0"
