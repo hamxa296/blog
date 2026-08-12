@@ -344,7 +344,7 @@ export const Gallery: React.FC = () => {
         />
 
         {/* Main Gallery Section */}
-        <section className="relative z-20 bg-neutral-950/95 backdrop-blur-xl min-h-screen px-4 sm:px-8 py-20 pb-36 border-t border-white/10">
+        <section className="relative z-20 bg-[#201e1c] backdrop-blur-xl min-h-screen px-4 sm:px-8 py-20 pb-36 border-t border-white/10">
           <div className="max-w-7xl mx-auto space-y-10">
 
             {/* Section Header & Upload Button */}
@@ -400,7 +400,7 @@ export const Gallery: React.FC = () => {
 
             {/* Category Filters */}
             <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-              <div className="flex items-center gap-1.5 bg-neutral-900/80 p-1.5 rounded-2xl border border-white/10">
+              <div className="flex items-center gap-1.5 bg-[#201e1c] p-1.5 rounded-2xl border border-white/10">
                 <Filter className="w-4 h-4 text-neutral-400 ml-2 mr-1 hidden sm:block" />
 
                 {CATEGORIES.map((cat) => {
@@ -435,7 +435,7 @@ export const Gallery: React.FC = () => {
                         className={`text-[10px] px-1.5 py-0.2 rounded-full ${
                           isSelected
                             ? 'bg-black/20 text-white font-extrabold'
-                            : 'bg-neutral-800 text-neutral-500'
+                            : 'bg-[#201e1c] text-neutral-500'
                         }`}
                       >
                         {count}
@@ -453,13 +453,13 @@ export const Gallery: React.FC = () => {
                   (i) => (
                     <div
                       key={i}
-                      className="aspect-[4/5] rounded-2xl bg-neutral-900/60 border border-white/5 animate-pulse"
+                      className="aspect-[4/5] rounded-2xl bg-[#201e1c] border border-white/5 animate-pulse"
                     />
                   )
                 )}
               </div>
             ) : filteredPhotos.length === 0 ? (
-              <div className="text-center py-28 bg-neutral-900/30 rounded-3xl border border-white/5">
+              <div className="text-center py-28 bg-[#201e1c] rounded-3xl border border-white/5">
                 <Camera className="w-12 h-12 text-neutral-600 mx-auto mb-3" />
 
                 <h3 className="text-lg font-bold text-white">
@@ -499,9 +499,9 @@ export const Gallery: React.FC = () => {
                       onClick={() =>
                         setLightboxIndex(index)
                       }
-                      className="group relative overflow-hidden rounded-2xl bg-neutral-900/80 border border-white/10 hover:border-cyan-500/50 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-cyan-500/10 cursor-pointer flex flex-col justify-between"
+                      className="group relative overflow-hidden rounded-2xl bg-[#201e1c] border border-white/10 hover:border-cyan-500/50 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-cyan-500/10 cursor-pointer flex flex-col justify-between"
                     >
-                      <div className="aspect-[4/5] overflow-hidden bg-neutral-950 relative">
+                      <div className="aspect-[4/5] overflow-hidden bg-[#201e1c] relative">
                         <img
                           src={cappedThumbnailUrl}
                           alt={
@@ -536,7 +536,7 @@ export const Gallery: React.FC = () => {
                       </div>
 
                       {/* Card Footer */}
-                      <div className="p-4 bg-neutral-900/90 backdrop-blur-sm space-y-1.5 border-t border-white/5">
+                      <div className="p-4 bg-[#201e1c] backdrop-blur-sm space-y-1.5 border-t border-white/5">
                         <h3 className="font-bold text-white text-sm truncate group-hover:text-cyan-400 transition-colors">
                           {photo.caption ||
                             'Untitled Snapshot'}
@@ -582,7 +582,7 @@ export const Gallery: React.FC = () => {
           2-column compact gallery
           ========================================================= */}
 
-      <div className="md:hidden relative z-20 min-h-screen bg-neutral-950/95 backdrop-blur-xl">
+      <div className="md:hidden relative z-20 min-h-screen bg-[#201e1c] backdrop-blur-xl">
         <section className="px-4 pt-10 pb-28">
 
           {/* Mobile Header */}
@@ -692,7 +692,7 @@ export const Gallery: React.FC = () => {
               {[0, 1, 2, 3, 4, 5].map((i) => (
                 <div
                   key={i}
-                  className="aspect-[0.82] rounded-xl bg-neutral-900/70 border border-white/5 animate-pulse"
+                  className="aspect-[0.82] rounded-xl bg-[#201e1c] border border-white/5 animate-pulse"
                 />
               ))}
             </div>
@@ -739,7 +739,7 @@ export const Gallery: React.FC = () => {
                     className="group min-w-0 cursor-pointer"
                   >
                     {/* Mobile Image */}
-                    <div className="relative aspect-[0.82] overflow-hidden rounded-xl bg-neutral-900 border border-white/[0.07]">
+                    <div className="relative aspect-[0.82] overflow-hidden rounded-xl bg-[#201e1c] border border-white/[0.07]">
                       <img
                         src={cappedThumbnailUrl}
                         alt={
@@ -841,7 +841,7 @@ export const Gallery: React.FC = () => {
 
       {isUploadModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="relative w-full max-w-xl bg-neutral-900 border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="relative w-full max-w-xl bg-[#201e1c] border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
 
             <button
               onClick={() => {
@@ -995,7 +995,7 @@ export const Gallery: React.FC = () => {
                     <option
                       key={cat}
                       value={cat}
-                      className="bg-neutral-900 text-white"
+                      className="bg-[#201e1c] text-white"
                     >
                       {cat}
                     </option>
@@ -1063,7 +1063,7 @@ export const Gallery: React.FC = () => {
 
               {/* Admin Moderation Actions inside Lightbox */}
               {canModerate && (
-                <div className="flex items-center gap-2 bg-neutral-900/90 border border-white/10 px-3 py-1.5 rounded-full">
+                <div className="flex items-center gap-2 bg-[#201e1c] border border-white/10 px-3 py-1.5 rounded-full">
                   <button
                     onClick={() =>
                       handleLightboxHighlight(
@@ -1149,7 +1149,7 @@ export const Gallery: React.FC = () => {
           )}
 
           {/* Bottom Bar Info */}
-          <div className="absolute bottom-6 left-6 right-6 z-20 max-w-3xl mx-auto bg-neutral-900/90 backdrop-blur-xl border border-white/15 rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="absolute bottom-6 left-6 right-6 z-20 max-w-3xl mx-auto bg-[#201e1c] backdrop-blur-xl border border-white/15 rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <h3 className="text-lg sm:text-xl font-bold text-white">
                 {currentLightboxPhoto.caption ||

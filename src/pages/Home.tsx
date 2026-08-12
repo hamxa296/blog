@@ -33,9 +33,12 @@ export const Home = () => {
         </div>
 
         {/* Featured Posts */}
-        <div className="relative z-20 mt-8">
-          <FeaturedPosts />
-        </div>
+                
+        {!isMobile && (
+          <div className="relative z-20 mt-8">
+            <FeaturedPosts />
+          </div>
+        )}
 
         {/* Footer */}
         {!isMobile && (
