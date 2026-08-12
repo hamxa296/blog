@@ -24,9 +24,10 @@ export const About: React.FC = () => {
           {/* ========================================================= */}
           {/* LEFT: ABOUT POSTER INSIDE SCREEN FRAME */}
           {/* ========================================================= */}
+
           <div className="flex items-center justify-center w-full">
 
-            {/* Screen outer frame */}
+            {/* Outer screen frame */}
             <div
               className="
                 relative
@@ -42,12 +43,13 @@ export const About: React.FC = () => {
                 bg-gradient-to-br from-white/20 via-white/5 to-white/10
                 border border-white/20
                 shadow-[0_30px_80px_rgba(0,0,0,0.75)]
-                transition-all duration-500
+                transition-all
+                duration-500
                 hover:shadow-[0_35px_100px_rgba(255,0,127,0.25)]
               "
             >
 
-              {/* Inner screen */}
+              {/* Inner Screen */}
               <div
                 className="
                   relative
@@ -55,11 +57,12 @@ export const About: React.FC = () => {
                   rounded-[22px]
                   sm:rounded-[28px]
                   bg-black
-                  border border-white/10
+                  border
+                  border-white/10
                 "
               >
 
-                {/* Screen image */}
+                {/* About Image */}
                 <img
                   src={aboutBg}
                   alt="About GIKI Chronicles"
@@ -74,15 +77,9 @@ export const About: React.FC = () => {
                   "
                 />
 
-                {/* Glass reflection */}
-                <div
-                  className="
-                    absolute
-                    inset-0
-                    pointer-events-none
-                    overflow-hidden
-                  "
-                >
+                {/* Moving Glass Reflection */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+
                   <div
                     className="
                       absolute
@@ -98,14 +95,25 @@ export const About: React.FC = () => {
                       animate-screen-shimmer
                     "
                   />
+
                 </div>
 
-                {/* Subtle glass overlay */}
-                <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-white/[0.06] via-transparent to-transparent" />
+                {/* Subtle Glass Overlay */}
+                <div
+                  className="
+                    absolute
+                    inset-0
+                    pointer-events-none
+                    bg-gradient-to-br
+                    from-white/[0.06]
+                    via-transparent
+                    to-transparent
+                  "
+                />
 
               </div>
 
-              {/* Bottom screen glow */}
+              {/* Bottom Screen Glow */}
               <div
                 className="
                   absolute
@@ -121,12 +129,14 @@ export const About: React.FC = () => {
               />
 
             </div>
+
           </div>
 
 
           {/* ========================================================= */}
           {/* RIGHT: TEAM */}
           {/* ========================================================= */}
+
           <div className="flex flex-col items-center justify-center gap-5 sm:gap-6 w-full">
 
             {/* Team Header */}
@@ -155,10 +165,12 @@ export const About: React.FC = () => {
 
 
             {/* ===================================================== */}
-            {/* TEAM CARDS */}
+            {/* CONNECTED TEAM CARDS                                  */}
             {/* ===================================================== */}
+
             <div
               className="
+                team-network
                 grid
                 grid-cols-3
                 gap-2.5
@@ -172,42 +184,67 @@ export const About: React.FC = () => {
               "
             >
 
-              {/* ================= HAMZA ================= */}
-              <div className="team-card group">
+              {/* Connection System */}
+              <div className="team-connection">
+
+                {/* Main energy line */}
+                <div className="connection-line" />
+
+                {/* Moving energy particles */}
+                <div className="connection-pulse pulse-one" />
+                <div className="connection-pulse pulse-two" />
+
+              </div>
+
+
+              {/* ================================================= */}
+              {/* HAMZA */}
+              {/* ================================================= */}
+
+              <div className="team-card team-card-left group">
+
                 <img
                   src={hamzaBg}
                   alt="Hamza"
                   className="team-card-image"
                 />
 
-                {/* Glow */}
                 <div className="team-card-glow" />
+
               </div>
 
 
-              {/* ================= ZARA ================= */}
-              <div className="team-card group">
+              {/* ================================================= */}
+              {/* ZARA */}
+              {/* ================================================= */}
+
+              <div className="team-card team-card-center group">
+
                 <img
                   src={zaraBg}
                   alt="Zara"
                   className="team-card-image"
                 />
 
-                {/* Glow */}
                 <div className="team-card-glow" />
+
               </div>
 
 
-              {/* ================= HARIS ================= */}
-              <div className="team-card group">
+              {/* ================================================= */}
+              {/* HARIS */}
+              {/* ================================================= */}
+
+              <div className="team-card team-card-right group">
+
                 <img
                   src={harisBg}
                   alt="Haris"
                   className="team-card-image"
                 />
 
-                {/* Glow */}
                 <div className="team-card-glow" />
+
               </div>
 
             </div>
@@ -215,25 +252,31 @@ export const About: React.FC = () => {
           </div>
 
         </div>
+
       </main>
 
 
-      {/* Footer */}
+      {/* ============================================================= */}
+      {/* FOOTER                                                        */}
+      {/* ============================================================= */}
+
       <div className="hidden md:block w-full">
         <Footer />
       </div>
 
 
       {/* ============================================================= */}
-      {/* CUSTOM ANIMATIONS */}
+      {/* CUSTOM ANIMATIONS + STYLES                                   */}
       {/* ============================================================= */}
+
       <style>{`
 
-        /* --------------------------------------------------------- */
+        /* ========================================================= */
         /* SCREEN SHIMMER                                            */
-        /* --------------------------------------------------------- */
+        /* ========================================================= */
 
         @keyframes screenShimmer {
+
           0% {
             left: -70%;
           }
@@ -242,22 +285,29 @@ export const About: React.FC = () => {
           100% {
             left: 130%;
           }
+
         }
+
 
         .animate-screen-shimmer {
           animation: screenShimmer 5s ease-in-out infinite;
         }
 
 
-        /* --------------------------------------------------------- */
-        /* TEAM CARD                                                   */
-        /* --------------------------------------------------------- */
+        /* ========================================================= */
+        /* TEAM CARD BASE                                            */
+        /* ========================================================= */
 
         .team-card {
+
           position: relative;
+
           width: 100%;
+
           aspect-ratio: 9 / 16;
+
           overflow: visible;
+
           border-radius: 18px;
 
           transform:
@@ -269,14 +319,24 @@ export const About: React.FC = () => {
           transition:
             transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1),
             box-shadow 450ms ease;
+
+          z-index: 2;
+
         }
 
 
-        /* Card itself */
+        /* ========================================================= */
+        /* CARD BACK GLOW                                            */
+        /* ========================================================= */
+
         .team-card::before {
+
           content: "";
+
           position: absolute;
+
           inset: 0;
+
           z-index: -1;
 
           border-radius: inherit;
@@ -287,36 +347,52 @@ export const About: React.FC = () => {
 
           opacity: 0;
 
+          transform: scale(0.95);
+
           transition:
             opacity 400ms ease,
             transform 400ms ease;
+
         }
 
 
-        /* Card border */
+        /* ========================================================= */
+        /* CARD BORDER                                               */
+        /* ========================================================= */
+
         .team-card::after {
+
           content: "";
+
           position: absolute;
+
           inset: -1px;
 
           border-radius: inherit;
 
-          border: 1px solid rgba(255,255,255,0.12);
+          border: 1px solid rgba(255, 255, 255, 0.12);
 
           pointer-events: none;
 
           transition:
             border-color 350ms ease,
             box-shadow 350ms ease;
+
         }
 
 
-        /* Image */
+        /* ========================================================= */
+        /* CARD IMAGE                                                 */
+        /* ========================================================= */
+
         .team-card-image {
+
           position: relative;
+
           z-index: 1;
 
           width: 100%;
+
           height: 100%;
 
           object-fit: cover;
@@ -326,21 +402,28 @@ export const About: React.FC = () => {
           display: block;
 
           box-shadow:
-            0 15px 35px rgba(0,0,0,0.55);
+            0 15px 35px rgba(0, 0, 0, 0.55);
 
           transition:
             transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1),
             filter 400ms ease,
             box-shadow 400ms ease;
+
         }
 
 
-        /* Glow layer */
+        /* ========================================================= */
+        /* CARD FLOOR GLOW                                           */
+        /* ========================================================= */
+
         .team-card-glow {
+
           position: absolute;
 
           left: 10%;
+
           right: 10%;
+
           bottom: -15px;
 
           height: 35px;
@@ -356,16 +439,171 @@ export const About: React.FC = () => {
           transition:
             opacity 400ms ease,
             transform 400ms ease;
+
         }
 
 
-        /* --------------------------------------------------------- */
-        /* DESKTOP HOVER                                              */
-        /* --------------------------------------------------------- */
+        /* ========================================================= */
+        /* TEAM NETWORK                                               */
+        /* ========================================================= */
+
+        .team-network {
+
+          position: relative;
+
+        }
+
+
+        /* ========================================================= */
+        /* CONNECTION LINE                                            */
+        /* ========================================================= */
+
+        .team-connection {
+
+          position: absolute;
+
+          left: 15%;
+
+          right: 15%;
+
+          top: 50%;
+
+          height: 2px;
+
+          transform: translateY(-50%);
+
+          z-index: 1;
+
+          pointer-events: none;
+
+        }
+
+
+        .connection-line {
+
+          position: absolute;
+
+          inset: 0;
+
+          background:
+            linear-gradient(
+              90deg,
+              transparent,
+              rgba(255, 0, 127, 0.25),
+              rgba(255, 0, 127, 0.75),
+              rgba(255, 0, 127, 0.25),
+              transparent
+            );
+
+          box-shadow:
+            0 0 8px rgba(255, 0, 127, 0.35),
+            0 0 20px rgba(255, 0, 127, 0.15);
+
+          opacity: 0.55;
+
+          transition:
+            opacity 400ms ease,
+            box-shadow 400ms ease;
+
+        }
+
+
+        /* ========================================================= */
+        /* ENERGY PARTICLES                                          */
+        /* ========================================================= */
+
+        .connection-pulse {
+
+          position: absolute;
+
+          top: 50%;
+
+          width: 7px;
+
+          height: 7px;
+
+          margin-top: -3.5px;
+
+          border-radius: 50%;
+
+          background: #ff007f;
+
+          box-shadow:
+            0 0 6px #ff007f,
+            0 0 15px rgba(255, 0, 127, 0.9),
+            0 0 30px rgba(255, 0, 127, 0.5);
+
+          opacity: 0;
+
+        }
+
+
+        .pulse-one {
+
+          animation:
+            teamEnergyFlow 3.5s linear infinite;
+
+        }
+
+
+        .pulse-two {
+
+          animation:
+            teamEnergyFlow 3.5s linear infinite 1.75s;
+
+        }
+
+
+        @keyframes teamEnergyFlow {
+
+          0% {
+
+            left: 0%;
+
+            opacity: 0;
+
+          }
+
+          8% {
+
+            opacity: 1;
+
+          }
+
+          45% {
+
+            opacity: 1;
+
+          }
+
+          92% {
+
+            opacity: 1;
+
+          }
+
+          100% {
+
+            left: 100%;
+
+            opacity: 0;
+
+          }
+
+        }
+
+
+        /* ========================================================= */
+        /* DESKTOP CARD HOVER                                        */
+        /* ========================================================= */
 
         @media (hover: hover) and (pointer: fine) {
 
+
+          /* Main hovered card */
+
           .team-card:hover {
+
             transform:
               perspective(900px)
               translateY(-18px)
@@ -374,23 +612,34 @@ export const About: React.FC = () => {
               rotateY(-2deg);
 
             z-index: 10;
+
           }
+
 
           .team-card:hover::before {
+
             opacity: 0.8;
+
             transform: scale(1.05);
+
           }
+
 
           .team-card:hover::after {
-            border-color: rgba(255, 0, 127, 0.65);
+
+            border-color:
+              rgba(255, 0, 127, 0.65);
 
             box-shadow:
-              0 0 15px rgba(255,0,127,0.45),
-              0 0 35px rgba(255,0,127,0.25),
-              inset 0 0 15px rgba(255,0,127,0.08);
+              0 0 15px rgba(255, 0, 127, 0.45),
+              0 0 35px rgba(255, 0, 127, 0.25),
+              inset 0 0 15px rgba(255, 0, 127, 0.08);
+
           }
 
+
           .team-card:hover .team-card-image {
+
             transform: scale(1.045);
 
             filter:
@@ -398,57 +647,213 @@ export const About: React.FC = () => {
               saturate(1.12);
 
             box-shadow:
-              0 25px 55px rgba(0,0,0,0.7),
-              0 0 25px rgba(255,0,127,0.3);
+              0 25px 55px rgba(0, 0, 0, 0.7),
+              0 0 25px rgba(255, 0, 127, 0.3);
+
           }
 
+
           .team-card:hover .team-card-glow {
+
             opacity: 0.75;
+
             transform: scale(1.15);
+
+          }
+
+
+          /* ===================================================== */
+          /* CONNECTION LIGHT UP                                  */
+          /* ===================================================== */
+
+          .team-network:has(.team-card:hover)
+          .connection-line {
+
+            opacity: 1;
+
+            box-shadow:
+              0 0 10px rgba(255, 0, 127, 0.7),
+              0 0 30px rgba(255, 0, 127, 0.4),
+              0 0 55px rgba(255, 0, 127, 0.15);
+
+          }
+
+
+          .team-network:has(.team-card:hover)
+          .connection-pulse {
+
+            animation-duration: 2s;
+
+          }
+
+
+          /* ===================================================== */
+          /* HAMZA → NEIGHBORS                                    */
+          /* ===================================================== */
+
+          .team-network:has(.team-card-left:hover)
+          .team-card-center {
+
+            transform:
+              perspective(900px)
+              translateY(-7px)
+              translateX(3px)
+              scale(1.015);
+
+          }
+
+
+          .team-network:has(.team-card-left:hover)
+          .team-card-right {
+
+            transform:
+              perspective(900px)
+              translateY(-3px)
+              translateX(6px)
+              scale(1.01);
+
+          }
+
+
+          /* ===================================================== */
+          /* ZARA → NEIGHBORS                                     */
+          /* ===================================================== */
+
+          .team-network:has(.team-card-center:hover)
+          .team-card-left {
+
+            transform:
+              perspective(900px)
+              translateY(-6px)
+              translateX(-4px)
+              scale(1.01);
+
+          }
+
+
+          .team-network:has(.team-card-center:hover)
+          .team-card-right {
+
+            transform:
+              perspective(900px)
+              translateY(-6px)
+              translateX(4px)
+              scale(1.01);
+
+          }
+
+
+          /* ===================================================== */
+          /* HARIS → NEIGHBORS                                    */
+          /* ===================================================== */
+
+          .team-network:has(.team-card-right:hover)
+          .team-card-center {
+
+            transform:
+              perspective(900px)
+              translateY(-7px)
+              translateX(-3px)
+              scale(1.015);
+
+          }
+
+
+          .team-network:has(.team-card-right:hover)
+          .team-card-left {
+
+            transform:
+              perspective(900px)
+              translateY(-3px)
+              translateX(-6px)
+              scale(1.01);
+
           }
 
         }
 
 
-        /* --------------------------------------------------------- */
-        /* TABLET / MOBILE                                            */
-        /* --------------------------------------------------------- */
+        /* ========================================================= */
+        /* MOBILE                                                    */
+        /* ========================================================= */
 
         @media (max-width: 640px) {
 
           .team-card {
+
             border-radius: 12px;
+
           }
 
+
           .team-card-image {
+
             box-shadow:
-              0 10px 25px rgba(0,0,0,0.55);
+              0 10px 25px rgba(0, 0, 0, 0.55);
+
+          }
+
+
+          .team-connection {
+
+            left: 12%;
+
+            right: 12%;
+
+            opacity: 0.7;
+
+          }
+
+
+          .connection-line {
+
+            box-shadow:
+              0 0 6px rgba(255, 0, 127, 0.3);
+
+          }
+
+
+          .connection-pulse {
+
+            width: 5px;
+
+            height: 5px;
+
+            margin-top: -2.5px;
+
           }
 
         }
 
 
-        /* --------------------------------------------------------- */
-        /* REDUCE MOTION                                              */
-        /* --------------------------------------------------------- */
+        /* ========================================================= */
+        /* REDUCED MOTION                                            */
+        /* ========================================================= */
 
         @media (prefers-reduced-motion: reduce) {
 
-          .animate-screen-shimmer {
+          .animate-screen-shimmer,
+          .connection-pulse {
+
             animation: none;
+
           }
+
 
           .team-card,
           .team-card-image,
           .team-card-glow,
           .team-card::before,
           .team-card::after {
+
             transition: none;
+
           }
 
         }
 
       `}</style>
+
     </div>
   );
 };
