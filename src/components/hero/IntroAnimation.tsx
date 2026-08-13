@@ -262,8 +262,6 @@ export default function IntroAnimation() {
     return () => container.removeEventListener('mousemove', handleMouseMove);
   }, [mouseX]);
 
-  // --- Intro Sequence ---
-
 
   // --- Random Scatter Positions ---
   const scatterPositions = useMemo(() => {

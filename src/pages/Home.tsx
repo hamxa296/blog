@@ -3,8 +3,9 @@ import MobileHome from '../components/hero/MobileHome';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import { FeatureSection } from '../components/feature/FeatureSection';
 import { FeaturedPosts } from '../components/blog/FeaturedPosts';
-
+import { Footer } from '../components/nav/Footer';
 import backgroundImage from '../assets/homepc.webp';
+import mobileBackgroundImage from '../assets/mobplain.webp';
 
 export const Home = () => {
   const isMobile = useIsMobile();
@@ -13,11 +14,11 @@ export const Home = () => {
     <main
       className="relative z-10 w-full min-h-screen bg-cover bg-center bg-fixed text-white"
       style={{
-        backgroundImage: `url(${backgroundImage})`,
+        backgroundImage: `url(${
+          isMobile ? mobileBackgroundImage : backgroundImage
+        })`,
       }}
     >
-      
-
       {/* Page content */}
       <div className="relative z-10">
         {/* Hero / Animations */}
@@ -31,9 +32,19 @@ export const Home = () => {
         </div>
 
         {/* Featured Posts */}
-        <div className="relative z-20 mt-8">
-          <FeaturedPosts />
-        </div>
+                
+        {!isMobile && (
+          <div className="relative z-20 mt-8">
+            <FeaturedPosts />
+          </div>
+        )}
+
+        {/* Footer */}
+        {!isMobile && (
+          <div className="relative z-20">
+            <Footer />
+          </div>
+        )}
       </div>
     </main>
   );

@@ -1,8 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { getApprovedPosts, type Post } from '../services/firebase';
 import { BlogSection } from '../components/blog/BlogSection';
 
-import mobileBg from "../assets/plainbg.webp"
 export const BlogBrowse: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -14,22 +14,34 @@ export const BlogBrowse: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
+
       try {
         const res = await getApprovedPosts();
-        if (res.success && res.posts) setPosts(res.posts);
+
+        if (res.success && res.posts) {
+          setPosts(res.posts);
+        }
       } catch (err) {
         console.error('Error loading posts:', err);
       } finally {
         setLoading(false);
       }
     };
+
     fetchPosts();
   }, []);
 
   const filteredPosts = posts.filter((post) => {
-    if (selectedGenre !== 'all' && post.genre.toLowerCase() !== selectedGenre.toLowerCase()) return false;
+    if (
+      selectedGenre !== 'all' &&
+      post.genre.toLowerCase() !== selectedGenre.toLowerCase()
+    ) {
+      return false;
+    }
+
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase();
+
       return (
         post.title.toLowerCase().includes(term) ||
         post.description.toLowerCase().includes(term) ||
@@ -37,16 +49,21 @@ export const BlogBrowse: React.FC = () => {
         post.tags.some((tag) => tag.toLowerCase().includes(term))
       );
     }
+
     return true;
   });
 
   return (
-    <main
-      className="relative z-10 min-h-screen bg-cover bg-center bg-fixed bg-no-repeat pb-24"
-      style={{
-        backgroundImage: `url(${mobileBg})`,
-      }}
-    >
+    <main className="relative z-10 min-h-screen pb-24">
+      {/* Solid Background */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 -z-10"
+        style={{
+          backgroundColor: '#201e1c',
+        }}
+      />
+
       <div className="max-w-6xl mx-auto px-4 pt-8">
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <input
@@ -56,6 +73,7 @@ export const BlogBrowse: React.FC = () => {
             placeholder="Search chronicles..."
             className="flex-1 bg-card/50 border border-border/50 backdrop-blur-sm rounded-full px-5 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary/50 text-sm font-light"
           />
+
           <div className="flex flex-wrap gap-2">
             {genres.map((genre) => (
               <button
@@ -74,6 +92,7 @@ export const BlogBrowse: React.FC = () => {
           </div>
         </div>
       </div>
+
       <BlogSection posts={filteredPosts} loading={loading} />
     </main>
   );
