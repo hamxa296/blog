@@ -3,7 +3,7 @@ import randomBg from '../assets/randombg.webp';
 import aboutBg from '../assets/about_bg.webp';
 import meetTheTeamBg from '../assets/team 3.webp';
 import zaraBg from '../assets/zara.webp';
-import hamzaBg from '../assets/hamza.webp';
+import hamzaBg from '../assets/hamza2.webp';
 import harisBg from '../assets/haris2.webp';
 import Footer from '../components/nav/Footer';
 
