@@ -105,7 +105,17 @@ export const Gallery: React.FC = () => {
 
   // Top items for CollectionSurfer carousel
   // Desktop only
-  
+  const surferItems: CollectionItem[] = (
+    photos.filter((p) => p.isHighlighted).length > 0
+      ? photos.filter((p) => p.isHighlighted)
+      : photos
+  )
+    .slice(0, 5)
+    .map((p) => ({
+      id: p.id || Math.random().toString(),
+      image: p.fullSizeUrl || p.imageUrl,
+      title: p.caption || "GIKI Gallery",
+    }));
 
   // Handle file selection and preview generation
   const handleFileChange = (
