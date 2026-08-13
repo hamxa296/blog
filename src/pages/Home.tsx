@@ -2,7 +2,6 @@ import IntroAnimation from '../components/hero/IntroAnimation';
 import MobileHome from '../components/hero/MobileHome';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import { FeatureSection } from '../components/feature/FeatureSection';
-import { Footer } from '../components/nav/Footer';
 import { FeaturedPosts } from '../components/blog/FeaturedPosts';
 
 import backgroundImage from '../assets/homepc.webp';
@@ -35,13 +34,6 @@ export const Home = () => {
         <div className="relative z-20 mt-8">
           <FeaturedPosts />
         </div>
-
-        {/* Footer */}
-        {!isMobile && (
-          <div className="relative z-20">
-            <Footer />
-          </div>
-        )}
       </div>
     </main>
   );

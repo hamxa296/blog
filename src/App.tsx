@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import FloatingMenu from './components/nav/FloatingMenu';
 import GlobalBackButton from './components/nav/GlobalBackButton';
+import Footer from './components/nav/Footer';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { CmsRoute } from './components/CmsRoute';
 import { GuideErrorBoundary } from './components/guide/GuideErrorBoundary';
@@ -54,6 +55,7 @@ function AppShell() {
           </motion.div>
         </AnimatePresence>
       </div>
+      <Footer />
       <FloatingMenu />
     </div>
   );

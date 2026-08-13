@@ -112,7 +112,7 @@ export const GuideSectionDetail: React.FC<GuideSectionDetailProps> = ({
           <button
             type="button"
             onClick={() => onEdit(section.id)}
-            className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-colors shadow-md self-start text-sm font-medium"
+            className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-500 hover:-translate-y-0.5 transition-all duration-200 shadow-md shadow-pink-500/20 self-start text-sm font-medium"
           >
             Edit
           </button>
@@ -126,7 +126,7 @@ export const GuideSectionDetail: React.FC<GuideSectionDetailProps> = ({
       )}
 
       {section.id === 'campus-map' && (
-        <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-secondary/50 rounded-xl border border-border">
+        <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-card rounded-xl border border-border shadow-sm">
           <div className="text-center">
             <div className="mb-4">
               <h3 className="text-xl font-semibold text-foreground mb-2">
@@ -141,7 +141,7 @@ export const GuideSectionDetail: React.FC<GuideSectionDetailProps> = ({
               to="/map"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:opacity-90 shadow-lg"
+              className="inline-flex items-center gap-2 bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:bg-pink-500 hover:-translate-y-0.5 shadow-lg shadow-pink-500/20"
             >
               Open Interactive Map
             </Link>

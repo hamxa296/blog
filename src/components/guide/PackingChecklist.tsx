@@ -273,10 +273,10 @@ export const PackingChecklist: React.FC<PackingChecklistProps> = ({ onSessionCha
 
   return (
     <div className="mt-4">
-      <h3 className="text-xl sm:text-2xl font-semibold font-serif text-[#B3CFE5] mb-2">
+      <h3 className="text-xl sm:text-2xl font-semibold font-serif text-foreground mb-2">
         Your Essential Packing Checklist
       </h3>
-      <p className="text-sm text-[#B3CFE5] mb-4">
+      <p className="text-sm text-muted-foreground mb-4">
         Check items as you pack. Your progress is saved automatically
         {uid ? ' to your account' : ' on this device'}.
       </p>
@@ -298,11 +298,11 @@ export const PackingChecklist: React.FC<PackingChecklistProps> = ({ onSessionCha
               name="newItem"
               type="text"
               placeholder="Add a custom item (saved only for you)"
-              className="flex-grow p-2 border border-[#4A7FA7] rounded focus:outline-none focus:ring-1 focus:ring-[#4A7FA7] bg-[#0A1931] text-[#F6FAFD] text-sm"
+              className="flex-grow p-2 sm:px-4 sm:py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 bg-card text-foreground text-sm transition-all shadow-sm hover:border-pink-500/30"
             />
             <button
               type="submit"
-              className="px-4 py-2 bg-[#4A7FA7] text-white rounded hover:bg-[#1A3D63] font-semibold text-sm"
+              className="px-6 py-2 sm:py-3 bg-pink-600 text-white rounded-lg hover:bg-pink-500 font-semibold text-sm transition-all duration-200 shadow-md shadow-pink-500/20 hover:-translate-y-0.5"
             >
               Add Item
             </button>
@@ -314,25 +314,25 @@ export const PackingChecklist: React.FC<PackingChecklistProps> = ({ onSessionCha
               const checkedCount = items.filter((item) => checkedItems[buildItemId(section.key, item)]).length;
 
               return (
-                <div key={section.key} className="bg-[#0A1931] rounded overflow-hidden border border-[#4A7FA7]/30">
+                <div key={section.key} className="bg-card rounded-lg overflow-hidden border border-border shadow-sm mb-3">
                   <div
-                    className="w-full flex items-center justify-between px-3 py-2 hover:bg-[#1A3D63] cursor-pointer"
+                    className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted transition-colors cursor-pointer"
                     onClick={() => toggleSection(section.key)}
                   >
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-[#F6FAFD] text-sm">{section.title}</span>
-                      <span className="text-xs px-1.5 py-0.5 rounded-full bg-[#4A7FA7]/30 text-[#B3CFE5]">
+                      <span className="font-semibold text-foreground text-sm sm:text-base">{section.title}</span>
+                      <span className="text-xs font-medium px-2 py-1 rounded-full bg-pink-500/10 text-pink-500 border border-pink-500/20">
                         {checkedCount}/{items.length}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleSelectAllIn(section.key, items);
                         }}
-                        className="text-xs px-2 py-1 bg-[#4A7FA7] text-white rounded hover:bg-[#1A3D63]"
+                        className="text-xs font-medium px-3 py-1 bg-muted hover:bg-pink-600 hover:text-white text-foreground rounded-md transition-colors border border-border hover:border-pink-500"
                       >
                         All
                       </button>
@@ -342,12 +342,12 @@ export const PackingChecklist: React.FC<PackingChecklistProps> = ({ onSessionCha
                           e.stopPropagation();
                           handleClearIn(section.key, items);
                         }}
-                        className="text-xs px-2 py-1 bg-[#0A1931] text-[#B3CFE5] rounded hover:bg-[#1A3D63]"
+                        className="text-xs font-medium px-3 py-1 bg-transparent hover:bg-muted text-muted-foreground rounded-md transition-colors border border-transparent hover:border-border"
                       >
                         Clear
                       </button>
                       <svg
-                        className={`w-4 h-4 text-[#B3CFE5] transition-transform ${openSections[section.key] ? 'rotate-180' : ''}`}
+                        className={`w-5 h-5 ml-1 text-muted-foreground transition-transform duration-300 ${openSections[section.key] ? 'rotate-180' : ''}`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -365,15 +365,15 @@ export const PackingChecklist: React.FC<PackingChecklistProps> = ({ onSessionCha
                           return (
                             <label
                               key={itemId}
-                              className="flex items-start space-x-2 p-1 rounded hover:bg-[#1A3D63]/40 cursor-pointer"
+                              className="flex items-start space-x-3 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
                             >
                               <input
                                 type="checkbox"
                                 checked={checkedItems[itemId] || false}
                                 onChange={(e) => handleCheckboxChange(itemId, e.target.checked)}
-                                className="mt-0.5 h-4 w-4 text-[#4A7FA7] focus:ring-[#4A7FA7] border-[#4A7FA7]/40 rounded"
+                                className="mt-0.5 h-4 w-4 text-pink-600 focus:ring-pink-500 border-border bg-card rounded transition-colors"
                               />
-                              <span className="text-[#B3CFE5] text-sm leading-5">{item}</span>
+                              <span className={`text-sm leading-5 transition-colors ${checkedItems[itemId] ? 'text-muted-foreground line-through' : 'text-foreground'}`}>{item}</span>
                             </label>
                           );
                         })}
@@ -386,14 +386,14 @@ export const PackingChecklist: React.FC<PackingChecklistProps> = ({ onSessionCha
           </div>
 
           {customFiltered.length > 0 && (
-            <div className="mt-4 bg-[#0A1931] rounded overflow-hidden border border-[#4A7FA7]/30">
+            <div className="mt-4 bg-card rounded-lg overflow-hidden border border-border shadow-sm mb-3">
               <div
-                className="w-full flex items-center justify-between px-3 py-2 hover:bg-[#1A3D63] cursor-pointer"
+                className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted transition-colors cursor-pointer"
                 onClick={() => toggleSection('custom')}
               >
-                <span className="font-semibold text-[#F6FAFD] text-sm">Your Added Items</span>
+                <span className="font-semibold text-foreground text-sm sm:text-base">Your Added Items</span>
                 <svg
-                  className={`w-4 h-4 text-[#B3CFE5] transition-transform ${openSections.custom ? 'rotate-180' : ''}`}
+                  className={`w-5 h-5 ml-1 text-muted-foreground transition-transform duration-300 ${openSections.custom ? 'rotate-180' : ''}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -409,16 +409,16 @@ export const PackingChecklist: React.FC<PackingChecklistProps> = ({ onSessionCha
                       return (
                         <div
                           key={id}
-                          className="flex items-center justify-between p-1 rounded hover:bg-[#1A3D63]/40"
+                          className="flex items-center justify-between p-2 rounded-md hover:bg-muted transition-colors"
                         >
-                          <label className="flex items-start space-x-2 cursor-pointer">
+                          <label className="flex items-start space-x-3 cursor-pointer">
                             <input
                               type="checkbox"
                               checked={checkedItems[id] || false}
                               onChange={(e) => handleCheckboxChange(id, e.target.checked)}
-                              className="mt-0.5 h-4 w-4 text-[#4A7FA7] focus:ring-[#4A7FA7] border-[#4A7FA7]/40 rounded"
+                              className="mt-0.5 h-4 w-4 text-pink-600 focus:ring-pink-500 border-border bg-card rounded transition-colors"
                             />
-                            <span className="text-[#B3CFE5] text-sm">{item}</span>
+                            <span className={`text-sm leading-5 transition-colors ${checkedItems[id] ? 'text-muted-foreground line-through' : 'text-foreground'}`}>{item}</span>
                           </label>
                           <button
                             type="button"
@@ -439,22 +439,22 @@ export const PackingChecklist: React.FC<PackingChecklistProps> = ({ onSessionCha
             </div>
           )}
 
-          <div className="mt-4 p-3 bg-[#0A1931] rounded border border-[#4A7FA7]/30">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-[#B3CFE5]">Packing Progress</span>
-              <span className="text-sm text-[#B3CFE5]">
+          <div className="mt-6 p-4 bg-card rounded-lg border border-border shadow-sm">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-sm font-semibold text-foreground">Packing Progress</span>
+              <span className="text-sm font-medium text-muted-foreground">
                 {done} / {total} items
               </span>
             </div>
-            <div className="w-full bg-[#1A3D63] rounded-full h-2">
+            <div className="w-full bg-muted rounded-full h-2.5 overflow-hidden">
               <div
-                className="bg-[#4A7FA7] h-2 rounded-full transition-all duration-300"
+                className="bg-pink-500 h-full rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${total === 0 ? 0 : (done / total) * 100}%` }}
               />
             </div>
             {uid && hasSessionChanges && (
-              <div className="mt-3 flex items-center justify-between">
-                <span className="text-xs text-[#B3CFE5]">You have unsaved changes.</span>
+              <div className="mt-4 flex items-center justify-between">
+                <span className="text-xs text-muted-foreground font-medium">You have unsaved changes.</span>
                 <button
                   type="button"
                   onClick={handleSaveNow}
@@ -486,30 +486,31 @@ export const PackingChecklist: React.FC<PackingChecklistProps> = ({ onSessionCha
       )}
 
       {!uid && (
-        <div className="mt-4 p-4 bg-gradient-to-r from-[#0A1931] to-[#1A3D63] border border-[#4A7FA7] rounded text-center relative">
-          <div className="mb-3">
-            <svg className="w-8 h-8 text-[#B3CFE5] mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 012 2h7a2 2 0 012 2v1" />
+        <div className="mt-6 p-6 bg-card border border-border shadow-md rounded-xl text-center relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-purple-500"></div>
+          <div className="mb-4">
+            <svg className="w-10 h-10 text-pink-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 012 2h7a2 2 0 012 2v1" />
             </svg>
-            <h4 className="text-base font-semibold text-[#B3CFE5] mb-1">Login Required</h4>
-            <p className="text-[#B3CFE5] text-xs mb-3">
+            <h4 className="text-lg font-bold text-foreground mb-1">Login Required</h4>
+            <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-4">
               To save your packing list and track your progress across sessions, please login to your account.
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2 justify-center">
-            <Link to="/login" className="px-4 py-2 bg-[#4A7FA7] text-white rounded hover:bg-[#1A3D63] transition-colors font-semibold text-sm">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link to="/login" className="px-6 py-2.5 bg-muted text-foreground border border-border rounded-lg hover:bg-background transition-colors font-semibold text-sm shadow-sm">
               Login Now
             </Link>
-            <Link to="/signup" className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors font-semibold text-sm">
+            <Link to="/signup" className="px-6 py-2.5 bg-pink-600 text-white rounded-lg hover:bg-pink-500 transition-all shadow-md shadow-pink-500/20 hover:-translate-y-0.5 font-semibold text-sm">
               Create Account
             </Link>
           </div>
-          <p className="text-[#B3CFE5] text-xs mt-2">
-            💡 Your packing list will be automatically saved and you can continue where you left off!
+          <p className="text-muted-foreground font-medium text-xs mt-4 flex items-center justify-center gap-1.5">
+            <span className="text-pink-500">💡</span> Your packing list will be automatically saved and you can continue where you left off!
           </p>
           {showGuestSavePrompt && (
-            <div className="mt-3 p-2 bg-[#0A1931] border border-[#4A7FA7]/40 rounded text-[#B3CFE5]">
-              <span className="text-xs">Progress is saved only on this device. Login to sync across devices.</span>
+            <div className="mt-4 p-3 bg-muted border border-border rounded-lg text-muted-foreground">
+              <span className="text-xs font-medium">Progress is saved only on this device. Login to sync across devices.</span>
             </div>
           )}
         </div>

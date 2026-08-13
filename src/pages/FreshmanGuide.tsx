@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useBlocker } from 'react-router-dom';
+import { useBlocker, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { subscribeGuideSections, updateGuideSection } from '../services/guideService';
 import type { GuideEditForm, GuideSection, SocietyCategoryMap } from '../types/guide';
@@ -52,7 +52,9 @@ export const FreshmanGuide: React.FC = () => {
   const { user, isAdmin } = useAuth();
 
   const [guideSections, setGuideSections] = useState<GuideSection[]>([]);
-  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const expandedSection = searchParams.get('section');
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('connecting');
   const [editingSection, setEditingSection] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<GuideEditForm>({
@@ -132,7 +134,7 @@ export const FreshmanGuide: React.FC = () => {
   }, [user, hasPackingSessionChanges]);
 
   const handleTagClick = (sectionId: string) => {
-    setExpandedSection(sectionId);
+    setSearchParams({ section: sectionId });
     window.setTimeout(() => {
       const element = document.getElementById(sectionId);
       if (element) {
@@ -145,7 +147,11 @@ export const FreshmanGuide: React.FC = () => {
   };
 
   const handleBackClick = () => {
-    setExpandedSection(null);
+    if (window.history.length > 2) {
+      navigate(-1);
+    } else {
+      navigate('/guide');
+    }
   };
 
   const handleEditClick = (sectionId: string) => {
@@ -265,7 +271,7 @@ export const FreshmanGuide: React.FC = () => {
   return (
     <main
       className="relative z-10 min-h-[calc(100vh-88px)] pt-10 pb-24 px-4 sm:px-6
-                bg-cover bg-center bg-fixed"
+                bg-cover bg-center bg-fixed text-foreground"
       style={{
         backgroundImage: `url(${newBg})`,
       }}

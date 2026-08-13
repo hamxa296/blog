@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { CollectionSurfer, type CollectionItem } from '../components/gallery/CollectionSurfer';
+import { Footer } from '../components/nav/Footer';
 import {
   getGalleryPhotos,
   uploadGalleryPhoto,
@@ -348,7 +349,7 @@ export const Gallery: React.FC = () => {
       <div className="hidden md:block">
         {/* 3D Carousel / Collection Surfer Header */}
         <CollectionSurfer
-          
+          items={surferItems}
           heading="GIKI"
           subheading="GALLERY"
           scrollContainerRef={scrollRef}
@@ -586,6 +587,7 @@ export const Gallery: React.FC = () => {
             )}
           </div>
         </section>
+        <Footer />
       </div>
 
       {/* =========================================================

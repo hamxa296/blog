@@ -122,7 +122,7 @@ const IMAGES = [
 const lerp = (start: number, end: number, t: number) => start * (1 - t) + end * t;
 
 export default function IntroAnimation() {
-  const [introPhase, setIntroPhase] = useState<AnimationPhase>('circle');
+  const [introPhase] = useState<AnimationPhase>('circle');
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
 

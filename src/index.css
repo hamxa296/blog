@@ -24,6 +24,10 @@
   --color-destructive-foreground: #fafafa;
   --color-sky-start: #7dd3fc;
   --color-sky-end: #38bdf8;
+
+  --color-pink-400: #fd4378;
+  --color-pink-500: #fd4378;
+  --color-pink-600: #fd4378;
 }
 
 html,

@@ -7,7 +7,7 @@ import backgroundImage from '../../assets/foot.png';
 export const Footer: React.FC = () => {
   return (
     <footer
-      className="w-full border-t border-white/10 text-white/70 py-24 px-4 sm:px-6 lg:px-8 mt-auto relative z-30 bg-center bg-no-repeat"
+      className="w-full border-t border-white/10 text-white/70 py-24 px-4 sm:px-6 lg:px-8 mt-auto relative z-30 bg-center bg-no-repeat hidden md:block"
       style={{
         backgroundImage: `url(${backgroundImage})`,
         

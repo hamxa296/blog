@@ -47,34 +47,34 @@ export const HostelTours: React.FC = () => {
 
   return (
     <div>
-      <h3 className="text-xl sm:text-2xl font-semibold font-serif text-[#B3CFE5] mb-2">
+      <h3 className="text-xl sm:text-2xl font-semibold font-serif text-foreground mb-2">
         Room Tours & Photos
       </h3>
-      <p className="text-sm text-[#B3CFE5] mb-6">
+      <p className="text-sm text-muted-foreground mb-6">
         Take a virtual tour of the hostel rooms and facilities to get a better idea of your new home.
       </p>
 
       <div className="space-y-6">
         <div>
-          <h5 className="text-md font-semibold text-gray-200 mb-4">Room Gallery</h5>
+          <h5 className="text-md font-semibold text-foreground mb-4">Room Gallery</h5>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <button
               type="button"
               onClick={() => openHostel('boys')}
-              className="bg-[#4A7FA7] hover:bg-[#1A3D63] cursor-pointer rounded-lg p-6 text-center transition-colors duration-200"
+              className="bg-card hover:bg-muted border border-border cursor-pointer rounded-lg p-6 text-center transition-all duration-200 hover:shadow-lg hover:border-pink-500/50 group"
             >
-              <div className="text-white text-lg font-semibold mb-2">Boys Hostel</div>
-              <div className="text-blue-100 text-sm">Click to view photos & videos</div>
+              <div className="text-foreground text-lg font-semibold mb-2 group-hover:text-pink-500 transition-colors">Boys Hostel</div>
+              <div className="text-muted-foreground text-sm">Click to view photos & videos</div>
             </button>
 
             <button
               type="button"
               onClick={() => openHostel('girls')}
-              className="bg-[#1A3D63] hover:bg-[#4A7FA7] cursor-pointer rounded-lg p-6 text-center transition-colors duration-200"
+              className="bg-card hover:bg-muted border border-border cursor-pointer rounded-lg p-6 text-center transition-all duration-200 hover:shadow-lg hover:border-pink-500/50 group"
             >
-              <div className="text-white text-lg font-semibold mb-2">Girls Hostel</div>
-              <div className="text-pink-100 text-sm">Click to view photos & videos</div>
+              <div className="text-foreground text-lg font-semibold mb-2 group-hover:text-pink-500 transition-colors">Girls Hostel</div>
+              <div className="text-muted-foreground text-sm">Click to view photos & videos</div>
             </button>
           </div>
         </div>
@@ -82,26 +82,26 @@ export const HostelTours: React.FC = () => {
 
       {selectedHostel && currentMedia && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-br from-[#0A1931] via-[#1A3D63] to-[#4A7FA7] rounded-2xl max-w-5xl w-full max-h-[95vh] overflow-hidden shadow-2xl border border-[#B3CFE5]/30">
-            <div className="flex justify-between items-center p-6 border-b border-[#B3CFE5]/30 bg-gradient-to-r from-[#0A1931]/50 to-[#1A3D63]/50">
+          <div className="bg-background rounded-2xl max-w-5xl w-full max-h-[95vh] overflow-hidden shadow-2xl border border-border">
+            <div className="flex justify-between items-center p-6 border-b border-border bg-card/50">
               <div className="flex items-center space-x-3">
                 <div
                   className={`w-3 h-3 rounded-full shadow-lg ${
-                    selectedHostel === 'boys' ? 'bg-[#4A7FA7]' : 'bg-[#B3CFE5]'
+                    selectedHostel === 'boys' ? 'bg-pink-600' : 'bg-pink-400'
                   }`}
                 />
-                <h3 className="text-2xl font-bold text-white tracking-wide">
+                <h3 className="text-2xl font-bold text-foreground tracking-wide">
                   {selectedHostel === 'boys' ? 'Boys Hostel' : 'Girls Hostel'} Tour
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={closeViewer}
-                className="group relative w-10 h-10 rounded-full bg-[#0A1931]/50 hover:bg-[#4A7FA7]/20 flex items-center justify-center transition-all duration-300 border border-[#B3CFE5]/30 hover:border-[#B3CFE5]/60"
+                className="group relative w-10 h-10 rounded-full bg-muted/50 hover:bg-muted flex items-center justify-center transition-all duration-300 border border-border hover:border-pink-500/50"
                 aria-label="Close hostel tour"
               >
                 <svg
-                  className="w-5 h-5 text-[#B3CFE5] group-hover:text-white transition-colors duration-300"
+                  className="w-5 h-5 text-muted-foreground group-hover:text-pink-500 transition-colors duration-300"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -136,9 +136,9 @@ export const HostelTours: React.FC = () => {
                       </video>
                     )
                   ) : (
-                    <div className="p-6 bg-gradient-to-r from-[#0A1931] to-[#1A3D63] text-[#B3CFE5] rounded-lg shadow-lg">
+                    <div className="p-6 bg-card border border-border text-muted-foreground rounded-lg shadow-lg">
                       <svg
-                        className="w-8 h-8 mx-auto mb-2 text-gray-400"
+                        className="w-8 h-8 mx-auto mb-2 text-muted-foreground"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -155,8 +155,8 @@ export const HostelTours: React.FC = () => {
                   )}
 
                   <div className="mt-8 max-w-2xl mx-auto">
-                    <h4 className="text-2xl font-bold text-white mb-3 tracking-wide">{currentMedia.title}</h4>
-                    <p className="text-[#B3CFE5] text-lg leading-relaxed">{currentMedia.description}</p>
+                    <h4 className="text-2xl font-bold text-foreground mb-3 tracking-wide">{currentMedia.title}</h4>
+                    <p className="text-muted-foreground text-lg leading-relaxed">{currentMedia.description}</p>
                   </div>
                 </div>
               </div>
@@ -170,9 +170,9 @@ export const HostelTours: React.FC = () => {
                     disabled={currentMediaIndex === 0}
                     aria-label="Previous media"
                   >
-                    <div className="w-12 h-12 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm flex items-center justify-center transition-all duration-300 border border-[#B3CFE5]/30 hover:border-[#B3CFE5]/60 shadow-lg disabled:opacity-40">
+                    <div className="w-12 h-12 rounded-full bg-background/40 hover:bg-background/80 backdrop-blur-sm flex items-center justify-center transition-all duration-300 border border-border hover:border-pink-500/50 shadow-lg disabled:opacity-40">
                       <svg
-                        className="w-6 h-6 text-[#B3CFE5] group-hover:scale-110 transition-transform duration-200"
+                        className="w-6 h-6 text-muted-foreground group-hover:text-pink-500 group-hover:scale-110 transition-all duration-200"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -188,9 +188,9 @@ export const HostelTours: React.FC = () => {
                     disabled={currentMediaIndex === mediaList.length - 1}
                     aria-label="Next media"
                   >
-                    <div className="w-12 h-12 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm flex items-center justify-center transition-all duration-300 border border-[#B3CFE5]/30 hover:border-[#B3CFE5]/60 shadow-lg disabled:opacity-40">
+                    <div className="w-12 h-12 rounded-full bg-background/40 hover:bg-background/80 backdrop-blur-sm flex items-center justify-center transition-all duration-300 border border-border hover:border-pink-500/50 shadow-lg disabled:opacity-40">
                       <svg
-                        className="w-6 h-6 text-[#B3CFE5] group-hover:scale-110 transition-transform duration-200"
+                        className="w-6 h-6 text-muted-foreground group-hover:text-pink-500 group-hover:scale-110 transition-all duration-200"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
