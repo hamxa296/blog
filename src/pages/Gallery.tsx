@@ -363,7 +363,7 @@ export const Gallery: React.FC = () => {
             {/* Section Header & Upload Button */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/10 pb-8">
               <div>
-                <div className="flex items-center gap-2 text-xs font-mono tracking-[0.3em] uppercase text-cyan-400 mb-3">
+                <div className="flex items-center gap-2 text-xs font-mono tracking-[0.3em] uppercase text-white mb-3">
                   <Sparkles className="w-4 h-4 animate-pulse" />
                   <span>
                     Visual Archives & Snapshot Feed
@@ -388,7 +388,7 @@ export const Gallery: React.FC = () => {
                     onClick={() =>
                       setIsUploadModalOpen(true)
                     }
-                    className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-sm shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-[0.98] transition duration-200 cursor-pointer"
+                    className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-white text-black font-semibold text-sm shadow-lg shadow-white/10 hover:shadow-white/20 hover:scale-[1.02] active:scale-[0.98] transition duration-200 cursor-pointer"
                   >
                     <Camera className="w-5 h-5" />
                     <span>Upload Photo</span>
@@ -399,7 +399,7 @@ export const Gallery: React.FC = () => {
                       href="/login"
                       className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-white text-xs font-semibold tracking-wider uppercase border border-white/20 transition"
                     >
-                      <Upload className="w-4 h-4 text-cyan-400" />
+                      <Upload className="w-4 h-4 text-black" />
                       <span>Login to Upload</span>
                     </a>
 
@@ -438,7 +438,7 @@ export const Gallery: React.FC = () => {
                       }
                       className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-2 cursor-pointer ${
                         isSelected
-                          ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md'
+                          ? 'bg-white text-black shadow-md'
                           : 'text-neutral-400 hover:text-white hover:bg-white/5'
                       }`}
                     >
@@ -512,7 +512,7 @@ export const Gallery: React.FC = () => {
                       onClick={() =>
                         setLightboxIndex(index)
                       }
-                      className="group relative overflow-hidden rounded-2xl bg-neutral-900/80 border border-white/10 hover:border-cyan-500/50 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-cyan-500/10 cursor-pointer flex flex-col justify-between"
+                      className="group relative overflow-hidden rounded-2xl bg-neutral-900/80 border border-white/10 hover:border-white/50 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-white/10 cursor-pointer flex flex-col justify-between"
                     >
                       <div className="aspect-[4/5] overflow-hidden bg-neutral-950 relative">
                         <img
@@ -528,7 +528,7 @@ export const Gallery: React.FC = () => {
 
                         {/* Top Badges */}
                         <div className="absolute top-3 left-3 right-3 flex justify-between items-center opacity-90">
-                          <span className="bg-black/60 backdrop-blur-md text-cyan-400 text-[10px] font-extrabold tracking-wider uppercase px-2.5 py-1 rounded-full border border-white/10">
+                          <span className="bg-black/60 backdrop-blur-md text-white text-[10px] font-extrabold tracking-wider uppercase px-2.5 py-1 rounded-full border border-white/10">
                             {photo.category ||
                               'General'}
                           </span>
@@ -542,7 +542,7 @@ export const Gallery: React.FC = () => {
 
                         {/* Hover Overlay Icon */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                          <div className="w-12 h-12 rounded-full bg-cyan-500/90 text-white flex items-center justify-center shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                          <div className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                             <Maximize2 className="w-5 h-5" />
                           </div>
                         </div>
@@ -550,14 +550,14 @@ export const Gallery: React.FC = () => {
 
                       {/* Card Footer */}
                       <div className="p-4 bg-neutral-900/90 backdrop-blur-sm space-y-1.5 border-t border-white/5">
-                        <h3 className="font-bold text-white text-sm truncate group-hover:text-cyan-400 transition-colors">
+                        <h3 className="font-bold text-white text-sm truncate group-hover:text-white transition-colors">
                           {photo.caption ||
                             'Untitled Snapshot'}
                         </h3>
 
                         <div className="flex items-center justify-between text-[11px] text-neutral-400">
                           <span className="flex items-center gap-1 truncate max-w-[70%]">
-                            <User className="w-3 h-3 text-cyan-500/70 shrink-0" />
+                            <User className="w-3 h-3 text-white/70 shrink-0" />
 
                             <span className="truncate">
                               {photo.uploaderName ||
@@ -871,7 +871,7 @@ export const Gallery: React.FC = () => {
             </button>
 
             <div className="mb-6">
-              <div className="flex items-center gap-2 text-cyan-400 text-xs font-bold uppercase tracking-wider mb-1">
+              <div className="flex items-center gap-2 text-white text-xs font-bold uppercase tracking-wider mb-1">
                 <Camera className="w-4 h-4" />
                 <span>Community Submissions</span>
               </div>
@@ -911,13 +911,13 @@ export const Gallery: React.FC = () => {
                 {!uploadPreview ? (
                   <label
                     htmlFor="gallery-file-input"
-                    className="border-2 border-dashed border-white/20 hover:border-cyan-500/50 rounded-2xl p-8 flex flex-col items-center justify-center text-center cursor-pointer bg-black/40 hover:bg-cyan-500/5 transition duration-200 group"
+                    className="border-2 border-dashed border-white/20 hover:border-white/50 rounded-2xl p-8 flex flex-col items-center justify-center text-center cursor-pointer bg-black/40 hover:bg-white/5 transition duration-200 group"
                   >
-                    <div className="w-12 h-12 rounded-full bg-white/5 group-hover:bg-cyan-500/20 text-neutral-400 group-hover:text-cyan-400 flex items-center justify-center mb-3 transition">
+                    <div className="w-12 h-12 rounded-full bg-white/5 group-hover:bg-white/20 text-neutral-400 group-hover:text-white flex items-center justify-center mb-3 transition">
                       <Upload className="w-6 h-6" />
                     </div>
 
-                    <span className="text-sm font-semibold text-white group-hover:text-cyan-400 transition">
+                    <span className="text-sm font-semibold text-white group-hover:text-white transition">
                       Click to choose or drag photo
                       here
                     </span>
@@ -956,7 +956,7 @@ export const Gallery: React.FC = () => {
                       <span>Remove</span>
                     </button>
 
-                    <div className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full text-[11px] text-cyan-400 font-mono border border-white/10">
+                    <div className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full text-[11px] text-white font-mono border border-white/10">
                       Resolution capping enabled
                     </div>
                   </div>
@@ -982,7 +982,7 @@ export const Gallery: React.FC = () => {
                     setUploadCaption(e.target.value)
                   }
                   maxLength={100}
-                  className="w-full px-4 py-3 rounded-xl bg-black/60 border border-white/15 text-white placeholder-neutral-600 text-sm focus:outline-none focus:border-cyan-500 transition"
+                  className="w-full px-4 py-3 rounded-xl bg-black/60 border border-white/15 text-white placeholder-neutral-600 text-sm focus:outline-none focus:border-white transition"
                 />
               </div>
 
@@ -1001,7 +1001,7 @@ export const Gallery: React.FC = () => {
                   onChange={(e) =>
                     setUploadCategory(e.target.value)
                   }
-                  className="w-full px-4 py-3 rounded-xl bg-black/60 border border-white/15 text-white text-sm focus:outline-none focus:border-cyan-500 transition"
+                  className="w-full px-4 py-3 rounded-xl bg-black/60 border border-white/15 text-white text-sm focus:outline-none focus:border-white transition"
                 >
                   {CATEGORIES.filter(
                     (c) => c !== 'All'
@@ -1024,7 +1024,7 @@ export const Gallery: React.FC = () => {
                   disabled={
                     uploading || !uploadFile
                   }
-                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-sm shadow-xl shadow-cyan-500/20 hover:shadow-cyan-500/30 transition flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-4 rounded-2xl bg-white hover:bg-neutral-200 disabled:opacity-50 disabled:cursor-not-allowed text-black font-bold text-sm shadow-xl shadow-white/20 hover:shadow-white/30 transition flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {uploading ? (
                     <>
@@ -1061,7 +1061,7 @@ export const Gallery: React.FC = () => {
           {/* Top Bar Controls */}
           <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-20">
             <div className="flex items-center gap-3">
-              <span className="bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 text-xs font-extrabold uppercase px-3 py-1 rounded-full">
+              <span className="bg-white/10 border border-white/20 text-white text-xs font-extrabold uppercase px-3 py-1 rounded-full">
                 {currentLightboxPhoto.category ||
                   'General'}
               </span>
@@ -1129,7 +1129,7 @@ export const Gallery: React.FC = () => {
           {filteredPhotos.length > 1 && (
             <button
               onClick={handlePrev}
-              className="absolute left-4 sm:left-8 z-20 w-12 h-12 rounded-full bg-black/60 hover:bg-cyan-500/80 text-white hover:text-black border border-white/15 flex items-center justify-center transition-all duration-200 cursor-pointer"
+              className="absolute left-4 sm:left-8 z-20 w-12 h-12 rounded-full bg-black/60 hover:bg-white text-white hover:text-black border border-white/15 flex items-center justify-center transition-all duration-200 cursor-pointer"
               title="Previous (Left Arrow)"
             >
               <ChevronLeft className="w-6 h-6" />
@@ -1155,7 +1155,7 @@ export const Gallery: React.FC = () => {
           {filteredPhotos.length > 1 && (
             <button
               onClick={handleNext}
-              className="absolute right-4 sm:right-8 z-20 w-12 h-12 rounded-full bg-black/60 hover:bg-cyan-500/80 text-white hover:text-black border border-white/15 flex items-center justify-center transition-all duration-200 cursor-pointer"
+              className="absolute right-4 sm:right-8 z-20 w-12 h-12 rounded-full bg-black/60 hover:bg-white text-white hover:text-black border border-white/15 flex items-center justify-center transition-all duration-200 cursor-pointer"
               title="Next (Right Arrow)"
             >
               <ChevronRight className="w-6 h-6" />
@@ -1171,7 +1171,7 @@ export const Gallery: React.FC = () => {
               </h3>
 
               <div className="flex items-center gap-4 text-xs text-neutral-400">
-                <span className="flex items-center gap-1.5 text-cyan-400 font-medium">
+                <span className="flex items-center gap-1.5 text-white font-medium">
                   <User className="w-3.5 h-3.5" />
 
                   <span>
