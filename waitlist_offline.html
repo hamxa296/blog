@@ -7,12 +7,12 @@
   <title>Waitlist Emails - Offline Admin</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --surface: #1e293b;
-      --text: #f8fafc;
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
-      --border: #334155;
+      --bg: #0b0b0b;
+      --surface: #111111;
+      --text: #f0ede8;
+      --primary: #fd4378;
+      --primary-hover: #e82c61;
+      --border: rgba(240,237,232,0.14);
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -85,12 +85,39 @@
       font-size: 0.9rem;
       margin-bottom: 1rem;
     }
+    
+    /* Live status indicator */
+    .live-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #10b981;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-left: 1rem;
+      padding: 0.25rem 0.75rem;
+      background: rgba(16, 185, 129, 0.1);
+      border-radius: 12px;
+      vertical-align: middle;
+    }
+    .live-indicator {
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Waitlist Directory</h1>
-    <div class="count">Total emails: <span id="totalCount">18</span></div>
+    <h1>Waitlist Directory <span class="live-status"><div class="live-indicator"></div> Live Updating</span></h1>
+    <div class="count">Total emails: <span id="totalCount">38</span></div>
     
     <div class="toolbar">
       <input type="text" id="searchInput" placeholder="Search emails...">
@@ -100,6 +127,7 @@
     <table id="emailTable">
       <thead>
         <tr>
+          <th style="width: 50px;">#</th>
           <th>Email</th>
           <th>Signup Time</th>
         </tr>
@@ -107,93 +135,231 @@
       <tbody>
         
           <tr>
+            <td style="color: #94a3b8;">1</td>
             <td class="email-cell">haleema.asif.29@gmail.com</td>
-            <td>N/A</td>
+            <td>04/08/2026, 11:44:55 pm</td>
           </tr>
         
           <tr>
+            <td style="color: #94a3b8;">2</td>
             <td class="email-cell">heshammahsud5@gmail.com</td>
-            <td>N/A</td>
+            <td>04/08/2026, 3:57:45 am</td>
           </tr>
         
           <tr>
+            <td style="color: #94a3b8;">3</td>
             <td class="email-cell">hadiyahsattar1@gmail.com</td>
-            <td>N/A</td>
+            <td>04/08/2026, 11:49:16 pm</td>
           </tr>
         
           <tr>
+            <td style="color: #94a3b8;">4</td>
             <td class="email-cell">raja.m.anas100@gmail.com</td>
-            <td>N/A</td>
+            <td>04/08/2026, 10:26:30 pm</td>
           </tr>
         
           <tr>
+            <td style="color: #94a3b8;">5</td>
+            <td class="email-cell">hassanabdullahkhan221@gmail.com</td>
+            <td>07/08/2026, 1:59:40 pm</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">6</td>
             <td class="email-cell">mahadnetflix123@gmail.com</td>
-            <td>N/A</td>
+            <td>05/08/2026, 3:57:44 pm</td>
           </tr>
         
           <tr>
+            <td style="color: #94a3b8;">7</td>
+            <td class="email-cell">alishahmir514@gmail.com</td>
+            <td>11/08/2026, 2:35:53 pm</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">8</td>
+            <td class="email-cell">danyalmustafa004@gmail.com</td>
+            <td>09/08/2026, 9:22:35 am</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">9</td>
+            <td class="email-cell">saraykhann23@gmail.com</td>
+            <td>08/08/2026, 2:02:15 am</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">10</td>
+            <td class="email-cell">aliiqbalkhan.2401151@gmail.com</td>
+            <td>12/08/2026, 2:09:31 am</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">11</td>
+            <td class="email-cell">hasan343074@gmail.com</td>
+            <td>07/08/2026, 11:43:38 pm</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">12</td>
+            <td class="email-cell">arhamsiddiqui.swips@gmail.com</td>
+            <td>08/08/2026, 1:45:21 pm</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">13</td>
+            <td class="email-cell">hussainahmed19o0012@gmail.com</td>
+            <td>13/08/2026, 5:03:25 pm</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">14</td>
+            <td class="email-cell">believeintheeffort@gmail.com</td>
+            <td>10/08/2026, 3:22:58 am</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">15</td>
+            <td class="email-cell">hamzakghazi@gmail.com</td>
+            <td>13/08/2026, 9:06:04 pm</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">16</td>
             <td class="email-cell">mhaiderabdullah0@gmail.com</td>
-            <td>N/A</td>
+            <td>05/08/2026, 12:22:25 am</td>
           </tr>
         
           <tr>
-            <td class="email-cell">amaanoct123@gmail.com</td>
-            <td>N/A</td>
+            <td style="color: #94a3b8;">17</td>
+            <td class="email-cell">mianabdulrahmantns@gmail.com</td>
+            <td>14/08/2026, 8:25:34 pm</td>
           </tr>
         
           <tr>
-            <td class="email-cell">hamzzarif296@gmail.com</td>
-            <td>N/A</td>
+            <td style="color: #94a3b8;">18</td>
+            <td class="email-cell">amklap14@gmail.com</td>
+            <td>08/08/2026, 5:55:05 pm</td>
           </tr>
         
           <tr>
-            <td class="email-cell">abubakaramir437@gmail.com</td>
-            <td>N/A</td>
+            <td style="color: #94a3b8;">19</td>
+            <td class="email-cell">laraibfatima1111222@gmail.com</td>
+            <td>08/08/2026, 11:58:45 pm</td>
           </tr>
         
           <tr>
-            <td class="email-cell">hamzzarif296@gmail.com</td>
-            <td>N/A</td>
+            <td style="color: #94a3b8;">20</td>
+            <td class="email-cell">wwwbacha313@gmail.com</td>
+            <td>08/08/2026, 12:21:27 pm</td>
           </tr>
         
           <tr>
-            <td class="email-cell">jtennyson05@gmail.com</td>
-            <td>N/A</td>
+            <td style="color: #94a3b8;">21</td>
+            <td class="email-cell">tahamalam007@gmail.com</td>
+            <td>12/08/2026, 6:02:14 am</td>
           </tr>
         
           <tr>
-            <td class="email-cell">harisnetbackup@gmail.com</td>
-            <td>N/A</td>
-          </tr>
-        
-          <tr>
-            <td class="email-cell">ibrahimkashif399@gmail.com</td>
-            <td>N/A</td>
-          </tr>
-        
-          <tr>
-            <td class="email-cell">hadiyahsattar1@gmail.com</td>
-            <td>N/A</td>
-          </tr>
-        
-          <tr>
-            <td class="email-cell">osamaahad282@gmail.com</td>
-            <td>N/A</td>
-          </tr>
-        
-          <tr>
-            <td class="email-cell">marjanorakzai23@gmail.com</td>
-            <td>N/A</td>
-          </tr>
-        
-          <tr>
-            <td class="email-cell">abdulrehman58ab@gmail.com</td>
-            <td>N/A</td>
-          </tr>
-        
-          <tr>
+            <td style="color: #94a3b8;">22</td>
             <td class="email-cell">ashman5793@gmail.com</td>
-            <td>N/A</td>
+            <td>09/08/2026, 6:45:32 pm</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">23</td>
+            <td class="email-cell">amaanoct123@gmail.com</td>
+            <td>04/08/2026, 4:09:03 pm</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">24</td>
+            <td class="email-cell">hamzzarif296@gmail.com</td>
+            <td>04/08/2026, 2:44:03 am</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">25</td>
+            <td class="email-cell">abubakaramir437@gmail.com</td>
+            <td>06/08/2026, 11:32:24 am</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">26</td>
+            <td class="email-cell">jtennyson05@gmail.com</td>
+            <td>04/08/2026, 9:09:36 am</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">27</td>
+            <td class="email-cell">maryamnadeem1155@gmail.com</td>
+            <td>12/08/2026, 5:19:37 pm</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">28</td>
+            <td class="email-cell">harisnetbackup@gmail.com</td>
+            <td>05/08/2026, 4:00:44 pm</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">29</td>
+            <td class="email-cell">ibrahimkashif399@gmail.com</td>
+            <td>06/08/2026, 2:37:56 pm</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">30</td>
+            <td class="email-cell">razzaqareeqa@gmail.com</td>
+            <td>07/08/2026, 2:07:01 am</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">31</td>
+            <td class="email-cell">abuzarkhanca551@gmail.com</td>
+            <td>08/08/2026, 10:58:53 am</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">32</td>
+            <td class="email-cell">misterpee@gmailishot.com</td>
+            <td>12/08/2026, 9:38:06 am</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">33</td>
+            <td class="email-cell">imranhanzla148@gmail.com</td>
+            <td>08/08/2026, 6:45:50 pm</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">34</td>
+            <td class="email-cell">osamaahad282@gmail.com</td>
+            <td>04/08/2026, 10:52:28 pm</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">35</td>
+            <td class="email-cell">marjanorakzai23@gmail.com</td>
+            <td>05/08/2026, 3:56:38 pm</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">36</td>
+            <td class="email-cell">hhasnainali085@gmail.com</td>
+            <td>14/08/2026, 10:24:39 pm</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">37</td>
+            <td class="email-cell">abdulrehman58ab@gmail.com</td>
+            <td>04/08/2026, 3:07:55 pm</td>
+          </tr>
+        
+          <tr>
+            <td style="color: #94a3b8;">38</td>
+            <td class="email-cell">minhaa.sharif07@gmail.com</td>
+            <td>07/08/2026, 12:24:57 pm</td>
           </tr>
         
       </tbody>
@@ -201,6 +367,10 @@
   </div>
 
   <script>
+    // Refresh the page automatically if it's served via a simple file protocol 
+    // and Live Server isn't present, or we can just let Live Server handle it.
+    // For now we assume the user might be using Live Server for hot reloads.
+    
     const searchInput = document.getElementById('searchInput');
     const table = document.getElementById('emailTable');
     const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
@@ -245,4 +415,4 @@
   </script>
 </body>
 </html>
-  
+    
