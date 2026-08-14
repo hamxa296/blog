@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { MobileFooter } from '../components/nav/MobileFooter';
 
 export const NotFound = () => {
   return (
@@ -15,5 +16,6 @@ export const NotFound = () => {
         Go back home
       </Link>
     </div>
+    <MobileFooter />
   );
 };
