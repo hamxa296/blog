@@ -15,7 +15,7 @@ export const NotFound = () => {
       >
         Go back home
       </Link>
+      <MobileFooter />
     </div>
-    <MobileFooter />
   );
 };
