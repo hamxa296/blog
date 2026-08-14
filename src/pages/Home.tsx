@@ -3,6 +3,8 @@ import MobileHome from '../components/hero/MobileHome';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import { FeatureSection } from '../components/feature/FeatureSection';
 import { FeaturedPosts } from '../components/blog/FeaturedPosts';
+import { Footer } from '../components/nav/Footer';
+import { MobileFooter } from '../components/nav/MobileFooter';
 
 import backgroundImage from '../assets/homepc.webp';
 import mobileBackgroundImage from '../assets/mobplain.webp';
@@ -39,8 +41,13 @@ export const Home = () => {
           </div>
         )}
 
-        {/* Footer */}
-        
+        {!isMobile && (
+          <div className="relative z-20">
+            <Footer />
+          </div>
+        )}
+
+        {isMobile && <MobileFooter />}
       </div>
     </main>
   );
