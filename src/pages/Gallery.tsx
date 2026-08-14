@@ -92,6 +92,14 @@ export const Gallery: React.FC = () => {
     loadPhotos();
   }, [loadPhotos]);
 
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
   // Filtered photos for the grid
   const filteredPhotos = photos.filter((photo) => {
     if (selectedCategory === 'All') return true;
