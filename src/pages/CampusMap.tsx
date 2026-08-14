@@ -1527,8 +1527,8 @@ export const CampusMap: React.FC = () => {
           />
         </div>
       </div>
+      <MobileFooter />
     </main>
-    <MobileFooter />
   );
 };
 
