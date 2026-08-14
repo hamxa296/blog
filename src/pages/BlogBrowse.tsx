@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { getApprovedPosts, type Post } from '../services/firebase';
 import { BlogSection } from '../components/blog/BlogSection';
+import { MobileFooter } from '../components/nav/MobileFooter';
 
 export const BlogBrowse: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -94,6 +95,7 @@ export const BlogBrowse: React.FC = () => {
       </div>
 
       <BlogSection posts={filteredPosts} loading={loading} />
+      <MobileFooter />
     </main>
   );
 };
