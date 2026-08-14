@@ -1,6 +1,3 @@
-scroll.tsx
-
-
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { CollectionSurfer } from '../components/gallery/CollectionSurfer';
 import {
