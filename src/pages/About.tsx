@@ -25,7 +25,7 @@ import meetTheTeamBg from '../assets/team 3.webp';
 import zaraBg from '../assets/zara.webp';
 import hamzaBg from '../assets/hamza2.webp';
 import harisBg from '../assets/haris2.webp';
-import Footer from '../components/nav/Footer';
+
 
 export const About: React.FC = () => {
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
@@ -277,10 +277,7 @@ export const About: React.FC = () => {
       </main>
 
 
-      {/* Footer */}
-      <div className="hidden md:block w-full">
-        <Footer />
-      </div>
+      
 
 
       {/* ============================================================= */}
