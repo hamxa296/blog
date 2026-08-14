@@ -329,7 +329,7 @@ export const Gallery: React.FC = () => {
   return (
     <main
       ref={scrollRef}
-      className="relative z-10 h-[100dvh] overflow-y-auto text-white"
+      className="relative z-10 min-h-[100dvh] overflow-y-auto text-white"
       style={{
         backgroundImage: `url(${galleryBg})`,
         backgroundSize: 'cover',
