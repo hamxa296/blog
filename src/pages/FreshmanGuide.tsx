@@ -590,7 +590,7 @@ export const FreshmanGuide: React.FC = () => {
           onRemoveWarning={handleRemoveWarning}
         />
       )}
+      <MobileFooter />
     </main>
-    <MobileFooter />
   );
 };
