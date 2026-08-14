@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Plus, Minus, RotateCcw } from 'lucide-react';
 import mapbg from '../assets/homepc.webp';
+import { MobileFooter } from '../components/nav/MobileFooter';
 
 interface Pin {
   id: string;
@@ -1527,6 +1528,7 @@ export const CampusMap: React.FC = () => {
         </div>
       </div>
     </main>
+    <MobileFooter />
   );
 };
 
