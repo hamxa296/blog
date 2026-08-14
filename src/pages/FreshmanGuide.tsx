@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useBlocker, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { MobileFooter } from '../components/nav/MobileFooter';
 import {
   subscribeGuideSections,
   updateGuideSection,
@@ -590,5 +591,6 @@ export const FreshmanGuide: React.FC = () => {
         />
       )}
     </main>
+    <MobileFooter />
   );
 };
