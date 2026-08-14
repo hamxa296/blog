@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { db, getPostById, type Post } from '../services/firebase';
+import { MobileFooter } from '../components/nav/MobileFooter';
 import {
   collection,
   query,
@@ -370,5 +371,6 @@ export const BlogPostDetail: React.FC = () => {
         </div>
       </div>
     </main>
+    <MobileFooter />
   );
 };
