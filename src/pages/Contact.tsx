@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useIsMobile } from '../hooks/useMediaQuery';
+import { MobileFooter } from '../components/nav/MobileFooter';
 
 import newBg from '../assets/homepc.webp';
 import mobileBg from '../assets/mobfix.webp';
@@ -404,5 +405,6 @@ export const Contact: React.FC = () => {
         </div>
       </section>
     </main>
+    <MobileFooter />
   );
 };
