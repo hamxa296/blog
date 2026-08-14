@@ -3,7 +3,7 @@ import MobileHome from '../components/hero/MobileHome';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import { FeatureSection } from '../components/feature/FeatureSection';
 import { FeaturedPosts } from '../components/blog/FeaturedPosts';
-import { Footer } from '../components/nav/Footer';
+
 import backgroundImage from '../assets/homepc.webp';
 import mobileBackgroundImage from '../assets/mobplain.webp';
 
