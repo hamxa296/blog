@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider, useLocation, useOutlet } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
+import { useEffect } from 'react';
 import FloatingMenu from './components/nav/FloatingMenu';
 import GlobalBackButton from './components/nav/GlobalBackButton';
 import Footer from './components/nav/Footer';
@@ -28,7 +29,10 @@ const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default
 function AppShell() {
   const location = useLocation();
   const outlet = useOutlet();
-  
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [location.pathname]);
   return (
     <div className="flex flex-col min-h-screen relative z-10 bg-[#08080a] text-foreground overflow-x-hidden">
       {/* Global Grainy Overlay */}
