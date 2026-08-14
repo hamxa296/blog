@@ -404,7 +404,7 @@ export const Contact: React.FC = () => {
           </div>
         </div>
       </section>
+      <MobileFooter />
     </main>
-    <MobileFooter />
   );
 };
