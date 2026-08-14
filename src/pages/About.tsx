@@ -25,6 +25,7 @@ import meetTheTeamBg from '../assets/team 3.webp';
 import zaraBg from '../assets/zara.webp';
 import hamzaBg from '../assets/hamza2.webp';
 import harisBg from '../assets/haris2.webp';
+import { MobileFooter } from '../components/nav/MobileFooter';
 
 
 export const About: React.FC = () => {
@@ -505,6 +506,8 @@ export const About: React.FC = () => {
         }
 
       `}</style>
+
+      <MobileFooter />
 
       {/* Lightbox Modal */}
       {lightboxImage && (
