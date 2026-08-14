@@ -36,10 +36,20 @@ async function main() {
         const emailLower = data.email.toLowerCase().trim();
         if (!seen.has(emailLower)) {
           seen.add(emailLower);
+          let timeString = 'N/A';
+          const ts = data.createdAt || data.timestamp;
+          if (ts) {
+            if (typeof ts.toMillis === 'function') {
+              timeString = new Date(ts.toMillis()).toLocaleString();
+            } else if (typeof ts === 'string' || typeof ts === 'number') {
+              timeString = new Date(ts).toLocaleString();
+            }
+          }
+          
           emails.push({
             id: doc.id,
             email: emailLower,
-            timestamp: data.timestamp ? new Date(data.timestamp.toMillis()).toLocaleString() : 'N/A'
+            timestamp: timeString
           });
         }
       }
@@ -56,12 +66,12 @@ async function main() {
   <title>Waitlist Emails - Offline Admin</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --surface: #1e293b;
-      --text: #f8fafc;
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
-      --border: #334155;
+      --bg: #0b0b0b;
+      --surface: #111111;
+      --text: #f0ede8;
+      --primary: #fd4378;
+      --primary-hover: #e82c61;
+      --border: rgba(240,237,232,0.14);
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -176,13 +186,15 @@ async function main() {
     <table id="emailTable">
       <thead>
         <tr>
+          <th style="width: 50px;">#</th>
           <th>Email</th>
           <th>Signup Time</th>
         </tr>
       </thead>
       <tbody>
-        ${emails.map(e => `
+        ${emails.map((e, index) => `
           <tr>
+            <td style="color: #94a3b8;">${index + 1}</td>
             <td class="email-cell">${e.email}</td>
             <td>${e.timestamp}</td>
           </tr>
