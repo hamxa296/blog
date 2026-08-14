@@ -370,7 +370,7 @@ export const BlogPostDetail: React.FC = () => {
           </div>
         </div>
       </div>
+      <MobileFooter />
     </main>
-    <MobileFooter />
   );
 };
