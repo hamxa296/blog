@@ -40,11 +40,7 @@ export const Home = () => {
         )}
 
         {/* Footer */}
-        {!isMobile && (
-          <div className="relative z-20">
-            <Footer />
-          </div>
-        )}
+        
       </div>
     </main>
   );
