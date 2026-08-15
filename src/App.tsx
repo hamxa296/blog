@@ -26,9 +26,15 @@ const BlogBrowse = lazy(() => import('./pages/BlogBrowse').then(module => ({ def
 const BlogPostDetail = lazy(() => import('./pages/BlogPostDetail').then(module => ({ default: module.BlogPostDetail })));
 const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
 
+import { initGuidePreload } from './services/guideService';
+
 function AppShell() {
   const location = useLocation();
   const outlet = useOutlet();
+
+  useEffect(() => {
+    initGuidePreload();
+  }, []);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });

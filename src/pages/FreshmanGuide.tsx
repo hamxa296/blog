@@ -470,34 +470,49 @@ export const FreshmanGuide: React.FC = () => {
                 ))}
               </BentoGrid>
             ) : (
-              <div className="rounded-lg border border-border bg-card p-10 text-center">
+              <div className="rounded-2xl border border-white/10 bg-[#111111]/80 backdrop-blur-xl p-10 text-center shadow-2xl my-6">
                 {connectionStatus === 'connecting' ? (
-                  <p className="text-muted-foreground">
-                    Connecting to database...
-                  </p>
+                  <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <div className="relative w-12 h-12 mb-4 flex items-center justify-center">
+                      <div className="absolute inset-0 rounded-full border-2 border-white/10" />
+                      <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[#fd4378] animate-spin" />
+                      <Sparkles className="w-5 h-5 text-[#fd4378] animate-pulse" />
+                    </div>
+                    <p className="text-white font-semibold text-sm tracking-wider uppercase">
+                      Loading Freshman Guide...
+                    </p>
+                    <p className="text-white/40 text-xs mt-1 font-mono">
+                      Fetching campus info & resources
+                    </p>
+                  </div>
                 ) : connectionStatus === 'error' ? (
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">
-                      No Internet Connection
+                  <div className="py-6 px-4 text-center">
+                    <h3 className="text-lg font-semibold mb-2 text-white">
+                      Connection Error
                     </h3>
 
-                    <p className="text-muted-foreground text-sm mb-4">
-                      Unable to load the guide data. Please check your
-                      connection.
+                    <p className="text-muted-foreground text-sm mb-6 max-w-sm mx-auto">
+                      Unable to load the guide data. Please check your connection.
                     </p>
 
                     <button
                       type="button"
                       onClick={() => window.location.reload()}
-                      className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
+                      className="rounded-full bg-white text-black hover:bg-white/90 px-6 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
                     >
                       Retry Connection
                     </button>
                   </div>
                 ) : (
-                  <p className="text-muted-foreground">
-                    Loading guide data...
-                  </p>
+                  <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <div className="relative w-10 h-10 mb-3 flex items-center justify-center">
+                      <div className="absolute inset-0 rounded-full border-2 border-white/10" />
+                      <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[#fd4378] animate-spin" />
+                    </div>
+                    <p className="text-white/60 text-sm font-medium">
+                      Loading guide sections...
+                    </p>
+                  </div>
                 )}
               </div>
             )}

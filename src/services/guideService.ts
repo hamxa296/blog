@@ -20,32 +20,71 @@ function userPackingDoc(uid: string) {
   return doc(db, 'users', uid, 'packing', 'list');
 }
 
+let cachedGuideSections: GuideSection[] | null = null;
+let lastGuideError: Error | null = null;
+const dataListeners = new Set<(sections: GuideSection[]) => void>();
+const errorListeners = new Set<(error: Error) => void>();
+let globalUnsubscribe: Unsubscribe | null = null;
+
+export function initGuidePreload(): void {
+  if (globalUnsubscribe) return;
+  try {
+    globalUnsubscribe = onSnapshot(
+      freshmanGuideCollection(),
+      (snapshot) => {
+        const sections: GuideSection[] = [];
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          sections.push({
+            id: docSnap.id,
+            tag: data.tag ?? '',
+            shortDescription: data.shortDescription ?? '',
+            fullContent: data.fullContent ?? '',
+            faqs: data.faqs ?? [],
+            warnings: data.warnings ?? [],
+          });
+        });
+        const mapped = sections.map((s) =>
+          s.id === 'what-to-pack' ? { ...s, tag: 'Ready, Set, Pack!' } : s,
+        );
+        cachedGuideSections = mapped;
+        lastGuideError = null;
+        dataListeners.forEach((fn) => fn(mapped));
+      },
+      (err) => {
+        console.warn('Guide preload error:', err);
+        lastGuideError = err;
+        errorListeners.forEach((fn) => fn(err));
+      },
+    );
+  } catch (err) {
+    console.warn('Error setting up guide preload:', err);
+  }
+}
+
+// Auto-trigger background fetch as soon as module is loaded
+initGuidePreload();
+
 export function subscribeGuideSections(
   onData: (sections: GuideSection[]) => void,
   onError: (error: Error) => void,
 ): Unsubscribe {
-  return onSnapshot(
-    freshmanGuideCollection(),
-    (snapshot) => {
-      const sections: GuideSection[] = [];
-      snapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        sections.push({
-          id: docSnap.id,
-          tag: data.tag ?? '',
-          shortDescription: data.shortDescription ?? '',
-          fullContent: data.fullContent ?? '',
-          faqs: data.faqs ?? [],
-          warnings: data.warnings ?? [],
-        });
-      });
-      const mapped = sections.map((s) =>
-        s.id === 'what-to-pack' ? { ...s, tag: 'Ready, Set, Pack!' } : s,
-      );
-      onData(mapped);
-    },
-    (err) => onError(err),
-  );
+  initGuidePreload();
+
+  // Instantly return cached sections if available
+  if (cachedGuideSections) {
+    onData(cachedGuideSections);
+  } else if (lastGuideError) {
+    onError(lastGuideError);
+  }
+
+  dataListeners.add(onData);
+  errorListeners.add(onError);
+
+  return () => {
+    dataListeners.delete(onData);
+    errorListeners.delete(onError);
+  };
 }
 
 export async function updateGuideSection(
