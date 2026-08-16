@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import { useIsMobile } from '../hooks/useMediaQuery';
+import { Footer } from '../components/nav/Footer';
 
 const InstagramIcon = ({ className }: { className?: string }) => (
   <svg
