@@ -512,32 +512,31 @@ export const About: React.FC = () => {
       `}</style>
 
       {!isMobile && (
-          <div className="relative z-20">
-            <Footer />
-          </div>
-        )}
+        <div className="relative z-20">
+          <Footer />
+        </div>
+      )}
 
-        {isMobile && <MobileFooter />}
-      </div>
+      {isMobile && <MobileFooter />}
 
       {/* Lightbox Modal */}
       {lightboxImage && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md p-4 sm:p-10 animate-fade-in"
           onClick={() => setLightboxImage(null)}
         >
-          <button 
+          <button
             className="absolute top-6 right-6 p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer"
             onClick={() => setLightboxImage(null)}
           >
             <X className="w-6 h-6" />
           </button>
-          
-          <img 
-            src={lightboxImage} 
-            alt="Team Member" 
+
+          <img
+            src={lightboxImage}
+            alt="Team Member"
             className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl animate-scale-up"
-            onClick={(e) => e.stopPropagation()} 
+            onClick={(e) => e.stopPropagation()}
           />
         </div>
       )}
