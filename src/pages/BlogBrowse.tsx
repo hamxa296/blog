@@ -3,12 +3,15 @@ import React, { useState, useEffect } from 'react';
 import { getApprovedPosts, type Post } from '../services/firebase';
 import { BlogSection } from '../components/blog/BlogSection';
 import { MobileFooter } from '../components/nav/MobileFooter';
+import { useIsMobile } from '../hooks/useMediaQuery';
+import { Footer } from '../components/nav/Footer';
 
 export const BlogBrowse: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('all');
+  const isMobile = useIsMobile();
 
   const genres = ['all', 'Academic', 'Cultural', 'Sports', 'General'];
 
@@ -95,7 +98,13 @@ export const BlogBrowse: React.FC = () => {
       </div>
 
       <BlogSection posts={filteredPosts} loading={loading} />
-      <MobileFooter />
+      {!isMobile && (
+        <div className="relative z-20">
+          <Footer />
+        </div>
+      )}
+
+      {isMobile && <MobileFooter />}
     </main>
   );
 };
