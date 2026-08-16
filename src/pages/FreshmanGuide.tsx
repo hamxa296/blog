@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useBlocker, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { MobileFooter } from '../components/nav/MobileFooter';
+import { useIsMobile } from '../hooks/useMediaQuery';
+import { Footer } from '../components/nav/Footer';
 import {
   subscribeGuideSections,
   updateGuideSection,
@@ -71,6 +73,7 @@ export const FreshmanGuide: React.FC = () => {
   const expandedSection = searchParams.get('section');
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('connecting');
   const [editingSection, setEditingSection] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
   const [editForm, setEditForm] = useState<GuideEditForm>({
     tag: '',
@@ -605,7 +608,13 @@ export const FreshmanGuide: React.FC = () => {
           onRemoveWarning={handleRemoveWarning}
         />
       )}
-      <MobileFooter />
+      {!isMobile && (
+        <div className="relative z-20">
+          <Footer />
+        </div>
+      )}
+
+      {isMobile && <MobileFooter />}
     </main>
   );
 };
