@@ -58,7 +58,7 @@ export const BlogBrowse: React.FC = () => {
   });
 
   return (
-    <main className="relative z-10 min-h-screen pb-24">
+    <main className="relative z-10 min-h-screen ">
       {/* Solid Background */}
       <div
         aria-hidden="true"
