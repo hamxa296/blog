@@ -392,7 +392,7 @@ export const FreshmanGuide: React.FC = () => {
   };
 
   return (
-    <main className="relative z-10 min-h-[calc(100vh-88px)] pt-10 pb-24 px-4 sm:px-6 text-foreground">
+    <main className="relative z-10 min-h-[calc(100vh-88px)] pt-10 px-4 sm:px-6 text-foreground">
 
       {/* =========================================================
           FIXED BACKGROUND
