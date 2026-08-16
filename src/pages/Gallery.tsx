@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { CollectionSurfer } from '../components/gallery/CollectionSurfer';
 import { MobileFooter } from '../components/nav/MobileFooter';
+import { useIsMobile } from '../hooks/useMediaQuery';
+import { Footer } from '../components/nav/Footer';
 import {
   getGalleryPhotos,
   uploadGalleryPhoto,
@@ -45,6 +47,7 @@ const CATEGORIES = [
 export const Gallery: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { user, profile, role } = useAuth();
+  const isMobile = useIsMobile();
 
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1205,7 +1208,13 @@ export const Gallery: React.FC = () => {
           </div>
         </div>
       )}
-      <MobileFooter />
+      {!isMobile && (
+        <div className="relative z-20">
+          <Footer />
+        </div>
+      )}
+
+      {isMobile && <MobileFooter />}
     </main>
   );
 };
