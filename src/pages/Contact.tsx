@@ -71,7 +71,7 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <main className="relative min-h-screen text-foreground pb-24 overflow-hidden">
+    <main className="relative min-h-screen text-foreground overflow-hidden">
       {/* Background */}
       <div
         className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
