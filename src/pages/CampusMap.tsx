@@ -767,9 +767,6 @@ export const CampusMap: React.FC = () => {
         w-full
         min-h-screen
         bg-[#08080a]
-        flex
-        items-center
-        justify-center
         overflow-hidden
       "
       style={{
@@ -780,764 +777,779 @@ export const CampusMap: React.FC = () => {
     >
 
       {/* ======================================================
-          DESKTOP / TABLET VERSION
+          MAP CONTENT WRAPPER
       ====================================================== */}
 
-      <div
-        className="
-          hidden
-          md:flex
-          w-full
-          min-h-screen
-          flex-col
-          items-center
-          justify-center
-          p-4
-          md:p-8
-          gap-8
-        "
-      >
+      <div className="w-full">
 
         {/* ======================================================
-            DESKTOP / TABLET HEADING
+            DESKTOP / TABLET VERSION
         ====================================================== */}
-
-        <div className="text-center max-w-3xl">
-          <h1
-            className="
-              text-4xl
-              md:text-5xl
-              lg:text-6xl
-              font-bold
-              text-white
-              tracking-tight
-            "
-          >
-            GIKI Campus Map
-          </h1>
-
-          <p
-            className="
-              mt-3
-              text-sm
-              md:text-base
-              text-white/60
-            "
-          >
-            Explore the campus, buildings, facilities, and student spaces.
-          </p>
-        </div>
-
-        {/* Tablet Body */}
 
         <div
           className="
-            relative
+            hidden
+            md:flex
             w-full
-            max-w-[1200px]
-            aspect-[16/10]
-            bg-[#151518]
-            rounded-[28px]
-            md:rounded-[40px]
-            p-[8px]
-            md:p-[14px]
-            border
-            border-white/10
-            shadow-[0_30px_100px_rgba(0,0,0,0.75)]
+            min-h-screen
+            flex-col
+            items-center
+            justify-center
+            p-4
+            md:p-8
+            gap-8
           "
         >
 
-          {/* Tablet Highlight */}
+          {/* ======================================================
+              DESKTOP / TABLET HEADING
+          ====================================================== */}
 
-          <div
-            className="
-              absolute
-              inset-0
-              rounded-[28px]
-              md:rounded-[40px]
-              pointer-events-none
-              border
-              border-white/5
-            "
-          />
+          <div className="text-center max-w-3xl">
+            <h1
+              className="
+                text-4xl
+                md:text-5xl
+                lg:text-6xl
+                font-bold
+                text-white
+                tracking-tight
+              "
+            >
+              GIKI Campus Map
+            </h1>
 
-          {/* Tablet Screen */}
+            <p
+              className="
+                mt-3
+                text-sm
+                md:text-base
+                text-white/60
+              "
+            >
+              Explore the campus, buildings, facilities, and student spaces.
+            </p>
+          </div>
+
+          {/* Tablet Body */}
 
           <div
             className="
               relative
               w-full
-              h-full
-              overflow-hidden
-              rounded-[21px]
-              md:rounded-[30px]
-              bg-black
-              shadow-[inset_0_0_30px_rgba(0,0,0,0.8)]
+              max-w-[1200px]
+              aspect-[16/10]
+              bg-[#151518]
+              rounded-[28px]
+              md:rounded-[40px]
+              p-[8px]
+              md:p-[14px]
+              border
+              border-white/10
+              shadow-[0_30px_100px_rgba(0,0,0,0.75)]
             "
           >
 
-            {/* Camera */}
+            {/* Tablet Highlight */}
 
             <div
-              className="
-                absolute
-                top-2
-                left-1/2
-                -translate-x-1/2
-                z-[300]
-                pointer-events-none
-              "
-            >
-              <div
-                className="
-                  w-[7px]
-                  h-[7px]
-                  rounded-full
-                  bg-black
-                  border
-                  border-white/10
-                "
-              />
-            </div>
-
-            {/* Desktop Map Container */}
-
-            <div
-              ref={desktopContainerRef}
               className="
                 absolute
                 inset-0
-                overflow-hidden
-                cursor-grab
-                active:cursor-grabbing
-                select-none
-                touch-none
+                rounded-[28px]
+                md:rounded-[40px]
+                pointer-events-none
+                border
+                border-white/5
               "
-              onMouseDown={handleDesktopMouseDown}
-              onMouseMove={handleDesktopMouseMove}
-              onMouseUp={handleDesktopMouseUp}
-              onMouseLeave={handleDesktopMouseUp}
-              onWheel={handleDesktopWheel}
+            />
+
+            {/* Tablet Screen */}
+
+            <div
+              className="
+                relative
+                w-full
+                h-full
+                overflow-hidden
+                rounded-[21px]
+                md:rounded-[30px]
+                bg-black
+                shadow-[inset_0_0_30px_rgba(0,0,0,0.8)]
+              "
             >
 
-              {/* Loading */}
-
-              {loading && (
-                <div
-                  className="
-                    absolute
-                    inset-0
-                    flex
-                    items-center
-                    justify-center
-                    bg-gray-900/90
-                    z-[250]
-                  "
-                >
-                  <div className="text-center">
-                    <div
-                      className="
-                        animate-spin
-                        rounded-full
-                        h-14
-                        w-14
-                        border-b-2
-                        border-white
-                        mx-auto
-                        mb-4
-                      "
-                    />
-
-                    <p className="text-white text-lg">
-                      Loading Campus Map...
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Desktop Map */}
+              {/* Camera */}
 
               <div
                 className="
                   absolute
-                  origin-top-left
-                "
-                style={{
-                  transform: `
-                    translate(${desktopTranslate.x}px, ${desktopTranslate.y}px)
-                    scale(${desktopScale})
-                  `,
-                  width: '1400px',
-                  height: '933px',
-                }}
-              >
-                <div
-                  className="
-                    absolute
-                    inset-0
-                    w-full
-                    h-full
-                    bg-cover
-                    bg-center
-                    bg-no-repeat
-                  "
-                  style={{
-                    backgroundImage:
-                      `url('/map.webp')`,
-                  }}
-                />
-
-                {renderPins()}
-              </div>
-
-              {/* Desktop Controls */}
-
-              <div
-                className="
-                  map-control
-                  absolute
-                  top-5
-                  right-5
-                  z-[200]
+                  top-2
+                  left-1/2
+                  -translate-x-1/2
+                  z-[300]
+                  pointer-events-none
                 "
               >
                 <div
                   className="
-                    flex
-                    gap-2
+                    w-[7px]
+                    h-[7px]
                     rounded-full
-                    bg-black/45
-                    backdrop-blur-xl
+                    bg-black
                     border
                     border-white/10
-                    p-2
+                  "
+                />
+              </div>
+
+              {/* Desktop Map Container */}
+
+              <div
+                ref={desktopContainerRef}
+                className="
+                  absolute
+                  inset-0
+                  overflow-hidden
+                  cursor-grab
+                  active:cursor-grabbing
+                  select-none
+                  touch-none
+                "
+                onMouseDown={handleDesktopMouseDown}
+                onMouseMove={handleDesktopMouseMove}
+                onMouseUp={handleDesktopMouseUp}
+                onMouseLeave={handleDesktopMouseUp}
+                onWheel={handleDesktopWheel}
+              >
+
+                {/* Loading */}
+
+                {loading && (
+                  <div
+                    className="
+                      absolute
+                      inset-0
+                      flex
+                      items-center
+                      justify-center
+                      bg-gray-900/90
+                      z-[250]
+                    "
+                  >
+                    <div className="text-center">
+                      <div
+                        className="
+                          animate-spin
+                          rounded-full
+                          h-14
+                          w-14
+                          border-b-2
+                          border-white
+                          mx-auto
+                          mb-4
+                        "
+                      />
+
+                      <p className="text-white text-lg">
+                        Loading Campus Map...
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Desktop Map */}
+
+                <div
+                  className="
+                    absolute
+                    origin-top-left
+                  "
+                  style={{
+                    transform: `
+                      translate(${desktopTranslate.x}px, ${desktopTranslate.y}px)
+                      scale(${desktopScale})
+                    `,
+                    width: '1400px',
+                    height: '933px',
+                  }}
+                >
+                  <div
+                    className="
+                      absolute
+                      inset-0
+                      w-full
+                      h-full
+                      bg-cover
+                      bg-center
+                      bg-no-repeat
+                    "
+                    style={{
+                      backgroundImage:
+                        `url('/map.webp')`,
+                    }}
+                  />
+
+                  {renderPins()}
+                </div>
+
+                {/* Desktop Controls */}
+
+                <div
+                  className="
+                    map-control
+                    absolute
+                    top-5
+                    right-5
+                    z-[200]
+                  "
+                >
+                  <div
+                    className="
+                      flex
+                      gap-2
+                      rounded-full
+                      bg-black/45
+                      backdrop-blur-xl
+                      border
+                      border-white/10
+                      p-2
+                      shadow-2xl
+                    "
+                  >
+                    <button
+                      onClick={desktopZoomIn}
+                      className="
+                        w-10
+                        h-10
+                        rounded-full
+                        hover:bg-white/10
+                        transition-all
+                        duration-200
+                        active:scale-95
+                        flex
+                        items-center
+                        justify-center
+                      "
+                      title="Zoom In"
+                    >
+                      <Plus
+                        size={18}
+                        className="text-white"
+                      />
+                    </button>
+
+                    <button
+                      onClick={desktopZoomOut}
+                      className="
+                        w-10
+                        h-10
+                        rounded-full
+                        hover:bg-white/10
+                        transition-all
+                        duration-200
+                        active:scale-95
+                        flex
+                        items-center
+                        justify-center
+                      "
+                      title="Zoom Out"
+                    >
+                      <Minus
+                        size={18}
+                        className="text-white"
+                      />
+                    </button>
+
+                    <button
+                      onClick={resetDesktopView}
+                      className="
+                        w-10
+                        h-10
+                        rounded-full
+                        hover:bg-white/10
+                        transition-all
+                        duration-200
+                        active:scale-95
+                        flex
+                        items-center
+                        justify-center
+                      "
+                      title="Reset View"
+                    >
+                      <RotateCcw
+                        size={18}
+                        className="text-white"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Desktop Info Drawer */}
+
+              {activeLocation && (
+                <div
+                  className="
+                    absolute
+                    bottom-5
+                    left-5
+                    right-5
+                    md:left-6
+                    md:right-auto
+                    md:w-96
+                    bg-gray-900/95
+                    border
+                    border-white/15
+                    backdrop-blur-md
+                    p-6
+                    rounded-2xl
                     shadow-2xl
+                    z-[220]
+                    text-white
                   "
                 >
                   <button
-                    onClick={desktopZoomIn}
+                    onClick={() =>
+                      setActivePinId(null)
+                    }
                     className="
-                      w-10
-                      h-10
-                      rounded-full
-                      hover:bg-white/10
-                      transition-all
-                      duration-200
-                      active:scale-95
-                      flex
-                      items-center
-                      justify-center
+                      absolute
+                      top-4
+                      right-4
+                      text-white/60
+                      hover:text-white
+                      text-lg
                     "
-                    title="Zoom In"
                   >
-                    <Plus
-                      size={18}
-                      className="text-white"
-                    />
+                    ✕
                   </button>
 
-                  <button
-                    onClick={desktopZoomOut}
+                  <h3
                     className="
-                      w-10
-                      h-10
-                      rounded-full
-                      hover:bg-white/10
-                      transition-all
-                      duration-200
-                      active:scale-95
-                      flex
-                      items-center
-                      justify-center
+                      text-xl
+                      font-bold
+                      text-[#B3CFE5]
+                      mb-2
+                      pr-6
                     "
-                    title="Zoom Out"
                   >
-                    <Minus
-                      size={18}
-                      className="text-white"
-                    />
-                  </button>
+                    {activeLocation.title}
+                  </h3>
 
-                  <button
-                    onClick={resetDesktopView}
+                  <p
                     className="
-                      w-10
-                      h-10
-                      rounded-full
-                      hover:bg-white/10
-                      transition-all
-                      duration-200
-                      active:scale-95
-                      flex
-                      items-center
-                      justify-center
+                      text-sm
+                      text-gray-300
+                      leading-relaxed
                     "
-                    title="Reset View"
                   >
-                    <RotateCcw
-                      size={18}
-                      className="text-white"
-                    />
-                  </button>
+                    {activeLocation.description}
+                  </p>
                 </div>
-              </div>
+              )}
             </div>
+          </div>
+        </div>
 
-            {/* Desktop Info Drawer */}
+        {/* ======================================================
+            MOBILE PHONE VERSION
+        ====================================================== */}
 
-            {activeLocation && (
+        <div
+          className="
+            flex
+            md:hidden
+            w-full
+            min-h-screen
+            flex-col
+            items-center
+            justify-center
+            px-3
+            py-8
+            gap-6
+          "
+        >
+
+          {/* ======================================================
+              MOBILE HEADING
+          ====================================================== */}
+
+          <div className="text-center px-4">
+            <h1
+              className="
+                text-3xl
+                font-bold
+                text-white
+                tracking-tight
+              "
+            >
+              GIKI Campus Map
+            </h1>
+
+            <p
+              className="
+                mt-2
+                text-xs
+                text-white/60
+              "
+            >
+              Explore the campus and find important locations.
+            </p>
+          </div>
+
+          {/* Phone Body */}
+
+          <div
+            className="
+              relative
+              w-full
+              max-w-[430px]
+              h-[calc(100vh-180px)]
+              max-h-[850px]
+              bg-[#111113]
+              rounded-[42px]
+              p-[8px]
+              border
+              border-white/10
+              shadow-[0_25px_80px_rgba(0,0,0,0.8)]
+            "
+          >
+
+            {/* Phone Highlight */}
+
+            <div
+              className="
+                absolute
+                inset-0
+                rounded-[42px]
+                pointer-events-none
+                border
+                border-white/5
+              "
+            />
+
+            {/* Phone Screen */}
+
+            <div
+              className="
+                relative
+                w-full
+                h-full
+                overflow-hidden
+                rounded-[35px]
+                bg-black
+              "
+            >
+
+              {/* Dynamic Island */}
+
               <div
                 className="
                   absolute
-                  bottom-5
-                  left-5
-                  right-5
-                  md:left-6
-                  md:right-auto
-                  md:w-96
-                  bg-gray-900/95
+                  top-3
+                  left-1/2
+                  -translate-x-1/2
+                  z-[300]
+                  w-[90px]
+                  h-[24px]
+                  rounded-full
+                  bg-black
                   border
-                  border-white/15
-                  backdrop-blur-md
-                  p-6
-                  rounded-2xl
-                  shadow-2xl
-                  z-[220]
-                  text-white
+                  border-white/5
+                  shadow-lg
+                  pointer-events-none
                 "
               >
-                <button
-                  onClick={() =>
-                    setActivePinId(null)
-                  }
+                <div
                   className="
                     absolute
-                    top-4
-                    right-4
-                    text-white/60
-                    hover:text-white
-                    text-lg
+                    right-3
+                    top-1/2
+                    -translate-y-1/2
+                    w-[6px]
+                    h-[6px]
+                    rounded-full
+                    bg-[#111]
+                    border
+                    border-white/10
                   "
-                >
-                  ✕
-                </button>
-
-                <h3
-                  className="
-                    text-xl
-                    font-bold
-                    text-[#B3CFE5]
-                    mb-2
-                    pr-6
-                  "
-                >
-                  {activeLocation.title}
-                </h3>
-
-                <p
-                  className="
-                    text-sm
-                    text-gray-300
-                    leading-relaxed
-                  "
-                >
-                  {activeLocation.description}
-                </p>
+                />
               </div>
-            )}
+
+              {/* Mobile Map Container */}
+
+              <div
+                ref={mobileContainerRef}
+                className="
+                  absolute
+                  inset-0
+                  overflow-hidden
+                  cursor-grab
+                  active:cursor-grabbing
+                  select-none
+                  touch-none
+                "
+                onTouchStart={handleMobileTouchStart}
+                onTouchMove={handleMobileTouchMove}
+                onTouchEnd={handleMobileTouchEnd}
+              >
+
+                {/* Loading */}
+
+                {loading && (
+                  <div
+                    className="
+                      absolute
+                      inset-0
+                      flex
+                      items-center
+                      justify-center
+                      bg-gray-900/90
+                      z-[250]
+                    "
+                  >
+                    <div className="text-center">
+                      <div
+                        className="
+                          animate-spin
+                          rounded-full
+                          h-12
+                          w-12
+                          border-b-2
+                          border-white
+                          mx-auto
+                          mb-4
+                        "
+                      />
+
+                      <p className="text-white text-sm">
+                        Loading Campus Map...
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Mobile Map */}
+
+                <div
+                  className="
+                    absolute
+                    origin-top-left
+                  "
+                  style={{
+                    transform: `
+                      translate(${mobileTranslate.x}px, ${mobileTranslate.y}px)
+                      scale(${mobileScale})
+                    `,
+                    width: '1400px',
+                    height: '933px',
+                  }}
+                >
+                  <div
+                    className="
+                      absolute
+                      inset-0
+                      w-full
+                      h-full
+                      bg-cover
+                      bg-center
+                      bg-no-repeat
+                    "
+                    style={{
+                      backgroundImage:
+                        `url('/map.webp')`,
+                    }}
+                  />
+
+                  {renderPins()}
+                </div>
+
+                {/* Mobile Controls */}
+
+                <div
+                  className="
+                    map-control
+                    absolute
+                    top-14
+                    right-4
+                    z-[200]
+                  "
+                >
+                  <div
+                    className="
+                      flex
+                      flex-col
+                      gap-1.5
+                      rounded-2xl
+                      bg-black/45
+                      backdrop-blur-xl
+                      border
+                      border-white/10
+                      p-1.5
+                      shadow-2xl
+                    "
+                  >
+                    <button
+                      onClick={mobileZoomIn}
+                      className="
+                        w-9
+                        h-9
+                        rounded-xl
+                        hover:bg-white/10
+                        active:scale-95
+                        flex
+                        items-center
+                        justify-center
+                      "
+                    >
+                      <Plus
+                        size={17}
+                        className="text-white"
+                      />
+                    </button>
+
+                    <button
+                      onClick={mobileZoomOut}
+                      className="
+                        w-9
+                        h-9
+                        rounded-xl
+                        hover:bg-white/10
+                        active:scale-95
+                        flex
+                        items-center
+                        justify-center
+                      "
+                    >
+                      <Minus
+                        size={17}
+                        className="text-white"
+                      />
+                    </button>
+
+                    <button
+                      onClick={resetMobileView}
+                      className="
+                        w-9
+                        h-9
+                        rounded-xl
+                        hover:bg-white/10
+                        active:scale-95
+                        flex
+                        items-center
+                        justify-center
+                      "
+                    >
+                      <RotateCcw
+                        size={16}
+                        className="text-white"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile Info Card */}
+
+              {activeLocation && (
+                <div
+                  className="
+                    absolute
+                    bottom-4
+                    left-4
+                    right-4
+                    bg-gray-900/95
+                    border
+                    border-white/15
+                    backdrop-blur-xl
+                    p-5
+                    rounded-2xl
+                    shadow-2xl
+                    z-[220]
+                    text-white
+                  "
+                >
+                  <button
+                    onClick={() =>
+                      setActivePinId(null)
+                    }
+                    className="
+                      absolute
+                      top-3
+                      right-3
+                      w-8
+                      h-8
+                      rounded-full
+                      bg-white/5
+                      text-white/60
+                      hover:text-white
+                      flex
+                      items-center
+                      justify-center
+                    "
+                  >
+                    ✕
+                  </button>
+
+                  <h3
+                    className="
+                      text-lg
+                      font-bold
+                      text-[#B3CFE5]
+                      mb-2
+                      pr-8
+                    "
+                  >
+                    {activeLocation.title}
+                  </h3>
+
+                  <p
+                    className="
+                      text-xs
+                      text-gray-300
+                      leading-relaxed
+                    "
+                  >
+                    {activeLocation.description}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Phone Bottom Gesture Bar */}
+
+            <div
+              className="
+                absolute
+                bottom-[-2px]
+                left-1/2
+                -translate-x-1/2
+                w-20
+                h-[3px]
+                rounded-full
+                bg-white/15
+              "
+            />
           </div>
         </div>
       </div>
 
       {/* ======================================================
-          MOBILE PHONE VERSION
+          FOOTER
       ====================================================== */}
 
-      <div
-        className="
-          flex
-          md:hidden
-          w-full
-          min-h-screen
-          flex-col
-          items-center
-          justify-center
-          px-3
-          py-8
-          gap-6
-        "
-      >
-
-        {/* ======================================================
-            MOBILE HEADING
-        ====================================================== */}
-
-        <div className="text-center px-4">
-          <h1
-            className="
-              text-3xl
-              font-bold
-              text-white
-              tracking-tight
-            "
-          >
-            GIKI Campus Map
-          </h1>
-
-          <p
-            className="
-              mt-2
-              text-xs
-              text-white/60
-            "
-          >
-            Explore the campus and find important locations.
-          </p>
-        </div>
-
-        {/* Phone Body */}
-
-        <div
-          className="
-            relative
-            w-full
-            max-w-[430px]
-            h-[calc(100vh-180px)]
-            max-h-[850px]
-            bg-[#111113]
-            rounded-[42px]
-            p-[8px]
-            border
-            border-white/10
-            shadow-[0_25px_80px_rgba(0,0,0,0.8)]
-          "
-        >
-
-          {/* Phone Highlight */}
-
-          <div
-            className="
-              absolute
-              inset-0
-              rounded-[42px]
-              pointer-events-none
-              border
-              border-white/5
-            "
-          />
-
-          {/* Phone Screen */}
-
-          <div
-            className="
-              relative
-              w-full
-              h-full
-              overflow-hidden
-              rounded-[35px]
-              bg-black
-            "
-          >
-
-            {/* Dynamic Island */}
-
-            <div
-              className="
-                absolute
-                top-3
-                left-1/2
-                -translate-x-1/2
-                z-[300]
-                w-[90px]
-                h-[24px]
-                rounded-full
-                bg-black
-                border
-                border-white/5
-                shadow-lg
-                pointer-events-none
-              "
-            >
-              <div
-                className="
-                  absolute
-                  right-3
-                  top-1/2
-                  -translate-y-1/2
-                  w-[6px]
-                  h-[6px]
-                  rounded-full
-                  bg-[#111]
-                  border
-                  border-white/10
-                "
-              />
-            </div>
-
-            {/* Mobile Map Container */}
-
-            <div
-              ref={mobileContainerRef}
-              className="
-                absolute
-                inset-0
-                overflow-hidden
-                cursor-grab
-                active:cursor-grabbing
-                select-none
-                touch-none
-              "
-              onTouchStart={handleMobileTouchStart}
-              onTouchMove={handleMobileTouchMove}
-              onTouchEnd={handleMobileTouchEnd}
-            >
-
-              {/* Loading */}
-
-              {loading && (
-                <div
-                  className="
-                    absolute
-                    inset-0
-                    flex
-                    items-center
-                    justify-center
-                    bg-gray-900/90
-                    z-[250]
-                  "
-                >
-                  <div className="text-center">
-                    <div
-                      className="
-                        animate-spin
-                        rounded-full
-                        h-12
-                        w-12
-                        border-b-2
-                        border-white
-                        mx-auto
-                        mb-4
-                      "
-                    />
-
-                    <p className="text-white text-sm">
-                      Loading Campus Map...
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Mobile Map */}
-
-              <div
-                className="
-                  absolute
-                  origin-top-left
-                "
-                style={{
-                  transform: `
-                    translate(${mobileTranslate.x}px, ${mobileTranslate.y}px)
-                    scale(${mobileScale})
-                  `,
-                  width: '1400px',
-                  height: '933px',
-                }}
-              >
-                <div
-                  className="
-                    absolute
-                    inset-0
-                    w-full
-                    h-full
-                    bg-cover
-                    bg-center
-                    bg-no-repeat
-                  "
-                  style={{
-                    backgroundImage:
-                      `url('/map.webp')`,
-                  }}
-                />
-
-                {renderPins()}
-              </div>
-
-              {/* Mobile Controls */}
-
-              <div
-                className="
-                  map-control
-                  absolute
-                  top-14
-                  right-4
-                  z-[200]
-                "
-              >
-                <div
-                  className="
-                    flex
-                    flex-col
-                    gap-1.5
-                    rounded-2xl
-                    bg-black/45
-                    backdrop-blur-xl
-                    border
-                    border-white/10
-                    p-1.5
-                    shadow-2xl
-                  "
-                >
-                  <button
-                    onClick={mobileZoomIn}
-                    className="
-                      w-9
-                      h-9
-                      rounded-xl
-                      hover:bg-white/10
-                      active:scale-95
-                      flex
-                      items-center
-                      justify-center
-                    "
-                  >
-                    <Plus
-                      size={17}
-                      className="text-white"
-                    />
-                  </button>
-
-                  <button
-                    onClick={mobileZoomOut}
-                    className="
-                      w-9
-                      h-9
-                      rounded-xl
-                      hover:bg-white/10
-                      active:scale-95
-                      flex
-                      items-center
-                      justify-center
-                    "
-                  >
-                    <Minus
-                      size={17}
-                      className="text-white"
-                    />
-                  </button>
-
-                  <button
-                    onClick={resetMobileView}
-                    className="
-                      w-9
-                      h-9
-                      rounded-xl
-                      hover:bg-white/10
-                      active:scale-95
-                      flex
-                      items-center
-                      justify-center
-                    "
-                  >
-                    <RotateCcw
-                      size={16}
-                      className="text-white"
-                    />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Mobile Info Card */}
-
-            {activeLocation && (
-              <div
-                className="
-                  absolute
-                  bottom-4
-                  left-4
-                  right-4
-                  bg-gray-900/95
-                  border
-                  border-white/15
-                  backdrop-blur-xl
-                  p-5
-                  rounded-2xl
-                  shadow-2xl
-                  z-[220]
-                  text-white
-                "
-              >
-                <button
-                  onClick={() =>
-                    setActivePinId(null)
-                  }
-                  className="
-                    absolute
-                    top-3
-                    right-3
-                    w-8
-                    h-8
-                    rounded-full
-                    bg-white/5
-                    text-white/60
-                    hover:text-white
-                    flex
-                    items-center
-                    justify-center
-                  "
-                >
-                  ✕
-                </button>
-
-                <h3
-                  className="
-                    text-lg
-                    font-bold
-                    text-[#B3CFE5]
-                    mb-2
-                    pr-8
-                  "
-                >
-                  {activeLocation.title}
-                </h3>
-
-                <p
-                  className="
-                    text-xs
-                    text-gray-300
-                    leading-relaxed
-                  "
-                >
-                  {activeLocation.description}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Phone Bottom Gesture Bar */}
-
-          <div
-            className="
-              absolute
-              bottom-[-2px]
-              left-1/2
-              -translate-x-1/2
-              w-20
-              h-[3px]
-              rounded-full
-              bg-white/15
-            "
-          />
-        </div>
-      </div>
       {!isMobile && (
-        <div className="relative z-20">
+        <div className="relative z-20 w-full">
           <Footer />
         </div>
       )}
 
-      {isMobile && <MobileFooter />}
+      {isMobile && (
+        <div className="relative z-20 w-full">
+          <MobileFooter />
+        </div>
+      )}
     </main>
   );
 };
-
