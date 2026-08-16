@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Plus, Minus, RotateCcw } from 'lucide-react';
 import mapbg from '../assets/homepc.webp';
 import { MobileFooter } from '../components/nav/MobileFooter';
+import { useIsMobile } from '../hooks/useMediaQuery';
+import { Footer } from '../components/nav/Footer';
 
 interface Pin {
   id: string;
@@ -207,6 +209,7 @@ export const CampusMap: React.FC = () => {
 
   const [pins, setPins] = useState<Pin[]>([]);
   const [loading, setLoading] = useState(true);
+  const isMobile = useIsMobile();
 
   const [activePinId, setActivePinId] = useState<string | null>(null);
   const [hoverPinId, setHoverPinId] = useState<string | null>(null);
@@ -1527,7 +1530,13 @@ export const CampusMap: React.FC = () => {
           />
         </div>
       </div>
-      <MobileFooter />
+      {!isMobile && (
+        <div className="relative z-20">
+          <Footer />
+        </div>
+      )}
+
+      {isMobile && <MobileFooter />}
     </main>
   );
 };
