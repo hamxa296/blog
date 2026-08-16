@@ -33,6 +33,7 @@ import { Footer } from '../components/nav/Footer';
 
 export const About: React.FC = () => {
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
   return (
     <div
