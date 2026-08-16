@@ -22,9 +22,6 @@ import {
   type UserProfile
 } from '../services/firebase';
 import { getOptimizedImageUrl } from '../utils/imageOptimization';
-import { MobileFooter } from '../components/nav/MobileFooter';
-import { useIsMobile } from '../hooks/useMediaQuery';
-import { Footer } from '../components/nav/Footer';
 
 interface CmsComment {
   id: string;
@@ -38,7 +35,7 @@ interface CmsComment {
 
 export const CmsDashboard: React.FC = () => {
   const { user, profile, role, refreshProfile } = useAuth();
-  const isMobile = useIsMobile();
+ 
   
   // Navigation tabs
   const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'gallery' | 'comments' | 'profile' | 'rights'>('overview');
