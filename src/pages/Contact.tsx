@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import { MobileFooter } from '../components/nav/MobileFooter';
 
+import { Footer } from '../components/nav/Footer';
+
 import newBg from '../assets/homepc.webp';
 import mobileBg from '../assets/mobfix.webp';
 
@@ -404,7 +406,13 @@ export const Contact: React.FC = () => {
           </div>
         </div>
       </section>
-      <MobileFooter />
+      {!isMobile && (
+        <div className="relative z-20">
+          <Footer />
+        </div>
+      )}
+
+      {isMobile && <MobileFooter />}
     </main>
   );
 };
