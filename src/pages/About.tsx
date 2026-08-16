@@ -507,7 +507,14 @@ export const About: React.FC = () => {
 
       `}</style>
 
-      <MobileFooter />
+      {!isMobile && (
+          <div className="relative z-20">
+            <Footer />
+          </div>
+        )}
+
+        {isMobile && <MobileFooter />}
+      </div>
 
       {/* Lightbox Modal */}
       {lightboxImage && (
