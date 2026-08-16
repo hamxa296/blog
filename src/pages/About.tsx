@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { useIsMobile } from '../hooks/useMediaQuery';
-import { Footer } from '../components/nav/Footer';
+
 
 const InstagramIcon = ({ className }: { className?: string }) => (
   <svg
@@ -28,6 +27,8 @@ import zaraBg from '../assets/zara.webp';
 import hamzaBg from '../assets/hamza2.webp';
 import harisBg from '../assets/haris2.webp';
 import { MobileFooter } from '../components/nav/MobileFooter';
+import { useIsMobile } from '../hooks/useMediaQuery';
+import { Footer } from '../components/nav/Footer';
 
 
 export const About: React.FC = () => {
