@@ -22,6 +22,13 @@ import {
   type UserProfile
 } from '../services/firebase';
 import { getOptimizedImageUrl } from '../utils/imageOptimization';
+import { BlockEditor } from '../components/editor/BlockEditor';
+import {
+  type Block,
+  serializeBlocks,
+  deserializeContent,
+  createBlock,
+} from '../types/blockTypes';
 
 interface CmsComment {
   id: string;
@@ -72,7 +79,7 @@ export const CmsDashboard: React.FC = () => {
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [editDesc, setEditDesc] = useState('');
-  const [editContent, setEditContent] = useState('');
+  const [editBlocks, setEditBlocks] = useState<Block[]>([createBlock('paragraph')]);
   const [editGenre, setEditGenre] = useState('');
   const [editTags, setEditTags] = useState('');
   const [editPhotoUrl, setEditPhotoUrl] = useState('');
@@ -250,10 +257,16 @@ export const CmsDashboard: React.FC = () => {
     setEditingPost(post);
     setEditTitle(post.title);
     setEditDesc(post.description);
-    setEditContent(post.content);
     setEditGenre(post.genre);
     setEditTags(post.tags.join(', '));
     setEditPhotoUrl(post.photoUrl);
+    // Load content into blocks
+    const { blocks: loaded, isLegacy } = deserializeContent(post.content || '');
+    if (isLegacy && post.content) {
+      setEditBlocks([{ id: 'legacy', type: 'paragraph', data: { html: post.content } }]);
+    } else {
+      setEditBlocks(loaded.length > 0 ? loaded : [createBlock('paragraph')]);
+    }
   };
 
   const handleUpdatePostSubmit = async (e: React.FormEvent) => {
@@ -268,9 +281,10 @@ export const CmsDashboard: React.FC = () => {
       return;
     }
 
+    const content = serializeBlocks(editBlocks);
     const res = await updatePost(editingPost.id, {
       title: editTitle,
-      content: editContent,
+      content,
       description: editDesc,
       photoUrl: editPhotoUrl,
       genre: editGenre,
@@ -1154,14 +1168,10 @@ export const CmsDashboard: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#B3CFE5] uppercase">Content Body (HTML allowed)</label>
-                <textarea
-                  rows={8}
-                  required
-                  value={editContent}
-                  onChange={(e) => setEditContent(e.target.value)}
-                  className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl p-3 text-sm text-white focus:outline-none resize-none font-mono"
-                />
+                <label className="text-xs font-bold text-[#B3CFE5] uppercase">Content (Block Editor)</label>
+                <div className="border border-[#B3CFE5]/20 rounded-xl bg-black/30 p-3 min-h-[220px] max-h-[420px] overflow-y-auto">
+                  <BlockEditor blocks={editBlocks} onChange={setEditBlocks} />
+                </div>
               </div>
 
               <div className="flex justify-end gap-3 mt-6">

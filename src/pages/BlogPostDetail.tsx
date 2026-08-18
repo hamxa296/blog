@@ -15,7 +15,9 @@ import {
 import { Badge } from '../components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import { Clock, ArrowLeft, BookOpen } from 'lucide-react';
-import bgImage from "../assets/bgblog.webp"; // adjust the path if needed
+import bgImage from "../assets/bgblog.webp";
+import { BlockRenderer } from '../components/renderer/BlockRenderer';
+import { calculateReadTime } from '../types/blockTypes';
 
 interface Comment {
   id: string;
@@ -196,10 +198,7 @@ export const BlogPostDetail: React.FC = () => {
     );
   }
 
-  const readTime = Math.max(
-    1,
-    Math.ceil((post.content || '').split(/\s+/).length / 200),
-  );
+  const readTime = calculateReadTime(post.content);
 
   return (
     <main
@@ -274,10 +273,7 @@ export const BlogPostDetail: React.FC = () => {
               </p>
             )}
 
-            <article
-              className="prose prose-invert max-w-none text-foreground/90 text-base sm:text-lg leading-relaxed space-y-4"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
+            <BlockRenderer content={post.content} />
 
             <section className="border-t border-border/50 pt-8">
               <h2 className="flex items-center gap-2 text-2xl font-semibold mb-6">
