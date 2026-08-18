@@ -21,6 +21,7 @@ import {
   deserializeContent,
   createBlock,
 } from '../types/blockTypes';
+import { sanitizeBlocks } from '../utils/sanitize';
 
 export const WritePost: React.FC = () => {
   const navigate = useNavigate();
@@ -158,8 +159,9 @@ export const WritePost: React.FC = () => {
         return b;
       }),
     );
-    setBlocks(uploadedBlocks);
-    return serializeBlocks(uploadedBlocks);
+    const cleanBlocks = sanitizeBlocks(uploadedBlocks);
+    setBlocks(cleanBlocks);
+    return serializeBlocks(cleanBlocks);
   };
 
   const handlePublish = async (e: React.FormEvent) => {

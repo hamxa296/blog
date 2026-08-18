@@ -1,6 +1,7 @@
 import React from 'react';
 import type { CtaBlock as CTB, CtaVariant } from '../../../types/blockTypes';
 import { Megaphone, Sparkles, Zap, ExternalLink, Circle } from 'lucide-react';
+import { sanitizeUrl } from '../../../utils/sanitize';
 
 interface Props {
   block: CTB;
@@ -99,6 +100,7 @@ export const CtaBlock: React.FC<Props> = ({ block, onChange }) => {
             type="url"
             value={d.buttonUrl}
             onChange={(e) => update({ buttonUrl: e.target.value })}
+            onBlur={(e) => update({ buttonUrl: sanitizeUrl(e.target.value) })}
             placeholder="https://..."
             className="block-cta-input text-sm"
           />

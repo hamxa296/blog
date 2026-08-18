@@ -1,10 +1,12 @@
 import React from 'react';
 import type { CtaBlock } from '../../../types/blockTypes';
 import { ExternalLink } from 'lucide-react';
+import { sanitizeUrl } from '../../../utils/sanitize';
 
 export const CtaRender: React.FC<{ block: CtaBlock }> = ({ block }) => {
   const { headline, body, buttonLabel, buttonUrl, variant } = block.data;
   if (!headline) return null;
+  const cleanButtonUrl = sanitizeUrl(buttonUrl);
 
   return (
     <div className={`render-cta cta-${variant}`}>
@@ -13,9 +15,9 @@ export const CtaRender: React.FC<{ block: CtaBlock }> = ({ block }) => {
           <p className="render-cta-headline">{headline}</p>
           {body && <p className="render-cta-body">{body}</p>}
         </div>
-        {buttonUrl && (
+        {cleanButtonUrl && (
           <a
-            href={buttonUrl}
+            href={cleanButtonUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="render-cta-btn"

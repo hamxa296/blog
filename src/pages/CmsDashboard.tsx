@@ -33,6 +33,7 @@ import {
   deserializeContent,
   createBlock,
 } from '../types/blockTypes';
+import { sanitizeBlocks } from '../utils/sanitize';
 
 interface CmsComment {
   id: string;
@@ -352,7 +353,7 @@ export const CmsDashboard: React.FC = () => {
       return;
     }
 
-    const content = serializeBlocks(editBlocks);
+    const content = serializeBlocks(sanitizeBlocks(editBlocks));
     const res = await updatePost(editingPost.id, {
       title: editTitle,
       content,

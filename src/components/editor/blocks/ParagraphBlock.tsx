@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import type { ParagraphBlock as PB } from '../../../types/blockTypes';
 import { Bold, Italic, Link, Unlink } from 'lucide-react';
+import { sanitizeHtml, sanitizeUrl } from '../../../utils/sanitize';
 
 interface Props {
   block: PB;
@@ -19,7 +20,7 @@ export const ParagraphBlock: React.FC<Props> = ({ block, onChange, onEnter, onDe
   // Set initial HTML
   useEffect(() => {
     if (editorRef.current && editorRef.current.innerHTML !== block.data.html) {
-      editorRef.current.innerHTML = block.data.html;
+      editorRef.current.innerHTML = sanitizeHtml(block.data.html);
     }
   }, []); // eslint-disable-line
 
@@ -38,7 +39,11 @@ export const ParagraphBlock: React.FC<Props> = ({ block, onChange, onEnter, onDe
 
   const saveContent = useCallback(() => {
     if (editorRef.current) {
-      onChange({ html: editorRef.current.innerHTML });
+      const cleanHtml = sanitizeHtml(editorRef.current.innerHTML);
+      if (cleanHtml !== editorRef.current.innerHTML) {
+        editorRef.current.innerHTML = cleanHtml;
+      }
+      onChange({ html: cleanHtml });
     }
   }, [onChange]);
 
@@ -82,7 +87,8 @@ export const ParagraphBlock: React.FC<Props> = ({ block, onChange, onEnter, onDe
       format('unlink');
     } else if (sel && !sel.isCollapsed) {
       const url = window.prompt('Enter URL:');
-      if (url) format('createLink', url);
+      const cleanUrl = sanitizeUrl(url || '');
+      if (cleanUrl) format('createLink', cleanUrl);
     }
   };
 

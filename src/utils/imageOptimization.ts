@@ -142,7 +142,7 @@ export async function uploadImageToCloudinary(
 
   if (!response.ok) {
     let detail = '';
-    try { detail = await response.text(); } catch (_) {}
+    try { detail = await response.text(); } catch { /* ignore */ }
     throw new Error(`Cloudinary upload failed${detail ? `: ${detail}` : ''}`);
   }
 

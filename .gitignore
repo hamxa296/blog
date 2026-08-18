@@ -60,3 +60,4 @@ dist-ssr
 env.download
 serviceAccountKey.json
 /.agents
+SECURITY_AUDIT_REPORT.md

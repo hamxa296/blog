@@ -1,34 +1,45 @@
 rules_version = '2';
 
-// Craft rules based on the specific paths for the Firebase Storage bucket provided.
 service firebase.storage {
   match /b/{bucket}/o {
-    
-    // Reusable function to check if user is logged in
     function isAuthenticated() {
       return request.auth != null;
     }
 
-    // Avatar Uploads
-    // Users can upload to their own avatar path
+    function isSafeImage(maxSizeBytes) {
+      return request.resource != null &&
+        request.resource.size <= maxSizeBytes &&
+        request.resource.contentType.matches('image/(jpeg|jpg|png|webp|gif)');
+    }
+
     match /avatars/{userId}/{fileName} {
       allow read: if true;
-      allow write: if isAuthenticated() && request.auth.uid == userId;
+      allow write: if isAuthenticated() &&
+        request.auth.uid == userId &&
+        isSafeImage(5 * 1024 * 1024);
     }
 
-    // Post cover images and gallery photos
-    // In this app, many images are handled by Cloudinary, but if Firebase Storage is used for posts/gallery:
+    match /profile_pictures/{userId}/{fileName} {
+      allow read: if true;
+      allow write: if isAuthenticated() &&
+        request.auth.uid == userId &&
+        isSafeImage(5 * 1024 * 1024);
+    }
+
     match /posts/{userId}/{fileName} {
       allow read: if true;
-      allow write: if isAuthenticated() && request.auth.uid == userId;
-    }
-    
-    match /gallery/{userId}/{fileName} {
-      allow read: if true;
-      allow write: if isAuthenticated() && request.auth.uid == userId;
+      allow write: if isAuthenticated() &&
+        request.auth.uid == userId &&
+        isSafeImage(10 * 1024 * 1024);
     }
 
-    // Default deny for everything else to keep it secure
+    match /gallery/{userId}/{fileName} {
+      allow read: if true;
+      allow write: if isAuthenticated() &&
+        request.auth.uid == userId &&
+        isSafeImage(10 * 1024 * 1024);
+    }
+
     match /{allPaths=**} {
       allow read, write: if false;
     }

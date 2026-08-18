@@ -2,85 +2,413 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Reusable function to check if user is logged in
     function isAuthenticated() {
       return request.auth != null;
     }
-    
-    // Reusable function to check if user is an admin
-    // Note: We check if they have the 'admin' role in their user document
-    // For initial setup, we also allow specific UIDs if needed
-    function isAdmin() {
+
+    function signedInUserDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function isBootstrapAdmin() {
+      return isAuthenticated() && request.auth.uid in [
+        "DNDjKZRt0yQNh4d3inNchRcs0oY2",
+        "zCINcUAy84aMwHF83wlRUTO2Dn32",
+        "gn2AlkdswANjVg58rUXOLoPaX192",
+        "b7QYLqpUCNbCKGvU1SQgr1pHBJj1"
+      ];
+    }
+
+    function hasRole(role) {
       return isAuthenticated() && (
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true ||
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+        request.auth.token.role == role ||
+        signedInUserDoc().data.role == role ||
+        (role == 'admin' && signedInUserDoc().data.isAdmin == true)
       );
     }
-    
-    // Users Collection
+
+    function isAdmin() {
+      return request.auth.token.admin == true || hasRole('admin') || isBootstrapAdmin();
+    }
+
+    function isEditor() {
+      return hasRole('editor');
+    }
+
+    function isModerator() {
+      return hasRole('moderator');
+    }
+
+    function canModeratePosts() {
+      return isAdmin() || isEditor();
+    }
+
+    function canModerateGallery() {
+      return isAdmin() || isEditor() || isModerator();
+    }
+
+    function canModerateComments() {
+      return isAdmin() || isEditor() || isModerator();
+    }
+
+    function validString(value, maxLength) {
+      return value is string && value.size() <= maxLength;
+    }
+
+    function validOptionalString(data, key, maxLength) {
+      return !(key in data) || validString(data[key], maxLength);
+    }
+
+    function validOptionalBool(data, key) {
+      return !(key in data) || data[key] is bool;
+    }
+
+    function validOptionalTimestamp(data, key) {
+      return !(key in data) || data[key] is timestamp;
+    }
+
+    function validRole(role) {
+      return role in ['admin', 'editor', 'moderator', 'author', 'user'];
+    }
+
+    function validPostStatus(status) {
+      return status in ['pending', 'approved', 'rejected', 'draft'];
+    }
+
+    function validGalleryStatus(status) {
+      return status in ['pending', 'approved', 'rejected'];
+    }
+
+    function validUserProfile(data) {
+      return data.keys().hasOnly([
+          'uid',
+          'email',
+          'displayName',
+          'photoURL',
+          'bio',
+          'badge',
+          'isAdmin',
+          'isBlocked',
+          'role',
+          'createdAt',
+          'lastUpdated',
+          'instagramUrl',
+          'twitterUrl',
+          'threadsUrl'
+        ]) &&
+        validString(data.uid, 128) &&
+        data.email is string &&
+        validString(data.displayName, 120) &&
+        validOptionalString(data, 'photoURL', 2048) &&
+        validOptionalString(data, 'bio', 1000) &&
+        validOptionalString(data, 'badge', 80) &&
+        validOptionalBool(data, 'isAdmin') &&
+        validOptionalBool(data, 'isBlocked') &&
+        (!(data.role is string) || validRole(data.role)) &&
+        validOptionalTimestamp(data, 'createdAt') &&
+        validOptionalTimestamp(data, 'lastUpdated') &&
+        validOptionalString(data, 'instagramUrl', 2048) &&
+        validOptionalString(data, 'twitterUrl', 2048) &&
+        validOptionalString(data, 'threadsUrl', 2048);
+    }
+
+    function validPublicUserCreate(userId) {
+      return validUserProfile(request.resource.data) &&
+        request.resource.data.uid == userId &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.role in ['author', 'user'] &&
+        !('isAdmin' in request.resource.data) &&
+        !('isBlocked' in request.resource.data);
+    }
+
+    function validBootstrapAdminCreate(userId) {
+      return isBootstrapAdmin() &&
+        validUserProfile(request.resource.data) &&
+        request.resource.data.uid == userId &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.role == 'admin' &&
+        request.resource.data.isAdmin == true;
+    }
+
+    function validPublicUserUpdate() {
+      return validUserProfile(request.resource.data) &&
+        request.resource.data.uid == resource.data.uid &&
+        request.resource.data.email == resource.data.email &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'displayName',
+          'photoURL',
+          'bio',
+          'badge',
+          'lastUpdated',
+          'instagramUrl',
+          'twitterUrl',
+          'threadsUrl'
+        ]);
+    }
+
+    function validPostDocument(data) {
+      return data.keys().hasOnly([
+          'title',
+          'content',
+          'description',
+          'photoUrl',
+          'genre',
+          'tags',
+          'authorId',
+          'authorName',
+          'createdAt',
+          'status',
+          'isFeatured',
+          'reviewedBy',
+          'reviewedAt',
+          'rejectionReason',
+          'featuredBy',
+          'featuredAt'
+        ]) &&
+        validString(data.title, 180) &&
+        validString(data.content, 500000) &&
+        validString(data.description, 1000) &&
+        validString(data.photoUrl, 2048) &&
+        validString(data.genre, 80) &&
+        data.tags is list &&
+        data.tags.size() <= 30 &&
+        validString(data.authorId, 128) &&
+        validString(data.authorName, 120) &&
+        validPostStatus(data.status) &&
+        data.isFeatured is bool &&
+        validOptionalString(data, 'reviewedBy', 128) &&
+        validOptionalTimestamp(data, 'reviewedAt') &&
+        validOptionalString(data, 'rejectionReason', 1000) &&
+        validOptionalString(data, 'featuredBy', 128) &&
+        validOptionalTimestamp(data, 'featuredAt');
+    }
+
+    function validAuthorPostCreate() {
+      return validPostDocument(request.resource.data) &&
+        request.resource.data.authorId == request.auth.uid &&
+        request.resource.data.status in ['pending', 'draft'] &&
+        request.resource.data.isFeatured == false &&
+        !('reviewedBy' in request.resource.data) &&
+        !('reviewedAt' in request.resource.data) &&
+        !('rejectionReason' in request.resource.data) &&
+        !('featuredBy' in request.resource.data) &&
+        !('featuredAt' in request.resource.data);
+    }
+
+    function validAuthorPostUpdate() {
+      return validPostDocument(request.resource.data) &&
+        resource.data.authorId == request.auth.uid &&
+        request.resource.data.authorId == resource.data.authorId &&
+        resource.data.status in ['pending', 'draft', 'rejected'] &&
+        request.resource.data.status in ['pending', 'draft'] &&
+        request.resource.data.isFeatured == false &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'title',
+          'content',
+          'description',
+          'photoUrl',
+          'genre',
+          'tags',
+          'authorName',
+          'createdAt',
+          'status'
+        ]);
+    }
+
+    function validModeratorPostUpdate() {
+      return validPostDocument(request.resource.data) &&
+        request.resource.data.authorId == resource.data.authorId &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'title',
+          'content',
+          'description',
+          'photoUrl',
+          'genre',
+          'tags',
+          'status',
+          'isFeatured',
+          'reviewedBy',
+          'reviewedAt',
+          'rejectionReason',
+          'featuredBy',
+          'featuredAt'
+        ]);
+    }
+
+    function validGalleryDocument(data) {
+      return data.keys().hasOnly([
+          'imageUrl',
+          'fullSizeUrl',
+          'caption',
+          'category',
+          'uploaderName',
+          'uploaderId',
+          'cloudinaryId',
+          'isHighlighted',
+          'status',
+          'createdAt',
+          'reviewedAt',
+          'reviewedBy',
+          'rejectionReason',
+          'highlightedBy',
+          'highlightedAt'
+        ]) &&
+        validString(data.imageUrl, 2048) &&
+        validString(data.fullSizeUrl, 2048) &&
+        validString(data.caption, 500) &&
+        validString(data.category, 80) &&
+        validString(data.uploaderName, 120) &&
+        validString(data.uploaderId, 128) &&
+        validOptionalString(data, 'cloudinaryId', 255) &&
+        data.isHighlighted is bool &&
+        validGalleryStatus(data.status) &&
+        data.createdAt is timestamp &&
+        validOptionalTimestamp(data, 'reviewedAt') &&
+        validOptionalString(data, 'reviewedBy', 128) &&
+        validOptionalString(data, 'rejectionReason', 1000) &&
+        validOptionalString(data, 'highlightedBy', 128) &&
+        validOptionalTimestamp(data, 'highlightedAt');
+    }
+
+    function validGalleryCreate() {
+      return validGalleryDocument(request.resource.data) &&
+        request.resource.data.uploaderId == request.auth.uid &&
+        request.resource.data.status == 'pending' &&
+        request.resource.data.isHighlighted == false &&
+        !('reviewedAt' in request.resource.data) &&
+        !('reviewedBy' in request.resource.data) &&
+        !('rejectionReason' in request.resource.data) &&
+        !('highlightedBy' in request.resource.data) &&
+        !('highlightedAt' in request.resource.data);
+    }
+
+    function validOwnerGalleryUpdate() {
+      return validGalleryDocument(request.resource.data) &&
+        resource.data.uploaderId == request.auth.uid &&
+        request.resource.data.uploaderId == resource.data.uploaderId &&
+        resource.data.status in ['pending', 'rejected'] &&
+        request.resource.data.status == resource.data.status &&
+        request.resource.data.isHighlighted == resource.data.isHighlighted &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'caption',
+          'category'
+        ]);
+    }
+
+    function validContactMessage(data) {
+      return data.keys().hasOnly([
+          'name',
+          'email',
+          'subject',
+          'message',
+          'attachmentUrl',
+          'createdAt'
+        ]) &&
+        validString(data.name, 120) &&
+        validString(data.email, 254) &&
+        validString(data.subject, 120) &&
+        validString(data.message, 5000) &&
+        validOptionalString(data, 'attachmentUrl', 2048) &&
+        data.createdAt is timestamp;
+    }
+
     match /users/{userId} {
-      // Anyone can read public profiles
-      allow read: if true;
-      // Users can edit their own profiles, admins can edit any
-      allow write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
-    }
-
-    // Posts Collection
-    match /posts/{postId} {
-      // Anyone can read approved posts
-      // Users can read their own drafts/pending posts
-      // Admins can read all posts
-      allow read: if resource.data.status == 'approved' || 
-                     (isAuthenticated() && resource.data.authorId == request.auth.uid) || 
-                     isAdmin();
-                     
-      // Logged in users can create posts (as drafts or pending)
-      allow create: if isAuthenticated() && request.resource.data.authorId == request.auth.uid;
-      
-      // Users can update their own posts (but cannot bypass approval logic without admin)
+      allow get: if true;
+      allow list: if isAdmin();
+      allow create: if isAuthenticated() &&
+        (validPublicUserCreate(userId) || validBootstrapAdminCreate(userId) || (isAdmin() && validUserProfile(request.resource.data)));
       allow update: if isAuthenticated() && (
-        (resource.data.authorId == request.auth.uid) || isAdmin()
+        (request.auth.uid == userId && validPublicUserUpdate()) ||
+        (isAdmin() && validUserProfile(request.resource.data))
       );
-      
-      // Users can delete their own posts, admins can delete any
-      allow delete: if isAuthenticated() && (resource.data.authorId == request.auth.uid || isAdmin());
+      allow delete: if isAdmin() && request.auth.uid != userId;
+
+      match /packing/{packingId} {
+        allow read, write: if isAuthenticated() && request.auth.uid == userId;
+      }
+
+      match /bookmarks/{bookmarkId} {
+        allow read, create, update, delete: if isAuthenticated() && request.auth.uid == userId;
+      }
     }
 
-    // Gallery Photos Collection
+    match /posts/{postId} {
+      allow get: if resource.data.status == 'approved' ||
+        (isAuthenticated() && resource.data.authorId == request.auth.uid) ||
+        canModeratePosts();
+      allow list: if resource.data.status == 'approved' ||
+        (isAuthenticated() && resource.data.authorId == request.auth.uid) ||
+        canModeratePosts();
+      allow create: if isAuthenticated() && validAuthorPostCreate();
+      allow update: if isAuthenticated() && (
+        validAuthorPostUpdate() ||
+        (canModeratePosts() && validModeratorPostUpdate())
+      );
+      allow delete: if isAuthenticated() &&
+        (canModeratePosts() || (resource.data.authorId == request.auth.uid && resource.data.status == 'draft'));
+    }
+
     match /galleryPhotos/{photoId} {
-      // Anyone can read approved photos
-      allow read: if resource.data.approved == true || 
-                     (isAuthenticated() && resource.data.uploaderId == request.auth.uid) || 
-                     isAdmin();
-                     
-      // Logged in users can upload photos
-      allow create: if isAuthenticated() && request.resource.data.uploaderId == request.auth.uid;
-      
-      // Only admins can approve or delete other's photos
-      allow update, delete: if isAuthenticated() && (
-        resource.data.uploaderId == request.auth.uid || isAdmin()
+      allow get: if resource.data.status == 'approved' ||
+        (isAuthenticated() && resource.data.uploaderId == request.auth.uid) ||
+        canModerateGallery();
+      allow list: if resource.data.status == 'approved' ||
+        (isAuthenticated() && resource.data.uploaderId == request.auth.uid) ||
+        canModerateGallery();
+      allow create: if isAuthenticated() && validGalleryCreate();
+      allow update: if isAuthenticated() && (
+        validOwnerGalleryUpdate() ||
+        (canModerateGallery() && validGalleryDocument(request.resource.data))
       );
+      allow delete: if isAuthenticated() &&
+        (canModerateGallery() || (resource.data.uploaderId == request.auth.uid && resource.data.status in ['pending', 'rejected']));
     }
 
-    // Comments Collection
     match /comments/{commentId} {
       allow read: if true;
-      allow create: if isAuthenticated() && request.resource.data.authorId == request.auth.uid;
-      allow update, delete: if isAuthenticated() && (resource.data.authorId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() &&
+        request.resource.data.keys().hasOnly(['postId', 'authorId', 'authorName', 'authorPhotoURL', 'content', 'createdAt']) &&
+        request.resource.data.authorId == request.auth.uid &&
+        validString(request.resource.data.postId, 128) &&
+        validString(request.resource.data.authorName, 120) &&
+        validOptionalString(request.resource.data, 'authorPhotoURL', 2048) &&
+        validString(request.resource.data.content, 2000) &&
+        request.resource.data.createdAt is timestamp;
+      allow update: if isAuthenticated() &&
+        resource.data.authorId == request.auth.uid &&
+        request.resource.data.authorId == resource.data.authorId &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['content']);
+      allow delete: if isAuthenticated() && (resource.data.authorId == request.auth.uid || canModerateComments());
     }
 
-    // Reactions Collection
     match /reactions/{reactionId} {
       allow read: if true;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() &&
+        request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated() &&
+        (resource.data.userId == request.auth.uid || canModerateComments());
     }
 
-    // Events Collection (Calendar)
+    match /bookmarks/{bookmarkId} {
+      allow read, update, delete: if isAuthenticated() &&
+        resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() &&
+        request.resource.data.userId == request.auth.uid;
+    }
+
     match /events/{eventId} {
       allow read: if true;
-      // Only admins can manage events
+      allow write: if isAdmin();
+    }
+
+    match /contact_messages/{messageId} {
+      allow create: if validContactMessage(request.resource.data);
+      allow read, delete: if isAdmin();
+      allow update: if false;
+    }
+
+    match /artifacts/{appId}/public/data/freshmanGuide/{sectionId} {
+      allow read: if true;
       allow write: if isAdmin();
     }
   }

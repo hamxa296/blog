@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import type { ImageBlock as IB } from '../../../types/blockTypes';
 import { ImageIcon, Upload, X } from 'lucide-react';
+import { sanitizeUrl } from '../../../utils/sanitize';
 
 interface Props {
   block: IB;
@@ -76,7 +77,7 @@ export const ImageBlock: React.FC<Props> = ({ block, onChange }) => {
             className="block-image-url-input mt-3"
             onClick={(e) => e.stopPropagation()}
             onBlur={(e) => {
-              const val = e.target.value.trim();
+              const val = sanitizeUrl(e.target.value);
               if (val) onChange({ ...block.data, url: val });
             }}
           />

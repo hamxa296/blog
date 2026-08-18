@@ -110,9 +110,11 @@ export const PackingChecklist: React.FC<PackingChecklistProps> = ({ onSessionCha
       let guestChecked: CheckedItems = {};
       try {
         const guestRaw = localStorage.getItem(GUEST_PROGRESS_KEY);
-        guestChecked = guestRaw ? JSON.parse(guestRaw) : {};
+        if (guestRaw) {
+          guestChecked = JSON.parse(guestRaw);
+        }
       } catch {
-        guestChecked = {};
+        // ignore
       }
 
       if (Object.keys(guestChecked).length > 0) {

@@ -7,6 +7,7 @@ import { CalloutRender } from './blocks/CalloutRender';
 import { DividerRender } from './blocks/DividerRender';
 import { ImageRender } from './blocks/ImageRender';
 import { CtaRender } from './blocks/CtaRender';
+import { sanitizeBlocks, sanitizeHtml } from '../../utils/sanitize';
 
 interface BlockRendererProps {
   content: string; // JSON string of Block[] or legacy HTML
@@ -39,18 +40,21 @@ export const BlockRenderer: React.FC<BlockRendererProps> = ({ content }) => {
 
   // Legacy HTML path
   if (isLegacy) {
+    const cleanContent = sanitizeHtml(content, 'legacy');
     return (
       <div
         ref={containerRef}
         className="render-legacy prose prose-invert max-w-none text-foreground/90 text-base sm:text-lg leading-relaxed"
-        dangerouslySetInnerHTML={{ __html: content }}
+        dangerouslySetInnerHTML={{ __html: cleanContent }}
       />
     );
   }
 
+  const cleanBlocks = sanitizeBlocks(blocks);
+
   return (
     <div ref={containerRef} className="render-blocks-container">
-      {blocks.map((block: Block, i: number) => (
+      {cleanBlocks.map((block: Block, i: number) => (
         <div
           key={block.id || i}
           className="render-block"

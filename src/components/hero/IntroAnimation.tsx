@@ -35,7 +35,7 @@ interface FlipCardProps {
 const IMG_WIDTH = 60; // Reduced from 100
 const IMG_HEIGHT = 85; // Reduced from 140
 
-function FlipCard({ src, index, total: _total, phase: _phase, target }: FlipCardProps) {
+function FlipCard({ src, index, target }: FlipCardProps) {
   return (
     <motion.div
       // Smoothly animate to the coordinates defined by the parent
@@ -353,7 +353,7 @@ export default function IntroAnimation() {
         {/* Main Container */}
         <div className="relative flex items-center justify-center w-full h-full">
           {IMAGES.slice(0, TOTAL_IMAGES).map((src, i) => {
-            let target = { x: 0, y: 0, rotation: 0, scale: 1, opacity: 1 };
+            let target: { x: number; y: number; rotation: number; scale: number; opacity: number };
 
             // 1. Intro Phases (Scatter -> Line)
             if (introPhase === 'scatter') {
