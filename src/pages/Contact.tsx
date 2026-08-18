@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import { MobileFooter } from '../components/nav/MobileFooter';
-
 import { Footer } from '../components/nav/Footer';
+import { submitContactMessage } from '../services/firebase';
+import { uploadImageToCloudinary } from '../services/cloudinary';
 
 import newBg from '../assets/homepc.webp';
 import mobileBg from '../assets/mobfix.webp';
@@ -20,6 +21,7 @@ export const Contact: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState({ text: '', type: '' });
   const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
+  const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -40,26 +42,70 @@ export const Contact: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const checkRateLimit = () => {
+    const lastSubmit = localStorage.getItem('lastContactSubmit');
+    if (lastSubmit) {
+      const timeSince = Date.now() - parseInt(lastSubmit, 10);
+      const cooldown = 5 * 60 * 1000; // 5 minutes
+      if (timeSince < cooldown) {
+        const remainingMinutes = Math.ceil((cooldown - timeSince) / 60000);
+        return `Please wait ${remainingMinutes} minute(s) before sending another message to prevent spam.`;
+      }
+    }
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const rateLimitMsg = checkRateLimit();
+    if (rateLimitMsg) {
+      setStatusMsg({ text: rateLimitMsg, type: 'error' });
+      return;
+    }
+    
     setLoading(true);
-    setStatusMsg({ text: 'Sending your message...', type: 'info' });
-
-    // Mock API call to simulate message delivery
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      setStatusMsg({
-        text: 'Thank you! Your message has been sent successfully.',
-        type: 'success',
+      let attachmentUrl = undefined;
+      
+      if (attachmentFile) {
+        setStatusMsg({ text: 'Uploading attachment...', type: 'info' });
+        const uploadRes = await uploadImageToCloudinary(attachmentFile);
+        if (!uploadRes.success || !uploadRes.imageUrl) {
+          setStatusMsg({ text: uploadRes.error || 'Failed to upload attachment', type: 'error' });
+          setLoading(false);
+          return;
+        }
+        attachmentUrl = uploadRes.imageUrl;
+      }
+      
+      setStatusMsg({ text: 'Sending your message...', type: 'info' });
+      const res = await submitContactMessage({
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        attachmentUrl: attachmentUrl
       });
 
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: '',
-      });
+      if (res.success) {
+        setStatusMsg({
+          text: 'Thank you! Your message has been sent successfully.',
+          type: 'success',
+        });
+        
+        localStorage.setItem('lastContactSubmit', Date.now().toString());
+
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: '',
+        });
+        setAttachmentFile(null);
+      } else {
+        throw new Error(res.error || 'Failed to send message.');
+      }
     } catch (err) {
       setStatusMsg({
         text: 'Failed to send message. Please try again later.',
@@ -72,15 +118,15 @@ export const Contact: React.FC = () => {
 
   return (
     <main className="relative min-h-screen text-foreground overflow-hidden">
-      {/* Background */}
+      {/* Fixed background layer to prevent zoom bug */}
       <div
-        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
+        className="fixed inset-0 w-full h-full -z-20 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url(${isMobile ? mobileBg : newBg})`,
         }}
       />
 
-      <section className="border-b border-border relative py-16 md:py-24">
+      <section className="relative py-16 md:py-24">
         <div className="container mx-auto px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
             <div className="text-left">
@@ -261,6 +307,47 @@ export const Contact: React.FC = () => {
                       className="w-full bg-muted/50 border border-border text-foreground rounded-xl p-4 text-base focus:outline-none focus:border-primary transition-all resize-none font-light"
                     />
                   </div>
+                  
+                  <div>
+                    <label
+                      htmlFor="attachment"
+                      className="block text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-2"
+                    >
+                      Attach Screenshot/File (Optional)
+                    </label>
+                    <input
+                      id="attachment"
+                      name="attachment"
+                      type="file"
+                      accept="image/jpeg, image/png, image/webp"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          const file = e.target.files[0];
+                          if (file.size > 2 * 1024 * 1024) { // 2MB limit
+                            setStatusMsg({ text: 'File size must be under 2MB to save storage.', type: 'error' });
+                            setAttachmentFile(null);
+                            e.target.value = ''; // clear input
+                            return;
+                          }
+                          setAttachmentFile(file);
+                          setStatusMsg({ text: '', type: '' }); // Clear any previous errors
+                        }
+                      }}
+                      className="w-full text-sm text-muted-foreground file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 transition-all font-light"
+                    />
+                    {attachmentFile && (
+                      <div className="mt-2 text-xs text-primary font-medium flex items-center justify-between bg-muted/30 p-2 rounded-lg border border-border/50">
+                        <span className="truncate">{attachmentFile.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => setAttachmentFile(null)}
+                          className="text-red-400 hover:text-red-300 ml-2"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    )}
+                  </div>
 
                   {/* Message Status */}
                   {statusMsg.text && (
@@ -316,72 +403,19 @@ export const Contact: React.FC = () => {
                   </div>
                 </form>
               </div>
-            </div>
+            </div>            {/* Sidebar Details / Info Panel */}
+            <div className="lg:col-span-1 flex flex-col justify-between h-full">
+              <div className="rounded-3xl p-6 md:p-8 border border-border shadow-sm text-foreground h-full bg-muted/30 flex flex-col">
 
-            {/* Sidebar Details / Info Panel */}
-            <div className="lg:col-span-1 flex flex-col justify-between">
-              <div className="rounded-3xl p-6 md:p-8 border border-border shadow-sm text-foreground h-full bg-muted/30">
+                <div>
+                  <h3 className="text-xl font-semibold mb-6 tracking-tight">
+                    Follow Us
+                  </h3>
+                  
+                  <p className="text-sm text-muted-foreground font-light mb-8">
+                    Keep up with the latest stories, events, and campus life updates by following our social channels. DM us anytime!
+                  </p>
 
-                <h3 className="text-xl font-semibold mb-6 tracking-tight">
-                  Response Standards
-                </h3>
-
-                <div className="space-y-6">
-
-                  <div className="p-4 rounded-xl bg-background border border-border/50">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium text-sm">
-                        Priority Issues
-                      </span>
-
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] bg-primary text-primary-foreground font-medium uppercase tracking-wider">
-                        24-48 Hours
-                      </span>
-                    </div>
-
-                    <p className="text-sm text-muted-foreground font-light">
-                      Vulnerabilities, site downtime, or login issues receive
-                      rapid, high-priority review.
-                    </p>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-background border border-border/50">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium text-sm">
-                        Standard Feedback
-                      </span>
-
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] border border-border text-muted-foreground font-medium uppercase tracking-wider">
-                        3-5 Days
-                      </span>
-                    </div>
-
-                    <p className="text-sm text-muted-foreground font-light">
-                      Apply to be a featured poster, suggest new features, or
-                      send custom article requests.
-                    </p>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-background border border-border/50">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium text-sm">
-                        General Queries
-                      </span>
-
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] border border-border text-muted-foreground font-medium uppercase tracking-wider">
-                        Within a week
-                      </span>
-                    </div>
-
-                    <p className="text-sm text-muted-foreground font-light">
-                      General campus suggestions, archives corrections, or
-                      queries regarding freshmen guide details.
-                    </p>
-                  </div>
-
-                </div>
-
-                <div className="mt-8">
                   <a
                     href="https://www.instagram.com/giki.chronicles?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                     target="_blank"
@@ -395,9 +429,14 @@ export const Contact: React.FC = () => {
                     >
                       <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                     </svg>
-
                     <span>Follow Chronicles</span>
                   </a>
+                </div>
+
+                <div className="mt-auto pt-8">
+                  <p className="text-sm text-muted-foreground font-light">
+                    We are constantly striving to improve and bring you the best content possible. Your feedback and support mean the world to us—let's grow together!
+                  </p>
                 </div>
 
               </div>

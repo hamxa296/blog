@@ -821,3 +821,53 @@ export async function updateUserRole(uid: string, newRole: 'admin' | 'editor' | 
     return { success: false, error: error.message };
   }
 }
+
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  attachmentUrl?: string;
+  createdAt: any;
+}
+
+export const submitContactMessage = async (data: Omit<ContactMessage, 'id' | 'createdAt'>) => {
+  try {
+    const messagesRef = collection(db, 'contact_messages');
+    await addDoc(messagesRef, {
+      ...data,
+      createdAt: serverTimestamp()
+    });
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error submitting contact message:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const getContactMessages = async () => {
+  try {
+    const messagesRef = collection(db, 'contact_messages');
+    const q = query(messagesRef, orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(q);
+    const messages = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    })) as ContactMessage[];
+    return { success: true, messages };
+  } catch (error: any) {
+    console.error("Error fetching contact messages:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const deleteContactMessage = async (id: string) => {
+  try {
+    await deleteDoc(doc(db, 'contact_messages', id));
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error deleting contact message:", error);
+    return { success: false, error: error.message };
+  }
+};

@@ -18,6 +18,9 @@ import {
   updatePost,
   togglePhotoHighlight,
   toggleFeaturedStatus,
+  getContactMessages,
+  deleteContactMessage,
+  type ContactMessage,
   type Post,
   type GalleryPhoto,
   type UserProfile
@@ -46,7 +49,7 @@ export const CmsDashboard: React.FC = () => {
  
   
   // Navigation tabs
-  const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'gallery' | 'comments' | 'profile' | 'rights'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'gallery' | 'comments' | 'profile' | 'rights' | 'inbox'>('overview');
 
   // Overview metrics
   const [metrics, setMetrics] = useState({
@@ -75,6 +78,9 @@ export const CmsDashboard: React.FC = () => {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
   const [searchUserQuery, setSearchUserQuery] = useState('');
+
+  const [inboxMessages, setInboxMessages] = useState<ContactMessage[]>([]);
+  const [inboxLoading, setInboxLoading] = useState(false);
 
   // Editing / Moderating Modals
   const [editingPost, setEditingPost] = useState<Post | null>(null);
@@ -182,6 +188,15 @@ export const CmsDashboard: React.FC = () => {
     setUsersLoading(false);
   };
 
+  const loadInbox = async () => {
+    setInboxLoading(true);
+    const res = await getContactMessages();
+    if (res.success && res.messages) {
+      setInboxMessages(res.messages);
+    }
+    setInboxLoading(false);
+  };
+
   // Trigger loads based on active tab
   useEffect(() => {
     if (activeTab === 'overview') fetchOverviewMetrics();
@@ -189,7 +204,17 @@ export const CmsDashboard: React.FC = () => {
     if (activeTab === 'gallery') loadPhotos();
     if (activeTab === 'comments') loadComments();
     if (activeTab === 'rights') loadUsers();
+    if (activeTab === 'inbox') loadInbox();
   }, [activeTab, postFilter, photoFilter]);
+
+  const handleRefresh = () => {
+    if (activeTab === 'overview') fetchOverviewMetrics();
+    if (activeTab === 'posts') loadPosts();
+    if (activeTab === 'gallery') loadPhotos();
+    if (activeTab === 'comments') loadComments();
+    if (activeTab === 'rights') loadUsers();
+    if (activeTab === 'inbox') loadInbox();
+  };
 
   // Authorization checks
   const canModeratePosts = role === 'admin' || role === 'editor';
@@ -270,6 +295,27 @@ export const CmsDashboard: React.FC = () => {
           showStatus("Post deleted.", "success");
           setPosts(prev => prev.filter(p => p.id !== id));
           fetchOverviewMetrics();
+        } else {
+          showStatus("Failed: " + res.error, "error");
+        }
+        setActionLoading(false);
+      }
+    });
+  };
+
+  const handleDeleteMessage = (id: string) => {
+    setModalConfig({
+      isOpen: true,
+      title: "Delete Message",
+      message: "Are you sure you want to delete this message?",
+      variant: 'danger',
+      onConfirm: async () => {
+        setModalConfig(prev => ({ ...prev, isOpen: false }));
+        setActionLoading(true);
+        const res = await deleteContactMessage(id);
+        if (res.success) {
+          showStatus("Message deleted.", "success");
+          setInboxMessages(prev => prev.filter(m => m.id !== id));
         } else {
           showStatus("Failed: " + res.error, "error");
         }
@@ -493,17 +539,27 @@ export const CmsDashboard: React.FC = () => {
               Manage articles, moderate gallery snapshots, oversee discussions, and configure roles.
             </p>
           </div>
-          <div className="bg-[#1A3D63]/80 border border-[#B3CFE5]/30 rounded-2xl px-5 py-3 flex items-center gap-3 shadow-lg">
-            {profile?.photoURL ? (
-              <img src={profile.photoURL} alt="Profile" className="w-10 h-10 rounded-full object-cover border border-[#B3CFE5]/40" />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-[#4A7FA7] flex items-center justify-center font-bold text-lg text-white">
-                {profileName.charAt(0).toUpperCase() || 'U'}
+          <div className="flex items-center gap-4 flex-wrap">
+            <button
+              onClick={handleRefresh}
+              className="bg-white/10 hover:bg-white/20 text-white border border-[#B3CFE5]/30 rounded-2xl px-4 py-3 flex items-center gap-2 transition-colors cursor-pointer text-sm font-semibold shadow-lg"
+              title="Refresh current data"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+              Refresh
+            </button>
+            <div className="bg-[#1A3D63]/80 border border-[#B3CFE5]/30 rounded-2xl px-5 py-3 flex items-center gap-3 shadow-lg">
+              {profile?.photoURL ? (
+                <img src={profile.photoURL} alt="Profile" className="w-10 h-10 rounded-full object-cover border border-[#B3CFE5]/40" />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-[#4A7FA7] flex items-center justify-center font-bold text-lg text-white">
+                  {profileName.charAt(0).toUpperCase() || 'U'}
+                </div>
+              )}
+              <div>
+                <div className="font-bold text-white leading-tight">{profileName || user?.email}</div>
+                <div className="text-xs text-[#B3CFE5] uppercase font-extrabold tracking-wider">{role}</div>
               </div>
-            )}
-            <div>
-              <div className="font-bold text-white leading-tight">{profileName || user?.email}</div>
-              <div className="text-xs text-[#B3CFE5] uppercase font-extrabold tracking-wider">{role}</div>
             </div>
           </div>
         </div>
@@ -552,6 +608,17 @@ export const CmsDashboard: React.FC = () => {
                 }`}
               >
                 💬 Comments Moderator
+              </button>
+            )}
+
+            {isCmsAdmin && (
+              <button
+                onClick={() => setActiveTab('inbox')}
+                className={`w-full text-left px-4 py-3 rounded-2xl font-semibold text-sm transition flex items-center gap-3 cursor-pointer ${
+                  activeTab === 'inbox' ? 'bg-[#4A7FA7]/30 border border-[#B3CFE5]/35 text-white' : 'text-[#B3CFE5]/70 hover:bg-white/5 border border-transparent'
+                }`}
+              >
+                📥 Support Inbox
               </button>
             )}
 
@@ -1138,6 +1205,53 @@ export const CmsDashboard: React.FC = () => {
                         })}
                       </tbody>
                     </table>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB: INBOX */}
+            {activeTab === 'inbox' && isCmsAdmin && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold font-serif">Support Inbox</h2>
+                  <p className="text-sm text-[#B3CFE5]/60">Messages submitted through the contact form.</p>
+                </div>
+
+                {inboxLoading ? (
+                  <div className="text-center py-12 text-[#B3CFE5]/60">Loading messages...</div>
+                ) : inboxMessages.length === 0 ? (
+                  <div className="text-center py-12 text-[#B3CFE5]/50">No messages found.</div>
+                ) : (
+                  <div className="space-y-4">
+                    {inboxMessages.map(msg => (
+                      <div key={msg.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 relative transition hover:bg-white/10">
+                        <button
+                          onClick={() => handleDeleteMessage(msg.id)}
+                          className="absolute top-4 right-4 text-red-400 hover:text-red-300 transition text-sm font-medium bg-red-500/10 px-3 py-1 rounded"
+                        >
+                          Delete
+                        </button>
+                        <div className="text-xs text-[#B3CFE5]/60 mb-2 font-mono">
+                          {msg.createdAt?.toDate ? msg.createdAt.toDate().toLocaleString() : 'Just now'}
+                        </div>
+                        <h3 className="text-lg font-bold mb-1 text-white">{msg.subject}</h3>
+                        <div className="text-sm text-[#B3CFE5] mb-4">
+                          From: <span className="font-semibold text-white">{msg.name}</span> ({msg.email})
+                        </div>
+                        <div className="bg-black/20 p-4 rounded-xl text-sm leading-relaxed border border-white/5 text-white whitespace-pre-wrap">
+                          {msg.message}
+                        </div>
+                        {msg.attachmentUrl && (
+                          <div className="mt-4">
+                            <span className="text-xs text-[#B3CFE5]/60 mb-2 block uppercase tracking-wider font-bold">Attached File</span>
+                            <a href={msg.attachmentUrl} target="_blank" rel="noopener noreferrer">
+                              <img src={msg.attachmentUrl} alt="Attachment" className="max-w-[300px] max-h-[200px] object-contain rounded-lg border border-white/10 hover:border-[#B3CFE5]/50 transition shadow-lg" />
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
