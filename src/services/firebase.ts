@@ -871,3 +871,35 @@ export const deleteContactMessage = async (id: string) => {
     return { success: false, error: error.message };
   }
 };
+
+export async function checkIsBookmarked(userId: string, postId: string) {
+  try {
+    const bookmarkRef = doc(db, 'users', userId, 'bookmarks', postId);
+    const snap = await getDoc(bookmarkRef);
+    return snap.exists();
+  } catch (error) {
+    console.error("Error checking bookmark:", error);
+    return false;
+  }
+}
+
+export async function toggleBookmark(userId: string, postId: string) {
+  try {
+    const bookmarkRef = doc(db, 'users', userId, 'bookmarks', postId);
+    const snap = await getDoc(bookmarkRef);
+    if (snap.exists()) {
+      await deleteDoc(bookmarkRef);
+      return { success: true, isBookmarked: false };
+    } else {
+      await setDoc(bookmarkRef, {
+        userId,
+        postId,
+        createdAt: serverTimestamp()
+      });
+      return { success: true, isBookmarked: true };
+    }
+  } catch (error: any) {
+    console.error("Error toggling bookmark:", error);
+    return { success: false, error: error.message };
+  }
+}

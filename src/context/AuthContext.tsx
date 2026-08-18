@@ -3,10 +3,8 @@ import { type User, onAuthStateChanged } from 'firebase/auth';
 import { 
   auth, 
   getUserProfile, 
-  updateUserProfile, 
   logoutUser, 
   type UserProfile, 
-  isAdminUID 
 } from '../services/firebase';
 
 interface AuthContextType {
@@ -52,33 +50,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               setIsAdmin(false);
               setRole(null);
             } else {
-              // Automatically check if they are in the ADMIN_UIDS and promote if needed
-              if (isAdminUID(firebaseUser.uid) && !p.isAdmin) {
-                p.isAdmin = true;
-                p.role = 'admin';
-                await updateUserProfile(firebaseUser.uid, { isAdmin: true, role: 'admin' });
-              }
               setUser(firebaseUser);
               setProfile(p);
               setIsAdmin(p.isAdmin === true);
               setRole(p.role || (p.isAdmin ? 'admin' : 'author'));
             }
           } else {
-            // Document does not exist in Firestore yet (should only happen if signup sync failed)
+            // Document does not exist in Firestore yet (e.g. Google sign-in for a new user
+            // whose doc creation failed). We set a safe default profile without privileged
+            // fields — the signInWithGoogle / loginUser functions handle setDoc for new users.
             const newProfile: UserProfile = {
               uid: firebaseUser.uid,
               email: firebaseUser.email || '',
               displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
               photoURL: firebaseUser.photoURL || '',
-              role: isAdminUID(firebaseUser.uid) ? 'admin' : 'author',
+              role: 'author',
             };
-            if (isAdminUID(firebaseUser.uid)) {
-              newProfile.isAdmin = true;
-            }
-            await updateUserProfile(firebaseUser.uid, newProfile);
             setUser(firebaseUser);
             setProfile(newProfile);
-            setIsAdmin(newProfile.isAdmin === true);
+            setIsAdmin(false);
             setRole(newProfile.role || 'author');
           }
         } catch (error) {

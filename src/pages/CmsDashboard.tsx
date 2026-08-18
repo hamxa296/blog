@@ -34,6 +34,7 @@ import {
   createBlock,
 } from '../types/blockTypes';
 import { sanitizeBlocks } from '../utils/sanitize';
+import { toast } from 'sonner';
 
 interface CmsComment {
   id: string;
@@ -348,7 +349,7 @@ export const CmsDashboard: React.FC = () => {
     
     // Check if current user is either admin/editor OR the author of the post
     if (!canModeratePosts && editingPost.authorId !== user?.uid) {
-      alert("Unauthorized to edit this post.");
+      toast.error("Unauthorized to edit this post.");
       setActionLoading(false);
       return;
     }
@@ -364,11 +365,11 @@ export const CmsDashboard: React.FC = () => {
     });
 
     if (res.success) {
-      alert("Post updated successfully! Note: Modified posts return to 'pending' review status.");
+      toast.success("Post updated successfully! Note: Modified posts return to 'pending' review status.");
       setEditingPost(null);
       loadPosts();
     } else {
-      alert("Failed to update post: " + res.error);
+      toast.error("Failed to update post: " + (res.error ? res.error : ""));
     }
     setActionLoading(false);
   };
@@ -378,11 +379,11 @@ export const CmsDashboard: React.FC = () => {
     setActionLoading(true);
     const res = await updateGalleryPhotoStatus(id, 'approved');
     if (res.success) {
-      alert("Photo approved.");
+      toast.success("Photo approved.");
       loadPhotos();
       fetchOverviewMetrics();
     } else {
-      alert("Failed: " + res.error);
+      toast.error("Failed: " + (res.error ? res.error : ""));
     }
     setActionLoading(false);
   };
@@ -393,13 +394,13 @@ export const CmsDashboard: React.FC = () => {
     setActionLoading(true);
     const res = await updateGalleryPhotoStatus(rejectionPhotoId, 'rejected', rejectionReason);
     if (res.success) {
-      alert("Photo rejected.");
+      toast.success("Photo rejected.");
       setRejectionPhotoId(null);
       setRejectionReason('');
       loadPhotos();
       fetchOverviewMetrics();
     } else {
-      alert("Failed: " + res.error);
+      toast.error("Failed: " + (res.error ? res.error : ""));
     }
     setActionLoading(false);
   };
@@ -408,10 +409,10 @@ export const CmsDashboard: React.FC = () => {
     setActionLoading(true);
     const res = await togglePhotoHighlight(id, !isHighlighted);
     if (res.success) {
-      alert("Highlight status toggled.");
+      toast.success("Highlight status toggled.");
       loadPhotos();
     } else {
-      alert("Failed: " + res.error);
+      toast.error("Failed: " + (res.error ? res.error : ""));
     }
     setActionLoading(false);
   };
@@ -421,11 +422,11 @@ export const CmsDashboard: React.FC = () => {
     setActionLoading(true);
     const res = await deleteGalleryPhoto(id);
     if (res.success) {
-      alert("Photo deleted.");
+      toast.success("Photo deleted.");
       loadPhotos();
       fetchOverviewMetrics();
     } else {
-      alert("Failed: " + res.error);
+      toast.error("Failed: " + (res.error ? res.error : ""));
     }
     setActionLoading(false);
   };
@@ -436,11 +437,11 @@ export const CmsDashboard: React.FC = () => {
     setActionLoading(true);
     const res = await deleteComment(id);
     if (res.success) {
-      alert("Comment removed.");
+      toast.success("Comment removed.");
       loadComments();
       fetchOverviewMetrics();
     } else {
-      alert("Failed: " + res.error);
+      toast.error("Failed: " + (res.error ? res.error : ""));
     }
     setActionLoading(false);
   };
@@ -451,10 +452,10 @@ export const CmsDashboard: React.FC = () => {
     setActionLoading(true);
     const res = await updateUserRole(uid, newRole);
     if (res.success) {
-      alert("User role updated successfully.");
+      toast.success("User role updated successfully.");
       loadUsers();
     } else {
-      alert("Failed: " + res.error);
+      toast.error("Failed: " + (res.error ? res.error : ""));
     }
     setActionLoading(false);
   };
@@ -464,10 +465,10 @@ export const CmsDashboard: React.FC = () => {
     setActionLoading(true);
     const res = await toggleBlockUser(uid, !currentBlocked);
     if (res.success) {
-      alert("User status updated.");
+      toast.success("User status updated.");
       loadUsers();
     } else {
-      alert("Failed: " + res.error);
+      toast.error("Failed: " + (res.error ? res.error : ""));
     }
     setActionLoading(false);
   };
@@ -486,7 +487,7 @@ export const CmsDashboard: React.FC = () => {
         if (uploadRes.success && uploadRes.url) {
           finalAvatarUrl = uploadRes.url;
         } else {
-          alert("Avatar upload failed: " + uploadRes.error);
+          toast.error("Avatar upload failed: " + uploadRes.error);
         }
       }
 
@@ -497,14 +498,14 @@ export const CmsDashboard: React.FC = () => {
       });
 
       if (updateRes.success) {
-        alert("Profile details updated successfully!");
+        toast.success("Profile details updated successfully!");
         setProfileFile(null);
         await refreshProfile();
       } else {
-        alert("Failed to update profile: " + updateRes.error);
+        toast.error("Failed to update profile: " + (updateRes.error ? updateRes.error : ""));
       }
     } catch (err: any) {
-      alert("Error: " + err.message);
+      toast.error("Error: " + (err.message ? err.message : ""));
     } finally {
       setProfileLoading(false);
     }

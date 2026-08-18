@@ -3,6 +3,7 @@ import { CollectionSurfer } from '../components/gallery/CollectionSurfer';
 import { MobileFooter } from '../components/nav/MobileFooter';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import { Footer } from '../components/nav/Footer';
+import { toast } from 'sonner';
 import {
   getGalleryPhotos,
   uploadGalleryPhoto,
@@ -207,7 +208,7 @@ export const Gallery: React.FC = () => {
       });
 
       if (res.success) {
-        alert(
+        toast.success(
           'Photo submitted successfully! It will appear in the gallery once reviewed by moderators.'
         );
 
@@ -287,11 +288,11 @@ export const Gallery: React.FC = () => {
     const res = await deleteGalleryPhoto(photoId);
 
     if (res.success) {
-      alert('Photo deleted.');
+      toast.success('Photo deleted.');
       setLightboxIndex(null);
       loadPhotos();
     } else {
-      alert('Delete failed: ' + res.error);
+      toast.error('Delete failed: ' + res.error);
     }
 
     setActionLoading(false);
@@ -311,7 +312,7 @@ export const Gallery: React.FC = () => {
     );
 
     if (res.success) {
-      alert(
+      toast.success(
         currentHighlight
           ? 'Removed from showcase highlight.'
           : 'Marked as showcase highlight!'
@@ -319,7 +320,7 @@ export const Gallery: React.FC = () => {
 
       loadPhotos();
     } else {
-      alert('Action failed: ' + res.error);
+      toast.error('Action failed: ' + res.error);
     }
 
     setActionLoading(false);

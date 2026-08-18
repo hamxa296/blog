@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -205,7 +206,7 @@ export const PackingChecklist: React.FC<PackingChecklistProps> = ({ onSessionCha
   const handleCheckboxChange = async (itemId: string, isChecked: boolean) => {
     if (!uid) {
       setShowGuestSavePrompt(true);
-      alert('Please login to track and sync your packing progress across devices.');
+      toast.success('Please login to track and sync your packing progress across devices.');
       return;
     }
     await persistChecked({ ...checkedItems, [itemId]: isChecked });

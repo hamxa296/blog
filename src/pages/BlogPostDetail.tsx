@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { db, getPostById, type Post } from '../services/firebase';
+import { db, getPostById, type Post, checkIsBookmarked, toggleBookmark } from '../services/firebase';
 import { MobileFooter } from '../components/nav/MobileFooter';
 import {
   collection,
@@ -14,7 +15,7 @@ import {
 } from 'firebase/firestore';
 import { Badge } from '../components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
-import { Clock, ArrowLeft, BookOpen } from 'lucide-react';
+import { Clock, ArrowLeft, BookOpen, Bookmark } from 'lucide-react';
 import bgImage from "../assets/bgblog.webp";
 import { BlockRenderer } from '../components/renderer/BlockRenderer';
 import { calculateReadTime } from '../types/blockTypes';
@@ -36,6 +37,8 @@ export const BlogPostDetail: React.FC = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [postLoading, setPostLoading] = useState(true);
   const [postError, setPostError] = useState('');
+
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentInput, setCommentInput] = useState('');
@@ -70,6 +73,12 @@ export const BlogPostDetail: React.FC = () => {
 
     fetchPost();
   }, [id]);
+
+  useEffect(() => {
+    if (user && id) {
+      checkIsBookmarked(user.uid, id).then(setIsBookmarked);
+    }
+  }, [user, id]);
 
   useEffect(() => {
     if (!id) return;
@@ -124,12 +133,29 @@ export const BlogPostDetail: React.FC = () => {
       });
       setCommentInput('');
     } catch (err: unknown) {
-      alert(
+      toast.error(
         'Failed to submit comment: ' +
           (err instanceof Error ? err.message : 'Unknown error'),
       );
     } finally {
       setCommentSubmitting(false);
+    }
+  };
+
+  const handleToggleBookmark = async () => {
+    if (!user || !id) return;
+    
+    // Optimistic UI update
+    const previousState = isBookmarked;
+    setIsBookmarked(!previousState);
+
+    const res = await toggleBookmark(user.uid, id);
+    if (res.success) {
+      toast.success(res.isBookmarked ? 'Added to bookmarks' : 'Removed from bookmarks');
+    } else {
+      // Revert on failure
+      setIsBookmarked(previousState);
+      toast.error('Failed to update bookmark: ' + res.error);
     }
   };
 
@@ -235,13 +261,30 @@ export const BlogPostDetail: React.FC = () => {
           )}
 
           <div className="p-6 sm:p-8 space-y-6">
-            <Link
-              to="/browse"
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Feed
-            </Link>
+            <div className="flex items-center justify-between">
+              <Link
+                to="/browse"
+                className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Feed
+              </Link>
+              {user && (
+                <button
+                  onClick={handleToggleBookmark}
+                  className="p-2 -mr-2 rounded-full hover:bg-white/5 transition-colors group"
+                  aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+                >
+                  <Bookmark
+                    className={`w-5 h-5 transition-all ${
+                      isBookmarked
+                        ? 'fill-primary text-primary'
+                        : 'text-muted-foreground group-hover:text-foreground'
+                    }`}
+                  />
+                </button>
+              )}
+            </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight tracking-tight">
               {post.title}

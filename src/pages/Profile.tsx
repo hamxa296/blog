@@ -181,20 +181,7 @@ export const Profile: React.FC = () => {
         limit(24),
       );
       const subSnap = await getDocs(subBookmarks);
-      if (!subSnap.empty) {
-        postIds = subSnap.docs.map((d) => d.data().postId).filter(Boolean);
-      } else {
-        const rootBookmarks = query(
-          collection(db, 'bookmarks'),
-          where('userId', '==', user.uid),
-          orderBy('createdAt', 'desc'),
-          limit(24),
-        );
-        const rootSnap = await getDocs(rootBookmarks);
-        postIds = rootSnap.docs
-          .map((d) => d.data().postId || d.data().postRefId)
-          .filter(Boolean);
-      }
+      postIds = subSnap.docs.map((d) => d.data().postId).filter(Boolean);
 
       if (postIds.length === 0) {
         setBookmarks([]);

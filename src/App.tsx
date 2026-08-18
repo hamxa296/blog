@@ -7,6 +7,7 @@ import GlobalBackButton from './components/nav/GlobalBackButton';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { CmsRoute } from './components/CmsRoute';
 import { GuideErrorBoundary } from './components/guide/GuideErrorBoundary';
+import { Toaster } from './components/ui/toaster';
 
 import { lazy, Suspense } from 'react';
 
@@ -125,6 +126,7 @@ const router = createBrowserRouter([
 function App() {
   return (
     <AuthProvider>
+      <Toaster position="top-right" />
       <RouterProvider router={router} />
     </AuthProvider>
   );

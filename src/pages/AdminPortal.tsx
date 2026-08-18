@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import React, { useState, useEffect } from 'react';
 import { 
   getPendingPosts, 
@@ -92,12 +93,12 @@ export const AdminPortal: React.FC = () => {
       const res = await updatePostStatus(id, 'approved');
       if (res.success) {
         setPendingPosts(prev => prev.filter(p => p.id !== id));
-        alert("Post approved successfully!");
+        toast.success("Post approved successfully!");
       } else {
-        alert("Error approving post: " + res.error);
+        toast.error("Error approving post: " + (res.error ? res.error : ""));
       }
     } catch (err: any) {
-      alert("Error: " + err.message);
+      toast.error("Error: " + (err.message ? err.message : ""));
     } finally {
       setActionLoading(false);
     }
@@ -114,12 +115,12 @@ export const AdminPortal: React.FC = () => {
         setPendingPosts(prev => prev.filter(p => p.id !== rejectionPostId));
         setRejectionPostId(null);
         setRejectionReason('');
-        alert("Post marked as rejected.");
+        toast.success("Post marked as rejected.");
       } else {
-        alert("Error rejecting post: " + res.error);
+        toast.error("Error rejecting post: " + (res.error ? res.error : ""));
       }
     } catch (err: any) {
-      alert("Error: " + err.message);
+      toast.error("Error: " + (err.message ? err.message : ""));
     } finally {
       setActionLoading(false);
     }
@@ -132,12 +133,12 @@ export const AdminPortal: React.FC = () => {
       const res = await deletePostPermanently(id);
       if (res.success) {
         setPendingPosts(prev => prev.filter(p => p.id !== id));
-        alert("Post permanently deleted.");
+        toast.success("Post permanently deleted.");
       } else {
-        alert("Error deleting post: " + res.error);
+        toast.error("Error deleting post: " + (res.error ? res.error : ""));
       }
     } catch (err: any) {
-      alert("Error: " + err.message);
+      toast.error("Error: " + (err.message ? err.message : ""));
     } finally {
       setActionLoading(false);
     }
@@ -151,12 +152,12 @@ export const AdminPortal: React.FC = () => {
       const res = await updateGalleryPhotoStatus(id, 'approved');
       if (res.success) {
         setPendingPhotos(prev => prev.filter(p => p.id !== id));
-        alert("Photo approved!");
+        toast.success("Photo approved!");
       } else {
-        alert("Error: " + res.error);
+        toast.error("Error: " + (res.error ? res.error : ""));
       }
     } catch (err: any) {
-      alert("Error: " + err.message);
+      toast.error("Error: " + (err.message ? err.message : ""));
     } finally {
       setActionLoading(false);
     }
@@ -173,12 +174,12 @@ export const AdminPortal: React.FC = () => {
         setPendingPhotos(prev => prev.filter(p => p.id !== rejectionPhotoId));
         setRejectionPhotoId(null);
         setRejectionReason('');
-        alert("Photo rejected.");
+        toast.success("Photo rejected.");
       } else {
-        alert("Error: " + res.error);
+        toast.error("Error: " + (res.error ? res.error : ""));
       }
     } catch (err: any) {
-      alert("Error: " + err.message);
+      toast.error("Error: " + (err.message ? err.message : ""));
     } finally {
       setActionLoading(false);
     }
@@ -191,12 +192,12 @@ export const AdminPortal: React.FC = () => {
       const res = await deleteGalleryPhoto(id);
       if (res.success) {
         setPendingPhotos(prev => prev.filter(p => p.id !== id));
-        alert("Photo deleted.");
+        toast.success("Photo deleted.");
       } else {
-        alert("Error: " + res.error);
+        toast.error("Error: " + (res.error ? res.error : ""));
       }
     } catch (err: any) {
-      alert("Error: " + err.message);
+      toast.error("Error: " + (err.message ? err.message : ""));
     } finally {
       setActionLoading(false);
     }
@@ -212,12 +213,12 @@ export const AdminPortal: React.FC = () => {
       const res = await toggleBlockUser(uid, !currentBlocked);
       if (res.success) {
         setUsersList(prev => prev.map(u => u.uid === uid ? { ...u, isBlocked: !currentBlocked } : u));
-        alert(`User account ${action}ed successfully.`);
+        toast.success(`User account ${action}ed successfully.`);
       } else {
-        alert(`Error: ${res.error}`);
+        toast.error(`Error: ${res.error}`);
       }
     } catch (err: any) {
-      alert("Error: " + err.message);
+      toast.error("Error: " + (err.message ? err.message : ""));
     } finally {
       setActionLoading(false);
     }
