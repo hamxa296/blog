@@ -22,6 +22,7 @@ import { updateProfile } from 'firebase/auth';
 import { Link } from 'react-router-dom';
 import { ProfileCard } from '../components/profile/ProfileCard';
 import { Badge } from '../components/ui/badge';
+import galleryBg from "../assets/homepc.webp";
 
 export const Profile: React.FC = () => {
   const { user, profile, refreshProfile } = useAuth();
@@ -347,7 +348,15 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <main className="min-h-[calc(100vh-88px)] bg-background text-foreground py-12 relative z-10 pb-24">
+    <main className="min-h-[calc(100vh-88px)] bg-transparent text-foreground py-12 relative z-10 pb-24">
+      {/* Fixed Background Image */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url(${galleryBg})`,
+        }}
+      />
       <div className="container mx-auto px-4 md:px-6 max-w-5xl">
         <div className="grid lg:grid-cols-[320px_1fr] gap-8 items-start">
           

@@ -37,9 +37,13 @@ export const About: React.FC = () => {
 
   return (
     <div
-      className="w-full min-h-screen flex flex-col justify-between bg-cover bg-center bg-no-repeat relative overflow-x-hidden"
-      style={{ backgroundImage: `url(${randomBg})` }}
+      className="w-full min-h-screen flex flex-col justify-between relative overflow-x-hidden"
     >
+      {/* Fixed background layer to prevent zoom bug */}
+      <div 
+        className="fixed inset-0 w-full h-full -z-20 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${randomBg})` }}
+      />
       {/* Main Section */}
       <main className="flex-1 flex items-center justify-center px-4 sm:px-8 py-8 sm:py-12 my-auto relative z-10 w-full max-w-7xl mx-auto">
 

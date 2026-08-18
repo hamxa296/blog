@@ -5,6 +5,7 @@ import { BlogSection } from '../components/blog/BlogSection';
 import { MobileFooter } from '../components/nav/MobileFooter';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import { Footer } from '../components/nav/Footer';
+import galleryBg from "../assets/homepc.webp";
 
 export const BlogBrowse: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -59,12 +60,12 @@ export const BlogBrowse: React.FC = () => {
 
   return (
     <main className="relative z-10 min-h-screen ">
-      {/* Solid Background */}
+      {/* Fixed Background Image */}
       <div
         aria-hidden="true"
-        className="fixed inset-0 -z-10"
+        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundColor: '#201e1c',
+          backgroundImage: `url(${galleryBg})`,
         }}
       />
 
