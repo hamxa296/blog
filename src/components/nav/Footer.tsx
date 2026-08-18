@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Camera, MessageSquare, Mail, Code } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 import backgroundImage from '../../assets/foot.png';
 
