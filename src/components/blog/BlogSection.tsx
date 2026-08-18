@@ -1,6 +1,6 @@
 import { GlassBlogCard } from './GlassBlogCard';
 import type { Post } from '../../services/firebase';
-
+import { calculateReadTime } from '../../types/blockTypes';
 
 interface BlogSectionProps {
   posts: Post[];
@@ -17,8 +17,7 @@ function formatDate(seconds: number | undefined) {
 }
 
 function estimateReadTime(content: string) {
-  const words = content.split(/\s+/).length;
-  const minutes = Math.max(1, Math.ceil(words / 200));
+  const minutes = calculateReadTime(content);
   return `${minutes} min read`;
 }
 
