@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import type { ParagraphBlock as PB } from '../../../types/blockTypes';
-import { Bold, Italic, Link, Unlink } from 'lucide-react';
+import { Bold, Italic, Link, Unlink, List, ListOrdered } from 'lucide-react';
 import { sanitizeHtml, sanitizeUrl } from '../../../utils/sanitize';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 export const ParagraphBlock: React.FC<Props> = ({ block, onChange, onEnter, onDelete, autoFocus }) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const [toolbar, setToolbar] = useState<{ top: number; left: number } | null>(null);
-  const [activeFormats, setActiveFormats] = useState({ bold: false, italic: false, link: false });
+  const [activeFormats, setActiveFormats] = useState({ bold: false, italic: false, link: false, list: false, listOrdered: false });
   const isComposing = useRef(false);
 
   // Set initial HTML
@@ -71,6 +71,8 @@ export const ParagraphBlock: React.FC<Props> = ({ block, onChange, onEnter, onDe
       bold: document.queryCommandState('bold'),
       italic: document.queryCommandState('italic'),
       link: !!sel.anchorNode?.parentElement?.closest('a'),
+      list: document.queryCommandState('insertUnorderedList'),
+      listOrdered: document.queryCommandState('insertOrderedList'),
     });
   }, []);
 
@@ -94,6 +96,12 @@ export const ParagraphBlock: React.FC<Props> = ({ block, onChange, onEnter, onDe
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
+      const sel = window.getSelection();
+      const inList = !!sel?.anchorNode?.parentElement?.closest('li');
+      if (inList) {
+        setTimeout(saveContent, 0);
+        return;
+      }
       e.preventDefault();
       saveContent();
       onEnter?.();
@@ -130,6 +138,23 @@ export const ParagraphBlock: React.FC<Props> = ({ block, onChange, onEnter, onDe
             title="Italic"
           >
             <Italic className="w-3.5 h-3.5" />
+          </button>
+          <div className="block-format-divider" />
+          <button
+            type="button"
+            className={`block-format-btn ${activeFormats.list ? 'active' : ''}`}
+            onClick={() => format('insertUnorderedList')}
+            title="Bullet List"
+          >
+            <List className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            className={`block-format-btn ${activeFormats.listOrdered ? 'active' : ''}`}
+            onClick={() => format('insertOrderedList')}
+            title="Numbered List"
+          >
+            <ListOrdered className="w-3.5 h-3.5" />
           </button>
           <div className="block-format-divider" />
           <button

@@ -480,11 +480,9 @@ export const Profile: React.FC = () => {
                               <Link to={`/posts/${post.id}`} className="text-xs flex-1 text-center rounded-xl border border-border py-2 hover:bg-secondary transition">
                                 View
                               </Link>
-                              {post.status !== 'approved' && (
                                 <Link to={`/write?edit=${post.id}`} className="text-xs flex-1 text-center rounded-xl bg-secondary py-2 hover:bg-secondary/80 transition">
                                   Edit
                                 </Link>
-                              )}
                             </div>
                           </div>
                         ))}

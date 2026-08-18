@@ -1,6 +1,6 @@
 import type { Block } from '../types/blockTypes';
 
-const INLINE_TAGS = new Set(['B', 'STRONG', 'I', 'EM', 'U', 'S', 'A', 'BR', 'CODE']);
+const INLINE_TAGS = new Set(['B', 'STRONG', 'I', 'EM', 'U', 'S', 'A', 'BR', 'CODE', 'UL', 'OL', 'LI']);
 const BLOCK_TAGS = new Set([
   ...INLINE_TAGS,
   'P',

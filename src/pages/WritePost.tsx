@@ -188,6 +188,10 @@ export const WritePost: React.FC = () => {
         }
       }
 
+      if (!finalPhotoUrl) {
+        finalPhotoUrl = '/background.webp';
+      }
+
       const content = await getContentString();
       if (!content) { setLoading(false); return; }
 
@@ -234,6 +238,10 @@ export const WritePost: React.FC = () => {
         }
       }
 
+      if (!finalPhotoUrl) {
+        finalPhotoUrl = '/background.webp';
+      }
+
       const content = await getContentString();
       if (!content) { setLoading(false); return; }
 
@@ -244,12 +252,16 @@ export const WritePost: React.FC = () => {
 
       if (res.success) {
         localStorage.removeItem(storageKey);
+        const targetId = res.postId || postIdToEdit;
         if (shouldPreview) {
           setStatusMsg({ text: 'Draft saved. Redirecting to preview...', type: 'success' });
-          navigate(`/posts/${res.postId || postIdToEdit}`);
+          if (!postIdToEdit && targetId) {
+            window.history.replaceState(null, '', `/write?edit=${targetId}`);
+          }
+          navigate(`/posts/${targetId}`);
         } else {
           setStatusMsg({ text: 'Draft saved!', type: 'success' });
-          if (!postIdToEdit && res.postId) navigate(`/write?edit=${res.postId}`);
+          if (!postIdToEdit && targetId) navigate(`/write?edit=${targetId}`);
         }
       } else {
         setStatusMsg({ text: res.error || 'Failed to save draft.', type: 'error' });

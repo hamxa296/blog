@@ -1,15 +1,4 @@
-# Site Audit Tasks
-
-- `[x]` **1. UX, UI & Accessibility Audit**
-  - `[x]` Checked layout logic for responsive containers
-
-- `[x]` **2. Performance Audit**
-  - `[x]` Implemented React.lazy for route code-splitting
-  - `[x]` Suspense boundary added to App.tsx
-
-- `[x]` **3. Security Audit**
-  - `[x]` Compile Firebase Firestore & Storage recommended rules
-
-- `[x]` **4. SEO & Meta-Data Audit**
-  - `[x]` Dynamic Meta tags added to BlogPostDetail
-  - `[x]` 404 Not Found page created
+- `[x]` 1. Update `firestore.rules` to allow updating approved posts.
+- `[x]` 2. Update `src/pages/Profile.tsx` to always show the Edit button.
+- `[x]` 3. Update `src/pages/WritePost.tsx` to set default cover photo.
+- `[x]` 4. Verify everything works.

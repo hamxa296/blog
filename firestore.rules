@@ -1,4 +1,4 @@
-rules_version = '2';
+﻿rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -23,7 +23,7 @@ service cloud.firestore {
              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
 
-    // Bootstrap admin UIDs � always trusted as admins regardless of their document.
+    // Bootstrap admin UIDs — always trusted as admins regardless of their document.
     function isBootstrapAdmin() {
       return request.auth != null && request.auth.uid in [
         "DNDjKZRt0yQNh4d3inNchRcs0oY2",
@@ -126,7 +126,7 @@ service cloud.firestore {
         isTrustedAdmin() ||
         (
           resource.data.authorId == request.auth.uid &&
-          resource.data.status in ['pending', 'draft', 'rejected'] &&
+          resource.data.status in ['pending', 'draft', 'rejected', 'approved'] &&
           request.resource.data.get('status', resource.data.status) in ['pending', 'draft'] &&
           request.resource.data.get('isFeatured', false) == false &&
           request.resource.data.authorId == resource.data.authorId
