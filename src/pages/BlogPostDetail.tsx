@@ -201,12 +201,14 @@ export const BlogPostDetail: React.FC = () => {
   const readTime = calculateReadTime(post.content);
 
   return (
-    <main
-      className="min-h-[calc(100vh-88px)] text-foreground py-12 relative z-10 pb-24 bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: `url(${bgImage})` }}
-    >
-      <div className="container mx-auto px-4 md:px-6 max-w-3xl">
-        <div className="rounded-2xl border border-border/50 bg-card/30 backdrop-blur-md overflow-hidden shadow-xl shadow-primary/5">
+    <main className="min-h-[calc(100vh-88px)] text-foreground py-12 relative z-10 pb-24">
+      {/* Fixed background layer for consistent zooming */}
+      <div 
+        className="fixed inset-0 w-full h-full -z-10 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${bgImage})` }}
+      />
+      <div className="container mx-auto px-4 md:px-6 w-full max-w-[95vw] md:max-w-[85vw] lg:max-w-[75vw] xl:max-w-5xl">
+        <div className="rounded-2xl border border-border/50 bg-card/80 backdrop-blur-md overflow-hidden shadow-xl shadow-primary/5">
           {post.photoUrl && (
             <div className="relative w-full aspect-[16/9] overflow-hidden">
               <img

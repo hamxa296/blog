@@ -13,6 +13,7 @@ import { uploadImageToCloudinary } from '../services/cloudinary';
 import { Button } from '../components/ui/button';
 import { cn } from '../lib/utils';
 import { ImageIcon } from 'lucide-react';
+import { ConfirmModal } from '../components/ui/ConfirmModal';
 import { BlockEditor } from '../components/editor/BlockEditor';
 import {
   type Block,
@@ -35,10 +36,38 @@ export const WritePost: React.FC = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [loading, setLoading] = useState(false);
+    const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; variant: 'primary' | 'danger' | 'warning'; onConfirm: () => void }>({ isOpen: false, title: '', message: '', variant: 'primary', onConfirm: () => {} });
   const [statusMsg, setStatusMsg] = useState({ text: '', type: '' });
   const [postStatus, setPostStatus] = useState<string>('');
 
+  // Auto-save state
+  const storageKey = postIdToEdit ? `giki_draft_${postIdToEdit}` : 'giki_draft_new';
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+
   useEffect(() => {
+    const loadLocalDraft = () => {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed && typeof parsed === 'object') {
+            if (parsed.title) setTitle(parsed.title);
+            if (parsed.description) setDescription(parsed.description);
+            if (parsed.genre) setGenre(parsed.genre);
+            if (parsed.tags) setTags(parsed.tags);
+            if (parsed.blocks && Array.isArray(parsed.blocks)) {
+              setBlocks(parsed.blocks.length > 0 ? parsed.blocks : [createBlock('paragraph')]);
+            }
+            setStatusMsg({ text: 'Restored from local draft.', type: 'info' });
+            setTimeout(() => setStatusMsg({ text: '', type: '' }), 3000);
+          }
+        } catch (err) {
+          console.error("Failed to parse local draft", err);
+        }
+      }
+    };
+
     if (postIdToEdit) {
       const loadPost = async () => {
         setLoading(true);
@@ -62,6 +91,9 @@ export const WritePost: React.FC = () => {
               setBlocks(loaded.length > 0 ? loaded : [createBlock('paragraph')]);
             }
             setStatusMsg({ text: '', type: '' });
+
+            // After loading from Firebase, check if there's a local draft to restore
+            loadLocalDraft();
           } else {
             setStatusMsg({ text: res.error || 'Failed to load post.', type: 'error' });
           }
@@ -75,8 +107,43 @@ export const WritePost: React.FC = () => {
         }
       };
       loadPost();
+    } else {
+      // New post: immediately try to load local draft
+      loadLocalDraft();
     }
-  }, [postIdToEdit]);
+  }, [postIdToEdit, storageKey]);
+
+  // Auto-save effect
+  useEffect(() => {
+    // Prevent saving default empty state
+    if (!title && blocks.length === 1 && blocks[0].type === 'paragraph' && !blocks[0].data.html) {
+      return;
+    }
+
+    const handler = setTimeout(() => {
+      setIsAutoSaving(true);
+      const draft = {
+        title,
+        description,
+        genre,
+        tags,
+        blocks: blocks.map(b => {
+          // Do not attempt to stringify File objects
+          if (b.type === 'image' && b.data._file) {
+            const { _file, ...rest } = b.data;
+            return { ...b, data: rest };
+          }
+          return b;
+        }),
+        updatedAt: Date.now()
+      };
+      localStorage.setItem(storageKey, JSON.stringify(draft));
+      setLastSaved(new Date());
+      setIsAutoSaving(false);
+    }, 3000); // 3-second debounce
+
+    return () => clearTimeout(handler);
+  }, [title, description, genre, tags, blocks, storageKey]);
 
   const getContentString = async (): Promise<string | null> => {
     // Upload any image blocks that have a pending _file
@@ -97,6 +164,7 @@ export const WritePost: React.FC = () => {
 
   const handlePublish = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     if (title.trim() === '') {
       setStatusMsg({ text: 'Title is required.', type: 'error' });
       return;
@@ -129,6 +197,7 @@ export const WritePost: React.FC = () => {
       }
 
       if (res.success) {
+        localStorage.removeItem(storageKey);
         setStatusMsg({ text: 'Article submitted! Pending administrator approval.', type: 'success' });
         setTimeout(() => navigate('/profile'), 2000);
       } else {
@@ -142,6 +211,7 @@ export const WritePost: React.FC = () => {
   };
 
   const handleSaveDraft = async (shouldPreview: boolean = false) => {
+    if (loading) return;
     if (title.trim() === '') {
       setStatusMsg({ text: 'Title is required to save a draft.', type: 'error' });
       return;
@@ -171,6 +241,7 @@ export const WritePost: React.FC = () => {
       );
 
       if (res.success) {
+        localStorage.removeItem(storageKey);
         if (shouldPreview) {
           setStatusMsg({ text: 'Draft saved. Redirecting to preview...', type: 'success' });
           navigate(`/posts/${res.postId || postIdToEdit}`);
@@ -188,36 +259,51 @@ export const WritePost: React.FC = () => {
     }
   };
 
-  const handleDeleteDraft = async () => {
-    if (!postIdToEdit) return;
-    if (!window.confirm('Permanently delete this draft?')) return;
-    setLoading(true);
-    try {
-      const res = await deletePostPermanently(postIdToEdit);
-      if (res.success) {
-        setStatusMsg({ text: 'Draft deleted.', type: 'success' });
-        setTimeout(() => navigate('/profile'), 1500);
-      } else {
-        setStatusMsg({ text: res.error || 'Failed to delete.', type: 'error' });
+    const handleDeleteDraft = () => {
+    if (!postIdToEdit || loading) return;
+    
+    setModalConfig({
+      isOpen: true,
+      title: "Delete Draft",
+      message: "Are you sure you want to permanently delete this draft?",
+      variant: 'danger',
+      onConfirm: async () => {
+        setModalConfig(prev => ({ ...prev, isOpen: false }));
+        setLoading(true);
+        try {
+          const res = await deletePostPermanently(postIdToEdit);
+          if (res.success) {
+            localStorage.removeItem(storageKey);
+            setStatusMsg({ text: 'Draft deleted.', type: 'success' });
+            setTimeout(() => navigate('/profile'), 1500);
+          } else {
+            setStatusMsg({ text: res.error || 'Failed to delete.', type: 'error' });
+          }
+        } catch (err: unknown) {
+          setStatusMsg({ text: err instanceof Error ? err.message : 'An error occurred.', type: 'error' });
+        } finally {
+          setLoading(false);
+        }
       }
-    } catch (err: unknown) {
-      setStatusMsg({ text: err instanceof Error ? err.message : 'An error occurred.', type: 'error' });
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   return (
-    <main
-      className="relative min-h-[100dvh] w-full bg-cover bg-center flex flex-col items-center pb-24"
-      style={{
-        backgroundImage: `url(${writebg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed',
-      }}
-    >
+    <main className="relative min-h-[100dvh] w-full flex flex-col items-center pb-24">
+      <ConfirmModal 
+        isOpen={modalConfig.isOpen}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        variant={modalConfig.variant}
+        onConfirm={modalConfig.onConfirm}
+        onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))}
+      />
+      {/* Fixed background layer: perfectly immune to scroll-zoom bugs and works flawlessly now that Framer Motion filter is cleared in App.tsx */}
+      <div 
+        className="fixed inset-0 w-full h-full -z-10 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${writebg})` }}
+      />
+
       <div className="flex-1 w-full flex flex-col items-center px-4 pt-16">
         {/* Header */}
         <div className="text-center mb-8">
@@ -233,7 +319,7 @@ export const WritePost: React.FC = () => {
         {statusMsg.text && (
           <div
             className={cn(
-              'mb-4 max-w-3xl w-full text-center py-3 px-4 rounded-xl text-sm border',
+              'mb-4 w-full max-w-[95vw] md:max-w-[85vw] lg:max-w-[75vw] xl:max-w-5xl text-center py-3 px-4 rounded-xl text-sm border',
               statusMsg.type === 'success' && 'text-green-300 bg-green-950/40 border-green-500/30',
               statusMsg.type === 'error' && 'text-red-300 bg-red-950/40 border-red-500/30',
               statusMsg.type === 'info' && 'text-neutral-200 bg-black/40 border-neutral-700',
@@ -251,17 +337,22 @@ export const WritePost: React.FC = () => {
               e.preventDefault();
             }
           }}
-          className="w-full max-w-3xl bg-black/60 backdrop-blur-md rounded-2xl border border-neutral-700 p-5 space-y-4"
+          className="w-full max-w-[95vw] md:max-w-[85vw] lg:max-w-[75vw] xl:max-w-5xl bg-black/80 backdrop-blur-md rounded-2xl border border-neutral-700 p-5 space-y-4"
         >
-          {/* Title */}
-          <input
-            type="text"
-            required
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Article title..."
-            className="w-full bg-transparent border-b border-neutral-700 pb-3 text-2xl font-bold text-white placeholder:text-neutral-600 focus:outline-none focus:border-neutral-400 transition-colors"
-          />
+          {/* Title and Autosave Status */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-neutral-700 pb-3 gap-2">
+            <input
+              type="text"
+              required
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Article title..."
+              className="w-full bg-transparent text-2xl font-bold text-white placeholder:text-neutral-600 focus:outline-none transition-colors"
+            />
+            <div className="text-xs text-neutral-500 whitespace-nowrap">
+              {isAutoSaving ? 'Autosaving to device...' : (lastSaved ? `Saved to device at ${lastSaved.toLocaleTimeString()}` : '')}
+            </div>
+          </div>
 
           {/* Meta row */}
           <div className="grid sm:grid-cols-2 gap-3">

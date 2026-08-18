@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ConfirmModal } from '../components/ui/ConfirmModal';
 import { useAuth } from '../context/AuthContext';
 import { 
   getAllPosts,
@@ -96,6 +97,14 @@ export const CmsDashboard: React.FC = () => {
   const [profileLoading, setProfileLoading] = useState(false);
 
   const [actionLoading, setActionLoading] = useState(false);
+
+  const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; variant: 'primary' | 'danger' | 'warning'; onConfirm: () => void }>({ isOpen: false, title: '', message: '', variant: 'primary', onConfirm: () => {} });
+  const [statusMsg, setStatusMsg] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
+
+  const showStatus = (text: string, type: 'success' | 'error' | 'info') => {
+    setStatusMsg({ text, type });
+    setTimeout(() => setStatusMsg(null), 3000);
+  };
 
   // Sync profile edits with state
   useEffect(() => {
@@ -196,18 +205,26 @@ export const CmsDashboard: React.FC = () => {
   };
 
   // Actions: Post
-  const handleApprovePost = async (id: string) => {
-    if (!window.confirm("Approve this article for publishing?")) return;
-    setActionLoading(true);
-    const res = await updatePostStatus(id, 'approved');
-    if (res.success) {
-      alert("Post approved!");
-      loadPosts();
-      fetchOverviewMetrics();
-    } else {
-      alert("Failed: " + res.error);
-    }
-    setActionLoading(false);
+  const handleApprovePost = (id: string) => {
+    setModalConfig({
+      isOpen: true,
+      title: "Approve Article",
+      message: "Are you sure you want to approve this article for publishing?",
+      variant: 'primary',
+      onConfirm: async () => {
+        setModalConfig(prev => ({ ...prev, isOpen: false }));
+        setActionLoading(true);
+        const res = await updatePostStatus(id, 'approved');
+        if (res.success) {
+          showStatus("Post approved!", "success");
+          setPosts(prev => prev.map(p => p.id === id ? { ...p, status: 'approved' } : p));
+          fetchOverviewMetrics();
+        } else {
+          showStatus("Failed: " + res.error, "error");
+        }
+        setActionLoading(false);
+      }
+    });
   };
 
   const handleRejectPostSubmit = async (e: React.FormEvent) => {
@@ -216,13 +233,13 @@ export const CmsDashboard: React.FC = () => {
     setActionLoading(true);
     const res = await updatePostStatus(rejectionPostId, 'rejected', rejectionReason);
     if (res.success) {
-      alert("Post rejected with feedback.");
+      showStatus("Post rejected with feedback.", "success");
+      setPosts(prev => prev.map(p => p.id === rejectionPostId ? { ...p, status: 'rejected', rejectionReason } : p));
       setRejectionPostId(null);
       setRejectionReason('');
-      loadPosts();
       fetchOverviewMetrics();
     } else {
-      alert("Failed: " + res.error);
+      showStatus("Failed: " + res.error, "error");
     }
     setActionLoading(false);
   };
@@ -231,26 +248,34 @@ export const CmsDashboard: React.FC = () => {
     setActionLoading(true);
     const res = await toggleFeaturedStatus(id, !isFeatured);
     if (res.success) {
-      alert("Featured status updated!");
-      loadPosts();
+      showStatus("Featured status updated!", "success");
+      setPosts(prev => prev.map(p => p.id === id ? { ...p, isFeatured: !isFeatured } : p));
     } else {
-      alert("Failed: " + res.error);
+      showStatus("Failed: " + res.error, "error");
     }
     setActionLoading(false);
   };
 
-  const handleDeletePost = async (id: string) => {
-    if (!window.confirm("Permanently delete this article? This action is irreversible.")) return;
-    setActionLoading(true);
-    const res = await deletePostPermanently(id);
-    if (res.success) {
-      alert("Post deleted.");
-      loadPosts();
-      fetchOverviewMetrics();
-    } else {
-      alert("Failed: " + res.error);
-    }
-    setActionLoading(false);
+  const handleDeletePost = (id: string) => {
+    setModalConfig({
+      isOpen: true,
+      title: "Delete Article",
+      message: "Are you sure you want to permanently delete this article? This action cannot be undone.",
+      variant: 'danger',
+      onConfirm: async () => {
+        setModalConfig(prev => ({ ...prev, isOpen: false }));
+        setActionLoading(true);
+        const res = await deletePostPermanently(id);
+        if (res.success) {
+          showStatus("Post deleted.", "success");
+          setPosts(prev => prev.filter(p => p.id !== id));
+          fetchOverviewMetrics();
+        } else {
+          showStatus("Failed: " + res.error, "error");
+        }
+        setActionLoading(false);
+      }
+    });
   };
 
   const handleOpenEdit = (post: Post) => {
@@ -558,6 +583,25 @@ export const CmsDashboard: React.FC = () => {
               background: 'linear-gradient(135deg, rgba(10,25,49,0.85), rgba(26,61,99,0.85))',
             }}
           >
+            {/* Status Message */}
+            {statusMsg && (
+              <div className={`absolute top-4 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-full text-sm font-semibold shadow-2xl backdrop-blur-md border animate-in fade-in slide-in-from-top-5 ${
+                statusMsg.type === 'success' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                statusMsg.type === 'error' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
+                'bg-blue-500/20 text-blue-400 border-blue-500/30'
+              }`}>
+                {statusMsg.text}
+              </div>
+            )}
+            
+            <ConfirmModal 
+              isOpen={modalConfig.isOpen}
+              title={modalConfig.title}
+              message={modalConfig.message}
+              variant={modalConfig.variant}
+              onConfirm={modalConfig.onConfirm}
+              onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))}
+            />
             
             {/* Overview / Analytics Panel */}
             {activeTab === 'overview' && (
