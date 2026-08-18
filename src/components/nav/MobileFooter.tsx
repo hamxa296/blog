@@ -35,7 +35,7 @@ export const MobileFooter: React.FC = () => {
         </span>
         {/* Instagram pill */}
         <a
-          href="https://instagram.com/"
+          href="https://www.instagram.com/giki.chronicles?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 text-white/50 hover:text-white border border-white/10 rounded-full px-3 py-1.5 text-[11px] font-medium tracking-wide transition-colors"

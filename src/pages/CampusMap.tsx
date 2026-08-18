@@ -399,6 +399,34 @@ export const CampusMap: React.FC = () => {
   }, []);
 
   // ==========================================================
+  // PASSIVE EVENT PREVENT DEFAULT (Fix for passive error)
+  // ==========================================================
+
+  useEffect(() => {
+    const desktopElement = desktopContainerRef.current;
+    const mobileElement = mobileContainerRef.current;
+
+    const preventDefault = (e: Event) => e.preventDefault();
+
+    if (desktopElement) {
+      desktopElement.addEventListener('wheel', preventDefault, { passive: false });
+    }
+
+    if (mobileElement) {
+      mobileElement.addEventListener('touchmove', preventDefault, { passive: false });
+    }
+
+    return () => {
+      if (desktopElement) {
+        desktopElement.removeEventListener('wheel', preventDefault);
+      }
+      if (mobileElement) {
+        mobileElement.removeEventListener('touchmove', preventDefault);
+      }
+    };
+  }, []);
+
+  // ==========================================================
   // DESKTOP ZOOM IN
   // ==========================================================
 
@@ -504,8 +532,6 @@ export const CampusMap: React.FC = () => {
   const handleDesktopWheel = (
     e: React.WheelEvent
   ) => {
-    e.preventDefault();
-
     const minScale = getDesktopMinScale();
 
     const zoomFactor =
@@ -584,8 +610,6 @@ export const CampusMap: React.FC = () => {
       e.touches.length === 2 &&
       mobileTouchStartDist.current !== null
     ) {
-      e.preventDefault();
-
       const [t1, t2] = [
         e.touches[0],
         e.touches[1],

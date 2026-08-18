@@ -7,11 +7,10 @@ import backgroundImage from '../../assets/foot.png';
 export const Footer: React.FC = () => {
   return (
     <footer
-      className="w-full border-t border-white/10 text-white/70 py-24 px-4 sm:px-6 lg:px-8 mt-auto relative z-30 bg-center bg-no-repeat hidden md:block"
+      className="w-full border-t border-white/10 text-white/70 py-24 px-4 sm:px-6 lg:px-8 mt-auto relative z-30 bg-center bg-no-repeat hidden md:block bg-black"
       style={{
         backgroundImage: `url(${backgroundImage})`,
-        
-        backgroundSize: '100% auto',
+        backgroundSize: 'cover',
       }}
     >
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
@@ -88,7 +87,7 @@ export const Footer: React.FC = () => {
           </Link>
 
           <Link
-            to="/campus-map"
+            to="/map"
             className="text-sm hover:text-white hover:translate-x-1 transition-all"
           >
             Campus Map
@@ -112,31 +111,11 @@ export const Footer: React.FC = () => {
 
           <div className="flex items-center gap-5 mt-2">
             <a
-              href="#"
+              href="mailto:giki.chronicles@gmail.com"
               className="p-3 bg-white/5 rounded-full hover:bg-white/10 hover:text-white hover:scale-110 transition-all border border-white/10"
-            >
-              <Camera className="w-5 h-5" />
-            </a>
-
-            <a
-              href="#"
-              className="p-3 bg-white/5 rounded-full hover:bg-white/10 hover:text-white hover:scale-110 transition-all border border-white/10"
-            >
-              <MessageSquare className="w-5 h-5" />
-            </a>
-
-            <a
-              href="#"
-              className="p-3 bg-white/5 rounded-full hover:bg-white/10 hover:text-white hover:scale-110 transition-all border border-white/10"
+              title="Email Us"
             >
               <Mail className="w-5 h-5" />
-            </a>
-
-            <a
-              href="#"
-              className="p-3 bg-white/5 rounded-full hover:bg-white/10 hover:text-white hover:scale-110 transition-all border border-white/10"
-            >
-              <Code className="w-5 h-5" />
             </a>
           </div>
 
