@@ -9,9 +9,26 @@ export interface ContactEntry {
   purpose: string;
 }
 
+export interface SocietyLinkItem {
+  label?: string;
+  name?: string;
+  url?: string;
+  link?: string;
+  href?: string;
+  platform?: string;
+}
+
+export type SocietyLinkValue = string | SocietyLinkItem;
+
 export interface SocietyEntry {
   name: string;
   description: string;
+  website?: string;
+  link?: string;
+  url?: string;
+  links?: SocietyLinkValue[] | Record<string, string>;
+  socials?: Record<string, string> | SocietyLinkValue[];
+  [key: string]: unknown;
 }
 
 export interface SocietyCategory {

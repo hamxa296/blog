@@ -119,8 +119,8 @@ export const GuideSectionDetail: React.FC<GuideSectionDetailProps> = ({
         )}
       </div>
 
-      {section.id === 'societies-events' && societySubCategories ? (
-        <SocietiesTabs categories={societySubCategories} />
+      {section.id === 'societies-events' ? (
+        <SocietiesTabs categories={societySubCategories || undefined} />
       ) : (
         renderGenericContent(section)
       )}

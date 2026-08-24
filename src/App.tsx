@@ -10,6 +10,8 @@ import { GuideErrorBoundary } from './components/guide/GuideErrorBoundary';
 import { Toaster } from './components/ui/toaster';
 
 import { lazy, Suspense } from 'react';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
 const About = lazy(() => import('./pages/About').then(module => ({ default: module.About })));
@@ -128,6 +130,8 @@ function App() {
     <AuthProvider>
       <Toaster position="top-right" />
       <RouterProvider router={router} />
+      <Analytics />
+      <SpeedInsights />
     </AuthProvider>
   );
 }

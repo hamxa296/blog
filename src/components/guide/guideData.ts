@@ -135,12 +135,8 @@ export const slugify = (text: string) =>
 export const buildItemId = (categoryKey: string, itemLabel: string) =>
   `${categoryKey}-${slugify(itemLabel)}`;
 
-export type SocietyEntry = { name: string; description: string };
-
-export type SocietyCategory = {
-  title: string;
-  societies: SocietyEntry[];
-};
+import type { SocietyCategory, SocietyEntry } from '../../types/guide';
+export type { SocietyCategory, SocietyEntry };
 
 export const societiesData: Record<string, SocietyCategory> = {
   academic: {
@@ -150,31 +146,55 @@ export const societiesData: Record<string, SocietyCategory> = {
         name: 'ACM (Association for Computing Machinery)',
         description:
           'Focuses on programming, software development, and CS-related competitions, workshops, and hackathons.',
+        website: 'https://acm.giki.edu.pk',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/acmgiki/' },
+          { label: 'LinkedIn', url: 'https://www.linkedin.com/company/acmgiki/' },
+        ],
       },
       {
         name: 'AIAA (American Institute of Aeronautics and Astronautics)',
         description:
           'An aerospace-focused society supporting projects like UAV design and participation in the Design/Build/Fly competition.',
+        website: 'https://aiaa.giki.edu.pk',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/aiaa_giki/' },
+        ],
       },
       {
         name: 'IEEE (Institute of Electrical and Electronics Engineers)',
         description:
           'Covers electronics, robotics, embedded systems, and electrical innovation through events and hands-on projects.',
+        website: 'https://ieee.giki.edu.pk',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/ieeegiki/' },
+          { label: 'LinkedIn', url: 'https://www.linkedin.com/company/ieeegiki/' },
+        ],
       },
       {
         name: 'GMS (GIKI Mathematics Society)',
         description:
           'Promotes analytical thinking and math literacy through competitions, puzzles, and problem-solving events.',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/gms_giki/' },
+        ],
       },
       {
         name: 'NETRONiX',
         description:
           "GIKI's network and gaming society; manages campus LAN infrastructure and organizes e-sports and tech events like Über.GameX.",
+        website: 'https://netronix.giki.edu.pk',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/netronix_giki/' },
+        ],
       },
       {
         name: 'Science Society (GIKI Science Society)',
         description:
           'Encourages scientific research and experimentation through exhibitions, science fairs, and DIY projects.',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/gikisciencesociety/' },
+        ],
       },
     ],
   },
@@ -185,21 +205,33 @@ export const societiesData: Record<string, SocietyCategory> = {
         name: 'Naqsh (Naqsh Arts Society)',
         description:
           'Promotes visual arts, including painting, calligraphy, and sketching, while celebrating cultural expression.',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/naqshartssociety/' },
+        ],
       },
       {
         name: 'LDS (Literary and Debating Society)',
         description:
           "GIKI's official platform for debates, MUNs, declamations, and creative writing competitions.",
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/giki_lds/' },
+        ],
       },
       {
         name: 'Media Club',
         description:
           'Handles photography, videography, and media coverage of campus events; creates multimedia content for the student body.',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/gikimediaclub/' },
+        ],
       },
       {
         name: 'CDeS (Comedy and Dramatics Entertainment Society)',
         description:
           "Performs comedy skits, plays, and theatre productions; GIKI's center for dramatics and stage acting.",
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/cdes_giki/' },
+        ],
       },
     ],
   },
@@ -210,16 +242,27 @@ export const societiesData: Record<string, SocietyCategory> = {
         name: 'SOPHEP (Society for the Promotion of Higher Education in Pakistan)',
         description:
           'Offers career counseling, professional development, and alumni networking opportunities.',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/sophep_giki/' },
+        ],
       },
       {
         name: 'LES (Leadership and Entrepreneurship Society)',
         description:
           'Promotes entrepreneurial thinking and leadership through startup competitions, business simulations, and guest talks.',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/les_giki/' },
+          { label: 'LinkedIn', url: 'https://www.linkedin.com/company/les-giki/' },
+        ],
       },
       {
         name: 'Project Topi',
         description:
           "GIKI's community outreach initiative that supports education, health, and welfare programs in the local Topi area.",
+        website: 'https://projecttopi.org',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/projecttopi/' },
+        ],
       },
     ],
   },
@@ -230,31 +273,56 @@ export const societiesData: Record<string, SocietyCategory> = {
         name: 'Team Invictus (AIAA)',
         description:
           'Designs, builds, and flies remote-controlled aircraft for the AIAA Design/Build/Fly competition in the U.S. Represents GIKI internationally in aerospace design.',
+        website: 'https://invictus.giki.edu.pk',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/teaminvictusgiki/' },
+          { label: 'LinkedIn', url: 'https://www.linkedin.com/company/team-invictus-giki/' },
+        ],
       },
       {
         name: 'Team Foxtrot (Independent)',
         description:
           'Builds fully autonomous UAVs for global competitions like the IMechE UAS Challenge. Focuses on drone engineering, embedded systems, and AI-based navigation.',
+        website: 'https://foxtrot.giki.edu.pk',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/teamfoxtrotgiki/' },
+          { label: 'LinkedIn', url: 'https://www.linkedin.com/company/team-foxtrot-giki/' },
+        ],
       },
       {
         name: 'Team Infinity (Formula Student / Mechanical Engineering)',
         description:
           "GIKI's Formula SAE team that designs and fabricates a formula-style electric race car for international motorsport engineering contests like FSUK.",
+        website: 'https://teaminfinity.giki.edu.pk',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/teaminfinitygiki/' },
+          { label: 'LinkedIn', url: 'https://www.linkedin.com/company/team-infinity-giki/' },
+        ],
       },
       {
         name: 'Team Urban (Shell Eco-marathon)',
         description:
           'Develops ultra energy-efficient urban concept vehicles. Competes in Shell Eco-marathon Asia and Pakistan, focusing on innovation in sustainable transport.',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/teamurbangiki/' },
+          { label: 'LinkedIn', url: 'https://www.linkedin.com/company/team-urban-giki/' },
+        ],
       },
       {
         name: 'Team Hammerhead (Shell Eco-marathon)',
         description:
           'Specializes in electric prototype vehicles for Shell Eco-marathon. Focuses on lightweight design, battery optimization, and aerodynamic performance.',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/teamhammerheadgiki/' },
+        ],
       },
       {
         name: 'Team Swift (Independent)',
         description:
           'An engineering design team dedicated to building performance drones and UAVs, participating in aerial tech competitions and advancing drone innovation on campus.',
+        links: [
+          { label: 'Instagram', url: 'https://www.instagram.com/teamswiftgiki/' },
+        ],
       },
     ],
   },
