@@ -1,11 +1,17 @@
-
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getApprovedPosts, type Post } from '../services/firebase';
 import { BlogSection } from '../components/blog/BlogSection';
 import { MobileFooter } from '../components/nav/MobileFooter';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import { Footer } from '../components/nav/Footer';
+import ImagesBadge from '../components/ui/ImagesBadge';
 import galleryBg from "../assets/homepc.webp";
+import badge1 from "../assets/1.webp";
+import badge2 from "../assets/2.webp";
+import badge3 from "../assets/3.webp";
+import badge4 from "../assets/4.webp";
+import badge5 from "../assets/5.webp";
 
 export const BlogBrowse: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -13,6 +19,7 @@ export const BlogBrowse: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('all');
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
   const genres = ['all', 'Academic', 'Cultural', 'Sports', 'General'];
 
@@ -57,9 +64,8 @@ export const BlogBrowse: React.FC = () => {
 
     return true;
   });
-
   return (
-    <main className="relative z-10 min-h-screen ">
+    <main className="relative z-10 min-h-screen">
       {/* Fixed Background Image */}
       <div
         aria-hidden="true"
@@ -68,8 +74,24 @@ export const BlogBrowse: React.FC = () => {
           backgroundImage: `url(${galleryBg})`,
         }}
       />
-
+  
       <div className="max-w-6xl mx-auto px-4 pt-8">
+        {!isMobile && (
+          <div className="flex justify-end mb-5">
+            <ImagesBadge
+              label="GIKI Archives"
+              images={[
+                { src: badge1, alt: "Archive 1" },
+                { src: badge2, alt: "Archive 2" },
+                { src: badge3, alt: "Archive 3" },
+                { src: badge4, alt: "Archive 4" },
+                { src: badge5, alt: "Archive 5" },
+              ]}
+              onClick={() => navigate("/archives")}
+            />
+          </div>
+        )}
+  
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <input
             type="text"
@@ -78,7 +100,7 @@ export const BlogBrowse: React.FC = () => {
             placeholder="Search chronicles..."
             className="flex-1 bg-card/50 border border-border/50 backdrop-blur-sm rounded-full px-5 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary/50 text-sm font-light"
           />
-
+  
           <div className="flex flex-wrap gap-2">
             {genres.map((genre) => (
               <button
@@ -97,15 +119,16 @@ export const BlogBrowse: React.FC = () => {
           </div>
         </div>
       </div>
-
+  
       <BlogSection posts={filteredPosts} loading={loading} />
+  
       {!isMobile && (
         <div className="relative z-20">
           <Footer />
         </div>
       )}
-
+  
       {isMobile && <MobileFooter />}
     </main>
-  );
-};
+    );
+  };

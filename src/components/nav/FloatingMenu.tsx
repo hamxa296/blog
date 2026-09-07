@@ -112,9 +112,10 @@ export default function FloatingMenu() {
   const menuItems: MenuItem[] = [
     { label: 'Home', path: '/' },
     { label: 'About', path: '/about' },
+    { label: 'Blog', path: '/browse' },
     { label: 'Gallery', path: '/gallery' },
     { label: 'Guide', path: '/guide' },
-    { label: 'Blog', path: '/browse' },
+    { label: 'Archives', path: '/archives' },
     { label: 'Map', path: '/map' },
     { label: 'Contact', path: '/contact' },
     ...(loading
