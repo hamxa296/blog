@@ -1,41 +1,21 @@
 # 📋 Editorial Workflow & Review Pipeline Specification
 
-**Project:** GIKI Chronicles
-
-**Feature Scope:** Mandatory Review Pipeline, Automated Load-Balanced Allotment, Author Feedback Loop, Dedicated Editor Workspace & Login, In-App + Email Publication Notifications
-
-**Status:** Approved Architecture & Implementation Blueprint
+**Project:** GIKI Chronicles  
+**Feature Scope:** Mandatory Review Pipeline, Automated Load-Balanced Allotment, Author Feedback Loop, Dedicated Editor Workspace & Login, In-App + Email Publication Notifications  
+**Status:** Approved Architecture & Implementation Blueprint  
 
 ---
 
 ## 1. Executive Summary & Core Requirements Matrix
 
 | # | Requirement | Core Mechanism | Primary Target Surface |
-| --- | --- | --- | --- |
-| **1** | **Review any submissions before publication** | Strict post state gating (`pending` / `under_review`); database security rules blocking unapproved reads; clean author submit flows. | `src/pages/WritePost.tsx`<br>
-
-<br>`firestore.rules`<br>
-
-<br>`src/pages/BlogBrowse.tsx` |
-| **2** | **Send actionable feedback to author** | Persistent audit log (`feedbackHistory` array); structured editor feedback composer; author revision banner and resubmission mode. | `src/pages/EditorReviewDetail.tsx`<br>
-
-<br>`src/pages/WritePost.tsx`<br>
-
-<br>`src/pages/Profile.tsx` |
-| **3** | **Automated editor allotment on submission** | Least-busy / load-balanced assignment engine; active editor query; atomic post stamping (`assignedEditorId`). | `src/services/editorialService.ts`<br>
-
-<br>`src/services/firebase.ts` |
-| **4** | **Dedicated editor panel for allotted articles** | Personalized "My Queue" vs. full "Team Overview" tabs; live `BlockRenderer` preview; split-pane review actions console. | `src/pages/EditorWorkspace.tsx`<br>
-
-<br>`src/pages/EditorReviewDetail.tsx` |
-| **5** | **Author publication confirmation** | Multi-channel confirmation: global in-app notification bell, live toast alert, profile status badges, and automated email dispatch. | `src/components/nav/NotificationBell.tsx`<br>
-
-<br>`src/services/emailService.ts`<br>
-
-<br>`src/pages/Profile.tsx` |
-| **6** | **Dedicated editor login portal** | Staff-branded `/editor/login` gateway; strict role validation (`editor`, `moderator`, `admin`); immediate redirect into workspace. | `src/pages/EditorLogin.tsx`<br>
-
-<br>`src/components/CmsRoute.tsx` |
+|---|---|---|---|
+| **1** | **Review any submissions before publication** | Strict post state gating (`pending` / `under_review`); database security rules blocking unapproved reads; clean author submit flows. | `src/pages/WritePost.tsx`, `firestore.rules`, `src/pages/BlogBrowse.tsx` |
+| **2** | **Send actionable feedback to author** | Persistent audit log (`feedbackHistory` array); structured editor feedback composer; author revision banner and resubmission mode. | `src/pages/EditorReviewDetail.tsx`, `src/pages/WritePost.tsx`, `src/pages/Profile.tsx` |
+| **3** | **Automated editor allotment on submission** | Least-busy / load-balanced assignment engine; active editor query; atomic post stamping (`assignedEditorId`). | `src/services/editorialService.ts`, `src/services/firebase.ts` |
+| **4** | **Dedicated editor panel for allotted articles** | Personalized "My Queue" vs. full "Team Overview" tabs; live `BlockRenderer` preview; split-pane review actions console. | `src/pages/EditorWorkspace.tsx`, `src/pages/EditorReviewDetail.tsx` |
+| **5** | **Author publication confirmation** | Multi-channel confirmation: global in-app notification bell, live toast alert, profile status badges, and automated email dispatch. | `src/components/nav/NotificationBell.tsx`, `src/services/emailService.ts`, `src/pages/Profile.tsx` |
+| **6** | **Dedicated editor login portal** | Staff-branded `/editor/login` gateway; strict role validation (`editor`, `moderator`, `admin`); immediate redirect into workspace. | `src/pages/EditorLogin.tsx`, `src/components/CmsRoute.tsx` |
 
 ---
 
@@ -80,7 +60,7 @@ stateDiagram-v2
 
 ## 3. Data Layer & Schema Specifications
 
-### 3.1 Extended `Post` Interface (`src/services/firebase.ts`)
+### 3.1 Extended Post Interface (`src/services/firebase.ts`)
 
 ```typescript
 export type PostStatus = 
@@ -103,7 +83,7 @@ export interface PostFeedbackEntry {
 export interface Post {
   id?: string;
   title: string;
-  content: string; // JSON string of Block[]
+  content: string; // JSON string representation of Block[]
   description: string;
   photoUrl: string;
   genre: string;
@@ -250,7 +230,7 @@ When an author clicks **"Submit for Review"**:
 
 ### 4.2 Dedicated Editor Panel Architecture (`src/pages/EditorWorkspace.tsx`)
 
-#### A. Workspace Layout & Tab Separation
+#### Workspace Layout & Tab Separation
 
 * **Tab 1: "My Queue" (Default Focus)**
 * Displays posts where `assignedEditorId == currentUser.uid`.
@@ -340,7 +320,7 @@ await addDoc(collection(db, 'mail'), {
         <h2 style="color: #059669;">Congratulations, ${post.authorName}!</h2>
         <p>Your article <strong>"${post.title}"</strong> has been reviewed, approved, and officially published on GIKI Chronicles.</p>
         <p>You can read and share your article using the link below:</p>
-        <p><a href="https://gikichronicles.web.app/posts/${postId}" style="display: inline-block; padding: 10px 20px; background-color: #059669; color: #fff; text-decoration: none; border-radius: 6px; font-weight: bold;">View Your Live Article</a></p>
+        <p><a href="[https://gikichronicles.web.app/posts/$](https://gikichronicles.web.app/posts/$){postId}" style="display: inline-block; padding: 10px 20px; background-color: #059669; color: #fff; text-decoration: none; border-radius: 6px; font-weight: bold;">View Your Live Article</a></p>
         <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
         <p style="font-size: 12px; color: #777;">GIKI Chronicles Editorial Board</p>
       </div>
@@ -434,7 +414,7 @@ service cloud.firestore {
     // Mail Trigger Queue Rules
     match /mail/{mailId} {
       allow create: if isStaff();
-      allow read, update, delete: if false; // Worker processes only
+      allow read, update, delete: if false; // Cloud extension / worker processes only
     }
   }
 }
@@ -445,33 +425,39 @@ service cloud.firestore {
 
 ## 6. Phased Implementation Roadmap
 
-```
-Phase 1: Types & Services
- ├── Update Post & PostFeedbackEntry interfaces in src/services/firebase.ts
- ├── Create src/services/editorialService.ts (findLeastLoadedEditor, submitForReview, approvePost, requestChanges)
- └── Create src/services/emailService.ts (queuePublicationEmail)
+* **Phase 1: Types & Services**
+* Update `Post` & `PostFeedbackEntry` interfaces in `src/services/firebase.ts`
+* Create `src/services/editorialService.ts` (`findLeastLoadedEditor`, `submitForReview`, `approvePost`, `requestChanges`)
+* Create `src/services/emailService.ts` (`queuePublicationEmail`)
 
-Phase 2: Automated Allotment & Author Flow
- ├── Update src/pages/WritePost.tsx with "Submit for Review" & "Resubmit" actions
- ├── Connect auto-assignment engine on submission
- └── Add revision feedback callout banner in WritePost.tsx
 
-Phase 3: Dedicated Editor Workspace & Review Screen
- ├── Implement src/pages/EditorWorkspace.tsx ("My Queue" & "Team Board" tabs)
- ├── Implement src/pages/EditorReviewDetail.tsx (Split preview + feedback sidebar)
- └── Wire Approve, Request Changes, Reject, and Reassign actions
+* **Phase 2: Automated Allotment & Author Flow**
+* Update `src/pages/WritePost.tsx` with "Submit for Review" & "Resubmit" actions
+* Connect auto-assignment engine on submission
+* Add revision feedback callout banner in `WritePost.tsx`
 
-Phase 4: Notifications & Confirmation Pipeline
- ├── Build src/components/nav/NotificationBell.tsx with Firestore real-time listener
- ├── Update src/pages/Profile.tsx submission cards with editorial status badges
- └── Connect email dispatch trigger in approvePost()
 
-Phase 5: Staff Entryway & Routing
- ├── Build src/pages/EditorLogin.tsx with role-checking gateway
- ├── Configure /editor and /editor/review/:postId routes in src/App.tsx
- └── Secure endpoints using CmsRoute guard with allowedRoles={['editor', 'moderator', 'admin']}
+* **Phase 3: Dedicated Editor Workspace & Review Screen**
+* Implement `src/pages/EditorWorkspace.tsx` ("My Queue" & "Team Board" tabs)
+* Implement `src/pages/EditorReviewDetail.tsx` (Split preview + feedback sidebar)
+* Wire Approve, Request Changes, Reject, and Reassign actions
 
-Phase 6: Deployment & Validation
- ├── Deploy updated firestore.rules
- └── Run end-to-end multi-role test (1 Author + 2 Editors + 1 Admin)
+
+* **Phase 4: Notifications & Confirmation Pipeline**
+* Build `src/components/nav/NotificationBell.tsx` with Firestore real-time listener
+* Update `src/pages/Profile.tsx` submission cards with editorial status badges
+* Connect email dispatch trigger in `approvePost()`
+
+
+* **Phase 5: Staff Entryway & Routing**
+* Build `src/pages/EditorLogin.tsx` with role-checking gateway
+* Configure `/editor` and `/editor/review/:postId` routes in `src/App.tsx`
+* Secure endpoints using `CmsRoute` guard with `allowedRoles={['editor', 'moderator', 'admin']}`
+
+
+* **Phase 6: Deployment & Validation**
+* Deploy updated `firestore.rules`
+* Run end-to-end multi-role test (1 Author + 2 Editors + 1 Admin)
+
+
 
