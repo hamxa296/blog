@@ -10,6 +10,8 @@ import { GuideErrorBoundary } from './components/guide/GuideErrorBoundary';
 import { Toaster } from './components/ui/toaster';
 
 import { lazy, Suspense } from 'react';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
 const About = lazy(() => import('./pages/About').then(module => ({ default: module.About })));
@@ -23,6 +25,7 @@ const Profile = lazy(() => import('./pages/Profile').then(module => ({ default: 
 const WritePost = lazy(() => import('./pages/WritePost').then(module => ({ default: module.WritePost })));
 const CmsDashboard = lazy(() => import('./pages/CmsDashboard').then(module => ({ default: module.CmsDashboard })));
 const BlogBrowse = lazy(() => import('./pages/BlogBrowse').then(module => ({ default: module.BlogBrowse })));
+const Archives = lazy(() => import('./pages/Archives').then(module => ({ default: module.Archives })));
 const BlogPostDetail = lazy(() => import('./pages/BlogPostDetail').then(module => ({ default: module.BlogPostDetail })));
 const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
 
@@ -117,6 +120,7 @@ const router = createBrowserRouter([
         ),
       },
       { path: 'browse', element: <BlogBrowse /> },
+      { path: 'archives', element: <Archives /> },
       { path: 'posts/:id', element: <BlogPostDetail /> },
       { path: '*', element: <NotFound /> },
     ],
@@ -128,6 +132,8 @@ function App() {
     <AuthProvider>
       <Toaster position="top-right" />
       <RouterProvider router={router} />
+      <Analytics />
+      <SpeedInsights />
     </AuthProvider>
   );
 }

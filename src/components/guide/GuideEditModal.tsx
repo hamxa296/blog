@@ -76,9 +76,14 @@ export const GuideEditModal: React.FC<GuideEditModalProps> = ({
               name="fullContent"
               value={editForm.fullContent}
               onChange={onFormChange}
-              rows={6}
+              rows={8}
               className="w-full p-2 border border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-gray-700 text-gray-100 font-mono text-sm"
             />
+            {editingSectionId === 'societies-events' && (
+              <p className="text-xs text-gray-400 mt-1.5 leading-normal">
+                💡 <span className="text-gray-300 font-semibold">Websites & Links Tip:</span> You can add <code className="text-pink-400 bg-gray-800 px-1 py-0.5 rounded">&quot;website&quot;: &quot;https://...&quot;</code>, <code className="text-pink-400 bg-gray-800 px-1 py-0.5 rounded">&quot;links&quot;: [{'{'}&quot;label&quot;: &quot;...&quot;, &quot;url&quot;: &quot;...&quot;{'}'}]</code>, or <code className="text-pink-400 bg-gray-800 px-1 py-0.5 rounded">&quot;socials&quot;: {'{'}&quot;instagram&quot;: &quot;...&quot;{'}'}</code> to any society entry in this JSON. Markdown links in description are also supported.
+              </p>
+            )}
           </div>
           <div>
             <div className="flex justify-between items-center mb-2">
