@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { useEffect } from 'react';
 import FloatingMenu from './components/nav/FloatingMenu';
 import GlobalBackButton from './components/nav/GlobalBackButton';
+import { NotificationBell } from './components/nav/NotificationBell';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { CmsRoute } from './components/CmsRoute';
 import { GuideErrorBoundary } from './components/guide/GuideErrorBoundary';
@@ -28,6 +29,9 @@ const BlogBrowse = lazy(() => import('./pages/BlogBrowse').then(module => ({ def
 const Archives = lazy(() => import('./pages/Archives').then(module => ({ default: module.Archives })));
 const BlogPostDetail = lazy(() => import('./pages/BlogPostDetail').then(module => ({ default: module.BlogPostDetail })));
 const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
+const EditorLogin = lazy(() => import('./pages/EditorLogin').then(module => ({ default: module.EditorLogin })));
+const EditorWorkspace = lazy(() => import('./pages/EditorWorkspace').then(module => ({ default: module.EditorWorkspace })));
+const EditorReviewDetail = lazy(() => import('./pages/EditorReviewDetail').then(module => ({ default: module.EditorReviewDetail })));
 
 import { initGuidePreload } from './services/guideService';
 
@@ -52,6 +56,7 @@ function AppShell() {
         }}
       />
       <GlobalBackButton />
+      <NotificationBell />
       <div className="flex-grow relative z-30 flex flex-col">
         <AnimatePresence mode="wait">
           <motion.div
@@ -73,6 +78,8 @@ function AppShell() {
     </div>
   );
 }
+
+const EDITOR_ROLES = ['admin', 'editor', 'moderator'] as const;
 
 const router = createBrowserRouter([
   {
@@ -116,6 +123,23 @@ const router = createBrowserRouter([
         element: (
           <CmsRoute allowedRoles={['admin']}>
             <CmsDashboard />
+          </CmsRoute>
+        ),
+      },
+      { path: 'editor/login', element: <EditorLogin /> },
+      {
+        path: 'editor',
+        element: (
+          <CmsRoute allowedRoles={[...EDITOR_ROLES]}>
+            <EditorWorkspace />
+          </CmsRoute>
+        ),
+      },
+      {
+        path: 'editor/review/:postId',
+        element: (
+          <CmsRoute allowedRoles={[...EDITOR_ROLES]}>
+            <EditorReviewDetail />
           </CmsRoute>
         ),
       },

@@ -124,7 +124,12 @@ export default function FloatingMenu() {
       ? [
           { label: 'Profile', path: '/profile' },
           { label: 'Write', path: '/write' },
-          ...(isCms ? [{ label: 'CMS', path: '/cms' }] : []),
+          ...(isCms
+            ? [
+                { label: 'Editorial', path: '/editor' },
+                { label: 'CMS', path: '/cms' },
+              ]
+            : []),
           {
             label: 'Logout',
             onClick: async () => {

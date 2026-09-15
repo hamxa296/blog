@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import writebg from "../assets/bgblog.webp";
 import {
-  createPost,
-  updatePost,
   savePostAsDraft,
   getPostForEditing,
   deletePostPermanently,
   type Post,
+  type PostFeedbackEntry,
 } from '../services/firebase';
+import { submitForReview } from '../services/editorialService';
 import { uploadImageToCloudinary } from '../services/cloudinary';
 import { Button } from '../components/ui/button';
 import { cn } from '../lib/utils';
@@ -40,6 +40,8 @@ export const WritePost: React.FC = () => {
     const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; variant: 'primary' | 'danger' | 'warning'; onConfirm: () => void }>({ isOpen: false, title: '', message: '', variant: 'primary', onConfirm: () => {} });
   const [statusMsg, setStatusMsg] = useState({ text: '', type: '' });
   const [postStatus, setPostStatus] = useState<string>('');
+  const [feedbackHistory, setFeedbackHistory] = useState<PostFeedbackEntry[]>([]);
+  const [rejectionReason, setRejectionReason] = useState('');
 
   // Auto-save state
   const storageKey = postIdToEdit ? `giki_draft_${postIdToEdit}` : 'giki_draft_new';
@@ -83,6 +85,8 @@ export const WritePost: React.FC = () => {
             setGenre(p.genre || 'General');
             setTags(p.tags ? p.tags.join(', ') : '');
             setPostStatus(p.status || '');
+            setFeedbackHistory(p.feedbackHistory || []);
+            setRejectionReason(p.rejectionReason || '');
             // Deserialize content — handles both block JSON and legacy HTML
             const { blocks: loaded, isLegacy } = deserializeContent(p.content || '');
             if (isLegacy && p.content) {
@@ -195,16 +199,26 @@ export const WritePost: React.FC = () => {
       const content = await getContentString();
       if (!content) { setLoading(false); return; }
 
-      let res;
-      if (postIdToEdit) {
-        res = await updatePost(postIdToEdit, { title, content, description, photoUrl: finalPhotoUrl, genre, tags });
-      } else {
-        res = await createPost({ title, content, description, photoUrl: finalPhotoUrl, genre, tags });
-      }
+      const res = await submitForReview({
+        title,
+        content,
+        description,
+        photoUrl: finalPhotoUrl,
+        genre,
+        tags,
+        postId: postIdToEdit,
+      });
 
       if (res.success) {
         localStorage.removeItem(storageKey);
-        setStatusMsg({ text: 'Article submitted! Pending administrator approval.', type: 'success' });
+        const isResubmit = postStatus === 'changes_requested';
+        setPostStatus('pending');
+        setStatusMsg({
+          text: isResubmit
+            ? 'Resubmitted to your editor. They have been notified.'
+            : 'Article submitted for review. An editor has been allotted.',
+          type: 'success',
+        });
         setTimeout(() => navigate('/profile'), 2000);
       } else {
         setStatusMsg({ text: res.error || 'Failed to submit post.', type: 'error' });
@@ -340,6 +354,46 @@ export const WritePost: React.FC = () => {
             )}
           >
             {statusMsg.text}
+          </div>
+        )}
+
+        {(postStatus === 'changes_requested' || postStatus === 'rejected') && (
+          <div className="mb-4 w-full max-w-[95vw] md:max-w-[85vw] lg:max-w-[75vw] xl:max-w-5xl rounded-xl border border-orange-500/40 bg-orange-950/40 backdrop-blur-sm p-4 space-y-2 sticky top-4 z-20">
+            <p className="text-[10px] uppercase tracking-widest text-orange-300 font-medium">
+              {postStatus === 'rejected' ? 'Submission Rejected' : 'Editor Feedback'}
+            </p>
+            {(() => {
+              const latest = [...feedbackHistory].reverse()[0];
+              const text = latest?.feedbackText || rejectionReason;
+              if (!text) {
+                return (
+                  <p className="text-sm text-orange-100/80">
+                    Your editor requested changes. Update the article and resubmit.
+                  </p>
+                );
+              }
+              return (
+                <>
+                  {latest?.editorName && (
+                    <p className="text-xs text-orange-200/70">From {latest.editorName}</p>
+                  )}
+                  <p className="text-sm text-orange-50 whitespace-pre-wrap leading-relaxed">{text}</p>
+                </>
+              );
+            })()}
+            {feedbackHistory.length > 1 && (
+              <details className="text-xs text-orange-200/70">
+                <summary className="cursor-pointer">Earlier feedback rounds ({feedbackHistory.length - 1})</summary>
+                <ul className="mt-2 space-y-2">
+                  {[...feedbackHistory].reverse().slice(1).map((entry) => (
+                    <li key={entry.id} className="border-t border-orange-500/20 pt-2 whitespace-pre-wrap">
+                      <span className="font-medium text-orange-200">{entry.editorName}: </span>
+                      {entry.feedbackText}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            )}
           </div>
         )}
 
@@ -480,7 +534,11 @@ export const WritePost: React.FC = () => {
                 disabled={loading}
                 className="bg-white text-black hover:bg-neutral-200"
               >
-                {loading ? 'Submitting...' : postIdToEdit ? 'Update Post' : 'Submit for Review'}
+                {loading
+                  ? 'Submitting...'
+                  : postStatus === 'changes_requested'
+                    ? 'Resubmit to Editor'
+                    : 'Submit for Review'}
               </Button>
             </div>
           </div>

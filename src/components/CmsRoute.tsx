@@ -19,7 +19,9 @@ export const CmsRoute: React.FC<CmsRouteProps> = ({
   }
 
   if (!user) {
-    return <Navigate to={`/login?next=${encodeURIComponent(location.pathname + location.search)}`} replace />;
+    const isEditorPath = location.pathname.startsWith('/editor');
+    const loginBase = isEditorPath ? '/editor/login' : '/login';
+    return <Navigate to={`${loginBase}?next=${encodeURIComponent(location.pathname + location.search)}`} replace />;
   }
 
   const hasAccess = role && allowedRoles.includes(role);
