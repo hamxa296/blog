@@ -4,6 +4,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  increment,
   query,
   serverTimestamp,
   updateDoc,
@@ -21,9 +22,14 @@ import {
   type PostFeedbackEntry,
   type PostStatus,
 } from './firebase';
-import { queuePublicationEmail } from './emailService';
+import {
+  queuePublicationEmail,
+  queueChangesRequestedEmail,
+  queueResubmissionEmail,
+  queueRejectionEmail,
+} from './emailService';
 
-export type EditorRef = { uid: string; displayName: string };
+export type EditorRef = { uid: string; displayName: string; email?: string };
 
 const ACTIVE_REVIEW_STATUSES: PostStatus[] = [
   'pending',
@@ -61,55 +67,46 @@ export async function createNotification(
 
 export async function findLeastLoadedEditor(): Promise<EditorRef | null> {
   try {
-    const editorsQuery = query(
-      collection(db, 'users'),
-      where('role', 'in', ['editor', 'admin']),
+    // STRICT: only users explicitly assigned role:'editor' or role:'admin' are eligible.
+    // We do NOT fall back to isAdmin:true to prevent regular users from accidentally
+    // entering the editor pool if their doc has stale/incorrect flags.
+    const roleSnap = await getDocs(
+      query(collection(db, 'users'), where('role', 'in', ['editor', 'admin'])),
     );
-    const editorSnap = await getDocs(editorsQuery);
 
-    if (editorSnap.empty) return null;
+    if (roleSnap.empty) {
+      console.warn('[findLeastLoadedEditor] No users with role=editor or role=admin found.');
+      return null;
+    }
 
-    const activeEditors: EditorRef[] = editorSnap.docs
+    const activeEditors: (EditorRef & { load: number })[] = roleSnap.docs
       .map((d) => {
         const data = d.data();
         if (data.isBlocked === true) return null;
         return {
           uid: d.id,
           displayName: (data.displayName as string) || 'Editorial Board',
+          email: (data.email as string) || undefined,
+          load: typeof data.editorialLoad === 'number' ? (data.editorialLoad as number) : 0,
         };
       })
-      .filter((e): e is EditorRef => e !== null);
+      .filter((e): e is EditorRef & { load: number } => e !== null);
 
-    if (activeEditors.length === 0) return null;
+    if (activeEditors.length === 0) {
+      console.warn('[findLeastLoadedEditor] All eligible editors are blocked.');
+      return null;
+    }
 
-    // Prefer discrete status queries to avoid composite index requirements on `in`
-    const workloadMap: Record<string, number> = {};
-    activeEditors.forEach((e) => {
-      workloadMap[e.uid] = 0;
-    });
-
-    await Promise.all(
-      ACTIVE_REVIEW_STATUSES.map(async (status) => {
-        const postSnap = await getDocs(
-          query(collection(db, 'posts'), where('status', '==', status)),
-        );
-        postSnap.docs.forEach((d) => {
-          const assignedId = d.data().assignedEditorId as string | undefined;
-          if (assignedId && workloadMap[assignedId] !== undefined) {
-            workloadMap[assignedId] += 1;
-          }
-        });
-      }),
-    );
-
-    return activeEditors.reduce((prev, curr) =>
-      workloadMap[curr.uid] < workloadMap[prev.uid] ? curr : prev,
-    );
+    const chosen = activeEditors.reduce((prev, curr) => curr.load < prev.load ? curr : prev);
+    console.log('[findLeastLoadedEditor] Chosen:', chosen.displayName, '(load:', chosen.load, ')');
+    return chosen;
   } catch (error) {
-    console.error('findLeastLoadedEditor error:', error);
+    console.error('[findLeastLoadedEditor] Error:', error);
     return null;
   }
 }
+
+
 
 async function stampAssignment(
   postId: string,
@@ -123,9 +120,15 @@ async function stampAssignment(
   await updateDoc(doc(db, 'posts', postId), {
     assignedEditorId: editor.uid,
     assignedEditorName: editor.displayName,
+    assignedEditorEmail: editor.email || '',
     assignedAt: serverTimestamp(),
     status: 'pending' as PostStatus,
     updatedAt: serverTimestamp(),
+  });
+
+  // Increment the editor's active load counter (used by findLeastLoadedEditor)
+  void updateDoc(doc(db, 'users', editor.uid), {
+    editorialLoad: increment(1),
   });
 
   await createNotification({
@@ -228,6 +231,21 @@ export async function submitForReview(params: {
         : `New article "${params.title}" has been allotted to your queue.`,
     );
 
+    // Email the assigned editor — both on first allotment and on resubmission
+    if (editor.email) {
+      queueResubmissionEmail({
+        to: editor.email,
+        editorName: editor.displayName,
+        authorName: senderName,
+        postTitle: params.title,
+        postId,
+      }).then((res) => {
+        if (!res.success) console.error('[submitForReview] Editor email failed:', res.error);
+      }).catch((e) => console.error('[submitForReview] Editor email error:', e));
+    } else {
+      console.warn('[submitForReview] Editor has no email address on file — skipping email notification.');
+    }
+
     return { success: true, postId };
   } catch (error: unknown) {
     console.error('submitForReview error:', error);
@@ -300,6 +318,13 @@ export async function approvePost(postId: string): Promise<{ success: boolean; e
       });
     }
 
+    // Decrement the editor's load counter — article is resolved
+    if (post.assignedEditorId) {
+      void updateDoc(doc(db, 'users', post.assignedEditorId), {
+        editorialLoad: increment(-1),
+      });
+    }
+
     return { success: true };
   } catch (error: unknown) {
     console.error('approvePost error:', error);
@@ -354,6 +379,22 @@ export async function requestChanges(
       type: 'FEEDBACK_RECEIVED',
       message: `${editor.displayName} requested revisions on "${post.title}".`,
     });
+
+    // Send email to author with feedback details
+    if (post.authorEmail) {
+      queueChangesRequestedEmail({
+        to: post.authorEmail,
+        authorName: post.authorName,
+        postTitle: post.title,
+        postId,
+        editorName: editor.displayName,
+        feedbackText: feedbackText.trim(),
+      }).then((res) => {
+        if (!res.success) console.error('[requestChanges] Author email failed:', res.error);
+      }).catch((e) => console.error('[requestChanges] Author email error:', e));
+    } else {
+      console.warn('[requestChanges] No authorEmail on post — skipping revision email.');
+    }
 
     return { success: true };
   } catch (error: unknown) {
@@ -411,6 +452,23 @@ export async function rejectPost(
       message: `Your article "${post.title}" was not approved. See the editor's notes.`,
     });
 
+    // Send rejection email to author with the reason
+    if (post.authorEmail) {
+      void queueRejectionEmail({
+        to: post.authorEmail,
+        authorName: post.authorName,
+        postTitle: post.title,
+        rejectionReason: rejectionReason.trim(),
+      });
+    }
+
+    // Decrement the editor's load counter — article is resolved
+    if (post.assignedEditorId) {
+      void updateDoc(doc(db, 'users', post.assignedEditorId), {
+        editorialLoad: increment(-1),
+      });
+    }
+
     return { success: true };
   } catch (error: unknown) {
     console.error('rejectPost error:', error);
@@ -436,6 +494,7 @@ export async function reassignPost(
     await updateDoc(doc(db, 'posts', postId), {
       assignedEditorId: newEditor.uid,
       assignedEditorName: newEditor.displayName,
+      assignedEditorEmail: newEditor.email || '',
       assignedAt: serverTimestamp(),
       status: post.status === 'approved' || post.status === 'rejected'
         ? post.status
@@ -520,30 +579,125 @@ export async function getPublishedByEditor(
   }
 }
 
+export type EditorProfile = EditorRef & {
+  role: string;
+  editorialLoad: number;
+  photoURL?: string;
+};
+
 export async function listActiveEditors(): Promise<{
   success: boolean;
-  editors?: EditorRef[];
+  editors?: EditorProfile[];
   error?: string;
 }> {
   try {
+    // 1. Fetch all editorial staff
     const snap = await getDocs(
       query(collection(db, 'users'), where('role', 'in', ['editor', 'admin', 'moderator'])),
     );
-    const editors = snap.docs
-      .map((d) => {
-        const data = d.data();
-        if (data.isBlocked === true) return null;
-        return {
-          uid: d.id,
-          displayName: (data.displayName as string) || 'Editor',
-        };
-      })
-      .filter((e): e is EditorRef => e !== null);
+
+    const staffDocs = snap.docs.filter((d) => d.data().isBlocked !== true);
+    if (staffDocs.length === 0) return { success: true, editors: [] };
+
+    // 2. Compute real-time workload from actual post documents.
+    //    This runs in an editor/admin context so staff permissions apply.
+    //    Query one status at a time (Firestore doesn't support status IN + assignedEditorId
+    //    without a composite index per pair).
+    const ACTIVE_STATUSES: PostStatus[] = ['pending', 'under_review', 'changes_requested'];
+    const loadMap: Record<string, number> = {};
+    staffDocs.forEach((d) => { loadMap[d.id] = 0; });
+
+    await Promise.all(
+      ACTIVE_STATUSES.map(async (status) => {
+        const postsSnap = await getDocs(
+          query(collection(db, 'posts'), where('status', '==', status)),
+        );
+        postsSnap.docs.forEach((pd) => {
+          const assignedId = pd.data().assignedEditorId as string | undefined;
+          if (assignedId && assignedId in loadMap) {
+            loadMap[assignedId] = (loadMap[assignedId] ?? 0) + 1;
+          }
+        });
+      }),
+    );
+
+    const editors = staffDocs.map((d) => {
+      const data = d.data();
+      return {
+        uid: d.id,
+        displayName: (data.displayName as string) || 'Editor',
+        email: (data.email as string) || undefined,
+        role: (data.role as string) || 'editor',
+        editorialLoad: loadMap[d.id] ?? 0, // live count, not stale counter
+        photoURL: (data.photoURL as string) || undefined,
+      };
+    });
+
     return { success: true, editors };
   } catch (error: unknown) {
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to list editors.',
+    };
+  }
+}
+
+
+// ---------------------------------------------------------------
+// "Notify Editor" — manual trigger by the author from WritePost.tsx
+// Looks up the assigned editor's email from the post document and
+// fires a resubmission notification email.
+// ---------------------------------------------------------------
+export async function notifyEditorByEmail(postId: string): Promise<{ success: boolean; error?: string }> {
+  const user = auth.currentUser;
+  if (!user) return { success: false, error: 'You must be logged in.' };
+
+  try {
+    const snap = await getDoc(doc(db, 'posts', postId));
+    if (!snap.exists()) return { success: false, error: 'Post not found.' };
+    const post = { id: snap.id, ...snap.data() } as Post;
+
+    if (post.authorId !== user.uid) {
+      return { success: false, error: 'You are not authorized to notify for this post.' };
+    }
+
+    if (!post.assignedEditorId) {
+      return { success: false, error: 'No editor is currently assigned to this article.' };
+    }
+
+    // Resolve editor email: prefer the denormalized field, fall back to user doc lookup
+    let editorEmail = post.assignedEditorEmail;
+    let editorName = post.assignedEditorName || 'Editor';
+
+    if (!editorEmail) {
+      const editorDoc = await getDoc(doc(db, 'users', post.assignedEditorId));
+      if (editorDoc.exists()) {
+        const data = editorDoc.data();
+        editorEmail = (data.email as string) || undefined;
+        editorName = (data.displayName as string) || editorName;
+      }
+    }
+
+    if (!editorEmail) {
+      return { success: false, error: 'Could not resolve editor email. Please contact the editorial team directly.' };
+    }
+
+    const authorName = user.displayName || user.email?.split('@')[0] || 'Author';
+
+    const res = await queueResubmissionEmail({
+      to: editorEmail,
+      editorName,
+      authorName,
+      postTitle: post.title,
+      postId,
+    });
+
+    return res;
+  } catch (error: unknown) {
+    console.error('notifyEditorByEmail error:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to notify editor.',
     };
   }
 }

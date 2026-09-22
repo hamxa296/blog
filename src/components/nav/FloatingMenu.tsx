@@ -98,10 +98,17 @@ export default function FloatingMenu() {
   const navigate = useNavigate();
   const { user, profile, loading } = useAuth();
 
-  const isCms =
+  // Any staff member sees the Editorial portal
+  const isStaffMember =
     profile?.isAdmin ||
     profile?.role === 'admin' ||
     profile?.role === 'editor' ||
+    profile?.role === 'moderator';
+
+  // Only admin/moderator see the full CMS dashboard
+  const isCmsUser =
+    profile?.isAdmin ||
+    profile?.role === 'admin' ||
     profile?.role === 'moderator';
 
   const go = (path: string) => {
@@ -124,10 +131,10 @@ export default function FloatingMenu() {
       ? [
           { label: 'Profile', path: '/profile' },
           { label: 'Write', path: '/write' },
-          ...(isCms
+          ...(isStaffMember
             ? [
                 { label: 'Editorial', path: '/editor' },
-                { label: 'CMS', path: '/cms' },
+                ...(isCmsUser ? [{ label: 'CMS', path: '/cms' }] : []),
               ]
             : []),
           {

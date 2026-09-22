@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Users } from 'lucide-react';
 import galleryBg from '../assets/homepc.webp';
 import { useAuth } from '../context/AuthContext';
 import { useIsMobile } from '../hooks/useMediaQuery';
@@ -14,6 +14,8 @@ import {
   getEditorialQueue,
   getPublishedByEditor,
   reassignPost,
+  listActiveEditors,
+  type EditorProfile,
 } from '../services/editorialService';
 
 type WorkspaceTab = 'queue' | 'team' | 'archive';
@@ -108,16 +110,18 @@ export const EditorWorkspace: React.FC = () => {
   const [myPosts, setMyPosts] = useState<Post[]>([]);
   const [teamPosts, setTeamPosts] = useState<Post[]>([]);
   const [archivePosts, setArchivePosts] = useState<Post[]>([]);
+  const [teamEditors, setTeamEditors] = useState<EditorProfile[]>([]);
   const [busyId, setBusyId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!user) return;
     setLoading(true);
     try {
-      const [mine, team, archive] = await Promise.all([
+      const [mine, team, archive, editors] = await Promise.all([
         getEditorialQueue({ assignedEditorId: user.uid }),
         getEditorialQueue(),
         getPublishedByEditor(user.uid),
+        listActiveEditors(),
       ]);
 
       if (mine.success && mine.posts) setMyPosts(mine.posts);
@@ -127,6 +131,8 @@ export const EditorWorkspace: React.FC = () => {
       else toast.error(team.error || 'Failed to load team board.');
 
       if (archive.success && archive.posts) setArchivePosts(archive.posts);
+
+      if (editors.success && editors.editors) setTeamEditors(editors.editors);
     } catch (err) {
       console.error(err);
       toast.error('Failed to load editorial workspace.');
@@ -264,37 +270,100 @@ export const EditorWorkspace: React.FC = () => {
             )}
 
             {tab === 'team' && (
-              <div className="space-y-4">
-                <h2 className="text-sm uppercase tracking-widest text-muted-foreground font-medium">
-                  All Active Submissions ({teamPosts.length})
-                </h2>
-                {teamPosts.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">The team board is clear.</p>
-                ) : (
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {teamPosts.map((post) => (
-                      <PostCard
-                        key={post.id}
-                        post={post}
-                        showAssignee
-                        action={
-                          post.assignedEditorId !== user?.uid ? (
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              disabled={busyId === post.id}
-                              onClick={() => void handlePickUp(post)}
-                              className="rounded-full text-xs uppercase tracking-widest"
-                            >
-                              {busyId === post.id ? 'Assigning…' : 'Pick Up / Reassign to Me'}
-                            </Button>
-                          ) : null
-                        }
-                      />
-                    ))}
+              <div className="space-y-10">
+                {/* ── Active Submissions ── */}
+                <section className="space-y-4">
+                  <h2 className="text-sm uppercase tracking-widest text-muted-foreground font-medium">
+                    All Active Submissions ({teamPosts.length})
+                  </h2>
+                  {teamPosts.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">The team board is clear.</p>
+                  ) : (
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {teamPosts.map((post) => (
+                        <PostCard
+                          key={post.id}
+                          post={post}
+                          showAssignee
+                          action={
+                            post.assignedEditorId !== user?.uid ? (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                disabled={busyId === post.id}
+                                onClick={() => void handlePickUp(post)}
+                                className="rounded-full text-xs uppercase tracking-widest"
+                              >
+                                {busyId === post.id ? 'Assigning…' : 'Pick Up / Reassign to Me'}
+                              </Button>
+                            ) : null
+                          }
+                        />
+                      ))}
+                    </div>
+                  )}
+                </section>
+
+                {/* ── Editorial Team Roster ── */}
+                <section className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                    <h2 className="text-sm uppercase tracking-widest text-muted-foreground font-medium">
+                      Editorial Team ({teamEditors.length})
+                    </h2>
                   </div>
-                )}
+                  {teamEditors.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No editors found.</p>
+                  ) : (
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {teamEditors.map((editor) => (
+                        <div
+                          key={editor.uid}
+                          className="rounded-2xl border border-border/50 bg-card/40 backdrop-blur-md p-4 flex items-center gap-4 shadow-[0_8px_24px_rgba(0,0,0,0.2)]"
+                        >
+                          {editor.photoURL ? (
+                            <img
+                              src={editor.photoURL}
+                              alt={editor.displayName}
+                              className="h-10 w-10 rounded-full object-cover flex-shrink-0"
+                              onError={(e) => {
+                                const t = e.currentTarget;
+                                t.onerror = null;
+                                t.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(editor.displayName)}&background=1a3d63&color=ffffff&size=80&bold=true&format=png`;
+                              }}
+                            />
+                          ) : (
+                            <img
+                              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(editor.displayName)}&background=1a3d63&color=ffffff&size=80&bold=true&format=png`}
+                              alt={editor.displayName}
+                              className="h-10 w-10 rounded-full object-cover flex-shrink-0"
+                            />
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <p className="font-medium text-sm truncate">{editor.displayName}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <Badge
+                                className={`text-[10px] capitalize border ${
+                                  editor.role === 'admin'
+                                    ? 'bg-purple-500/15 text-purple-400 border-purple-500/30'
+                                    : editor.role === 'moderator'
+                                    ? 'bg-sky-500/15 text-sky-400 border-sky-500/30'
+                                    : 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                                }`}
+                              >
+                                {editor.role}
+                              </Badge>
+                              <span className="text-[11px] text-muted-foreground">
+                                {editor.editorialLoad} active
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </section>
               </div>
             )}
 

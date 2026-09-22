@@ -8,7 +8,7 @@ import {
   type Post,
   type PostFeedbackEntry,
 } from '../services/firebase';
-import { submitForReview } from '../services/editorialService';
+import { submitForReview, notifyEditorByEmail } from '../services/editorialService';
 import { uploadImageToCloudinary } from '../services/cloudinary';
 import { Button } from '../components/ui/button';
 import { cn } from '../lib/utils';
@@ -37,6 +37,7 @@ export const WritePost: React.FC = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [loading, setLoading] = useState(false);
+  const [notifyEditorLoading, setNotifyEditorLoading] = useState(false);
     const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; variant: 'primary' | 'danger' | 'warning'; onConfirm: () => void }>({ isOpen: false, title: '', message: '', variant: 'primary', onConfirm: () => {} });
   const [statusMsg, setStatusMsg] = useState({ text: '', type: '' });
   const [postStatus, setPostStatus] = useState<string>('');
@@ -49,6 +50,8 @@ export const WritePost: React.FC = () => {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
   useEffect(() => {
+    const EDITABLE_STATUSES = ['draft', 'changes_requested', ''];
+
     const loadLocalDraft = () => {
       const saved = localStorage.getItem(storageKey);
       if (saved) {
@@ -97,8 +100,13 @@ export const WritePost: React.FC = () => {
             }
             setStatusMsg({ text: '', type: '' });
 
-            // After loading from Firebase, check if there's a local draft to restore
-            loadLocalDraft();
+            // Only restore from localStorage if the post is in an editable state.
+            // For submitted/approved/rejected posts, the stale local copy is discarded.
+            if (EDITABLE_STATUSES.includes(p.status)) {
+              loadLocalDraft();
+            } else {
+              localStorage.removeItem(storageKey);
+            }
           } else {
             setStatusMsg({ text: res.error || 'Failed to load post.', type: 'error' });
           }
@@ -118,8 +126,12 @@ export const WritePost: React.FC = () => {
     }
   }, [postIdToEdit, storageKey]);
 
-  // Auto-save effect
+  // Auto-save effect — only runs for posts that the author is actively editing.
+  // Submitted / approved / rejected posts must not be written back to localStorage.
   useEffect(() => {
+    const isEditable = postStatus === 'draft' || postStatus === 'changes_requested' || postStatus === '';
+    if (!isEditable) return;
+
     // Prevent saving default empty state
     if (!title && blocks.length === 1 && blocks[0].type === 'paragraph' && !blocks[0].data.html) {
       return;
@@ -148,7 +160,7 @@ export const WritePost: React.FC = () => {
     }, 3000); // 3-second debounce
 
     return () => clearTimeout(handler);
-  }, [title, description, genre, tags, blocks, storageKey]);
+  }, [title, description, genre, tags, blocks, storageKey, postStatus]);
 
   const getContentString = async (): Promise<string | null> => {
     // Upload any image blocks that have a pending _file
@@ -314,6 +326,24 @@ export const WritePost: React.FC = () => {
         }
       }
     });
+  };
+
+  const handleNotifyEditor = async () => {
+    if (!postIdToEdit || notifyEditorLoading) return;
+    setNotifyEditorLoading(true);
+    setStatusMsg({ text: 'Notifying your editor...', type: 'info' });
+    try {
+      const res = await notifyEditorByEmail(postIdToEdit);
+      if (res.success) {
+        setStatusMsg({ text: 'Your editor has been notified via email.', type: 'success' });
+      } else {
+        setStatusMsg({ text: res.error || 'Failed to notify editor.', type: 'error' });
+      }
+    } catch (err: unknown) {
+      setStatusMsg({ text: err instanceof Error ? err.message : 'An error occurred.', type: 'error' });
+    } finally {
+      setNotifyEditorLoading(false);
+    }
   };
 
   return (
@@ -507,6 +537,17 @@ export const WritePost: React.FC = () => {
                   className="border-red-900/50 bg-red-950/30 text-red-400 hover:text-red-300 hover:bg-red-900/50"
                 >
                   Delete Draft
+                </Button>
+              )}
+              {postIdToEdit && postStatus === 'changes_requested' && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleNotifyEditor}
+                  disabled={notifyEditorLoading || loading}
+                  className="border-amber-700/60 bg-amber-950/30 text-amber-400 hover:text-amber-300 hover:bg-amber-900/40"
+                >
+                  {notifyEditorLoading ? 'Notifying...' : '📬 Notify Editor'}
                 </Button>
               )}
             </div>

@@ -22,6 +22,7 @@ import {
   orderBy, 
   limit, 
   serverTimestamp,
+  increment,
   Timestamp
 } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -140,6 +141,7 @@ export interface Post {
   // Editorial workflow
   assignedEditorId?: string;
   assignedEditorName?: string;
+  assignedEditorEmail?: string;
   assignedAt?: Timestamp | null;
   reviewedBy?: string;
   reviewedByName?: string;
@@ -656,6 +658,21 @@ export async function getAllPosts(status: string = "all") {
 
 export async function deletePostPermanently(postId: string) {
   try {
+    // Before deleting, check if the post was actively assigned to an editor.
+    // If so, decrement their editorialLoad counter so the tally stays accurate.
+    const ACTIVE_STATUSES = ['pending', 'under_review', 'changes_requested'];
+    const snap = await getDoc(doc(db, 'posts', postId));
+    if (snap.exists()) {
+      const data = snap.data();
+      if (
+        data.assignedEditorId &&
+        ACTIVE_STATUSES.includes(data.status as string)
+      ) {
+        void updateDoc(doc(db, 'users', data.assignedEditorId as string), {
+          editorialLoad: increment(-1),
+        });
+      }
+    }
     await deleteDoc(doc(db, 'posts', postId));
     return { success: true };
   } catch (error: any) {

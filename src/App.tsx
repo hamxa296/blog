@@ -115,7 +115,7 @@ const router = createBrowserRouter([
       {
         path: 'cms',
         element: (
-          <CmsRoute>
+          <CmsRoute allowedRoles={['admin', 'moderator']}>
             <CmsDashboard />
           </CmsRoute>
         ),

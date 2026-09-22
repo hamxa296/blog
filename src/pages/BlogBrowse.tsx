@@ -42,6 +42,8 @@ export const BlogBrowse: React.FC = () => {
     };
 
     fetchPosts();
+  }, []);
+
   useEffect(() => {
     if (!searchTerm.trim() || searchTerm.trim().length < 2) return;
     const timer = setTimeout(() => {
