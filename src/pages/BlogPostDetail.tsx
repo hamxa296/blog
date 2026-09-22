@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { db, getPostById, type Post, checkIsBookmarked, toggleBookmark } from '../services/firebase';
+import { trackActivity } from '../services/analyticsService';
 import { MobileFooter } from '../components/nav/MobileFooter';
 import {
   collection,
@@ -61,6 +62,13 @@ export const BlogPostDetail: React.FC = () => {
           if (metaDesc && res.post.description) {
             metaDesc.setAttribute('content', res.post.description);
           }
+
+          trackActivity('blog_read', 'blog', `Read: ${res.post.title}`, `/posts/${id}`, {
+            postId: id,
+            postTitle: res.post.title,
+            genre: res.post.genre,
+            authorName: res.post.authorName,
+          });
         } else {
           setPostError(res.error || 'Article not found.');
         }
@@ -130,6 +138,10 @@ export const BlogPostDetail: React.FC = () => {
         authorPhotoURL: user.photoURL || '',
         content: commentInput.trim(),
         createdAt: serverTimestamp(),
+      });
+      trackActivity('comment', 'engagement', `Comment on: ${post?.title || 'Article'}`, `/posts/${id}`, {
+        postId: id,
+        authorName: user.displayName || user.email,
       });
       setCommentInput('');
     } catch (err: unknown) {

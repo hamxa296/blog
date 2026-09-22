@@ -1,4 +1,4 @@
-﻿rules_version = '2';
+rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -243,11 +243,29 @@ service cloud.firestore {
     }
 
     // ---------------------------------------------------------------
-    // User checklists / packing lists
+    // Analytics & Site Statistics
+    // ---------------------------------------------------------------
+
+    match /analytics_events/{eventId} {
+      allow create: if true;
+      allow read, delete: if isTrustedAdmin();
+    }
+
+    match /site_stats/{docId} {
+      allow read, create, update: if true;
+      allow delete: if isTrustedAdmin();
+    }
+
+    // ---------------------------------------------------------------
+    // User checklists / packing lists (including collectionGroup)
     // ---------------------------------------------------------------
 
     match /userChecklists/{userId} {
       allow read, write: if isOwner(userId) || isTrustedAdmin();
+    }
+
+    match /{path=**}/packing/{docId} {
+      allow read: if isTrustedAdmin();
     }
   }
 }

@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { getApprovedPosts, type Post } from '../services/firebase';
+import { trackActivity } from '../services/analyticsService';
 import { BlogSection } from '../components/blog/BlogSection';
 import { MobileFooter } from '../components/nav/MobileFooter';
 import { useIsMobile } from '../hooks/useMediaQuery';
@@ -34,7 +35,24 @@ export const BlogBrowse: React.FC = () => {
     };
 
     fetchPosts();
-  }, []);
+  useEffect(() => {
+    if (!searchTerm.trim() || searchTerm.trim().length < 2) return;
+    const timer = setTimeout(() => {
+      trackActivity('blog_search', 'blog', `Searched: "${searchTerm.trim()}"`, '/browse', {
+        searchTerm: searchTerm.trim(),
+      });
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  const handleGenreChange = (genre: string) => {
+    setSelectedGenre(genre);
+    if (genre !== 'all') {
+      trackActivity('blog_filter', 'blog', `Filtered by: ${genre}`, '/browse', {
+        genre,
+      });
+    }
+  };
 
   const filteredPosts = posts.filter((post) => {
     if (
@@ -84,7 +102,7 @@ export const BlogBrowse: React.FC = () => {
               <button
                 key={genre}
                 type="button"
-                onClick={() => setSelectedGenre(genre)}
+                onClick={() => handleGenreChange(genre)}
                 className={`px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-medium transition border ${
                   selectedGenre.toLowerCase() === genre.toLowerCase()
                     ? 'bg-primary text-primary-foreground border-primary'

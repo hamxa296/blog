@@ -8,6 +8,7 @@ import {
   subscribeGuideSections,
   updateGuideSection,
 } from '../services/guideService';
+import { trackActivity, logAdminAudit } from '../services/analyticsService';
 import type {
   GuideEditForm,
   GuideSection,
@@ -180,6 +181,9 @@ export const FreshmanGuide: React.FC = () => {
 
   const handleTagClick = (sectionId: string) => {
     setSearchParams({ section: sectionId });
+    trackActivity('guide_section', 'guide', `Viewed Guide: ${sectionId}`, `/guide?section=${sectionId}`, {
+      section: sectionId,
+    });
     window.setTimeout(() => {
       const element = document.getElementById(sectionId);
 
@@ -259,6 +263,10 @@ export const FreshmanGuide: React.FC = () => {
       fullContent: updatedContent,
       faqs: editForm.faqs,
       warnings: editForm.warnings,
+    });
+
+    logAdminAudit('Update Guide Section', 'guide', editingSection, {
+      sectionTag: editForm.tag,
     });
 
     setEditingSection(null);

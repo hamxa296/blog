@@ -25,6 +25,40 @@ import {
   type GalleryPhoto,
   type UserProfile
 } from '../services/firebase';
+import {
+  fetchAnalyticsSummary,
+  logAdminAudit,
+  type AnalyticsSummary,
+  type AnalyticsEvent,
+  type AdminAuditEntry,
+  type PackingListUserSummary,
+} from '../services/analyticsService';
+import {
+  TrendingUp,
+  Users as UsersIcon,
+  Package as PackageIcon,
+  Eye,
+  Activity,
+  FileText,
+  CheckCircle2,
+  Clock,
+  ArrowUpRight,
+  Download,
+  Smartphone,
+  Laptop,
+  Search as SearchIcon,
+  ShieldAlert,
+  ListChecks,
+  Compass,
+  MessageSquare,
+  Sparkles,
+  MapPin,
+  Image as ImageIcon,
+  BarChart3,
+  Flame,
+  ArrowRight,
+  Filter,
+} from 'lucide-react';
 import { getOptimizedImageUrl } from '../utils/imageOptimization';
 import { BlockEditor } from '../components/editor/BlockEditor';
 import {
@@ -48,10 +82,17 @@ interface CmsComment {
 
 export const CmsDashboard: React.FC = () => {
   const { user, profile, role, refreshProfile } = useAuth();
- 
   
   // Navigation tabs
-  const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'gallery' | 'comments' | 'profile' | 'rights' | 'inbox'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'posts' | 'gallery' | 'comments' | 'profile' | 'rights' | 'inbox'>('overview');
+
+  // Analytics states
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsSummary | null>(null);
+  const [analyticsLoading, setAnalyticsLoading] = useState(false);
+  const [analyticsTimeRange, setAnalyticsTimeRange] = useState<'today' | '7d' | '30d' | 'all'>('all');
+  const [analyticsSubTab, setAnalyticsSubTab] = useState<'activity' | 'packing' | 'traffic' | 'audit'>('activity');
+  const [activityFilter, setActivityFilter] = useState<'all' | 'traffic' | 'guide' | 'packing' | 'blog' | 'admin' | 'engagement'>('all');
+  const [searchActivityQuery, setSearchActivityQuery] = useState('');
 
   // Overview metrics
   const [metrics, setMetrics] = useState({
@@ -149,9 +190,44 @@ export const CmsDashboard: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    fetchOverviewMetrics();
-  }, []);
+  const loadAnalytics = async (timeRange = analyticsTimeRange) => {
+    setAnalyticsLoading(true);
+    try {
+      const summary = await fetchAnalyticsSummary(timeRange);
+      setAnalyticsData(summary);
+    } catch (err) {
+      console.error('Error loading analytics:', err);
+      toast.error('Failed to load live analytics data.');
+    } finally {
+      setAnalyticsLoading(false);
+    }
+  };
+
+  const handleExportCsv = () => {
+    if (!analyticsData) return;
+    const rows = [
+      ['Event Type', 'Category', 'Title', 'Path', 'User', 'Device', 'Browser', 'Timestamp'],
+      ...analyticsData.recentActivities.map(e => [
+        `"${e.type}"`,
+        `"${e.category}"`,
+        `"${(e.title || '').replace(/"/g, '""')}"`,
+        `"${e.path}"`,
+        `"${e.userEmail || 'Anonymous'}"`,
+        `"${e.device}"`,
+        `"${e.browser || 'Unknown'}"`,
+        `"${e.createdAt}"`,
+      ]),
+    ];
+    const csvContent = 'data:text/csv;charset=utf-8,' + rows.map(r => r.join(',')).join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `giki_chronicles_analytics_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('Analytics CSV exported successfully.');
+  };
 
   // Fetch functions
   const loadPosts = async () => {
@@ -201,16 +277,24 @@ export const CmsDashboard: React.FC = () => {
 
   // Trigger loads based on active tab
   useEffect(() => {
-    if (activeTab === 'overview') fetchOverviewMetrics();
+    if (activeTab === 'overview') {
+      fetchOverviewMetrics();
+      loadAnalytics(analyticsTimeRange);
+    }
+    if (activeTab === 'analytics') loadAnalytics(analyticsTimeRange);
     if (activeTab === 'posts') loadPosts();
     if (activeTab === 'gallery') loadPhotos();
     if (activeTab === 'comments') loadComments();
     if (activeTab === 'rights') loadUsers();
     if (activeTab === 'inbox') loadInbox();
-  }, [activeTab, postFilter, photoFilter]);
+  }, [activeTab, postFilter, photoFilter, analyticsTimeRange]);
 
   const handleRefresh = () => {
-    if (activeTab === 'overview') fetchOverviewMetrics();
+    if (activeTab === 'overview') {
+      fetchOverviewMetrics();
+      loadAnalytics(analyticsTimeRange);
+    }
+    if (activeTab === 'analytics') loadAnalytics(analyticsTimeRange);
     if (activeTab === 'posts') loadPosts();
     if (activeTab === 'gallery') loadPhotos();
     if (activeTab === 'comments') loadComments();
@@ -231,6 +315,18 @@ export const CmsDashboard: React.FC = () => {
     return date.toLocaleDateString();
   };
 
+  const formatRelativeTime = (isoString?: string | number) => {
+    if (!isoString) return 'recently';
+    const date = typeof isoString === 'number' ? new Date(isoString) : new Date(isoString);
+    const now = new Date();
+    const diffSec = Math.floor((now.getTime() - date.getTime()) / 1000);
+    if (diffSec < 60) return 'just now';
+    if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
+    if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
+    if (diffSec < 172800) return 'Yesterday';
+    return date.toLocaleDateString();
+  };
+
   // Actions: Post
   const handleApprovePost = (id: string) => {
     setModalConfig({
@@ -244,6 +340,7 @@ export const CmsDashboard: React.FC = () => {
         const res = await updatePostStatus(id, 'approved');
         if (res.success) {
           showStatus("Post approved!", "success");
+          logAdminAudit('Approve Article', 'post', id);
           setPosts(prev => prev.map(p => p.id === id ? { ...p, status: 'approved' } : p));
           fetchOverviewMetrics();
         } else {
@@ -261,6 +358,7 @@ export const CmsDashboard: React.FC = () => {
     const res = await updatePostStatus(rejectionPostId, 'rejected', rejectionReason);
     if (res.success) {
       showStatus("Post rejected with feedback.", "success");
+      logAdminAudit('Reject Article', 'post', rejectionPostId, { reason: rejectionReason });
       setPosts(prev => prev.map(p => p.id === rejectionPostId ? { ...p, status: 'rejected', rejectionReason } : p));
       setRejectionPostId(null);
       setRejectionReason('');
@@ -276,6 +374,7 @@ export const CmsDashboard: React.FC = () => {
     const res = await toggleFeaturedStatus(id, !isFeatured);
     if (res.success) {
       showStatus("Featured status updated!", "success");
+      logAdminAudit('Toggle Featured Article', 'post', id, { isFeatured: !isFeatured });
       setPosts(prev => prev.map(p => p.id === id ? { ...p, isFeatured: !isFeatured } : p));
     } else {
       showStatus("Failed: " + res.error, "error");
@@ -295,6 +394,7 @@ export const CmsDashboard: React.FC = () => {
         const res = await deletePostPermanently(id);
         if (res.success) {
           showStatus("Post deleted.", "success");
+          logAdminAudit('Delete Article Permanently', 'post', id);
           setPosts(prev => prev.filter(p => p.id !== id));
           fetchOverviewMetrics();
         } else {
@@ -317,6 +417,7 @@ export const CmsDashboard: React.FC = () => {
         const res = await deleteContactMessage(id);
         if (res.success) {
           showStatus("Message deleted.", "success");
+          logAdminAudit('Delete Contact Message', 'inbox', id);
           setInboxMessages(prev => prev.filter(m => m.id !== id));
         } else {
           showStatus("Failed: " + res.error, "error");
@@ -333,7 +434,6 @@ export const CmsDashboard: React.FC = () => {
     setEditGenre(post.genre);
     setEditTags(post.tags.join(', '));
     setEditPhotoUrl(post.photoUrl);
-    // Load content into blocks
     const { blocks: loaded, isLegacy } = deserializeContent(post.content || '');
     if (isLegacy && post.content) {
       setEditBlocks([{ id: 'legacy', type: 'paragraph', data: { html: post.content } }]);
@@ -347,7 +447,6 @@ export const CmsDashboard: React.FC = () => {
     if (!editingPost || !editingPost.id) return;
     setActionLoading(true);
     
-    // Check if current user is either admin/editor OR the author of the post
     if (!canModeratePosts && editingPost.authorId !== user?.uid) {
       toast.error("Unauthorized to edit this post.");
       setActionLoading(false);
@@ -365,7 +464,8 @@ export const CmsDashboard: React.FC = () => {
     });
 
     if (res.success) {
-      toast.success("Post updated successfully! Note: Modified posts return to 'pending' review status.");
+      toast.success("Post updated successfully!");
+      logAdminAudit('Edit Article Content', 'post', editingPost.id, { title: editTitle });
       setEditingPost(null);
       loadPosts();
     } else {
@@ -380,6 +480,7 @@ export const CmsDashboard: React.FC = () => {
     const res = await updateGalleryPhotoStatus(id, 'approved');
     if (res.success) {
       toast.success("Photo approved.");
+      logAdminAudit('Approve Gallery Photo', 'gallery', id);
       loadPhotos();
       fetchOverviewMetrics();
     } else {
@@ -395,6 +496,7 @@ export const CmsDashboard: React.FC = () => {
     const res = await updateGalleryPhotoStatus(rejectionPhotoId, 'rejected', rejectionReason);
     if (res.success) {
       toast.success("Photo rejected.");
+      logAdminAudit('Reject Gallery Photo', 'gallery', rejectionPhotoId, { reason: rejectionReason });
       setRejectionPhotoId(null);
       setRejectionReason('');
       loadPhotos();
@@ -410,6 +512,7 @@ export const CmsDashboard: React.FC = () => {
     const res = await togglePhotoHighlight(id, !isHighlighted);
     if (res.success) {
       toast.success("Highlight status toggled.");
+      logAdminAudit('Toggle Photo Highlight', 'gallery', id, { isHighlighted: !isHighlighted });
       loadPhotos();
     } else {
       toast.error("Failed: " + (res.error ? res.error : ""));
@@ -423,6 +526,7 @@ export const CmsDashboard: React.FC = () => {
     const res = await deleteGalleryPhoto(id);
     if (res.success) {
       toast.success("Photo deleted.");
+      logAdminAudit('Delete Photo Permanently', 'gallery', id);
       loadPhotos();
       fetchOverviewMetrics();
     } else {
@@ -438,6 +542,7 @@ export const CmsDashboard: React.FC = () => {
     const res = await deleteComment(id);
     if (res.success) {
       toast.success("Comment removed.");
+      logAdminAudit('Delete Comment', 'comment', id);
       loadComments();
       fetchOverviewMetrics();
     } else {
@@ -453,6 +558,7 @@ export const CmsDashboard: React.FC = () => {
     const res = await updateUserRole(uid, newRole);
     if (res.success) {
       toast.success("User role updated successfully.");
+      logAdminAudit('Update User Role', 'user', uid, { newRole });
       loadUsers();
     } else {
       toast.error("Failed: " + (res.error ? res.error : ""));
@@ -466,6 +572,7 @@ export const CmsDashboard: React.FC = () => {
     const res = await toggleBlockUser(uid, !currentBlocked);
     if (res.success) {
       toast.success("User status updated.");
+      logAdminAudit(currentBlocked ? 'Unblock User' : 'Block User', 'user', uid);
       loadUsers();
     } else {
       toast.error("Failed: " + (res.error ? res.error : ""));
@@ -518,36 +625,82 @@ export const CmsDashboard: React.FC = () => {
     return titleMatch || authorMatch;
   });
 
-  const filteredComments = comments.filter(comment => {
-    return comment.content.toLowerCase().includes(searchCommentQuery.toLowerCase()) ||
-           comment.authorName.toLowerCase().includes(searchCommentQuery.toLowerCase());
+  const filteredComments = comments.filter(c => {
+    return c.content.toLowerCase().includes(searchCommentQuery.toLowerCase()) ||
+           c.authorName.toLowerCase().includes(searchCommentQuery.toLowerCase());
   });
 
-  const filteredUsers = users.filter(usr => {
-    return usr.displayName.toLowerCase().includes(searchUserQuery.toLowerCase()) ||
-           usr.email.toLowerCase().includes(searchUserQuery.toLowerCase());
+  const filteredUsers = users.filter(u => {
+    const nameMatch = (u.displayName || '').toLowerCase().includes(searchUserQuery.toLowerCase());
+    const emailMatch = (u.email || '').toLowerCase().includes(searchUserQuery.toLowerCase());
+    return nameMatch || emailMatch;
   });
+
+  const filteredActivities = (analyticsData?.recentActivities || []).filter(item => {
+    if (activityFilter !== 'all') {
+      if (activityFilter === 'traffic' && item.type !== 'page_view') return false;
+      if (activityFilter === 'guide' && item.category !== 'guide') return false;
+      if (activityFilter === 'packing' && item.category !== 'packing') return false;
+      if (activityFilter === 'blog' && item.category !== 'blog') return false;
+      if (activityFilter === 'admin' && item.category !== 'admin') return false;
+      if (activityFilter === 'engagement' && item.category !== 'engagement') return false;
+    }
+    if (searchActivityQuery.trim()) {
+      const q = searchActivityQuery.toLowerCase();
+      const matchTitle = (item.title || '').toLowerCase().includes(q);
+      const matchPath = (item.path || '').toLowerCase().includes(q);
+      const matchUser = (item.userEmail || '').toLowerCase().includes(q);
+      return matchTitle || matchPath || matchUser;
+    }
+    return true;
+  });
+
+  const renderActivityIcon = (event: AnalyticsEvent) => {
+    switch (event.category) {
+      case 'packing':
+        return <PackageIcon className="w-4 h-4 text-pink-400" />;
+      case 'guide':
+        return <Compass className="w-4 h-4 text-emerald-400" />;
+      case 'blog':
+        return <FileText className="w-4 h-4 text-blue-400" />;
+      case 'map':
+        return <MapPin className="w-4 h-4 text-amber-400" />;
+      case 'gallery':
+        return <ImageIcon className="w-4 h-4 text-purple-400" />;
+      case 'admin':
+        return <ShieldAlert className="w-4 h-4 text-red-400" />;
+      case 'engagement':
+        return <MessageSquare className="w-4 h-4 text-cyan-400" />;
+      default:
+        return <Eye className="w-4 h-4 text-[#B3CFE5]" />;
+    }
+  };
 
   return (
-    <main className="min-h-[calc(100vh-88px)] text-white py-12 relative z-10">
-      <div className="container mx-auto px-4 md:px-6 max-w-7xl">
-        {/* Title Banner */}
-        <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <main className="min-h-screen bg-[#06101E] text-white p-4 sm:p-6 lg:p-10 font-sans pb-24">
+      <div className="max-w-7xl mx-auto space-y-8">
+        
+        {/* Top Header Card */}
+        <div className="bg-[#0A1931]/80 border border-[#B3CFE5]/20 rounded-3xl p-6 sm:p-8 backdrop-blur-md flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-2xl">
           <div>
-            <h1 className="text-3xl font-bold font-serif tracking-tight mb-2 flex items-center gap-3">
-              🛡️ GIKI Chronicles <span className="text-[#B3CFE5]">CMS Panel</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#4A7FA7]/20 border border-[#4A7FA7]/40 text-[#B3CFE5] text-xs font-bold uppercase tracking-wider mb-2">
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              Content Management & Analytics Hub
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-bold font-serif tracking-tight text-white">
+              GIKI Chronicles Admin CMS
             </h1>
-            <p className="text-sm text-[#B3CFE5]/60">
-              Manage articles, moderate gallery snapshots, oversee discussions, and configure roles.
+            <p className="text-sm text-[#B3CFE5]/70 mt-1">
+              Live visitor analytics, packing list metrics, editorial review queues, and user permissions.
             </p>
           </div>
-          <div className="flex items-center gap-4 flex-wrap">
+
+          <div className="flex items-center gap-3">
             <button
               onClick={handleRefresh}
-              className="bg-white/10 hover:bg-white/20 text-white border border-[#B3CFE5]/30 rounded-2xl px-4 py-3 flex items-center gap-2 transition-colors cursor-pointer text-sm font-semibold shadow-lg"
-              title="Refresh current data"
+              className="flex items-center gap-2 bg-[#4A7FA7]/20 hover:bg-[#4A7FA7]/40 border border-[#B3CFE5]/30 rounded-2xl px-4 py-3 text-sm font-semibold transition cursor-pointer"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+              <Activity className="w-4 h-4" />
               Refresh
             </button>
             <div className="bg-[#1A3D63]/80 border border-[#B3CFE5]/30 rounded-2xl px-5 py-3 flex items-center gap-3 shadow-lg">
@@ -580,6 +733,18 @@ export const CmsDashboard: React.FC = () => {
               }`}
             >
               📊 Dashboard Overview
+            </button>
+
+            <button
+              onClick={() => setActiveTab('analytics')}
+              className={`w-full text-left px-4 py-3 rounded-2xl font-semibold text-sm transition flex items-center justify-between cursor-pointer ${
+                activeTab === 'analytics' ? 'bg-[#4A7FA7]/30 border border-[#B3CFE5]/35 text-white' : 'text-[#B3CFE5]/70 hover:bg-white/5 border border-transparent'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                📈 Live Analytics & Activity
+              </div>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             </button>
 
             <button
@@ -675,49 +840,638 @@ export const CmsDashboard: React.FC = () => {
             {/* Overview / Analytics Panel */}
             {activeTab === 'overview' && (
               <div className="space-y-8">
-                <div>
-                  <h2 className="text-2xl font-bold font-serif mb-2">System Metrics</h2>
-                  <p className="text-sm text-[#B3CFE5]/60">Brief numerical view of the current state of GIKI Chronicles.</p>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-2xl font-bold font-serif mb-1">System Overview & Activity</h2>
+                    <p className="text-sm text-[#B3CFE5]/60">Numerical overview and live engagement indicators.</p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('analytics')}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/30 border border-primary/40 text-primary-foreground text-xs font-bold hover:bg-primary/50 transition cursor-pointer"
+                  >
+                    Open Deep Analytics Hub <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+                {/* KPI Metrics */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
-                    <div className="text-[#B3CFE5]/60 text-xs font-bold uppercase tracking-wider">Total Articles</div>
+                    <div className="flex items-center justify-between text-[#B3CFE5]/60 text-xs font-bold uppercase tracking-wider">
+                      <span>Total Visits</span>
+                      <Eye className="w-4 h-4 text-blue-400" />
+                    </div>
+                    <div className="text-3xl font-bold mt-2 text-white">{analyticsData?.totalPageviews ?? '...'}</div>
+                    <div className="text-xs text-emerald-400 mt-1 flex items-center gap-1">
+                      <TrendingUp className="w-3 h-3" /> {analyticsData?.todayPageviews ?? 0} today
+                    </div>
+                  </div>
+
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
+                    <div className="flex items-center justify-between text-[#B3CFE5]/60 text-xs font-bold uppercase tracking-wider">
+                      <span>Active Packing Lists</span>
+                      <PackageIcon className="w-4 h-4 text-pink-400" />
+                    </div>
+                    <div className="text-3xl font-bold mt-2 text-white">
+                      {analyticsData?.packingAnalytics.totalActiveLists ?? '...'}
+                    </div>
+                    <div className="text-xs text-[#B3CFE5]/50 mt-1">
+                      {analyticsData?.packingAnalytics.totalItemsChecked ?? 0} items packed
+                    </div>
+                  </div>
+
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
+                    <div className="flex items-center justify-between text-[#B3CFE5]/60 text-xs font-bold uppercase tracking-wider">
+                      <span>Published Blogs</span>
+                      <FileText className="w-4 h-4 text-amber-400" />
+                    </div>
                     <div className="text-3xl font-bold mt-2 text-white">{metrics.totalPosts}</div>
-                    <div className="text-xs text-[#B3CFE5]/40 mt-1">{metrics.pendingPosts} awaiting reviews</div>
+                    <div className="text-xs text-[#B3CFE5]/40 mt-1">{metrics.pendingPosts} awaiting review</div>
                   </div>
 
                   <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
-                    <div className="text-[#B3CFE5]/60 text-xs font-bold uppercase tracking-wider">Gallery Images</div>
-                    <div className="text-3xl font-bold mt-2 text-white">{metrics.totalPhotos}</div>
-                    <div className="text-xs text-[#B3CFE5]/40 mt-1">{metrics.pendingPhotos} pending approval</div>
-                  </div>
-
-                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition col-span-2 md:col-span-1">
-                    <div className="text-[#B3CFE5]/60 text-xs font-bold uppercase tracking-wider">Total Comments</div>
-                    <div className="text-3xl font-bold mt-2 text-white">{metrics.totalComments}</div>
-                    <div className="text-xs text-[#B3CFE5]/40 mt-1">Across all active blogs</div>
-                  </div>
-
-                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
-                    <div className="text-[#B3CFE5]/60 text-xs font-bold uppercase tracking-wider">Registered Accounts</div>
+                    <div className="flex items-center justify-between text-[#B3CFE5]/60 text-xs font-bold uppercase tracking-wider">
+                      <span>Users & Photos</span>
+                      <UsersIcon className="w-4 h-4 text-emerald-400" />
+                    </div>
                     <div className="text-3xl font-bold mt-2 text-white">{metrics.totalUsers}</div>
-                    <div className="text-xs text-[#B3CFE5]/40 mt-1">GIKI campus users</div>
+                    <div className="text-xs text-[#B3CFE5]/40 mt-1">{metrics.totalPhotos} gallery photos</div>
                   </div>
                 </div>
 
+                {/* Quick Packing Lists & Activity Preview */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Packing list completion overview */}
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-base flex items-center gap-2">
+                        <PackageIcon className="w-4 h-4 text-pink-400" />
+                        Freshman Packing Progress
+                      </h3>
+                      <span className="text-xs font-extrabold text-pink-400 px-2 py-0.5 rounded-full bg-pink-500/10 border border-pink-500/20">
+                        {analyticsData?.packingAnalytics.averageCompletionRate ?? 0}% Avg Complete
+                      </span>
+                    </div>
+                    <p className="text-xs text-[#B3CFE5]/70">
+                      Tracking active packing sessions created by students preparing for GIKI arrival.
+                    </p>
+                    <div className="w-full bg-black/30 rounded-full h-3 overflow-hidden border border-white/10">
+                      <div 
+                        className="bg-gradient-to-r from-pink-500 to-purple-500 h-full rounded-full transition-all duration-500"
+                        style={{ width: `${analyticsData?.packingAnalytics.averageCompletionRate ?? 0}%` }}
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 pt-2 text-xs">
+                      <div className="bg-black/20 p-3 rounded-xl border border-white/5">
+                        <div className="text-[#B3CFE5]/50">Total Students</div>
+                        <div className="text-lg font-bold text-white mt-0.5">
+                          {analyticsData?.packingAnalytics.totalActiveLists ?? 0}
+                        </div>
+                      </div>
+                      <div className="bg-black/20 p-3 rounded-xl border border-white/5">
+                        <div className="text-[#B3CFE5]/50">Total Items Checked</div>
+                        <div className="text-lg font-bold text-white mt-0.5">
+                          {analyticsData?.packingAnalytics.totalItemsChecked ?? 0}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Recent Live Activity Snippet */}
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-base flex items-center gap-2">
+                        <Activity className="w-4 h-4 text-emerald-400" />
+                        Live Visitor Activity Feed
+                      </h3>
+                      <button 
+                        onClick={() => setActiveTab('analytics')}
+                        className="text-xs text-[#B3CFE5] hover:text-white flex items-center gap-1 cursor-pointer"
+                      >
+                        View All <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <div className="space-y-2.5 max-h-56 overflow-y-auto pr-1 text-xs">
+                      {(analyticsData?.recentActivities || []).slice(0, 5).map((act, i) => (
+                        <div key={act.id || i} className="flex items-start justify-between gap-3 p-2.5 rounded-xl bg-black/20 border border-white/5 hover:border-white/10 transition">
+                          <div className="flex items-start gap-2.5">
+                            <span className="p-1.5 rounded-lg bg-white/5 border border-white/10 mt-0.5">
+                              {renderActivityIcon(act)}
+                            </span>
+                            <div>
+                              <div className="font-semibold text-white leading-snug">{act.title}</div>
+                              <div className="text-[11px] text-[#B3CFE5]/50 font-mono mt-0.5">{act.path}</div>
+                            </div>
+                          </div>
+                          <span className="text-[10px] text-[#B3CFE5]/40 whitespace-nowrap">
+                            {formatRelativeTime(act.timestamp || act.createdAt)}
+                          </span>
+                        </div>
+                      ))}
+                      {(analyticsData?.recentActivities || []).length === 0 && (
+                        <div className="text-center py-6 text-[#B3CFE5]/40 text-xs">
+                          No visitor events logged yet.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Permissions Summary Card */}
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4">
                   <h3 className="font-bold text-lg">System Permissions Summary</h3>
                   <div className="text-sm text-[#B3CFE5]/80 space-y-2">
                     <p>🎭 Your current role is <strong className="text-white uppercase">{role}</strong>.</p>
                     <ul className="list-disc pl-5 space-y-1.5 text-xs text-[#B3CFE5]/70">
-                      <li><strong>Admins</strong> can edit all articles, delete comments, approve/reject photos, toggle blocks, and change roles.</li>
+                      <li><strong>Admins</strong> have full access to real-time analytics, article review queues, user roles, guide edits, and audit logs.</li>
                       <li><strong>Editors</strong> can moderate and edit all posts, approve gallery photos, and moderate comments.</li>
                       <li><strong>Moderators</strong> can approve gallery photos and delete comments.</li>
                       <li><strong>Authors</strong> can publish their own posts (pending approval) and edit their own articles.</li>
                     </ul>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* FULL ANALYTICS HUB PANEL */}
+            {activeTab === 'analytics' && (
+              <div className="space-y-8">
+                {/* Header & Controls */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-2xl font-bold font-serif mb-1 flex items-center gap-2">
+                      <BarChart3 className="w-6 h-6 text-primary" />
+                      Live Visitor Analytics & Activity Stream
+                    </h2>
+                    <p className="text-sm text-[#B3CFE5]/60">
+                      Monitor student traffic, packing checklist progress, content popularity, and system changes in real time.
+                    </p>
+                  </div>
+                  
+                  <div className="flex flex-wrap items-center gap-2">
+                    {/* Time Range Pills */}
+                    <div className="flex bg-[#0A1931]/80 rounded-xl p-1 border border-white/10 text-xs font-bold">
+                      {(['today', '7d', '30d', 'all'] as const).map(t => (
+                        <button
+                          key={t}
+                          onClick={() => {
+                            setAnalyticsTimeRange(t);
+                            loadAnalytics(t);
+                          }}
+                          className={`px-3 py-1.5 rounded-lg capitalize cursor-pointer transition ${
+                            analyticsTimeRange === t ? 'bg-[#4A7FA7] text-white' : 'text-[#B3CFE5]/60 hover:text-white'
+                          }`}
+                        >
+                          {t === '7d' ? '7 Days' : t === '30d' ? '30 Days' : t === 'all' ? 'All Time' : 'Today'}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={handleExportCsv}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-xs font-semibold text-[#B3CFE5] hover:text-white transition cursor-pointer"
+                    >
+                      <Download className="w-3.5 h-3.5" /> CSV
+                    </button>
+                  </div>
+                </div>
+
+                {/* Top KPI Cards */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
+                    <div className="flex items-center justify-between text-[#B3CFE5]/60 text-xs font-bold uppercase tracking-wider">
+                      <span>Total Pageviews</span>
+                      <Eye className="w-4 h-4 text-blue-400" />
+                    </div>
+                    <div className="text-3xl font-bold mt-2 text-white">{analyticsData?.totalPageviews ?? '...'}</div>
+                    <div className="text-xs text-[#B3CFE5]/50 mt-1 flex items-center justify-between">
+                      <span>{analyticsData?.uniqueSessions ?? 0} unique sessions</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
+                    <div className="flex items-center justify-between text-[#B3CFE5]/60 text-xs font-bold uppercase tracking-wider">
+                      <span>Active Packing Lists</span>
+                      <PackageIcon className="w-4 h-4 text-pink-400" />
+                    </div>
+                    <div className="text-3xl font-bold mt-2 text-pink-400">
+                      {analyticsData?.packingAnalytics.totalActiveLists ?? '...'}
+                    </div>
+                    <div className="text-xs text-[#B3CFE5]/50 mt-1">
+                      {analyticsData?.packingAnalytics.averageCompletionRate ?? 0}% avg completion
+                    </div>
+                  </div>
+
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
+                    <div className="flex items-center justify-between text-[#B3CFE5]/60 text-xs font-bold uppercase tracking-wider">
+                      <span>Items Packed</span>
+                      <ListChecks className="w-4 h-4 text-emerald-400" />
+                    </div>
+                    <div className="text-3xl font-bold mt-2 text-white">
+                      {analyticsData?.packingAnalytics.totalItemsChecked ?? '...'}
+                    </div>
+                    <div className="text-xs text-emerald-400/80 mt-1">Across all active freshmen</div>
+                  </div>
+
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
+                    <div className="flex items-center justify-between text-[#B3CFE5]/60 text-xs font-bold uppercase tracking-wider">
+                      <span>Device Ratio</span>
+                      <Smartphone className="w-4 h-4 text-purple-400" />
+                    </div>
+                    <div className="text-2xl font-bold mt-2 text-white">
+                      {analyticsData ? Math.round(((analyticsData.mobileCount || 1) / Math.max(1, (analyticsData.mobileCount + analyticsData.desktopCount))) * 100) : 0}% Mobile
+                    </div>
+                    <div className="text-xs text-[#B3CFE5]/50 mt-1">
+                      {analyticsData?.desktopCount ?? 0} desktop sessions
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sub-Tabs Selector */}
+                <div className="flex border-b border-white/10 gap-4 overflow-x-auto pb-2 text-sm font-semibold">
+                  <button
+                    onClick={() => setAnalyticsSubTab('activity')}
+                    className={`pb-2 px-1 border-b-2 transition cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+                      analyticsSubTab === 'activity' ? 'border-[#4A7FA7] text-white' : 'border-transparent text-[#B3CFE5]/60 hover:text-white'
+                    }`}
+                  >
+                    <Activity className="w-4 h-4 text-emerald-400" />
+                    Live Activity Stream ({filteredActivities.length})
+                  </button>
+
+                  <button
+                    onClick={() => setAnalyticsSubTab('packing')}
+                    className={`pb-2 px-1 border-b-2 transition cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+                      analyticsSubTab === 'packing' ? 'border-[#4A7FA7] text-white' : 'border-transparent text-[#B3CFE5]/60 hover:text-white'
+                    }`}
+                  >
+                    <PackageIcon className="w-4 h-4 text-pink-400" />
+                    Packing Lists Deep Dive ({analyticsData?.packingAnalytics.totalActiveLists ?? 0})
+                  </button>
+
+                  <button
+                    onClick={() => setAnalyticsSubTab('traffic')}
+                    className={`pb-2 px-1 border-b-2 transition cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+                      analyticsSubTab === 'traffic' ? 'border-[#4A7FA7] text-white' : 'border-transparent text-[#B3CFE5]/60 hover:text-white'
+                    }`}
+                  >
+                    <TrendingUp className="w-4 h-4 text-blue-400" />
+                    Traffic & Searches
+                  </button>
+
+                  <button
+                    onClick={() => setAnalyticsSubTab('audit')}
+                    className={`pb-2 px-1 border-b-2 transition cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+                      analyticsSubTab === 'audit' ? 'border-[#4A7FA7] text-white' : 'border-transparent text-[#B3CFE5]/60 hover:text-white'
+                    }`}
+                  >
+                    <ShieldAlert className="w-4 h-4 text-amber-400" />
+                    Site Changes & Audit Trail ({analyticsData?.adminAuditLogs.length ?? 0})
+                  </button>
+                </div>
+
+                {/* Sub-Tab 1: Live Activity Stream */}
+                {analyticsSubTab === 'activity' && (
+                  <div className="space-y-4">
+                    {/* Filters & Search */}
+                    <div className="flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center">
+                      <div className="flex flex-wrap gap-1.5">
+                        {(['all', 'traffic', 'guide', 'packing', 'blog', 'admin', 'engagement'] as const).map(f => (
+                          <button
+                            key={f}
+                            onClick={() => setActivityFilter(f)}
+                            className={`px-3 py-1 rounded-full text-xs font-semibold capitalize transition cursor-pointer border ${
+                              activityFilter === f ? 'bg-[#4A7FA7] border-[#B3CFE5]/50 text-white' : 'bg-black/20 border-white/10 text-[#B3CFE5]/60 hover:text-white'
+                            }`}
+                          >
+                            {f === 'traffic' ? 'Visits' : f}
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="relative w-full sm:w-64">
+                        <SearchIcon className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#B3CFE5]/40" />
+                        <input
+                          type="text"
+                          value={searchActivityQuery}
+                          onChange={(e) => setSearchActivityQuery(e.target.value)}
+                          placeholder="Filter activities..."
+                          className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl py-2 pl-9 pr-3 text-xs text-white focus:outline-none focus:border-white transition"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Activity Feed */}
+                    {analyticsLoading ? (
+                      <div className="text-center py-16 text-[#B3CFE5]/60">Refreshing activity stream...</div>
+                    ) : filteredActivities.length === 0 ? (
+                      <div className="text-center py-16 text-[#B3CFE5]/40 bg-black/20 rounded-2xl border border-white/5">
+                        No activity events match your current filter.
+                      </div>
+                    ) : (
+                      <div className="space-y-2.5 max-h-[600px] overflow-y-auto pr-1">
+                        {filteredActivities.map((act, idx) => (
+                          <div
+                            key={act.id || idx}
+                            className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-white/10 transition"
+                          >
+                            <div className="flex items-start gap-3">
+                              <div className="p-2 rounded-xl bg-black/30 border border-white/10 mt-0.5">
+                                {renderActivityIcon(act)}
+                              </div>
+                              <div className="space-y-1">
+                                <div className="font-semibold text-sm text-white flex items-center gap-2 flex-wrap">
+                                  <span>{act.title}</span>
+                                  <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-white/10 text-[#B3CFE5]/80 border border-white/10">
+                                    {act.category}
+                                  </span>
+                                </div>
+                                <div className="text-xs text-[#B3CFE5]/60 flex items-center gap-3 flex-wrap">
+                                  <span className="font-mono">{act.path}</span>
+                                  <span>•</span>
+                                  <span className="text-[#B3CFE5]/80">{act.userEmail || 'Anonymous Guest'}</span>
+                                  <span>•</span>
+                                  <span className="flex items-center gap-1">
+                                    {act.device === 'mobile' ? <Smartphone className="w-3 h-3" /> : <Laptop className="w-3 h-3" />}
+                                    {act.device} ({act.browser || 'Browser'})
+                                  </span>
+                                </div>
+                                {act.details && Object.keys(act.details).length > 0 && (
+                                  <div className="flex items-center gap-2 flex-wrap pt-1">
+                                    {Object.entries(act.details).map(([k, v]) => (
+                                      <span key={k} className="text-[10px] bg-black/30 border border-white/10 px-2 py-0.5 rounded text-[#B3CFE5]/80">
+                                        <strong className="text-white">{k}:</strong> {String(v)}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            <div className="text-xs text-[#B3CFE5]/50 whitespace-nowrap sm:text-right">
+                              {formatRelativeTime(act.timestamp || act.createdAt)}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Sub-Tab 2: Packing Lists Deep Dive */}
+                {analyticsSubTab === 'packing' && (
+                  <div className="space-y-8">
+                    {/* Top Essentials Bar Chart */}
+                    <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-bold text-base flex items-center gap-2">
+                          <Flame className="w-4 h-4 text-amber-400" />
+                          Top 10 Most Packed Essentials Across GIKI
+                        </h3>
+                        <span className="text-xs text-[#B3CFE5]/60">Calculated across all saved student lists</span>
+                      </div>
+
+                      <div className="space-y-3">
+                        {(analyticsData?.packingAnalytics.mostPackedItems || []).map((item, idx) => (
+                          <div key={item.label} className="space-y-1">
+                            <div className="flex justify-between text-xs">
+                              <span className="font-semibold text-white">
+                                #{idx + 1} {item.label}
+                              </span>
+                              <span className="text-[#B3CFE5]/70">
+                                {item.count} students ({item.percentage}%)
+                              </span>
+                            </div>
+                            <div className="w-full bg-black/30 rounded-full h-2 overflow-hidden border border-white/10">
+                              <div
+                                className="bg-gradient-to-r from-pink-500 to-purple-500 h-full rounded-full transition-all duration-500"
+                                style={{ width: `${item.percentage}%` }}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                        {(analyticsData?.packingAnalytics.mostPackedItems || []).length === 0 && (
+                          <div className="text-center py-6 text-[#B3CFE5]/40 text-xs">
+                            No student packing data recorded yet.
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Student Packing Lists Table */}
+                    <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4">
+                      <h3 className="font-bold text-base flex items-center gap-2">
+                        <UsersIcon className="w-4 h-4 text-blue-400" />
+                        Individual Student Packing Sessions
+                      </h3>
+                      
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs border-collapse">
+                          <thead>
+                            <tr className="border-b border-white/10 text-[#B3CFE5]/60 uppercase tracking-wider">
+                              <th className="py-3 px-4">Student</th>
+                              <th className="py-3 px-4">Items Packed</th>
+                              <th className="py-3 px-4">Progress</th>
+                              <th className="py-3 px-4">Last Active</th>
+                              <th className="py-3 px-4">Sample Checked Items</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-white/5">
+                            {(analyticsData?.packingAnalytics.userLists || []).map((userList) => (
+                              <tr key={userList.userId} className="hover:bg-white/5 transition">
+                                <td className="py-3 px-4 font-semibold text-white">
+                                  {userList.userEmail || userList.userName || `User ${userList.userId.slice(0, 8)}...`}
+                                </td>
+                                <td className="py-3 px-4 text-white">
+                                  {userList.checkedCount} / {userList.totalItems}
+                                </td>
+                                <td className="py-3 px-4">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-20 bg-black/40 rounded-full h-1.5 overflow-hidden">
+                                      <div
+                                        className="bg-pink-500 h-full rounded-full"
+                                        style={{ width: `${userList.percentage}%` }}
+                                      />
+                                    </div>
+                                    <span className="font-mono text-[11px] text-pink-400">{userList.percentage}%</span>
+                                  </div>
+                                </td>
+                                <td className="py-3 px-4 text-[#B3CFE5]/60">
+                                  {formatRelativeTime(userList.lastUpdated)}
+                                </td>
+                                <td className="py-3 px-4">
+                                  <div className="flex items-center gap-1 flex-wrap max-w-xs">
+                                    {userList.checkedItemLabels.slice(0, 3).map((itemLabel, i) => (
+                                      <span key={i} className="text-[10px] bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-[#B3CFE5]/80">
+                                        {itemLabel}
+                                      </span>
+                                    ))}
+                                    {userList.checkedItemLabels.length > 3 && (
+                                      <span className="text-[10px] text-[#B3CFE5]/40">
+                                        +{userList.checkedItemLabels.length - 3} more
+                                      </span>
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                            {(analyticsData?.packingAnalytics.userLists || []).length === 0 && (
+                              <tr>
+                                <td colSpan={5} className="py-8 text-center text-[#B3CFE5]/40">
+                                  No saved packing sessions found.
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Sub-Tab 3: Traffic & Searches */}
+                {analyticsSubTab === 'traffic' && (
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {/* Top Visited Pages */}
+                    <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4">
+                      <h3 className="font-bold text-base flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4 text-blue-400" />
+                        Top Visited Routes
+                      </h3>
+                      <div className="space-y-3">
+                        {(analyticsData?.topPages || []).map((page, idx) => (
+                          <div key={page.path} className="space-y-1">
+                            <div className="flex justify-between text-xs">
+                              <span className="font-semibold text-white font-mono">{page.path}</span>
+                              <span className="text-[#B3CFE5]/70">{page.count} visits</span>
+                            </div>
+                            <div className="w-full bg-black/30 rounded-full h-1.5 overflow-hidden">
+                              <div
+                                className="bg-blue-500 h-full rounded-full"
+                                style={{
+                                  width: `${Math.min(100, Math.round((page.count / Math.max(1, (analyticsData?.topPages[0]?.count || 1))) * 100))}%`
+                                }}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                        {(analyticsData?.topPages || []).length === 0 && (
+                          <div className="text-center py-6 text-[#B3CFE5]/40 text-xs">No pageview data recorded yet.</div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Top Guide Sections */}
+                    <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4">
+                      <h3 className="font-bold text-base flex items-center gap-2">
+                        <Compass className="w-4 h-4 text-emerald-400" />
+                        Top Viewed Guide Sections
+                      </h3>
+                      <div className="space-y-3">
+                        {(analyticsData?.topGuideSections || []).map((sec) => (
+                          <div key={sec.section} className="space-y-1">
+                            <div className="flex justify-between text-xs">
+                              <span className="font-semibold text-white">{sec.section}</span>
+                              <span className="text-[#B3CFE5]/70">{sec.count} views</span>
+                            </div>
+                            <div className="w-full bg-black/30 rounded-full h-1.5 overflow-hidden">
+                              <div
+                                className="bg-emerald-500 h-full rounded-full"
+                                style={{
+                                  width: `${Math.min(100, Math.round((sec.count / Math.max(1, (analyticsData?.topGuideSections[0]?.count || 1))) * 100))}%`
+                                }}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                        {(analyticsData?.topGuideSections || []).length === 0 && (
+                          <div className="text-center py-6 text-[#B3CFE5]/40 text-xs">No section clicks recorded yet.</div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Top Search Queries */}
+                    <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4 md:col-span-2">
+                      <h3 className="font-bold text-base flex items-center gap-2">
+                        <SearchIcon className="w-4 h-4 text-amber-400" />
+                        Student Search Queries in Blog
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {(analyticsData?.topSearches || []).map((search) => (
+                          <span
+                            key={search.query}
+                            className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-white flex items-center gap-2"
+                          >
+                            <span>&quot;{search.query}&quot;</span>
+                            <span className="px-1.5 py-0.5 rounded-md bg-amber-500/20 text-amber-400 font-bold text-[10px]">
+                              {search.count} searches
+                            </span>
+                          </span>
+                        ))}
+                        {(analyticsData?.topSearches || []).length === 0 && (
+                          <div className="text-center py-4 text-[#B3CFE5]/40 text-xs w-full">
+                            No search terms logged yet.
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Sub-Tab 4: Admin Audit Trail */}
+                {analyticsSubTab === 'audit' && (
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-base flex items-center gap-2">
+                        <ShieldAlert className="w-4 h-4 text-red-400" />
+                        Audit Log: Every Content & Permission Change
+                      </h3>
+                      <span className="text-xs text-[#B3CFE5]/60">Permanent record of moderation actions</span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="border-b border-white/10 text-[#B3CFE5]/60 uppercase tracking-wider">
+                            <th className="py-3 px-4">Action</th>
+                            <th className="py-3 px-4">Performed By</th>
+                            <th className="py-3 px-4">Target</th>
+                            <th className="py-3 px-4">Details</th>
+                            <th className="py-3 px-4">Date & Time</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/5">
+                          {(analyticsData?.adminAuditLogs || []).map((entry) => (
+                            <tr key={entry.id} className="hover:bg-white/5 transition">
+                              <td className="py-3 px-4 font-bold text-white">
+                                <span className="px-2 py-0.5 rounded bg-white/10 border border-white/10">
+                                  {entry.action}
+                                </span>
+                              </td>
+                              <td className="py-3 px-4 text-[#B3CFE5]">
+                                {entry.performedBy} <span className="text-[#B3CFE5]/40">({entry.performerEmail})</span>
+                              </td>
+                              <td className="py-3 px-4 font-mono text-[#B3CFE5]/70">
+                                {entry.targetType ? `${entry.targetType}: ` : ''}{entry.targetId || '—'}
+                              </td>
+                              <td className="py-3 px-4 text-[#B3CFE5]/70 max-w-xs truncate">
+                                {entry.details ? JSON.stringify(entry.details) : '—'}
+                              </td>
+                              <td className="py-3 px-4 text-[#B3CFE5]/50 whitespace-nowrap">
+                                {formatRelativeTime(entry.timestamp || entry.createdAt)}
+                              </td>
+                            </tr>
+                          ))}
+                          {(analyticsData?.adminAuditLogs || []).length === 0 && (
+                            <tr>
+                              <td colSpan={5} className="py-8 text-center text-[#B3CFE5]/40">
+                                No admin audit entries recorded yet.
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -784,72 +1538,72 @@ export const CmsDashboard: React.FC = () => {
                               }`}>
                                 {post.status}
                               </span>
-                              <span className="text-xs text-[#B3CFE5]/50">Submitted {formatDate(post.createdAt)}</span>
+                              {post.isFeatured && (
+                                <span className="text-[10px] uppercase font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded">
+                                  ★ Featured
+                                </span>
+                              )}
                             </div>
-                            <h3 className="text-lg font-bold text-white leading-tight">{post.title}</h3>
-                            <p className="text-xs text-[#B3CFE5]/80 line-clamp-2 leading-relaxed">{post.description}</p>
+
+                            <h3 className="text-xl font-bold text-white">{post.title}</h3>
+                            <p className="text-sm text-[#B3CFE5]/70 line-clamp-2">{post.description}</p>
                             
-                            <div className="text-xs text-[#B3CFE5]/50 flex justify-between items-center pt-2">
-                              <span>By <strong className="text-white">{post.authorName}</strong> {isOwner && '(You)'}</span>
-                              {post.isFeatured && <span className="text-xs text-yellow-400 font-bold">⭐ Featured</span>}
+                            <div className="text-xs text-[#B3CFE5]/50 flex items-center gap-4 pt-1">
+                              <span>By <strong className="text-white">{post.authorName}</strong></span>
+                              <span>Date: {formatDate(post.createdAt)}</span>
                             </div>
-                            {post.rejectionReason && post.status === 'rejected' && (
-                              <div className="bg-red-500/10 border border-red-500/20 text-red-300 p-3 rounded-xl text-xs">
-                                <strong>Rejection Feedback:</strong> {post.rejectionReason}
+
+                            {post.status === 'rejected' && post.rejectionReason && (
+                              <div className="mt-2 text-xs bg-yellow-500/10 border border-yellow-500/20 text-yellow-200 p-2.5 rounded-xl">
+                                <strong>Feedback:</strong> {post.rejectionReason}
                               </div>
                             )}
                           </div>
 
-                          {/* Post controls */}
-                          <div className="flex md:flex-col justify-end gap-2 min-w-[130px] self-start md:self-stretch">
-                            {post.status === 'pending' && canModeratePosts && (
+                          <div className="flex flex-row md:flex-col justify-end gap-2 shrink-0">
+                            {canModeratePosts && post.status === 'pending' && (
                               <>
                                 <button
-                                  disabled={actionLoading}
                                   onClick={() => handleApprovePost(post.id!)}
-                                  className="px-3 py-1.5 text-xs font-bold bg-green-600 hover:bg-green-700 rounded-lg text-white border border-green-500/30 transition cursor-pointer"
+                                  disabled={actionLoading}
+                                  className="px-3.5 py-1.5 rounded-xl bg-green-500/20 hover:bg-green-500/40 text-green-400 border border-green-500/30 text-xs font-bold transition cursor-pointer"
                                 >
                                   Approve
                                 </button>
                                 <button
-                                  disabled={actionLoading}
                                   onClick={() => setRejectionPostId(post.id!)}
-                                  className="px-3 py-1.5 text-xs font-bold bg-yellow-600 hover:bg-yellow-700 rounded-lg text-white border border-yellow-500/30 transition cursor-pointer"
+                                  disabled={actionLoading}
+                                  className="px-3.5 py-1.5 rounded-xl bg-yellow-500/20 hover:bg-yellow-500/40 text-yellow-400 border border-yellow-500/30 text-xs font-bold transition cursor-pointer"
                                 >
                                   Reject
                                 </button>
                               </>
                             )}
-                            
-                            {canModeratePosts && post.status === 'approved' && (
+
+                            {canModeratePosts && (
                               <button
+                                onClick={() => handleToggleFeatured(post.id!, !!post.isFeatured)}
                                 disabled={actionLoading}
-                                onClick={() => handleToggleFeatured(post.id!, post.isFeatured)}
-                                className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition cursor-pointer ${
-                                  post.isFeatured 
-                                    ? 'bg-yellow-600/30 border-yellow-500/40 text-yellow-400 hover:bg-yellow-600/50' 
-                                    : 'bg-white/5 border-white/10 hover:bg-white/10'
-                                }`}
+                                className="px-3.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/30 text-amber-300 border border-amber-500/20 text-xs font-bold transition cursor-pointer"
                               >
-                                {post.isFeatured ? 'Unfeature' : 'Feature Article'}
+                                {post.isFeatured ? 'Unfeature' : 'Feature'}
                               </button>
                             )}
 
                             {canEditThis && (
                               <button
-                                disabled={actionLoading}
                                 onClick={() => handleOpenEdit(post)}
-                                className="px-3 py-1.5 text-xs font-bold bg-[#1A3D63] hover:bg-[#4A7FA7] rounded-lg text-white border border-[#B3CFE5]/30 transition cursor-pointer"
+                                className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/10 text-xs font-bold transition cursor-pointer"
                               >
                                 Edit Post
                               </button>
                             )}
 
-                            {(canModeratePosts || isOwner) && (
+                            {canModeratePosts && (
                               <button
-                                disabled={actionLoading}
                                 onClick={() => handleDeletePost(post.id!)}
-                                className="px-3 py-1.5 text-xs font-bold bg-red-600 hover:bg-red-700 rounded-lg text-white border border-red-500/30 transition cursor-pointer"
+                                disabled={actionLoading}
+                                className="px-3.5 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/40 text-red-400 border border-red-500/30 text-xs font-bold transition cursor-pointer"
                               >
                                 Delete
                               </button>
@@ -863,16 +1617,15 @@ export const CmsDashboard: React.FC = () => {
               </div>
             )}
 
-            {/* Gallery Moderation Panel */}
+            {/* Gallery Approvals Panel */}
             {activeTab === 'gallery' && canModerateGallery && (
               <div className="space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <h2 className="text-2xl font-bold font-serif">Gallery Approvals</h2>
-                    <p className="text-sm text-[#B3CFE5]/60">Approve user-submitted snapshots, toggle homepage highlights, or remove photos.</p>
+                    <p className="text-sm text-[#B3CFE5]/60">Moderate photos uploaded by campus photographers.</p>
                   </div>
                   
-                  {/* Photo status tab filter */}
                   <div className="flex bg-[#0A1931]/80 rounded-xl p-1 border border-white/5 text-xs font-bold">
                     {(['all', 'pending', 'approved', 'rejected'] as const).map(f => (
                       <button
@@ -889,90 +1642,64 @@ export const CmsDashboard: React.FC = () => {
                 </div>
 
                 {photosLoading ? (
-                  <div className="text-center py-12 text-[#B3CFE5]/60">Retrieving photo uploads...</div>
+                  <div className="text-center py-12 text-[#B3CFE5]/60">Loading photos queue...</div>
                 ) : photos.length === 0 ? (
-                  <div className="text-center py-12 text-[#B3CFE5]/50">No gallery images found for this category.</div>
+                  <div className="text-center py-12 text-[#B3CFE5]/50">No photos in this category.</div>
                 ) : (
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     {photos.map(photo => (
-                      <div 
-                        key={photo.id}
-                        className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 transition flex flex-col justify-between"
-                      >
-                        <div>
-                          <div className="h-44 w-full overflow-hidden bg-black/45 relative">
-                            <img src={getOptimizedImageUrl(photo.imageUrl || photo.fullSizeUrl, 500)} alt={photo.caption} loading="lazy" decoding="async" className="w-full h-full object-cover" />
-                            <div className="absolute top-3 left-3 flex gap-1.5">
-                              <span className="bg-[#4A7FA7] text-[10px] font-extrabold uppercase px-2 py-0.5 rounded border border-[#B3CFE5]/30">
-                                {photo.category}
-                              </span>
-                              <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${
-                                photo.status === 'approved' ? 'bg-green-500/20 border-green-500/30 text-green-400' :
-                                photo.status === 'rejected' ? 'bg-yellow-500/20 border-yellow-500/30 text-yellow-400' :
-                                'bg-blue-500/20 border-blue-500/30 text-blue-400'
-                              }`}>
-                                {photo.status}
-                              </span>
-                            </div>
-                            {photo.isHighlighted && (
-                              <span className="absolute top-3 right-3 bg-yellow-500/90 text-black text-[9px] font-extrabold px-2 py-0.5 rounded shadow">
-                                HIGHLIGHT
-                              </span>
-                            )}
-                          </div>
-                          <div className="p-4 space-y-2">
-                            <p className="text-sm font-semibold text-white">"{photo.caption}"</p>
-                            <div className="text-xs text-[#B3CFE5]/60 flex justify-between items-center">
-                              <span>Uploaded by <strong className="text-white">{photo.uploaderName}</strong></span>
-                              <span>{formatDate(photo.createdAt)}</span>
-                            </div>
-                            {photo.rejectionReason && (
-                              <div className="bg-red-500/10 text-red-300 text-xs p-2 rounded-lg border border-red-500/25">
-                                Reason: {photo.rejectionReason}
-                              </div>
-                            )}
+                      <div key={photo.id} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 transition flex flex-col justify-between">
+                        <div className="relative aspect-video">
+                          <img 
+                            src={getOptimizedImageUrl(photo.url, 'medium')} 
+                            alt={photo.caption || 'Campus photo'} 
+                            className="w-full h-full object-cover" 
+                          />
+                          <div className="absolute top-2 right-2">
+                            <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${
+                              photo.status === 'approved' ? 'bg-green-500/80 text-white' :
+                              photo.status === 'rejected' ? 'bg-yellow-500/80 text-white' :
+                              'bg-blue-500/80 text-white'
+                            }`}>
+                              {photo.status}
+                            </span>
                           </div>
                         </div>
 
-                        {/* Control buttons */}
-                        <div className="px-4 pb-4 pt-2 border-t border-white/5 flex gap-2">
+                        <div className="p-4 space-y-2 flex-1">
+                          <h4 className="font-bold text-white text-sm">{photo.caption || 'No caption provided'}</h4>
+                          <p className="text-xs text-[#B3CFE5]/60">Uploader: {photo.uploaderName || 'Anonymous'}</p>
+                          {photo.rejectionReason && (
+                            <p className="text-xs text-yellow-300">Reason: {photo.rejectionReason}</p>
+                          )}
+                        </div>
+
+                        <div className="p-4 pt-0 flex gap-2 flex-wrap">
                           {photo.status === 'pending' && (
                             <>
                               <button
-                                disabled={actionLoading}
                                 onClick={() => handleApprovePhoto(photo.id!)}
-                                className="flex-1 py-1.5 text-xs font-bold bg-green-600 hover:bg-green-700 rounded-lg text-white border border-green-500/30 transition cursor-pointer"
+                                className="flex-1 py-1.5 rounded-xl bg-green-500/20 hover:bg-green-500/40 text-green-400 text-xs font-bold transition border border-green-500/30"
                               >
                                 Approve
                               </button>
                               <button
-                                disabled={actionLoading}
                                 onClick={() => setRejectionPhotoId(photo.id!)}
-                                className="flex-1 py-1.5 text-xs font-bold bg-yellow-600 hover:bg-yellow-700 rounded-lg text-white border border-yellow-500/30 transition cursor-pointer"
+                                className="flex-1 py-1.5 rounded-xl bg-yellow-500/20 hover:bg-yellow-500/40 text-yellow-400 text-xs font-bold transition border border-yellow-500/30"
                               >
                                 Reject
                               </button>
                             </>
                           )}
-                          
-                          {photo.status === 'approved' && (
-                            <button
-                              disabled={actionLoading}
-                              onClick={() => handleTogglePhotoHighlight(photo.id!, photo.isHighlighted)}
-                              className={`flex-grow py-1.5 text-xs font-bold rounded-lg border transition cursor-pointer ${
-                                photo.isHighlighted
-                                  ? 'bg-yellow-600/20 border-yellow-500/30 text-yellow-400 hover:bg-yellow-600/40'
-                                  : 'bg-white/5 border-white/10 hover:bg-white/10 text-white'
-                              }`}
-                            >
-                              {photo.isHighlighted ? 'Unhighlight' : 'Highlight'}
-                            </button>
-                          )}
-
                           <button
-                            disabled={actionLoading}
+                            onClick={() => handleTogglePhotoHighlight(photo.id!, !!photo.isHighlighted)}
+                            className="py-1.5 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/40 text-amber-300 text-xs font-bold transition border border-amber-500/30"
+                          >
+                            {photo.isHighlighted ? '★ Highlighted' : 'Highlight'}
+                          </button>
+                          <button
                             onClick={() => handleDeletePhoto(photo.id!)}
-                            className="py-1.5 px-3 text-xs font-bold bg-red-600 hover:bg-red-700 rounded-lg text-white border border-red-500/30 transition cursor-pointer"
+                            className="py-1.5 px-3 rounded-xl bg-red-500/20 hover:bg-red-500/40 text-red-400 text-xs font-bold transition border border-red-500/30"
                           >
                             Delete
                           </button>
@@ -984,60 +1711,44 @@ export const CmsDashboard: React.FC = () => {
               </div>
             )}
 
-            {/* Comments Moderation Panel */}
+            {/* Comments Moderator Panel */}
             {activeTab === 'comments' && canModerateComments && (
               <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold font-serif">Comments Moderator</h2>
-                  <p className="text-sm text-[#B3CFE5]/60">Oversee discussions, view recent feedback across all blog posts, and delete inappropriate content.</p>
+                  <p className="text-sm text-[#B3CFE5]/60">Manage student discussions and remove inappropriate content.</p>
                 </div>
 
-                {/* Search Comments */}
-                <input
-                  type="text"
-                  value={searchCommentQuery}
-                  onChange={(e) => setSearchCommentQuery(e.target.value)}
-                  placeholder="Filter comments by author or content keywords..."
-                  className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-white transition"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchCommentQuery}
+                    onChange={(e) => setSearchCommentQuery(e.target.value)}
+                    placeholder="Search comments by author or content..."
+                    className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-white transition"
+                  />
+                </div>
 
                 {commentsLoading ? (
-                  <div className="text-center py-12 text-[#B3CFE5]/60">Loading comment feed...</div>
+                  <div className="text-center py-12 text-[#B3CFE5]/60">Loading comments...</div>
                 ) : filteredComments.length === 0 ? (
-                  <div className="text-center py-12 text-[#B3CFE5]/50">No comments found matching search filters.</div>
+                  <div className="text-center py-12 text-[#B3CFE5]/50">No comments found.</div>
                 ) : (
                   <div className="space-y-3">
                     {filteredComments.map(comment => (
-                      <div 
-                        key={comment.id}
-                        className="bg-white/5 border border-white/10 rounded-2xl p-4 flex gap-4 justify-between items-start hover:bg-white/10 transition"
-                      >
-                        <div className="flex gap-3 min-w-0">
-                          {comment.authorPhotoURL ? (
-                            <img src={comment.authorPhotoURL} alt={comment.authorName} className="w-9 h-9 rounded-full object-cover flex-shrink-0" />
-                          ) : (
-                            <div className="w-9 h-9 rounded-full bg-[#1A3D63] text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
-                              {comment.authorName.charAt(0).toUpperCase()}
-                            </div>
-                          )}
-                          <div className="min-w-0 space-y-1">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-sm font-semibold text-white">{comment.authorName}</span>
-                              <span className="text-[10px] text-[#B3CFE5]/40">{formatDate(comment.createdAt)}</span>
-                              <span className="text-[10px] bg-white/5 text-[#B3CFE5]/60 px-2 py-0.5 rounded border border-white/5">
-                                Post ID: {comment.postId}
-                              </span>
-                            </div>
-                            <p className="text-sm text-white/80 whitespace-pre-wrap leading-relaxed">{comment.content}</p>
+                      <div key={comment.id} className="bg-white/5 border border-white/10 rounded-2xl p-4 flex justify-between items-start gap-4 hover:bg-white/10 transition">
+                        <div className="space-y-1 flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-sm text-white">{comment.authorName}</span>
+                            <span className="text-xs text-[#B3CFE5]/40">{formatDate(comment.createdAt)}</span>
                           </div>
+                          <p className="text-sm text-[#B3CFE5]/80">{comment.content}</p>
                         </div>
-
                         <button
-                          disabled={actionLoading}
                           onClick={() => handleDeleteComment(comment.id)}
-                          className="px-3 py-1.5 text-xs font-bold bg-red-600/20 border border-red-500/30 text-red-400 hover:bg-red-600/40 rounded-lg transition cursor-pointer"
+                          className="px-3 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/40 text-red-400 text-xs font-bold border border-red-500/30 transition cursor-pointer"
                         >
-                          Remove
+                          Delete
                         </button>
                       </div>
                     ))}
@@ -1046,212 +1757,161 @@ export const CmsDashboard: React.FC = () => {
               </div>
             )}
 
-            {/* Profile Settings Panel */}
+            {/* Support Inbox Panel */}
+            {activeTab === 'inbox' && isCmsAdmin && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold font-serif">Support & Contact Inbox</h2>
+                  <p className="text-sm text-[#B3CFE5]/60">Messages submitted via the contact form.</p>
+                </div>
+
+                {inboxLoading ? (
+                  <div className="text-center py-12 text-[#B3CFE5]/60">Loading inbox...</div>
+                ) : inboxMessages.length === 0 ? (
+                  <div className="text-center py-12 text-[#B3CFE5]/50">No incoming messages in inbox.</div>
+                ) : (
+                  <div className="space-y-4">
+                    {inboxMessages.map(msg => (
+                      <div key={msg.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition space-y-3">
+                        <div className="flex justify-between items-start gap-4">
+                          <div>
+                            <div className="font-bold text-white text-base">{msg.subject || 'No Subject'}</div>
+                            <div className="text-xs text-[#B3CFE5]/60 mt-0.5">
+                              From <strong className="text-white">{msg.name}</strong> ({msg.email}) • {formatDate(msg.createdAt)}
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => handleDeleteMessage(msg.id!)}
+                            className="px-3 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/40 text-red-400 text-xs font-bold border border-red-500/30 transition"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                        <p className="text-sm text-[#B3CFE5]/90 whitespace-pre-wrap bg-black/20 p-3.5 rounded-xl border border-white/5">
+                          {msg.message}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Profile Edit Panel */}
             {activeTab === 'profile' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold font-serif">Profile Details</h2>
-                  <p className="text-sm text-[#B3CFE5]/60">Customize your public writer card details visible in article footnotes.</p>
+                  <h2 className="text-2xl font-bold font-serif">Your Profile Details</h2>
+                  <p className="text-sm text-[#B3CFE5]/60">Update your public author credentials and avatar.</p>
                 </div>
 
-                <form onSubmit={handleProfileSubmit} className="space-y-5 max-w-xl">
-                  {/* Photo details */}
-                  <div className="flex items-center gap-5">
-                    {profileAvatarUrl ? (
-                      <img src={profileAvatarUrl} alt="Avatar" className="w-20 h-20 rounded-full object-cover border border-[#B3CFE5]/40" />
-                    ) : (
-                      <div className="w-20 h-20 rounded-full bg-[#1A3D63] text-white flex items-center justify-center font-extrabold text-3xl">
-                        {profileName.charAt(0).toUpperCase() || 'U'}
-                      </div>
-                    )}
-                    
-                    <div className="space-y-1">
-                      <label className="block text-xs font-bold text-[#B3CFE5]/80 uppercase">Update Avatar Image</label>
-                      <input 
-                        type="file" 
-                        accept="image/*"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            setProfileFile(file);
-                            setProfileAvatarUrl(URL.createObjectURL(file));
-                          }
-                        }}
-                        className="text-xs file:mr-4 file:py-1.5 file:px-3 file:rounded-full file:border file:border-white/10 file:bg-white/5 file:text-white file:font-semibold hover:file:bg-white/10 cursor-pointer"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Fields */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-[#B3CFE5]/80 uppercase">Writer Display Name</label>
+                <form onSubmit={handleProfileSubmit} className="space-y-5 max-w-lg">
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-[#B3CFE5]/70 mb-2">Display Name</label>
                     <input
                       type="text"
-                      required
                       value={profileName}
                       onChange={(e) => setProfileName(e.target.value)}
-                      placeholder="e.g. John Doe"
-                      className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl p-3 text-sm focus:outline-none focus:border-white transition"
+                      className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-white transition"
                     />
                   </div>
 
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-[#B3CFE5]/80 uppercase">Author Bio / Background</label>
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-[#B3CFE5]/70 mb-2">Bio / Description</label>
                     <textarea
-                      rows={4}
+                      rows={3}
                       value={profileBio}
                       onChange={(e) => setProfileBio(e.target.value)}
-                      placeholder="Share a short summary about your articles, department, or interests at GIKI..."
-                      className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl p-3 text-sm focus:outline-none focus:border-white transition resize-none"
+                      className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-white transition resize-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-[#B3CFE5]/70 mb-2">Profile Picture File</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setProfileFile(e.target.files ? e.target.files[0] : null)}
+                      className="w-full text-xs text-[#B3CFE5]/80 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#4A7FA7]/30 file:text-white hover:file:bg-[#4A7FA7]/50"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={profileLoading}
-                    className="px-6 py-2.5 rounded-full font-bold text-sm bg-[#4A7FA7] hover:bg-[#1A3D63] border border-[#B3CFE5]/30 transition shadow cursor-pointer disabled:opacity-50"
+                    className="px-6 py-3 rounded-full text-sm font-bold bg-[#4A7FA7] hover:bg-[#3B6686] text-white shadow-lg transition cursor-pointer disabled:opacity-60"
                   >
-                    {profileLoading ? 'Saving Profile...' : 'Save Profile Details'}
+                    {profileLoading ? 'Saving...' : 'Save Profile Changes'}
                   </button>
                 </form>
               </div>
             )}
 
-            {/* Rights & Roles Config Panel (Admin Only) */}
+            {/* Rights & Roles Panel */}
             {activeTab === 'rights' && isCmsAdmin && (
               <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold font-serif">Rights & Roles Configuration</h2>
-                  <p className="text-sm text-[#B3CFE5]/60">Assign roles (`admin`, `editor`, `moderator`, `author`, `user`) to registered users and toggle account blocks.</p>
+                  <p className="text-sm text-[#B3CFE5]/60">Manage permissions, grant admin roles, or restrict accounts.</p>
                 </div>
 
-                {/* Search user */}
-                <input
-                  type="text"
-                  value={searchUserQuery}
-                  onChange={(e) => setSearchUserQuery(e.target.value)}
-                  placeholder="Find user by display name or email address..."
-                  className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-white transition"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchUserQuery}
+                    onChange={(e) => setSearchUserQuery(e.target.value)}
+                    placeholder="Search users by name or email..."
+                    className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-white transition"
+                  />
+                </div>
 
                 {usersLoading ? (
-                  <div className="text-center py-12 text-[#B3CFE5]/60">Loading registered accounts...</div>
-                ) : filteredUsers.length === 0 ? (
-                  <div className="text-center py-12 text-[#B3CFE5]/50">No users found in catalog.</div>
+                  <div className="text-center py-12 text-[#B3CFE5]/60">Loading users roster...</div>
                 ) : (
-                  <div className="overflow-x-auto border border-white/10 rounded-2xl">
-                    <table className="w-full text-left text-sm border-collapse">
-                      <thead>
-                        <tr className="bg-white/5 border-b border-[#B3CFE5]/10 text-[#B3CFE5]/60 text-xs uppercase font-extrabold">
-                          <th className="py-3 px-4">User Details</th>
-                          <th className="py-3 px-4">Current Role</th>
-                          <th className="py-3 px-4">Status</th>
-                          <th className="py-3 px-4 text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredUsers.map(u => {
-                          const isSelf = u.uid === user?.uid;
-                          return (
-                            <tr key={u.uid} className="border-b border-white/5 hover:bg-white/5 transition">
-                              <td className="py-3 px-4">
-                                <div className="font-semibold text-white">{u.displayName}</div>
-                                <div className="text-xs text-[#B3CFE5]/50">{u.email}</div>
-                              </td>
-                              <td className="py-3 px-4">
-                                {isSelf ? (
-                                  <span className="px-2.5 py-1 rounded text-xs bg-red-500/10 text-red-400 border border-red-500/20 font-bold uppercase">
-                                    {u.role || 'admin'}
-                                  </span>
-                                ) : (
-                                  <select
-                                    value={u.role || 'user'}
-                                    disabled={actionLoading}
-                                    onChange={(e) => handleRoleChange(u.uid, e.target.value as any)}
-                                    className="bg-[#0A1931] border border-[#B3CFE5]/30 rounded px-2 py-1 text-xs text-white focus:outline-none"
-                                  >
-                                    <option value="admin">Admin</option>
-                                    <option value="editor">Editor</option>
-                                    <option value="moderator">Moderator</option>
-                                    <option value="author">Author</option>
-                                    <option value="user">User</option>
-                                  </select>
-                                )}
-                              </td>
-                              <td className="py-3 px-4">
-                                {u.isBlocked ? (
-                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20">Blocked</span>
-                                ) : (
-                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-500/10 text-green-400 border border-green-500/20">Active</span>
-                                )}
-                              </td>
-                              <td className="py-3 px-4 text-right">
-                                {isSelf ? (
-                                  <span className="text-xs text-[#B3CFE5]/40 italic">You</span>
-                                ) : (
-                                  <button
-                                    disabled={actionLoading}
-                                    onClick={() => handleToggleUserBlock(u.uid, u.isBlocked || false)}
-                                    className={`px-3 py-1 rounded text-xs font-semibold border transition cursor-pointer ${
-                                      u.isBlocked
-                                        ? 'bg-green-600/20 border-green-500/30 text-green-400 hover:bg-green-600/40'
-                                        : 'bg-red-600/20 border-red-500/30 text-red-400 hover:bg-red-600/40'
-                                    }`}
-                                  >
-                                    {u.isBlocked ? 'Unblock' : 'Block'}
-                                  </button>
-                                )}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* TAB: INBOX */}
-            {activeTab === 'inbox' && isCmsAdmin && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold font-serif">Support Inbox</h2>
-                  <p className="text-sm text-[#B3CFE5]/60">Messages submitted through the contact form.</p>
-                </div>
-
-                {inboxLoading ? (
-                  <div className="text-center py-12 text-[#B3CFE5]/60">Loading messages...</div>
-                ) : inboxMessages.length === 0 ? (
-                  <div className="text-center py-12 text-[#B3CFE5]/50">No messages found.</div>
-                ) : (
-                  <div className="space-y-4">
-                    {inboxMessages.map(msg => (
-                      <div key={msg.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 relative transition hover:bg-white/10">
-                        <button
-                          onClick={() => handleDeleteMessage(msg.id)}
-                          className="absolute top-4 right-4 text-red-400 hover:text-red-300 transition text-sm font-medium bg-red-500/10 px-3 py-1 rounded"
-                        >
-                          Delete
-                        </button>
-                        <div className="text-xs text-[#B3CFE5]/60 mb-2 font-mono">
-                          {msg.createdAt?.toDate ? msg.createdAt.toDate().toLocaleString() : 'Just now'}
-                        </div>
-                        <h3 className="text-lg font-bold mb-1 text-white">{msg.subject}</h3>
-                        <div className="text-sm text-[#B3CFE5] mb-4">
-                          From: <span className="font-semibold text-white">{msg.name}</span> ({msg.email})
-                        </div>
-                        <div className="bg-black/20 p-4 rounded-xl text-sm leading-relaxed border border-white/5 text-white whitespace-pre-wrap">
-                          {msg.message}
-                        </div>
-                        {msg.attachmentUrl && (
-                          <div className="mt-4">
-                            <span className="text-xs text-[#B3CFE5]/60 mb-2 block uppercase tracking-wider font-bold">Attached File</span>
-                            <a href={msg.attachmentUrl} target="_blank" rel="noopener noreferrer">
-                              <img src={msg.attachmentUrl} alt="Attachment" className="max-w-[300px] max-h-[200px] object-contain rounded-lg border border-white/10 hover:border-[#B3CFE5]/50 transition shadow-lg" />
-                            </a>
+                  <div className="space-y-3">
+                    {filteredUsers.map(u => (
+                      <div key={u.uid} className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-white/10 transition">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-white text-sm">{u.displayName || 'Unnamed User'}</span>
+                            <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-white/10 text-[#B3CFE5]">
+                              {u.role || 'author'}
+                            </span>
+                            {u.isBlocked && (
+                              <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-red-500/20 text-red-400 border border-red-500/30">
+                                Blocked
+                              </span>
+                            )}
                           </div>
-                        )}
+                          <div className="text-xs text-[#B3CFE5]/50 mt-0.5">{u.email}</div>
+                        </div>
+
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <select
+                            value={u.role || 'author'}
+                            onChange={(e) => handleRoleChange(u.uid, e.target.value as any)}
+                            disabled={actionLoading || u.uid === user?.uid}
+                            className="bg-[#0A1931] border border-[#B3CFE5]/30 text-white rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none"
+                          >
+                            <option value="user">User</option>
+                            <option value="author">Author</option>
+                            <option value="moderator">Moderator</option>
+                            <option value="editor">Editor</option>
+                            <option value="admin">Admin</option>
+                          </select>
+
+                          <button
+                            onClick={() => handleToggleUserBlock(u.uid, !!u.isBlocked)}
+                            disabled={actionLoading || u.uid === user?.uid}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer ${
+                              u.isBlocked 
+                                ? 'bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/40' 
+                                : 'bg-red-500/20 text-red-400 border-red-500/30 hover:bg-red-500/40'
+                            }`}
+                          >
+                            {u.isBlocked ? 'Unblock' : 'Block'}
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -1266,88 +1926,86 @@ export const CmsDashboard: React.FC = () => {
       {editingPost && (
         <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm z-50 overflow-y-auto">
           <div 
-            className="w-full max-w-2xl rounded-3xl p-6 border border-[#B3CFE5]/30 shadow-2xl relative text-white my-8"
+            className="w-full max-w-3xl rounded-3xl p-6 sm:p-8 border border-[#B3CFE5]/30 shadow-2xl relative my-8 text-white"
             style={{
               background: 'linear-gradient(135deg, rgba(10,25,49,0.98), rgba(20,45,75,0.98))',
             }}
           >
-            <h3 className="text-xl font-bold mb-4 font-serif">Edit Blog Post Details</h3>
+            <h3 className="text-2xl font-bold mb-4 font-serif">Edit Chronicle Article</h3>
             <form onSubmit={handleUpdatePostSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#B3CFE5] uppercase">Title</label>
-                  <input
-                    type="text"
-                    required
-                    value={editTitle}
-                    onChange={(e) => setEditTitle(e.target.value)}
-                    className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl p-2.5 text-sm text-white focus:outline-none"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#B3CFE5] uppercase">Genre / Category</label>
-                  <input
-                    type="text"
-                    required
-                    value={editGenre}
-                    onChange={(e) => setEditGenre(e.target.value)}
-                    className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl p-2.5 text-sm text-white focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-[#B3CFE5] uppercase">Description</label>
+              <div>
+                <label className="block text-xs font-bold uppercase text-[#B3CFE5]/70 mb-1.5">Article Title</label>
                 <input
                   type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
                   required
-                  value={editDesc}
-                  onChange={(e) => setEditDesc(e.target.value)}
-                  className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl p-2.5 text-sm text-white focus:outline-none"
+                  className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-white transition"
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-[#B3CFE5] uppercase">Cover Photo URL</label>
+              <div>
+                <label className="block text-xs font-bold uppercase text-[#B3CFE5]/70 mb-1.5">Short Excerpt / Description</label>
+                <textarea
+                  rows={2}
+                  value={editDesc}
+                  onChange={(e) => setEditDesc(e.target.value)}
+                  className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-white transition resize-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase text-[#B3CFE5]/70 mb-1.5">Genre</label>
+                  <input
+                    type="text"
+                    value={editGenre}
+                    onChange={(e) => setEditGenre(e.target.value)}
+                    className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-white transition"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase text-[#B3CFE5]/70 mb-1.5">Tags (comma separated)</label>
+                  <input
+                    type="text"
+                    value={editTags}
+                    onChange={(e) => setEditTags(e.target.value)}
+                    className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-white transition"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase text-[#B3CFE5]/70 mb-1.5">Cover Photo URL</label>
                 <input
                   type="text"
                   value={editPhotoUrl}
                   onChange={(e) => setEditPhotoUrl(e.target.value)}
-                  className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl p-2.5 text-sm text-white focus:outline-none"
+                  className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-white transition"
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-[#B3CFE5] uppercase">Tags (comma-separated)</label>
-                <input
-                  type="text"
-                  value={editTags}
-                  onChange={(e) => setEditTags(e.target.value)}
-                  className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl p-2.5 text-sm text-white focus:outline-none"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-[#B3CFE5] uppercase">Content (Block Editor)</label>
-                <div className="border border-[#B3CFE5]/20 rounded-xl bg-black/30 p-3 min-h-[220px] max-h-[420px] overflow-y-auto">
+              <div>
+                <label className="block text-xs font-bold uppercase text-[#B3CFE5]/70 mb-1.5">Block Editor Content</label>
+                <div className="border border-[#B3CFE5]/30 rounded-2xl p-4 bg-black/20 max-h-96 overflow-y-auto">
                   <BlockEditor blocks={editBlocks} onChange={setEditBlocks} />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 mt-6">
+              <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setEditingPost(null)}
-                  className="px-4 py-2 rounded-full text-sm font-semibold border border-white/10 bg-white/5 hover:bg-white/10 text-white transition cursor-pointer"
+                  className="px-5 py-2.5 rounded-full text-sm font-semibold border border-white/10 bg-white/5 hover:bg-white/10 text-white transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={actionLoading}
-                  className="px-5 py-2 rounded-full text-sm font-bold bg-green-600 hover:bg-green-700 text-white border border-green-500/30 transition cursor-pointer"
+                  className="px-6 py-2.5 rounded-full text-sm font-bold bg-[#4A7FA7] hover:bg-[#3B6686] text-white transition cursor-pointer disabled:opacity-60 shadow-lg"
                 >
-                  Save Changes
+                  {actionLoading ? 'Updating...' : 'Save & Submit'}
                 </button>
               </div>
             </form>
@@ -1364,14 +2022,14 @@ export const CmsDashboard: React.FC = () => {
               background: 'linear-gradient(135deg, rgba(10,25,49,0.98), rgba(20,45,75,0.98))',
             }}
           >
-            <h3 className="text-xl font-bold mb-4 font-serif">Post Rejection Reason</h3>
+            <h3 className="text-xl font-bold mb-4 font-serif">Article Rejection Reason</h3>
             <form onSubmit={handleRejectPostSubmit} className="space-y-4">
               <textarea
-                required
                 rows={4}
                 value={rejectionReason}
                 onChange={(e) => setRejectionReason(e.target.value)}
-                placeholder="State why the article is rejected (visible to author)..."
+                placeholder="Provide constructive feedback for the author..."
+                required
                 className="w-full bg-white/5 border border-[#B3CFE5]/30 rounded-xl p-3 text-white focus:outline-none focus:border-white focus:ring-3 focus:ring-white/10 transition resize-none text-sm"
               />
               <div className="flex justify-end gap-3 mt-6">

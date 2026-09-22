@@ -6,6 +6,7 @@ import {
   subscribePackingList,
   updateCheckedItems,
 } from '../../services/guideService';
+import { trackActivity } from '../../services/analyticsService';
 import type { CheckedItems } from '../../types/guide';
 import {
   buildItemId,
@@ -65,9 +66,15 @@ export const PackingChecklist: React.FC<PackingChecklistProps> = ({ onSessionCha
       setHasSessionChanges(true);
       onSessionChange?.(true);
 
+      const doneCount = Object.values(next).filter(Boolean).length;
+
       if (uid) {
         try {
           await updateCheckedItems(uid, next);
+          trackActivity('packing_save', 'packing', 'Updated Packing Checklist', '/guide?section=what-to-pack', {
+            checkedCount: doneCount,
+            isGuest: false,
+          });
         } catch (e) {
           console.warn('Deferred save failed; will prompt on exit.', e);
         }
@@ -75,6 +82,10 @@ export const PackingChecklist: React.FC<PackingChecklistProps> = ({ onSessionCha
         try {
           localStorage.setItem(GUEST_PROGRESS_KEY, JSON.stringify(next));
           setShowGuestSavePrompt(true);
+          trackActivity('packing_save', 'packing', 'Guest Updated Packing Checklist', '/guide?section=what-to-pack', {
+            checkedCount: doneCount,
+            isGuest: true,
+          });
         } catch (e) {
           console.error('Failed to save guest packing progress:', e);
         }

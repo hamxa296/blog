@@ -29,6 +29,7 @@ const BlogPostDetail = lazy(() => import('./pages/BlogPostDetail').then(module =
 const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
 
 import { initGuidePreload } from './services/guideService';
+import { trackPageView } from './services/analyticsService';
 
 function AppShell() {
   const location = useLocation();
@@ -40,7 +41,8 @@ function AppShell() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
-  }, [location.pathname]);
+    trackPageView(location.pathname + location.search);
+  }, [location.pathname, location.search]);
   return (
     <div className="flex flex-col min-h-screen relative z-10 bg-[#08080a] text-foreground overflow-x-hidden">
       {/* Global Grainy Overlay */}
