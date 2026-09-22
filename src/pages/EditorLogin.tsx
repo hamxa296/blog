@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { ExternalLink, RefreshCw } from 'lucide-react';
 import galleryBg from '../assets/homepc.webp';
 import { useAuth } from '../context/AuthContext';
 import { getUserProfile, loginUser, signInWithGoogle, logoutUser } from '../services/firebase';

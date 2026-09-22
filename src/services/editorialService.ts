@@ -31,12 +31,6 @@ import {
 
 export type EditorRef = { uid: string; displayName: string; email?: string };
 
-const ACTIVE_REVIEW_STATUSES: PostStatus[] = [
-  'pending',
-  'under_review',
-  'changes_requested',
-];
-
 function currentEditorIdentity(): EditorRef | null {
   const user = auth.currentUser;
   if (!user) return null;
@@ -79,7 +73,8 @@ export async function findLeastLoadedEditor(): Promise<EditorRef | null> {
       return null;
     }
 
-    const activeEditors: (EditorRef & { load: number })[] = roleSnap.docs
+    type LoadedEditor = EditorRef & { load: number };
+    const activeEditors: LoadedEditor[] = roleSnap.docs
       .map((d) => {
         const data = d.data();
         if (data.isBlocked === true) return null;
@@ -88,9 +83,9 @@ export async function findLeastLoadedEditor(): Promise<EditorRef | null> {
           displayName: (data.displayName as string) || 'Editorial Board',
           email: (data.email as string) || undefined,
           load: typeof data.editorialLoad === 'number' ? (data.editorialLoad as number) : 0,
-        };
+        } as LoadedEditor;
       })
-      .filter((e): e is EditorRef & { load: number } => e !== null);
+      .filter((e): e is LoadedEditor => e !== null);
 
     if (activeEditors.length === 0) {
       console.warn('[findLeastLoadedEditor] All eligible editors are blocked.');

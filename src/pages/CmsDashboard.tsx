@@ -30,8 +30,6 @@ import {
   logAdminAudit,
   type AnalyticsSummary,
   type AnalyticsEvent,
-  type AdminAuditEntry,
-  type PackingListUserSummary,
 } from '../services/analyticsService';
 import {
   TrendingUp,
@@ -40,9 +38,6 @@ import {
   Eye,
   Activity,
   FileText,
-  CheckCircle2,
-  Clock,
-  ArrowUpRight,
   Download,
   Smartphone,
   Laptop,
@@ -57,9 +52,7 @@ import {
   BarChart3,
   Flame,
   ArrowRight,
-  Filter,
 } from 'lucide-react';
-import { getOptimizedImageUrl } from '../utils/imageOptimization';
 import { BlockEditor } from '../components/editor/BlockEditor';
 import {
   type Block,
@@ -1337,7 +1330,7 @@ export const CmsDashboard: React.FC = () => {
                         Top Visited Routes
                       </h3>
                       <div className="space-y-3">
-                        {(analyticsData?.topPages || []).map((page, idx) => (
+                        {(analyticsData?.topPages || []).map((page, _idx) => (
                           <div key={page.path} className="space-y-1">
                             <div className="flex justify-between text-xs">
                               <span className="font-semibold text-white font-mono">{page.path}</span>
@@ -1651,7 +1644,7 @@ export const CmsDashboard: React.FC = () => {
                       <div key={photo.id} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 transition flex flex-col justify-between">
                         <div className="relative aspect-video">
                           <img 
-                            src={getOptimizedImageUrl(photo.url, 'medium')} 
+                            src={photo.imageUrl} 
                             alt={photo.caption || 'Campus photo'} 
                             className="w-full h-full object-cover" 
                           />
