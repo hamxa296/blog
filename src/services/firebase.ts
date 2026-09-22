@@ -71,6 +71,56 @@ export interface UserProfile {
   threadsUrl?: string;
 }
 
+export type PostStatus =
+  | 'draft'
+  | 'pending'
+  | 'under_review'
+  | 'changes_requested'
+  | 'rejected'
+  | 'approved';
+
+export interface PostFeedbackEntry {
+  id: string;
+  editorId: string;
+  editorName: string;
+  feedbackText: string;
+  createdAt: Timestamp | null;
+  statusSnapshot: 'changes_requested' | 'rejected';
+}
+
+export type NotificationType =
+  | 'ARTICLE_ALLOTTED'
+  | 'FEEDBACK_RECEIVED'
+  | 'ARTICLE_RESUBMITTED'
+  | 'ARTICLE_PUBLISHED'
+  | 'ARTICLE_REJECTED';
+
+export interface AppNotification {
+  id?: string;
+  recipientId: string;
+  senderId?: string;
+  senderName?: string;
+  postId: string;
+  postTitle: string;
+  type: NotificationType;
+  message: string;
+  isRead: boolean;
+  createdAt: Timestamp | null;
+}
+
+export interface MailQueueDocument {
+  to: string;
+  message: {
+    subject: string;
+    text?: string;
+    html: string;
+  };
+  metadata?: {
+    postId: string;
+    notificationType: string;
+  };
+}
+
 export interface Post {
   id?: string;
   title: string;
@@ -81,12 +131,22 @@ export interface Post {
   tags: string[];
   authorId: string;
   authorName: string;
+  authorEmail?: string;
   createdAt: Timestamp | null;
-  status: 'pending' | 'approved' | 'rejected' | 'draft';
+  updatedAt?: Timestamp | null;
+  status: PostStatus;
   isFeatured: boolean;
+
+  // Editorial workflow
+  assignedEditorId?: string;
+  assignedEditorName?: string;
+  assignedAt?: Timestamp | null;
   reviewedBy?: string;
-  reviewedAt?: Timestamp;
+  reviewedByName?: string;
+  reviewedAt?: Timestamp | null;
+  publishedAt?: Timestamp | null;
   rejectionReason?: string;
+  feedbackHistory?: PostFeedbackEntry[];
 }
 
 export interface GalleryPhoto {
@@ -340,9 +400,12 @@ export async function createPost(postData: {
       tags: tagsArray,
       authorId: user.uid,
       authorName: user.displayName || user.email?.split('@')[0] || 'Anonymous',
+      authorEmail: user.email || '',
       createdAt: serverTimestamp(),
-      status: "pending",
-      isFeatured: false
+      updatedAt: serverTimestamp(),
+      status: "pending" as PostStatus,
+      isFeatured: false,
+      feedbackHistory: [] as PostFeedbackEntry[],
     };
 
     const docRef = await addDoc(collection(db, 'posts'), newPost);
@@ -457,7 +520,7 @@ export async function updatePost(postId: string, postData: {
       photoUrl: postData.photoUrl || "",
       genre: postData.genre || "General",
       tags: tagsArray,
-      status: "pending" // Reset status to pending for re-approval
+      updatedAt: serverTimestamp(),
     });
 
     return { success: true };
@@ -482,24 +545,40 @@ export async function savePostAsDraft(postData: {
       ? postData.tags.split(',').map(tag => tag.trim()).filter(tag => tag) 
       : [];
 
-    const draftData = {
+    const contentFields = {
       title: postData.title,
       content: postData.content,
       description: postData.description || "",
       photoUrl: postData.photoUrl || "",
       genre: postData.genre || "General",
       tags: tagsArray,
-      authorId: user.uid,
-      authorName: user.displayName || user.email?.split('@')[0] || 'Anonymous',
-      createdAt: serverTimestamp(),
-      status: "draft" as const
+      authorEmail: user.email || '',
+      updatedAt: serverTimestamp(),
+      status: "draft" as PostStatus,
     };
 
     if (postId) {
-      await updateDoc(doc(db, 'posts', postId), draftData);
+      const existingSnap = await getDoc(doc(db, 'posts', postId));
+      const existingStatus = existingSnap.exists()
+        ? (existingSnap.data().status as PostStatus | undefined)
+        : undefined;
+      const nextStatus: PostStatus =
+        existingStatus === 'changes_requested' ? 'changes_requested' : 'draft';
+
+      await updateDoc(doc(db, 'posts', postId), {
+        ...contentFields,
+        status: nextStatus,
+      });
       return { success: true, postId };
     } else {
-      const docRef = await addDoc(collection(db, 'posts'), draftData);
+      const docRef = await addDoc(collection(db, 'posts'), {
+        ...contentFields,
+        authorId: user.uid,
+        authorName: user.displayName || user.email?.split('@')[0] || 'Anonymous',
+        createdAt: serverTimestamp(),
+        isFeatured: false,
+        feedbackHistory: [] as PostFeedbackEntry[],
+      });
       return { success: true, postId: docRef.id };
     }
   } catch (error: any) {
@@ -527,23 +606,13 @@ export async function getPendingPosts() {
 }
 
 export async function updatePostStatus(postId: string, newStatus: 'approved' | 'rejected', rejectionReason = "") {
-  const user = auth.currentUser;
-  if (!user) return { success: false, error: "Authentication required." };
-
-  try {
-    const updateData: any = {
-      status: newStatus,
-      reviewedBy: user.uid,
-      reviewedAt: serverTimestamp()
-    };
-    if (newStatus === 'rejected') {
-      updateData.rejectionReason = rejectionReason;
-    }
-    await updateDoc(doc(db, 'posts', postId), updateData);
-    return { success: true };
-  } catch (error: any) {
-    return { success: false, error: error.message };
+  // Prefer full editorial pipeline (notifications + email) when available.
+  // Lazy import avoids circular deps at module init.
+  const editorial = await import('./editorialService');
+  if (newStatus === 'approved') {
+    return editorial.approvePost(postId);
   }
+  return editorial.rejectPost(postId, rejectionReason || 'Rejected by editorial staff.');
 }
 
 export async function toggleFeaturedStatus(postId: string, isFeatured: boolean) {

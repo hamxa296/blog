@@ -322,9 +322,13 @@ export const Profile: React.FC = () => {
   const getStatusBadge = (status: Post['status']) => {
     switch (status) {
       case 'approved':
-        return <Badge className="bg-green-500/15 text-green-400 border-green-500/30">Approved</Badge>;
+        return <Badge className="bg-green-500/15 text-green-400 border-green-500/30">Published</Badge>;
       case 'pending':
-        return <Badge className="bg-yellow-500/15 text-yellow-400 border-yellow-500/30">Pending</Badge>;
+        return <Badge className="bg-yellow-500/15 text-yellow-400 border-yellow-500/30">Pending Review</Badge>;
+      case 'under_review':
+        return <Badge className="bg-sky-500/15 text-sky-400 border-sky-500/30">Under Review</Badge>;
+      case 'changes_requested':
+        return <Badge className="bg-orange-500/15 text-orange-400 border-orange-500/30">Changes Requested</Badge>;
       case 'rejected':
         return <Badge className="bg-red-500/15 text-red-400 border-red-500/30">Rejected</Badge>;
       case 'draft':
@@ -385,8 +389,14 @@ export const Profile: React.FC = () => {
                 <p className="text-sm text-muted-foreground font-light mb-1">
                   Logged in as <span className="font-medium text-foreground">{user?.email}</span>
                 </p>
-                <Badge variant={profile?.isAdmin ? "default" : "secondary"} className="text-[10px] tracking-widest uppercase rounded-full">
-                  {profile?.isAdmin ? 'Administrator' : 'Student Member'}
+                <Badge variant={profile?.isAdmin || profile?.role === 'admin' ? "default" : "secondary"} className="text-[10px] tracking-widest uppercase rounded-full">
+                  {profile?.role === 'admin' || profile?.isAdmin
+                    ? 'Administrator'
+                    : profile?.role === 'editor'
+                      ? 'Editor'
+                      : profile?.role === 'moderator'
+                        ? 'Moderator'
+                        : 'Student Member'}
                 </Badge>
               </div>
               <div className="flex flex-wrap gap-2 w-full sm:w-auto">
@@ -469,6 +479,17 @@ export const Profile: React.FC = () => {
                                 <Badge variant="secondary" className="bg-secondary/50">{post.genre}</Badge>
                                 {getStatusBadge(post.status)}
                               </div>
+                              {post.status === 'changes_requested' && (
+                                <div className="mb-3 rounded-xl border border-orange-500/30 bg-orange-500/10 px-3 py-2 text-xs text-orange-200 leading-relaxed">
+                                  Editor requested revisions.
+                                  <Link
+                                    to={`/write?edit=${post.id}`}
+                                    className="ml-1 underline underline-offset-2 font-medium text-orange-100"
+                                  >
+                                    Review Feedback & Edit
+                                  </Link>
+                                </div>
+                              )}
                               <h4 className="font-semibold text-base mb-2 line-clamp-1 group-hover:text-sky-start transition-colors">
                                 {post.title}
                               </h4>
@@ -477,11 +498,17 @@ export const Profile: React.FC = () => {
                               </p>
                             </div>
                             <div className="flex gap-2 mt-auto">
-                              <Link to={`/posts/${post.id}`} className="text-xs flex-1 text-center rounded-xl border border-border py-2 hover:bg-secondary transition">
-                                View
-                              </Link>
+                              {post.status === 'approved' ? (
+                                <Link to={`/posts/${post.id}`} className="text-xs flex-1 text-center rounded-xl border border-green-500/30 bg-green-500/10 text-green-300 py-2 hover:bg-green-500/20 transition">
+                                  View Live
+                                </Link>
+                              ) : (
+                                <Link to={`/posts/${post.id}`} className="text-xs flex-1 text-center rounded-xl border border-border py-2 hover:bg-secondary transition">
+                                  View
+                                </Link>
+                              )}
                                 <Link to={`/write?edit=${post.id}`} className="text-xs flex-1 text-center rounded-xl bg-secondary py-2 hover:bg-secondary/80 transition">
-                                  Edit
+                                  {post.status === 'changes_requested' ? 'Edit Feedback' : 'Edit'}
                                 </Link>
                             </div>
                           </div>

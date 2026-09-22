@@ -37,6 +37,19 @@ service cloud.firestore {
       return isBootstrapAdmin() || isAdmin();
     }
 
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isStaff() {
+      return request.auth != null &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             (
+               isTrustedAdmin() ||
+               getUserRole() in ['admin', 'editor', 'moderator']
+             );
+    }
+
     // True when the incoming write does NOT touch privileged fields.
     function notChangingPrivilegedFields() {
       return !request.resource.data.diff(resource.data).affectedKeys()
@@ -104,11 +117,17 @@ service cloud.firestore {
     }
 
     // ---------------------------------------------------------------
-    // Posts
+    // Posts — editorial review pipeline
     // ---------------------------------------------------------------
 
     match /posts/{postId} {
-      allow read: if true;
+      // Public: approved only. Authors: own posts. Staff / assigned editor: all.
+      allow read: if resource.data.status == 'approved'
+                  || (isAuthenticated() && (
+                      request.auth.uid == resource.data.authorId
+                      || request.auth.uid == resource.data.get('assignedEditorId', '')
+                      || isStaff()
+                  ));
 
       // Authors can create posts, but cannot self-approve or self-feature.
       allow create: if isAuthenticated() && (
@@ -120,14 +139,15 @@ service cloud.firestore {
         )
       );
 
-      // Authors can edit their own pending/draft/rejected posts.
-      // Admins can update anything.
+      // Staff may update review fields / status.
+      // Authors may edit content when draft or changes_requested (and may resubmit to pending).
       allow update: if isAuthenticated() && (
         isTrustedAdmin() ||
+        isStaff() ||
         (
-          resource.data.authorId == request.auth.uid &&
-          resource.data.status in ['pending', 'draft', 'rejected', 'approved'] &&
-          request.resource.data.get('status', resource.data.status) in ['pending', 'draft'] &&
+          request.auth.uid == resource.data.authorId &&
+          resource.data.status in ['draft', 'changes_requested', 'pending', 'rejected'] &&
+          request.resource.data.get('status', resource.data.status) in ['draft', 'pending', 'changes_requested'] &&
           request.resource.data.get('isFeatured', false) == false &&
           request.resource.data.authorId == resource.data.authorId
         )
@@ -135,8 +155,31 @@ service cloud.firestore {
 
       allow delete: if isAuthenticated() && (
         isTrustedAdmin() ||
+        isStaff() ||
         (resource.data.authorId == request.auth.uid && resource.data.status == 'draft')
       );
+    }
+
+    // ---------------------------------------------------------------
+    // In-app notifications
+    // ---------------------------------------------------------------
+
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated() && resource.data.recipientId == request.auth.uid;
+      allow update: if isAuthenticated()
+                    && resource.data.recipientId == request.auth.uid
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isRead']);
+      allow create: if isAuthenticated();
+      allow delete: if isAuthenticated() && resource.data.recipientId == request.auth.uid;
+    }
+
+    // ---------------------------------------------------------------
+    // Mail trigger queue (Firebase Trigger Email extension)
+    // ---------------------------------------------------------------
+
+    match /mail/{mailId} {
+      allow create: if isStaff();
+      allow read, update, delete: if false;
     }
 
     // ---------------------------------------------------------------
@@ -158,6 +201,7 @@ service cloud.firestore {
 
       allow update: if isAuthenticated() && (
         isTrustedAdmin() ||
+        isStaff() ||
         (
           resource.data.uploaderId == request.auth.uid &&
           resource.data.status in ['pending', 'rejected'] &&
@@ -168,6 +212,7 @@ service cloud.firestore {
 
       allow delete: if isAuthenticated() && (
         isTrustedAdmin() ||
+        isStaff() ||
         (resource.data.uploaderId == request.auth.uid && resource.data.status in ['pending', 'rejected'])
       );
     }
@@ -180,7 +225,7 @@ service cloud.firestore {
       allow read: if true;
       allow create: if isAuthenticated();
       allow update, delete: if isAuthenticated() &&
-        (resource.data.authorId == request.auth.uid || isTrustedAdmin());
+        (resource.data.authorId == request.auth.uid || isTrustedAdmin() || isStaff());
     }
 
     // ---------------------------------------------------------------
