@@ -37,12 +37,7 @@ export function BlogSection({ posts, loading }: BlogSectionProps) {
         </p>
         {/* Scribes collab attribution */}
         <div className="pt-3">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold tracking-wide bg-pink-500/10 text-pink-400 border border-pink-500/20">
-            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
-            </svg>
-            Posts curated by <span className="font-bold">&nbsp;Scribes</span>
-          </span>
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold tracking-wide bg-pink-500/10 text-pink-400 border border-pink-500/20"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span>Posts curated by <a href="https://www.instagram.com/scribesgik/" target="_blank" rel="noreferrer" className="font-bold underline-offset-2 hover:underline">Scribes</a></span></span>
         </div>
       </div>
 
