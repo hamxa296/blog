@@ -44,22 +44,108 @@ function ensureInit() {
 }
 
 // ---------------------------------------------------------------
-// Shared HTML wrapper — same branded design as before
+// Design system — mirrors the website exactly
+//   Background : #09090b   (near-black, same as site body)
+//   Card       : #111113   (slightly lighter surface)
+//   Border     : #27272a   (zinc-800)
+//   Text       : #fafafa   (site --color-foreground)
+//   Muted      : #a1a1aa   (zinc-400)
+//   Faint      : #52525b   (zinc-600)
+//   Font       : Inter (Google Fonts)
 // ---------------------------------------------------------------
-function buildEmailHtml(bodyContent: string): string {
-  return `
-    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #111; background: #fff; border-radius: 8px; overflow: hidden;">
-      <div style="background: linear-gradient(135deg, #0A1931, #1A3D63); padding: 28px 32px;">
-        <p style="margin:0; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.6);">GIKI Chronicles</p>
-        <h1 style="margin: 8px 0 0; color: #fff; font-size: 20px; font-weight: 600;">Editorial Board</h1>
-      </div>
-      <div style="padding: 32px;">
-        ${bodyContent}
-        <hr style="border: none; border-top: 1px solid #eee; margin: 28px 0;" />
-        <p style="font-size: 12px; color: #888; margin: 0;">GIKI Chronicles Editorial Board — This is an automated notification, please do not reply directly to this email.</p>
-      </div>
-    </div>
-  `;
+
+/** Shared shell that wraps every email */
+function buildEmailHtml(opts: {
+  accentColor: string;       // e.g. '#22c55e'
+  accentLabel: string;       // e.g. 'APPROVED'
+  body: string;
+}): string {
+  const { accentColor, accentLabel, body } = opts;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <title>GIKI Chronicles</title>
+</head>
+<body style="margin:0;padding:0;background:#09090b;font-family:'Inter',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;">
+
+  <!-- Outer wrapper -->
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#09090b;padding:40px 16px;">
+    <tr>
+      <td align="center">
+
+        <!-- Card -->
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#111113;border:1px solid #27272a;border-radius:12px;overflow:hidden;">
+
+          <!-- Header bar -->
+          <tr>
+            <td style="padding:32px 40px 28px;border-bottom:1px solid #27272a;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td>
+                    <p style="margin:0 0 6px;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#52525b;font-weight:500;">GIKI Chronicles</p>
+                    <p style="margin:0;font-size:22px;font-weight:800;letter-spacing:-0.02em;color:#fafafa;">Editorial Board</p>
+                  </td>
+                  <td align="right" valign="middle">
+                    <span style="display:inline-block;padding:4px 12px;background:transparent;border:1px solid ${accentColor};border-radius:999px;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:${accentColor};font-weight:600;">${accentLabel}</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:36px 40px;">
+              ${body}
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:20px 40px 28px;border-top:1px solid #1c1c1e;">
+              <p style="margin:0;font-size:11px;color:#3f3f46;line-height:1.6;">
+                This is an automated notification from the GIKI Chronicles Editorial System. Please do not reply directly to this email.
+                If you need assistance, contact us at
+                <a href="mailto:giki.chronicles@gmail.com" style="color:#52525b;text-decoration:underline;">giki.chronicles@gmail.com</a>.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+        <!-- Bottom wordmark -->
+        <p style="margin:24px 0 0;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:#3f3f46;text-align:center;">
+          GIKI CHRONICLES &nbsp;&middot;&nbsp; Every Story Deserves to Be Told
+        </p>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>`;
+}
+
+// ---------------------------------------------------------------
+// Shared prose helpers (inline styles for email clients)
+// ---------------------------------------------------------------
+const P  = `margin:0 0 16px;font-size:15px;line-height:1.7;color:#a1a1aa;`;
+const H2 = `margin:0 0 24px;font-size:20px;font-weight:700;letter-spacing:-0.01em;color:#fafafa;`;
+
+function calloutBlock(content: string, accentColor: string): string {
+  return `<div style="background:#18181b;border:1px solid #27272a;border-left:3px solid ${accentColor};border-radius:8px;padding:20px 24px;margin:24px 0;">${content}</div>`;
+}
+
+function ctaButton(href: string, label: string, accentColor: string): string {
+  const isDark = accentColor === '#27272a';
+  const textColor = isDark ? '#a1a1aa' : '#09090b';
+  return `<table cellpadding="0" cellspacing="0" style="margin:28px 0 8px;"><tr><td style="border-radius:8px;background:${accentColor};"><a href="${href}" style="display:inline-block;padding:13px 28px;font-size:14px;font-weight:600;color:${textColor};text-decoration:none;letter-spacing:0.01em;">${label}</a></td></tr></table><p style="margin:8px 0 0;font-size:12px;color:#3f3f46;">Or copy: <span style="color:#52525b;">${href}</span></p>`;
 }
 
 // ---------------------------------------------------------------
@@ -119,22 +205,25 @@ export async function queuePublicationEmail(params: {
   const { to, authorName, postTitle, postId } = params;
   if (!to?.trim()) return { success: false, error: 'Author email is missing.' };
 
+  const ACCENT = '#22c55e'; // green-500
   const articleUrl = `${SITE_ORIGIN}/posts/${postId}`;
 
   const body = `
-    <h2 style="color: #059669; margin-top: 0;">Congratulations, ${authorName}! 🎉</h2>
-    <p>Your article <strong>"${postTitle}"</strong> has been reviewed, approved, and is now officially live on GIKI Chronicles.</p>
-    <p>Share it with your friends and fellow GIKIans:</p>
-    <p style="margin: 24px 0;">
-      <a href="${articleUrl}" style="display: inline-block; padding: 12px 24px; background-color: #059669; color: #fff; text-decoration: none; border-radius: 6px; font-weight: bold;">View Your Live Article</a>
-    </p>
-    <p style="font-size: 14px; color: #555;">Thank you for contributing to the GIKI Chronicles community. We look forward to your next piece!</p>
+    <h2 style="${H2}">Your article is live.</h2>
+    <p style="${P}">Hi ${authorName},</p>
+    <p style="${P}">Congratulations — your submission has passed editorial review and is now published on GIKI Chronicles.</p>
+    ${calloutBlock(`
+      <p style="margin:0 0 4px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#52525b;font-weight:600;">Published Article</p>
+      <p style="margin:0;font-size:16px;font-weight:600;color:#fafafa;">&ldquo;${postTitle}&rdquo;</p>
+    `, ACCENT)}
+    <p style="${P}">Share it with your fellow GIKIans. Thank you for contributing to the community.</p>
+    ${ctaButton(articleUrl, 'Read Your Article &rarr;', ACCENT)}
   `;
 
   return sendEmail({
     to,
-    subject: `Your article "${postTitle}" is now live on GIKI Chronicles! 🎉`,
-    bodyHtml: buildEmailHtml(body),
+    subject: `Published: "${postTitle}" — GIKI Chronicles`,
+    bodyHtml: buildEmailHtml({ accentColor: ACCENT, accentLabel: 'APPROVED', body }),
   });
 }
 
@@ -152,26 +241,25 @@ export async function queueChangesRequestedEmail(params: {
   const { to, authorName, postTitle, postId, editorName, feedbackText } = params;
   if (!to?.trim()) return { success: false, error: 'Author email is missing.' };
 
+  const ACCENT = '#f59e0b'; // amber-400
   const editorUrl = `${SITE_ORIGIN}/write?edit=${postId}`;
 
   const body = `
-    <h2 style="color: #d97706; margin-top: 0;">Revisions Requested for "${postTitle}"</h2>
-    <p>Hi ${authorName},</p>
-    <p>Your editor <strong>${editorName}</strong> has reviewed your article and has requested some changes before it can be published.</p>
-    <div style="background: #fef3c7; border-left: 4px solid #d97706; padding: 16px 20px; border-radius: 4px; margin: 20px 0;">
-      <p style="margin: 0 0 8px; font-size: 13px; font-weight: 600; color: #92400e;">Editor's Notes:</p>
-      <p style="margin: 0; color: #111; white-space: pre-wrap;">${feedbackText}</p>
-    </div>
-    <p>Please make the requested changes and resubmit your article.</p>
-    <p style="margin: 24px 0;">
-      <a href="${editorUrl}" style="display: inline-block; padding: 12px 24px; background-color: #d97706; color: #fff; text-decoration: none; border-radius: 6px; font-weight: bold;">Open Your Article</a>
-    </p>
+    <h2 style="${H2}">Revisions requested.</h2>
+    <p style="${P}">Hi ${authorName},</p>
+    <p style="${P}">Your editor <strong style="color:#fafafa;font-weight:600;">${editorName}</strong> has reviewed <strong style="color:#fafafa;font-weight:600;">&ldquo;${postTitle}&rdquo;</strong> and is requesting changes before it can be published.</p>
+    ${calloutBlock(`
+      <p style="margin:0 0 10px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#52525b;font-weight:600;">Editor's Notes</p>
+      <p style="margin:0;font-size:14px;line-height:1.75;color:#d4d4d8;white-space:pre-wrap;">${feedbackText}</p>
+    `, ACCENT)}
+    <p style="${P}">Address the feedback above, then resubmit your article from the editor.</p>
+    ${ctaButton(editorUrl, 'Open Your Draft &rarr;', ACCENT)}
   `;
 
   return sendEmail({
     to,
-    subject: `📝 Revisions Requested: "${postTitle}" on GIKI Chronicles`,
-    bodyHtml: buildEmailHtml(body),
+    subject: `Revisions Requested: "${postTitle}" — GIKI Chronicles`,
+    bodyHtml: buildEmailHtml({ accentColor: ACCENT, accentLabel: 'CHANGES REQUESTED', body }),
   });
 }
 
@@ -188,24 +276,25 @@ export async function queueResubmissionEmail(params: {
   const { to, editorName, authorName, postTitle, postId } = params;
   if (!to?.trim()) return { success: false, error: 'Editor email is missing.' };
 
+  const ACCENT = '#fafafa'; // white — clean, neutral, editorial
   const reviewUrl = `${SITE_ORIGIN}/editor/review/${postId}`;
 
   const body = `
-    <h2 style="color: #3b82f6; margin-top: 0;">Article Ready for Review</h2>
-    <p>Hi ${editorName},</p>
-    <p><strong>${authorName}</strong> has submitted an article for your review:</p>
-    <div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 16px 20px; border-radius: 4px; margin: 20px 0;">
-      <p style="margin: 0; font-size: 16px; font-weight: 600;">"${postTitle}"</p>
-    </div>
-    <p style="margin: 24px 0;">
-      <a href="${reviewUrl}" style="display: inline-block; padding: 12px 24px; background-color: #3b82f6; color: #fff; text-decoration: none; border-radius: 6px; font-weight: bold;">Open Review</a>
-    </p>
+    <h2 style="${H2}">New article in your queue.</h2>
+    <p style="${P}">Hi ${editorName},</p>
+    <p style="${P}"><strong style="color:#fafafa;font-weight:600;">${authorName}</strong> has submitted an article for your review.</p>
+    ${calloutBlock(`
+      <p style="margin:0 0 4px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#52525b;font-weight:600;">Submitted Article</p>
+      <p style="margin:0;font-size:16px;font-weight:600;color:#fafafa;">&ldquo;${postTitle}&rdquo;</p>
+    `, '#3f3f46')}
+    <p style="${P}">Open your editor workspace to begin the review.</p>
+    ${ctaButton(reviewUrl, 'Open Review &rarr;', ACCENT)}
   `;
 
   return sendEmail({
     to,
-    subject: `📬 Article Submitted for Review: "${postTitle}"`,
-    bodyHtml: buildEmailHtml(body),
+    subject: `Review Request: "${postTitle}" — GIKI Chronicles`,
+    bodyHtml: buildEmailHtml({ accentColor: ACCENT, accentLabel: 'PENDING REVIEW', body }),
   });
 }
 
@@ -221,20 +310,25 @@ export async function queueRejectionEmail(params: {
   const { to, authorName, postTitle, rejectionReason } = params;
   if (!to?.trim()) return { success: false, error: 'Author email is missing.' };
 
+  const ACCENT = '#ef4444'; // red-500
+  const browseUrl = `${SITE_ORIGIN}/browse`;
+
   const body = `
-    <h2 style="color: #dc2626; margin-top: 0;">Update on Your Submission</h2>
-    <p>Hi ${authorName},</p>
-    <p>After careful review, the editorial board has decided not to publish your article <strong>"${postTitle}"</strong> at this time.</p>
-    <div style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 16px 20px; border-radius: 4px; margin: 20px 0;">
-      <p style="margin: 0 0 8px; font-size: 13px; font-weight: 600; color: #991b1b;">Reason:</p>
-      <p style="margin: 0; color: #111; white-space: pre-wrap;">${rejectionReason}</p>
-    </div>
-    <p style="font-size: 14px; color: #555;">We encourage you to keep writing and submit future pieces to GIKI Chronicles. Thank you for your contribution.</p>
+    <h2 style="${H2}">Submission not accepted.</h2>
+    <p style="${P}">Hi ${authorName},</p>
+    <p style="${P}">Thank you for submitting to GIKI Chronicles. After careful review, the editorial board has decided not to publish <strong style="color:#fafafa;font-weight:600;">&ldquo;${postTitle}&rdquo;</strong> at this time.</p>
+    ${calloutBlock(`
+      <p style="margin:0 0 10px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#52525b;font-weight:600;">Reason</p>
+      <p style="margin:0;font-size:14px;line-height:1.75;color:#d4d4d8;white-space:pre-wrap;">${rejectionReason}</p>
+    `, ACCENT)}
+    <p style="${P}">We encourage you to keep writing. Every great author refines their craft over time — we hope to see your future work on GIKI Chronicles.</p>
+    ${ctaButton(browseUrl, 'Read Other Articles &rarr;', '#27272a')}
   `;
 
   return sendEmail({
     to,
-    subject: `Regarding Your Submission: "${postTitle}"`,
-    bodyHtml: buildEmailHtml(body),
+    subject: `Submission Update: "${postTitle}" — GIKI Chronicles`,
+    bodyHtml: buildEmailHtml({ accentColor: ACCENT, accentLabel: 'NOT ACCEPTED', body }),
   });
 }
+

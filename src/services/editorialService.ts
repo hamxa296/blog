@@ -189,13 +189,20 @@ export async function submitForReview(params: {
       postId = created.postId;
     }
 
-    const isResubmit = existing?.status === 'changes_requested' && !!existing.assignedEditorId;
+    // Preserve the already-assigned editor whenever one exists, regardless of the
+    // current status. This prevents a new editor being randomly selected if the
+    // author edits and resubmits while the post is still `pending` or `under_review`
+    // (i.e. before the original editor has taken any action).
+    // A fresh assignment only happens when there is genuinely no editor yet.
+    const hasExistingEditor = !!existing?.assignedEditorId;
+    const isResubmit = hasExistingEditor; // any re-submission with an editor already set
     let editor: EditorRef | null = null;
 
-    if (isResubmit && existing?.assignedEditorId) {
+    if (hasExistingEditor && existing?.assignedEditorId) {
       editor = {
         uid: existing.assignedEditorId,
         displayName: existing.assignedEditorName || 'Editorial Board',
+        email: existing.assignedEditorEmail || undefined,  // carry the stored email through
       };
     } else {
       editor = await findLeastLoadedEditor();
