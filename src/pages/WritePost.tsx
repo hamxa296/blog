@@ -7,6 +7,7 @@ import {
   deletePostPermanently,
   type Post,
   type PostFeedbackEntry,
+  type PostLanguage,
 } from '../services/firebase';
 import { submitForReview, notifyEditorByEmail } from '../services/editorialService';
 import { uploadImageToCloudinary } from '../services/cloudinary';
@@ -33,6 +34,7 @@ export const WritePost: React.FC = () => {
   const [photoUrl, setPhotoUrl] = useState('');
   const [genre, setGenre] = useState('General');
   const [tags, setTags] = useState('');
+  const [language, setLanguage] = useState<PostLanguage>('en');
   const [blocks, setBlocks] = useState<Block[]>([createBlock('paragraph')]);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -62,6 +64,7 @@ export const WritePost: React.FC = () => {
             if (parsed.description) setDescription(parsed.description);
             if (parsed.genre) setGenre(parsed.genre);
             if (parsed.tags) setTags(parsed.tags);
+            if (parsed.language === 'ur' || parsed.language === 'en') setLanguage(parsed.language);
             if (parsed.blocks && Array.isArray(parsed.blocks)) {
               setBlocks(parsed.blocks.length > 0 ? parsed.blocks : [createBlock('paragraph')]);
             }
@@ -87,6 +90,7 @@ export const WritePost: React.FC = () => {
             setPhotoUrl(p.photoUrl || '');
             setGenre(p.genre || 'General');
             setTags(p.tags ? p.tags.join(', ') : '');
+            setLanguage(p.language === 'ur' ? 'ur' : 'en');
             setPostStatus(p.status || '');
             setFeedbackHistory(p.feedbackHistory || []);
             setRejectionReason(p.rejectionReason || '');
@@ -144,6 +148,7 @@ export const WritePost: React.FC = () => {
         description,
         genre,
         tags,
+        language,
         blocks: blocks.map(b => {
           // Do not attempt to stringify File objects
           if (b.type === 'image' && b.data._file) {
@@ -160,7 +165,7 @@ export const WritePost: React.FC = () => {
     }, 3000); // 3-second debounce
 
     return () => clearTimeout(handler);
-  }, [title, description, genre, tags, blocks, storageKey, postStatus]);
+  }, [title, description, genre, tags, language, blocks, storageKey, postStatus]);
 
   const getContentString = async (): Promise<string | null> => {
     // Upload any image blocks that have a pending _file
@@ -218,6 +223,7 @@ export const WritePost: React.FC = () => {
         photoUrl: finalPhotoUrl,
         genre,
         tags,
+        language,
         postId: postIdToEdit,
       });
 
@@ -272,7 +278,7 @@ export const WritePost: React.FC = () => {
       if (!content) { setLoading(false); return; }
 
       const res = await savePostAsDraft(
-        { title, content, description, photoUrl: finalPhotoUrl, genre, tags },
+        { title, content, description, photoUrl: finalPhotoUrl, genre, tags, language },
         postIdToEdit,
       );
 
@@ -437,6 +443,37 @@ export const WritePost: React.FC = () => {
           }}
           className="w-full max-w-[95vw] md:max-w-[85vw] lg:max-w-[75vw] xl:max-w-5xl bg-black/80 backdrop-blur-md rounded-2xl border border-neutral-700 p-5 space-y-4"
         >
+          {/* Language selector */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-neutral-500 uppercase tracking-widest shrink-0">Script</span>
+            <div className="inline-flex rounded-lg border border-neutral-700 overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setLanguage('en')}
+                className={cn(
+                  'px-3 py-1.5 text-sm transition-colors',
+                  language === 'en'
+                    ? 'bg-white text-black'
+                    : 'bg-transparent text-neutral-400 hover:text-white',
+                )}
+              >
+                English
+              </button>
+              <button
+                type="button"
+                onClick={() => setLanguage('ur')}
+                className={cn(
+                  'px-3 py-1.5 text-sm transition-colors',
+                  language === 'ur'
+                    ? 'bg-white text-black'
+                    : 'bg-transparent text-neutral-400 hover:text-white',
+                )}
+              >
+                اردو
+              </button>
+            </div>
+          </div>
+
           {/* Title and Autosave Status */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-neutral-700 pb-3 gap-2">
             <input
@@ -444,8 +481,13 @@ export const WritePost: React.FC = () => {
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Article title..."
-              className="w-full bg-transparent text-2xl font-bold text-white placeholder:text-neutral-600 focus:outline-none transition-colors"
+              placeholder={language === 'ur' ? 'مضمون کا عنوان...' : 'Article title...'}
+              dir={language === 'ur' ? 'rtl' : 'ltr'}
+              lang={language === 'ur' ? 'ur' : 'en'}
+              className={cn(
+                'w-full bg-transparent text-2xl font-bold text-white placeholder:text-neutral-600 focus:outline-none transition-colors',
+                language === 'ur' && 'font-nastaliq text-right',
+              )}
             />
             <div className="text-xs text-neutral-500 whitespace-nowrap">
               {isAutoSaving ? 'Autosaving to device...' : (lastSaved ? `Saved to device at ${lastSaved.toLocaleTimeString()}` : '')}
@@ -483,8 +525,13 @@ export const WritePost: React.FC = () => {
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Short summary (shown in cards)..."
-            className="w-full bg-transparent border border-neutral-700 rounded-lg px-4 py-2.5 text-white placeholder:text-neutral-500 focus:outline-none text-sm"
+            placeholder={language === 'ur' ? 'مختصر خلاصہ (کارڈز میں دکھایا جائے گا)...' : 'Short summary (shown in cards)...'}
+            dir={language === 'ur' ? 'rtl' : 'ltr'}
+            lang={language === 'ur' ? 'ur' : 'en'}
+            className={cn(
+              'w-full bg-transparent border border-neutral-700 rounded-lg px-4 py-2.5 text-white placeholder:text-neutral-500 focus:outline-none text-sm',
+              language === 'ur' && 'font-nastaliq text-right',
+            )}
           />
 
           {/* Header image */}
@@ -511,7 +558,14 @@ export const WritePost: React.FC = () => {
           </div>
 
           {/* ── Block Editor ── */}
-          <div className="border border-neutral-700 rounded-xl p-3 bg-black/30 min-h-[280px]">
+          <div
+            className={cn(
+              'border border-neutral-700 rounded-xl p-3 bg-black/30 min-h-[280px]',
+              language === 'ur' && 'font-nastaliq',
+            )}
+            dir={language === 'ur' ? 'rtl' : 'ltr'}
+            lang={language === 'ur' ? 'ur' : 'en'}
+          >
             {loading && blocks.length === 0 ? (
               <div className="flex items-center justify-center h-40 text-neutral-500 text-sm">Loading content...</div>
             ) : (

@@ -122,6 +122,8 @@ export interface MailQueueDocument {
   };
 }
 
+export type PostLanguage = 'en' | 'ur';
+
 export interface Post {
   id?: string;
   title: string;
@@ -130,6 +132,8 @@ export interface Post {
   photoUrl: string;
   genre: string;
   tags: string[];
+  /** Content script: English (LTR) or Urdu Nastaliq (RTL). Defaults to 'en'. */
+  language?: PostLanguage;
   authorId: string;
   authorName: string;
   authorEmail?: string;
@@ -384,6 +388,7 @@ export async function createPost(postData: {
   photoUrl: string;
   genre: string;
   tags: string;
+  language?: PostLanguage;
 }) {
   const user = auth.currentUser;
   if (!user) return { success: false, error: "You must be logged in to create a post." };
@@ -400,6 +405,7 @@ export async function createPost(postData: {
       photoUrl: postData.photoUrl || "",
       genre: postData.genre || "General",
       tags: tagsArray,
+      language: postData.language === 'ur' ? 'ur' as PostLanguage : 'en' as PostLanguage,
       authorId: user.uid,
       authorName: user.displayName || user.email?.split('@')[0] || 'Anonymous',
       authorEmail: user.email || '',
@@ -506,6 +512,7 @@ export async function updatePost(postId: string, postData: {
   photoUrl: string;
   genre: string;
   tags: string;
+  language?: PostLanguage;
 }) {
   const user = auth.currentUser;
   if (!user) return { success: false, error: "Authentication required." };
@@ -522,6 +529,7 @@ export async function updatePost(postId: string, postData: {
       photoUrl: postData.photoUrl || "",
       genre: postData.genre || "General",
       tags: tagsArray,
+      language: postData.language === 'ur' ? 'ur' : 'en',
       updatedAt: serverTimestamp(),
     });
 
@@ -538,6 +546,7 @@ export async function savePostAsDraft(postData: {
   photoUrl: string;
   genre: string;
   tags: string;
+  language?: PostLanguage;
 }, postId: string | null = null) {
   const user = auth.currentUser;
   if (!user) return { success: false, error: "Authentication required." };
@@ -554,6 +563,7 @@ export async function savePostAsDraft(postData: {
       photoUrl: postData.photoUrl || "",
       genre: postData.genre || "General",
       tags: tagsArray,
+      language: postData.language === 'ur' ? 'ur' as PostLanguage : 'en' as PostLanguage,
       authorEmail: user.email || '',
       updatedAt: serverTimestamp(),
       status: "draft" as PostStatus,

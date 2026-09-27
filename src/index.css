@@ -1,8 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Nastaliq+Urdu:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-sans: 'Inter', system-ui, sans-serif;
+  --font-nastaliq: 'Noto Nastaliq Urdu', 'Noto Naskh Arabic', serif;
 
   --color-background: #0a0a0a;
   --color-foreground: #fafafa;
@@ -43,6 +44,20 @@ body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Urdu Nastaliq: denser vertical rhythm + proper Arabic shaping */
+.font-nastaliq {
+  font-family: var(--font-nastaliq);
+  line-height: 2;
+  letter-spacing: 0;
+}
+
+.font-nastaliq [contenteditable],
+.font-nastaliq input,
+.font-nastaliq textarea {
+  font-family: inherit;
+  line-height: 2;
 }
 
 .reveal {

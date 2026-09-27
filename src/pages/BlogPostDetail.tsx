@@ -237,6 +237,7 @@ export const BlogPostDetail: React.FC = () => {
   }
 
   const readTime = calculateReadTime(post.content);
+  const isUrdu = post.language === 'ur';
 
   return (
     <main className="min-h-[calc(100vh-88px)] text-foreground py-12 relative z-10 pb-24">
@@ -298,39 +299,45 @@ export const BlogPostDetail: React.FC = () => {
               )}
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight tracking-tight">
-              {post.title}
-            </h1>
+            <div
+              dir={isUrdu ? 'rtl' : 'ltr'}
+              lang={isUrdu ? 'ur' : 'en'}
+              className={isUrdu ? 'font-nastaliq space-y-6' : 'space-y-6'}
+            >
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight tracking-tight">
+                {post.title}
+              </h1>
 
-            <div className="flex items-center justify-between border-y border-border/50 py-4">
-              <div className="flex items-center gap-3">
-                <Avatar className="h-10 w-10 border border-border/50">
-                  <AvatarImage
-                    src={`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(post.authorName || 'A')}`}
-                    alt={post.authorName}
-                  />
-                  <AvatarFallback>{post.authorName?.[0] || 'A'}</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col text-sm">
-                  <span className="font-medium">{post.authorName}</span>
-                  <span className="text-muted-foreground text-xs">
-                    {formatDate(post.createdAt as { seconds?: number })}
-                  </span>
+              <div className="flex items-center justify-between border-y border-border/50 py-4">
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-10 w-10 border border-border/50">
+                    <AvatarImage
+                      src={`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(post.authorName || 'A')}`}
+                      alt={post.authorName}
+                    />
+                    <AvatarFallback>{post.authorName?.[0] || 'A'}</AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col text-sm">
+                    <span className="font-medium">{post.authorName}</span>
+                    <span className="text-muted-foreground text-xs">
+                      {formatDate(post.createdAt as { seconds?: number })}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Clock className="h-3 w-3" />
+                  <span>{readTime} min read</span>
                 </div>
               </div>
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                <Clock className="h-3 w-3" />
-                <span>{readTime} min read</span>
-              </div>
+
+              {post.description && (
+                <p className="text-muted-foreground text-lg leading-relaxed">
+                  {post.description}
+                </p>
+              )}
+
+              <BlockRenderer content={post.content} />
             </div>
-
-            {post.description && (
-              <p className="text-muted-foreground text-lg leading-relaxed">
-                {post.description}
-              </p>
-            )}
-
-            <BlockRenderer content={post.content} />
 
             <section className="border-t border-border/50 pt-8">
               <h2 className="flex items-center gap-2 text-2xl font-semibold mb-6">

@@ -144,6 +144,7 @@ export async function submitForReview(params: {
   photoUrl: string;
   genre: string;
   tags: string;
+  language?: 'en' | 'ur';
   postId?: string | null;
 }): Promise<{ success: boolean; postId?: string; error?: string }> {
   const user = auth.currentUser;
@@ -170,6 +171,7 @@ export async function submitForReview(params: {
         photoUrl: params.photoUrl,
         genre: params.genre,
         tags: params.tags,
+        language: params.language,
       });
       if (!contentUpdate.success) {
         return { success: false, error: contentUpdate.error || 'Failed to update post.' };
@@ -182,6 +184,7 @@ export async function submitForReview(params: {
         photoUrl: params.photoUrl,
         genre: params.genre,
         tags: params.tags,
+        language: params.language,
       });
       if (!created.success || !created.postId) {
         return { success: false, error: created.error || 'Failed to create post.' };

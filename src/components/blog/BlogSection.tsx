@@ -85,6 +85,7 @@ export function BlogSection({ posts, loading }: BlogSectionProps) {
               }}
               date={formatDate(post.createdAt?.seconds)}
               readTime={estimateReadTime(post.content || '')}
+              language={post.language === 'ur' ? 'ur' : 'en'}
               tags={
                 post.tags?.length
                   ? post.tags
