@@ -23,6 +23,7 @@ type ArchiveEntry = {
   image: string;
   accent: string;
   isPdf?: boolean;
+  externalFallbackHref?: string;
 };
 
 const ARCHIVES: ArchiveEntry[] = [
@@ -43,10 +44,12 @@ const ARCHIVES: ArchiveEntry[] = [
     era: "document",
     description:
       "A timeless collection capturing the memories, milestones, and unforgettable moments of Batch 32.",
-    href: "https://drive.google.com/drive/folders/1Ea0a8vxuTjdbj99ZW_D34oktOUbhW6dc?fbclid=PAdGRzdgUDsURwZG9mAmV4dG4DYWVtAzEwMABzcnRjBmFwcF9pZA81NjcwNjczNDMzNTI0MjcAAaeAZQMjKtLIdtMM06QufmNsXj-Fz_VFvLT7wAjXVFOI3OLIQq-GuuKxH-fiyA_aem_gGdS48oMaZnBJptWQ1fMNw",
+    href: "/documents/batch-32-yearbook.pdf",
+    externalFallbackHref:
+      "https://drive.google.com/drive/folders/1Ea0a8vxuTjdbj99ZW_D34oktOUbhW6dc?fbclid=PAdGRzdgUDsURwZG9mAmV4dG4DYWVtAzEwMABzcnRjBmFwcF9pZA81NjcwNjczNDMzNTI0MjcAAaeAZQMjKtLIdtMM06QufmNsXj-Fz_VFvLT7wAjXVFOI3OLIQq-GuuKxH-fiyA_aem_gGdS48oMaZnBJptWQ1fMNw",
     image: img13,
     accent: "from-orange-500/25 via-transparent to-transparent",
-    isPdf: false,
+    isPdf: true,
   },
 ];
 
@@ -63,7 +66,7 @@ export const Archives: React.FC = () => {
   };
 
   return (
-    <main className="relative z-10 min-h-screen">
+    <main className="relative z-10 min-h-screen flex flex-col justify-between">
       <div
         aria-hidden="true"
         className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
@@ -91,7 +94,7 @@ export const Archives: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 pb-8">
+      <div className="max-w-3xl mx-auto px-4 pb-20 md:pb-28 lg:pb-32 flex-grow w-full">
         <StackingCards
           totalCards={ARCHIVES.length}
           className="relative w-full"
@@ -107,7 +110,7 @@ export const Archives: React.FC = () => {
                 className="h-[70vh] flex items-start justify-center pt-[8vh]"
               >
                 <article
-                  className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-border/50 bg-card/40 backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+                  className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-border/50 bg-card/40 backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.45)] flex flex-col justify-between h-full min-h-[420px]"
                 >
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <img
@@ -124,30 +127,46 @@ export const Archives: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="relative px-5 sm:px-6 pb-5 sm:pb-6 pt-1 space-y-3">
-                    <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
-                      {entry.title}
-                    </h2>
-                    <p className="text-sm text-muted-foreground font-light leading-relaxed">
-                      {entry.description}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => handleOpenEntry(entry)}
-                      className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-primary px-5 py-2.5 text-xs uppercase tracking-widest font-medium text-primary-foreground transition hover:opacity-90 cursor-pointer"
-                    >
-                      {isPdf ? (
-                        <>
-                          View Document
-                          <FileText className="h-3.5 w-3.5" />
-                        </>
-                      ) : (
-                        <>
-                          Open archive
-                          <ExternalLink className="h-3.5 w-3.5" />
-                        </>
+                  <div className="relative p-4 sm:p-5 md:p-6 space-y-3 flex flex-col justify-between flex-grow">
+                    <div className="space-y-3">
+                      <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
+                        {entry.title}
+                      </h2>
+                      <p className="text-sm text-muted-foreground font-light leading-relaxed">
+                        {entry.description}
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEntry(entry)}
+                        className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-primary px-5 py-2.5 text-xs uppercase tracking-widest font-medium text-primary-foreground transition hover:opacity-90 cursor-pointer"
+                      >
+                        {isPdf ? (
+                          <>
+                            View Document
+                            <FileText className="h-3.5 w-3.5" />
+                          </>
+                        ) : (
+                          <>
+                            Open archive
+                            <ExternalLink className="h-3.5 w-3.5" />
+                          </>
+                        )}
+                      </button>
+
+                      {entry.externalFallbackHref && (
+                        <a
+                          href={entry.externalFallbackHref}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/40 hover:bg-muted px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition cursor-pointer"
+                        >
+                          <span>Full Resolution (227MB)</span>
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
                       )}
-                    </button>
+                    </div>
                   </div>
                 </article>
               </StackingCardItem>
